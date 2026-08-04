@@ -1,0 +1,90 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   PADRÃO · Sidebar colapsável (opt-in)
+   Sidebar sempre escura da marca (--c-sidebar), 248px expandida / 64px
+   colapsada, com troca de logo, tooltips no modo colapsado e botão de
+   alternância que só aparece no hover/foco.
+
+   Contrato com o app consumidor:
+   - Estado dirigido pelo atributo `data-sidebar-collapsed="true"` em <html>,
+     aplicado PRÉ-HIDRATAÇÃO por script inline (evita "salto" de layout e
+     mismatch de hidratação em apps React/Next).
+   - Classes esperadas na marcação: .sidebar-root, .sidebar-submenu,
+     .sidebar-label, .sidebar-user-text, .sidebar-section-title, .sidebar-link,
+     .sidebar-brand, .sidebar-user, .sidebar-logo-full, .sidebar-logo-icon,
+     .sidebar-chevron-collapse, .sidebar-chevron-expand, .sidebar-tooltip,
+     .sidebar-tt-wrap, .sidebar-toggle.
+   - Item ativo: borda esquerda 3px em --brand-yellow (ver docs/ui-guidelines.md §3).
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+html[data-sidebar-collapsed="true"] .sidebar-root {
+  width: 64px;
+}
+html[data-sidebar-collapsed="true"] .sidebar-submenu {
+  /* Submenu oculto no modo recolhido: o ícone do pai segue navegando para a
+     página principal da seção. */
+  display: none;
+}
+html[data-sidebar-collapsed="true"] .sidebar-label,
+html[data-sidebar-collapsed="true"] .sidebar-user-text {
+  display: none;
+}
+/* Título de seção vira uma linha separadora fina quando colapsada. */
+html[data-sidebar-collapsed="true"] .sidebar-section-title {
+  font-size: 0;
+  line-height: 0;
+  color: transparent;
+  height: 0;
+  padding: 0;
+  margin: 10px 12px;
+  border-top: 1px solid var(--premium-graphite);
+}
+html[data-sidebar-collapsed="true"] .sidebar-link,
+html[data-sidebar-collapsed="true"] .sidebar-brand,
+html[data-sidebar-collapsed="true"] .sidebar-user {
+  justify-content: center;
+}
+html[data-sidebar-collapsed="true"] .sidebar-link {
+  padding-left: 0;
+  padding-right: 0;
+}
+/* Troca de logo: horizontal (expandida) ↔ ícone (colapsada). */
+html[data-sidebar-collapsed="true"] .sidebar-logo-full,
+html:not([data-sidebar-collapsed="true"]) .sidebar-logo-icon {
+  display: none;
+}
+/* Direção do chevron do botão de alternância. */
+html[data-sidebar-collapsed="true"] .sidebar-chevron-collapse,
+html:not([data-sidebar-collapsed="true"]) .sidebar-chevron-expand {
+  display: none;
+}
+/* Tooltips dos itens só aparecem quando colapsada. */
+html:not([data-sidebar-collapsed="true"]) .sidebar-tooltip {
+  display: none;
+}
+/* Colapsada: o tooltip de cada item aponta para a direita (left-full), fora da
+   sidebar de 64px. Como o <nav> rola na vertical (overflow-y:auto força o
+   overflow-x a auto), esses balões à direita gerariam uma barra de rolagem
+   horizontal. Tornando o wrapper `static`, o bloco-contêiner do balão passa a
+   ser o <aside> (ancestral do nav): por spec, um absoluto cujo contêiner está
+   fora do scroller NÃO entra na largura rolável nem é recortado pelo nav.
+   Assim some a barra horizontal sem esconder os tooltips. */
+html[data-sidebar-collapsed="true"] .sidebar-tt-wrap {
+  position: static;
+}
+html[data-sidebar-collapsed="true"] .sidebar-tooltip {
+  /* Horizontal: left:100% relativo ao aside (64px) → logo após a borda direita.
+     Vertical: posição estática (acompanha o item), não 50% do aside. */
+  top: auto;
+  bottom: auto;
+}
+/* Botão de alternância só aparece ao passar o mouse (ou focar) na sidebar. */
+.sidebar-toggle {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 150ms ease;
+}
+.sidebar-root:hover .sidebar-toggle,
+.sidebar-root:focus-within .sidebar-toggle {
+  opacity: 1;
+  pointer-events: auto;
+}

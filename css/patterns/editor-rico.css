@@ -1,0 +1,149 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   PADRÃO · Editor rico e leitura de Markdown (opt-in)
+   Tipografia compartilhada entre o editor (.rich-editor-content — Tiptap na
+   implementação de referência) e o modo de leitura (.md-view). Cores só por
+   token semântico (claro e escuro resolvem sozinhos). Escala tipográfica
+   conforme docs/ui-guidelines.md §2.1.
+   Inclui o chip de menção (@) usado em comentários.
+   Para o trecho de link de Drive (drive://), importe também drive-link.css.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.rich-editor-content {
+  outline: none;
+  padding: 14px;
+  min-height: 140px;
+  font-size: 13.5px;
+  line-height: 1.65;
+  color: var(--premium-steel);
+}
+.md-view {
+  font-size: 13.5px;
+  line-height: 1.65;
+  color: var(--premium-steel);
+}
+/* Evita margem duplicada com o padding do contêiner. */
+.md-view > :first-child {
+  margin-top: 0;
+}
+.md-view > :last-child {
+  margin-bottom: 0;
+}
+/* Chip de menção no editor rico e no render do comentário. Cor só por token. */
+.mention-chip {
+  display: inline-flex;
+  align-items: center;
+  font-weight: 500;
+  border-radius: var(--r-sm);
+  padding: 1px 5px;
+  background: var(--info-bg);
+  color: var(--info);
+  white-space: nowrap;
+}
+.rich-editor-content:focus {
+  outline: none;
+}
+/* Placeholder do editor quando vazio. */
+.rich-editor-content p.is-editor-empty:first-child::before,
+.rich-editor-content[data-placeholder] .is-empty::before {
+  content: attr(data-placeholder);
+  color: var(--premium-gray);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+.rich-editor-content :where(h2),
+.md-view :where(h2) {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 14px 0 6px;
+  color: var(--premium-ink);
+}
+.rich-editor-content :where(h3),
+.md-view :where(h3) {
+  font-size: 14px;
+  font-weight: 700;
+  margin: 12px 0 6px;
+  color: var(--premium-ink);
+}
+.rich-editor-content :where(p),
+.md-view :where(p) {
+  margin: 6px 0;
+}
+.rich-editor-content :where(ul, ol),
+.md-view :where(ul, ol) {
+  margin: 6px 0;
+  padding-left: 22px;
+}
+.rich-editor-content :where(ul),
+.md-view :where(ul) {
+  list-style: disc;
+}
+.rich-editor-content :where(ol),
+.md-view :where(ol) {
+  list-style: decimal;
+}
+.rich-editor-content :where(blockquote),
+.md-view :where(blockquote) {
+  border-left: 3px solid var(--premium-mist);
+  padding-left: 12px;
+  margin: 8px 0;
+  color: var(--premium-gray);
+}
+.rich-editor-content :where(code),
+.md-view :where(code) {
+  font-family: ui-monospace, "SFMono-Regular", Menlo, monospace;
+  font-size: 12.5px;
+  background: var(--premium-bone);
+  padding: 1px 5px;
+  border-radius: var(--r-sm);
+}
+.rich-editor-content :where(pre),
+.md-view :where(pre) {
+  background: var(--premium-bone);
+  padding: 12px;
+  border-radius: var(--r-md);
+  overflow-x: auto;
+  margin: 8px 0;
+}
+.rich-editor-content :where(pre code),
+.md-view :where(pre code) {
+  background: transparent;
+  padding: 0;
+}
+.rich-editor-content :where(a):not([href^="drive://"]),
+.md-view :where(a):not([href^="drive://"]) {
+  color: var(--info);
+  text-decoration: underline;
+  /* Clique simples abre em nova aba; no editor, duplo clique edita. */
+  cursor: pointer;
+}
+/* Tabela GFM. */
+.rich-editor-content :where(table),
+.md-view :where(table) {
+  border-collapse: collapse;
+  margin: 8px 0;
+  width: 100%;
+}
+.rich-editor-content :where(th, td),
+.md-view :where(th, td) {
+  border: 1px solid var(--premium-mist);
+  padding: 6px 10px;
+  text-align: left;
+  font-size: 13px;
+}
+.rich-editor-content :where(th),
+.md-view :where(th) {
+  background: var(--premium-bone);
+  font-weight: 700;
+}
+/* Célula de tabela selecionada: véu amarelo temático (--gold-bg). */
+.rich-editor-content :where(.selectedCell):after {
+  background: var(--gold-bg);
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.rich-editor-content :where(td, th) {
+  position: relative;
+}

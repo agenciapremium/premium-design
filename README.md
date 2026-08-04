@@ -15,6 +15,7 @@ Identidade visual da **Agência Premium** (PREMIUM · MARKETING 360°): tokens d
 | [`css/theme.css`](css/theme.css) | Ponte Tailwind v4: `@custom-variant dark` + `@theme inline` (utilities `bg-surface`, `text-ink`, `bg-brand`, …). |
 | [`css/base.css`](css/base.css) | Base global: `body`, `::selection` amarela, scrollbar, `.eyebrow`. |
 | [`css/motion.css`](css/motion.css) | Keyframes de identidade (`fadeIn`, `flash-novo`, `timer-pulse`, View Transitions), todos sob `prefers-reduced-motion`. |
+| [`css/patterns/`](css/patterns/) | **Padrões de projeto (opt-in)** — CSS de recursos que nem todo sistema tem. Se o seu sistema implementar o recurso, importe o padrão em vez de recriar o visual. |
 | [`docs/`](docs/) | Documentação completa do design system — comece por [`docs/index.md`](docs/index.md). O [`docs/showroom.html`](docs/showroom.html) demonstra tudo ao vivo nos dois temas (abra no navegador). |
 
 ## Como consumir
@@ -39,6 +40,22 @@ Atualizar = trocar a tag e reinstalar. Nunca aponte para `#main` — sempre uma 
 ```
 
 Pronto: tokens nos dois temas, variante `dark:` por classe (`html.dark`) e utilities semânticas (`bg-surface`, `text-ink`, `border-border`, `bg-brand`, `text-danger`, …). O toggle de tema do app estampa/remove `.dark` no `<html>` (chave localStorage `premium-theme`; sem escolha salva, siga `prefers-color-scheme`).
+
+### Padrões de projeto (opt-in)
+
+O `premium.css` traz só o núcleo. Os padrões de recurso são importados **apenas pelos sistemas que têm o recurso** — regra: se o sistema implementa o recurso, ele importa o padrão em vez de recriar o visual.
+
+```css
+/* depois do import principal, conforme o sistema precisar: */
+@import "@agenciapremium/premium-design/patterns/sidebar.css";      /* sidebar colapsável 248↔64px */
+@import "@agenciapremium/premium-design/patterns/editor-rico.css";  /* editor rico + leitura de Markdown */
+@import "@agenciapremium/premium-design/patterns/drive-link.css";   /* chip drive:// "clique para copiar" */
+@import "@agenciapremium/premium-design/patterns/kanban.css";       /* scrollbar fina da coluna do kanban */
+@import "@agenciapremium/premium-design/patterns/code-block.css";   /* realce de sintaxe (.tok-*) + rolagem */
+@import "@agenciapremium/premium-design/patterns/autosave.css";     /* barra indeterminada do auto-save */
+```
+
+Cada arquivo documenta no cabeçalho o **contrato com o app** (classes e atributos esperados na marcação — ex.: a sidebar exige `data-sidebar-collapsed` estampado pré-hidratação). O comportamento (JS/React) é implementação de cada app; o padrão garante que o **visual** seja idêntico entre sistemas.
 
 ### Projeto sem Tailwind
 

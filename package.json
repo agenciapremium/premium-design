@@ -1,6 +1,6 @@
 {
   "name": "@agenciapremium/premium-design",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Identidade visual da Agência Premium (PREMIUM · MARKETING 360°) — tokens de design, tema Tailwind v4 e documentação do design system",
   "license": "UNLICENSED",
   "private": true,
@@ -14,7 +14,8 @@
     "./tokens.css": "./css/tokens.css",
     "./theme.css": "./css/theme.css",
     "./base.css": "./css/base.css",
-    "./motion.css": "./css/motion.css"
+    "./motion.css": "./css/motion.css",
+    "./patterns/*": "./css/patterns/*"
   },
   "files": [
     "css",

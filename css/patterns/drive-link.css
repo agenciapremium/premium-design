@@ -1,0 +1,71 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   PADRÃO · Trecho de link de Drive (drive://) (opt-in)
+   Chip inline que mostra o caminho por completo e, ao clicar, copia o caminho
+   remontado para o SO do usuário. Não é um link comum (sem azul/sublinhado),
+   sinalizando "clique para copiar". Feedback discreto "Copiado" sem toast
+   (atributo data-copied estampado pelo app por ~1.5s).
+   Depende dos escopos .rich-editor-content / .md-view (editor-rico.css).
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.rich-editor-content :where(a[href^="drive://"]),
+.md-view :where(a[href^="drive://"]) {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 1px 7px 1px 6px;
+  border-radius: var(--r-sm);
+  background: var(--premium-bone);
+  border: 1px solid var(--premium-mist);
+  color: var(--premium-ink);
+  font-size: 12.5px;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  vertical-align: baseline;
+  position: relative;
+  white-space: normal;
+  word-break: break-word;
+}
+.rich-editor-content :where(a[href^="drive://"]):hover,
+.md-view :where(a[href^="drive://"]):hover {
+  border-color: var(--premium-ink);
+}
+.rich-editor-content :where(a[href^="drive://"]):focus-visible,
+.md-view :where(a[href^="drive://"]):focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--yellow-50);
+}
+/* Ícone de pasta (lucide:folder) via mask para herdar a cor do token. */
+.rich-editor-content :where(a[href^="drive://"])::before,
+.md-view :where(a[href^="drive://"])::before {
+  content: "";
+  width: 13px;
+  height: 13px;
+  background: currentColor;
+  -webkit-mask: var(--icon-folder) center / contain no-repeat;
+  mask: var(--icon-folder) center / contain no-repeat;
+  flex: none;
+}
+/* Feedback discreto "Copiado" (docs/ui-guidelines.md §5), sem toast. */
+.rich-editor-content :where(a[href^="drive://"][data-copied])::after,
+.md-view :where(a[href^="drive://"][data-copied])::after {
+  content: "Copiado";
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-bottom: 4px;
+  background: var(--premium-ink);
+  color: var(--premium-white);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 2px 6px;
+  border-radius: var(--r-sm);
+  white-space: nowrap;
+  pointer-events: none;
+}
+:root {
+  --icon-folder: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z'/%3E%3C/svg%3E");
+}

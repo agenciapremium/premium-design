@@ -1,0 +1,29 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   PADRÃO · Bloco de código com realce (opt-in)
+   Completa os tokens --code-* de tokens.css com as classes emitidas pelo
+   realçador leve (sem hex no componente) e a rolagem horizontal fina.
+   Ver docs/ui-guidelines.md §4.25 e a implementação de referência em
+   https://github.com/agenciapremium/tasks/blob/main/src/components/ui/code-block.tsx
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.code-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--code-punct) transparent;
+}
+.code-scroll::-webkit-scrollbar {
+  height: 8px;
+}
+.code-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.code-scroll::-webkit-scrollbar-thumb {
+  background: var(--code-border);
+  border-radius: var(--r-pill);
+}
+/* Tokens de realce — classes emitidas pelo realçador. */
+.tok-keyword { color: var(--code-keyword); }
+.tok-string { color: var(--code-string); }
+.tok-number { color: var(--code-number); }
+.tok-comment { color: var(--code-comment); font-style: italic; }
+.tok-property { color: var(--code-property); }
+.tok-punct { color: var(--code-punct); }
