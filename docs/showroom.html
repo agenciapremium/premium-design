@@ -1,0 +1,2303 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Premium · Design System — Showroom</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+/* ════════════════════════════════════════════════════════════════════════
+   TOKENS — cópia fiel de src/app/globals.css (camadas 1A marca + 1B semântica).
+   Qualquer divergência deve ser corrigida A PARTIR do globals.css (fonte da
+   verdade), nunca o contrário.
+   ════════════════════════════════════════════════════════════════════════ */
+:root{
+  /* Camada 1A · Marca crua (fixa nos dois temas) */
+  --brand-yellow:#FBDA25;--brand-gold:#FCD028;--brand-amber:#F7BA30;
+  --brand-ink:#0A0A0A;--brand-on-ink:#FFFFFF;
+  --yellow:var(--brand-yellow);--gold:var(--brand-gold);--amber:var(--brand-amber);
+  --yellow-50:#FFFBE0;
+
+  /* Par temático de fundo amarelo suave (seleção, callouts, destaques) e dígitos
+     do cronômetro parado — ambos com par escuro próprio em html.dark */
+  --gold-bg:#FFFBE0;
+  --timer-idle:var(--brand-yellow);
+
+  /* Escala neutra literal — modo claro */
+  --premium-black:#000000;--premium-ink:#0A0A0A;--premium-coal:#1A1A1A;
+  --premium-graphite:#2A2A2A;--premium-steel:#4A4A4A;--premium-gray:#8A8A8A;
+  --premium-silver:#BFBFBF;--premium-mist:#E5E5E5;--premium-bone:#F2F2F2;
+  --premium-paper:#FAFAFA;--premium-white:#FFFFFF;
+
+  /* Camada 1B · Semântico --c-* (única camada que muda por tema) */
+  --c-bg:var(--premium-paper);--c-surface:var(--premium-white);
+  --c-sunken:var(--premium-bone);--c-ink:var(--premium-ink);
+  --c-muted:var(--premium-gray);--c-subtle:var(--premium-silver);
+  --c-border:var(--premium-mist);--c-border-strong:var(--premium-graphite);
+
+  --c-sidebar:var(--brand-ink);--c-sidebar-elevated:#1A1A1A;
+  --c-sidebar-muted:#BFBFBF;--c-sidebar-section:#4A4A4A;
+
+  --c-emphasis:var(--brand-ink);--c-on-emphasis:var(--brand-on-ink);
+  --c-emphasis-hover:#2A2A2A;
+
+  --success:#1E8E4A;--success-bg:#E6F4EA;--warning:#C97A0F;--warning-bg:#FFF3DB;
+  --danger:#C0322B;--danger-bg:#FBE9E7;--info:#1A6FB0;--info-bg:#E6F1FA;
+  --violet:#6E56CF;--violet-bg:#EDE9FB;--teal:#0E8C8C;--teal-bg:#E2F3F3;
+  --slate:#5B6472;--slate-bg:#EDF0F3;
+
+  --r-sm:6px;--r-md:8px;--r-lg:12px;--r-xl:18px;--r-pill:999px;
+
+  --sh-sm:0 1px 3px rgba(10,10,10,.08),0 1px 2px rgba(10,10,10,.04);
+  --sh-md:0 4px 12px rgba(10,10,10,.08),0 2px 4px rgba(10,10,10,.04);
+  --sh-lg:0 12px 32px rgba(10,10,10,.12),0 4px 8px rgba(10,10,10,.06);
+  --sh-gold:0 12px 28px rgba(251,218,37,.40),0 4px 8px rgba(247,186,48,.22);
+
+  --ease:cubic-bezier(.22,.61,.36,1);
+
+  /* Code theme (doc-code-block) */
+  --code-bg:#f6f6f4;--code-fg:#1a1a1a;--code-border:#e5e5e5;
+  --code-keyword:#8a3ffc;--code-string:#0f7b46;--code-number:#9a5b00;
+  --code-comment:#6a6a6a;--code-property:#1565a8;--code-punct:#4a4a4a;
+}
+/* Tema escuro — paleta calibrada à mão (NÃO inversão) */
+html.dark{
+  --c-bg:#0a0a0a;--c-surface:#161616;--c-sunken:#202020;--c-ink:#fafafa;
+  --c-muted:#b8b8b8;--c-subtle:#8a8a8a;--c-border:#2e2e2e;--c-border-strong:#4a4a4a;
+  --c-sidebar:#161616;--c-sidebar-elevated:#232323;--c-sidebar-section:#6a6a6a;
+  --c-emphasis:#fafafa;--c-on-emphasis:#0a0a0a;--c-emphasis-hover:#e2e2e2;
+
+  --premium-paper:#0a0a0a;--premium-white:#161616;--premium-bone:#202020;
+  --premium-mist:#2e2e2e;--premium-graphite:#4a4a4a;--premium-silver:#5a5a5a;
+  --premium-gray:#b8b8b8;--premium-steel:#d0d0d0;--premium-coal:#f2f2f2;
+  --premium-ink:#fafafa;
+
+  --success:#34d17d;--success-bg:#0f2e1d;--warning:#e6b24a;--warning-bg:#2e2410;
+  --danger:#e87a72;--danger-bg:#2e1513;--info:#5aa6dd;--info-bg:#102433;
+  --violet:#a594e8;--violet-bg:#211a33;--teal:#4cc3c3;--teal-bg:#0f2b2b;
+  --slate:#9aa3b2;--slate-bg:#1c212a;
+  --gold-bg:#2e2410;--timer-idle:#846a00;
+
+  --sh-sm:0 1px 3px rgba(0,0,0,.4),0 1px 2px rgba(0,0,0,.2);
+  --sh-md:0 4px 12px rgba(0,0,0,.4),0 2px 4px rgba(0,0,0,.2);
+  --sh-lg:0 12px 32px rgba(0,0,0,.5),0 4px 8px rgba(0,0,0,.3);
+
+  --code-bg:#1b1b1b;--code-fg:#e6e6e6;--code-border:#2e2e2e;
+  --code-keyword:#c792ea;--code-string:#7fd6a0;--code-number:#f2b35e;
+  --code-comment:#8a8a8a;--code-property:#82c5f5;--code-punct:#b8b8b8;
+  color-scheme:dark;
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   BASE
+   ════════════════════════════════════════════════════════════════════════ */
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family:"Ubuntu",system-ui,sans-serif;background:var(--c-bg);color:var(--c-ink);
+  -webkit-font-smoothing:antialiased;display:flex;min-height:100vh;
+}
+::selection{background:var(--yellow);color:#000}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-thumb{background:var(--premium-mist);border-radius:999px;border:2px solid var(--premium-paper)}
+.eyebrow{font-weight:700;font-size:10px;letter-spacing:.20em;text-transform:uppercase;color:var(--premium-gray)}
+svg.lucide{width:16px;height:16px;flex:none}
+
+/* ── Shell do showroom ── */
+.ds-nav{
+  width:248px;flex:0 0 248px;background:var(--c-sidebar);color:#fff;
+  position:sticky;top:0;height:100vh;overflow-y:auto;padding:22px 16px;
+  display:flex;flex-direction:column;gap:2px;
+  align-self:flex-start; /* impede o stretch do flex — sem isso o sticky não gruda e o menu rola junto */
+}
+.ds-brand{display:flex;align-items:center;gap:11px;padding:6px 8px 18px}
+.ds-brand svg.lucide{width:32px;height:32px;color:var(--yellow)}
+.ds-brand b{font-weight:700;font-size:17px;letter-spacing:.02em;color:#fff;display:block;line-height:1.1}
+.ds-brand span{font-size:8px;letter-spacing:.30em;color:var(--gold);font-weight:500}
+.ds-nav .nav-label{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--c-sidebar-section);padding:14px 10px 6px;font-weight:700}
+.ds-nav a{
+  display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:var(--r-md);
+  color:var(--c-sidebar-muted);font-size:13px;font-weight:500;text-decoration:none;
+  border-left:3px solid transparent;transition:all .14s var(--ease);
+}
+.ds-nav a:hover{background:var(--c-sidebar-elevated);color:#fff}
+.ds-nav a.active{background:var(--c-sidebar-elevated);color:var(--yellow);border-left-color:var(--yellow)}
+
+.ds-main{flex:1;min-width:0;padding:0 0 120px}
+.ds-topbar{
+  height:68px;background:color-mix(in srgb, var(--c-surface) 82%, transparent);
+  backdrop-filter:blur(12px) saturate(140%);border-bottom:1px solid var(--c-border);
+  display:flex;align-items:center;gap:18px;padding:0 30px;position:sticky;top:0;z-index:20;
+}
+.ds-topbar h1{font-size:16px;font-weight:700;letter-spacing:-.01em}
+.ds-topbar .sub{font-size:11.5px;color:var(--c-muted)}
+.ds-content{padding:26px 30px;max-width:1180px}
+section.ds-sec{margin-bottom:56px;scroll-margin-top:84px}
+.ds-sec>h2{font-size:22px;font-weight:700;letter-spacing:-.02em;margin-bottom:4px}
+.ds-sec>.sub{font-size:13px;color:var(--c-muted);margin-bottom:20px;max-width:720px}
+.ds-sub{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--c-muted);margin:26px 0 12px}
+.spec-row{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-start}
+.spec-note{font-size:11.5px;color:var(--c-muted);margin-top:10px;max-width:680px;line-height:1.55}
+.spec-note code, .ds-sec p code{
+  font-family:ui-monospace,"SFMono-Regular",Menlo,monospace;font-size:11px;
+  background:var(--c-sunken);padding:1px 5px;border-radius:var(--r-sm);
+}
+.specimen{
+  background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-lg);
+  box-shadow:var(--sh-sm);padding:22px;display:flex;flex-wrap:wrap;gap:16px;align-items:center;
+}
+.specimen.col{flex-direction:column;align-items:stretch}
+.specimen.on-paper{background:var(--c-bg)}
+.state-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--c-subtle);display:block;margin-bottom:8px}
+.state-cell{display:flex;flex-direction:column;align-items:flex-start}
+
+/* ════════════════════════════════════════════════════════════════════════
+   COMPONENTES — classes que espelham os primitivos de src/components/ui/
+   ════════════════════════════════════════════════════════════════════════ */
+
+/* ── Botões (button.tsx) ── */
+.btn{
+  position:relative;display:inline-flex;align-items:center;gap:8px;font-weight:700;text-transform:uppercase;
+  letter-spacing:.03em;font-size:13px;padding:11px 18px;border-radius:var(--r-md);
+  border:0;cursor:pointer;font-family:inherit;transition:all .15s var(--ease);
+}
+/* Loading = crossfade: rótulo some (opacity 0) sem mudar a largura; spinner centralizado.
+   Posição por left/top (sem translate — o keyframe spin já ocupa o transform). */
+.btn.loading>.btn-label{opacity:0;transition:opacity .15s}
+.btn.loading>.spinner{position:absolute;left:calc(50% - 7px);top:calc(50% - 7px)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-primary{background:var(--yellow);color:#000;box-shadow:var(--sh-gold)}
+.btn-primary:hover:not(:disabled){background:var(--gold)}
+.btn-primary:active:not(:disabled){background:var(--amber);transform:translateY(1px)}
+.btn-dark{background:var(--c-emphasis);color:var(--c-on-emphasis)}
+.btn-dark:hover:not(:disabled){background:var(--c-emphasis-hover)}
+.btn-ghost{background:transparent;color:var(--premium-ink);border:1px solid var(--premium-mist)}
+.btn-ghost:hover:not(:disabled){border-color:var(--premium-ink)}
+.btn-danger{background:var(--danger);color:#fff}
+.btn-danger:hover:not(:disabled){filter:brightness(.94)}
+.btn-sm{padding:8px 12px;font-size:11px}
+.btn .spinner{
+  width:14px;height:14px;border-radius:50%;border:2px solid rgba(0,0,0,.25);
+  border-top-color:#000;animation:spin .7s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.icon-btn{
+  width:40px;height:40px;border-radius:var(--r-md);border:1px solid var(--premium-mist);
+  background:var(--c-surface);color:var(--premium-steel);display:inline-flex;
+  align-items:center;justify-content:center;cursor:pointer;transition:all .14s var(--ease);
+}
+.icon-btn:hover{border-color:var(--premium-ink);color:var(--premium-ink)}
+/* Foco visível padrão (inputs/botões): borda ink + halo amarelo */
+.btn:focus-visible,.icon-btn:focus-visible,.chip:focus-visible,.tab:focus-visible{
+  outline:none;box-shadow:0 0 0 2px var(--yellow-50),0 0 0 3px var(--premium-ink);
+}
+
+/* ── Badges (badge.tsx) ── */
+.badge{
+  display:inline-block;font-size:10px;font-weight:700;text-transform:uppercase;
+  letter-spacing:.05em;padding:3px 10px;border-radius:var(--r-pill);
+}
+.badge-default{background:var(--premium-bone);color:var(--premium-steel)}
+.badge-success{background:var(--success-bg);color:var(--success)}
+.badge-warning{background:var(--warning-bg);color:var(--warning)}
+.badge-danger{background:var(--danger-bg);color:var(--danger)}
+.badge-info{background:var(--info-bg);color:var(--info)}
+.badge-violet{background:var(--violet-bg);color:var(--violet)}
+.badge-teal{background:var(--teal-bg);color:var(--teal)}
+.badge-slate{background:var(--slate-bg);color:var(--slate)}
+.badge-gold{background:var(--gold-bg);color:var(--amber)}
+.badge-num{background:var(--yellow);color:#000;font-size:10px;font-weight:700;padding:1px 7px;border-radius:999px}
+.pri-dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+
+/* ── Chips de filtro (filter-bar.tsx) ── */
+.chip{
+  position:relative;display:inline-flex;align-items:center;gap:7px;height:36px;
+  padding:0 14px;border-radius:var(--r-pill);border:1px solid var(--premium-mist);
+  background:var(--premium-white);color:var(--premium-steel);font-size:13px;
+  font-weight:500;cursor:pointer;white-space:nowrap;transition:border-color .15s,color .15s;
+  font-family:inherit;
+}
+.chip svg.lucide{width:14px;height:14px;color:var(--premium-gray)}
+.chip:hover{border-color:var(--premium-steel)}
+.chip.active{border-color:var(--premium-ink);color:var(--premium-ink)}
+.chip.on{background:var(--brand-ink);border-color:var(--premium-ink);color:#fff}
+.chip.on svg.lucide{color:var(--yellow)}
+.chip .count{
+  font-size:11px;font-weight:700;background:var(--premium-ink);color:var(--premium-paper);
+  border-radius:999px;padding:0 6px;min-width:16px;text-align:center;
+}
+.chip-clear{
+  width:36px;height:36px;border-radius:50%;border:0;background:var(--yellow);color:#000;
+  display:inline-flex;align-items:center;justify-content:center;cursor:pointer;
+  box-shadow:var(--sh-gold);transition:background .15s;
+}
+.chip-clear:hover{background:var(--gold)}
+
+/* ── Tabs segmentadas (segmented-tabs.tsx / filter-bar.tsx) ── */
+.tabs{display:inline-flex;gap:4px;background:var(--premium-bone);padding:4px;border-radius:var(--r-md)}
+.tab{
+  padding:8px 16px;border-radius:var(--r-sm);font-size:13px;font-weight:500;border:0;
+  background:transparent;color:var(--premium-steel);display:inline-flex;align-items:center;
+  gap:7px;cursor:pointer;white-space:nowrap;font-family:inherit;transition:all .14s var(--ease);
+}
+.tab svg.lucide{width:15px;height:15px}
+.tab.active{background:var(--premium-white);color:var(--premium-ink);box-shadow:var(--sh-sm);font-weight:700}
+
+/* ── Formulários (input.tsx / textarea.tsx / select.tsx) ── */
+.field{display:flex;flex-direction:column;gap:7px;min-width:220px}
+.field label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--premium-gray)}
+.input,.textarea{
+  width:100%;border:1px solid var(--premium-mist);border-radius:var(--r-md);
+  padding:11px 14px;font-size:13px;font-family:inherit;color:var(--premium-ink);
+  outline:none;background:var(--c-surface);transition:all .15s;
+}
+.input::placeholder,.textarea::placeholder{color:var(--premium-gray)}
+.input:focus,.textarea:focus{border-color:var(--premium-ink);box-shadow:0 0 0 2px var(--yellow-50)}
+.input.error,.textarea.error{border-color:var(--danger)}
+.input:disabled{opacity:.6;cursor:not-allowed;background:var(--c-sunken)}
+.textarea{min-height:76px;resize:vertical}
+.field .err-msg{font-size:11px;color:var(--danger)}
+
+/* ── Select custom (select.tsx) — popover no padrão do workflow ── */
+.dsel{position:relative}
+.dsel-trigger{
+  width:100%;display:flex;align-items:center;justify-content:space-between;gap:8px;
+  border:1px solid var(--premium-mist);border-radius:var(--r-md);padding:11px 14px;
+  font-size:13px;font-family:inherit;color:var(--premium-ink);text-align:left;
+  background:var(--c-surface);cursor:pointer;outline:none;transition:all .15s;
+}
+.dsel-trigger:focus-visible{border-color:var(--premium-ink);box-shadow:0 0 0 2px var(--yellow-50)}
+.dsel-trigger .chev{width:15px;height:15px;color:var(--premium-gray);flex:none;transition:transform .15s}
+.dsel-trigger .val.placeholder{color:var(--premium-gray)}
+.dsel.open .dsel-trigger{border-color:var(--premium-ink);box-shadow:0 0 0 2px var(--yellow-50)}
+.dsel.open .dsel-trigger .chev{transform:rotate(180deg)}
+.dsel-pop{
+  position:absolute;top:calc(100% + 6px);left:0;right:0;z-index:60;display:none;
+  border:1px solid var(--premium-mist);border-radius:var(--r-lg);background:var(--c-surface);
+  padding:8px;box-shadow:var(--sh-lg);
+}
+.dsel.open .dsel-pop{display:block}
+.dsel-search{position:relative;margin-bottom:8px}
+.dsel-search svg.lucide{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:14px;height:14px;color:var(--premium-gray)}
+.dsel-search input{
+  width:100%;border:1px solid var(--premium-mist);border-radius:var(--r-md);
+  padding:8px 12px 8px 32px;font-size:13px;font-family:inherit;background:var(--c-surface);
+  color:var(--premium-ink);outline:none;
+}
+.dsel-search input:focus{border-color:var(--premium-ink);box-shadow:0 0 0 2px var(--yellow-50)}
+.dsel-list{max-height:256px;overflow-y:auto;display:flex;flex-direction:column}
+.dsel-item{
+  display:flex;align-items:center;gap:8px;min-height:40px;width:100%;padding:0 12px;
+  border:0;border-radius:var(--r-md);background:none;font-size:13px;font-family:inherit;
+  color:var(--c-ink);text-align:left;cursor:pointer;transition:background .12s;
+}
+.dsel-item:hover,.dsel-item:focus-visible{background:var(--premium-bone);outline:none}
+.dsel-item .lbl{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dsel-item.is-placeholder{color:var(--premium-gray)}
+.dsel-item .dsel-check{display:none;width:15px;height:15px;color:var(--premium-ink);flex:none}
+.dsel-item.sel{font-weight:500}
+.dsel-item.sel .dsel-check{display:block}
+.dsel-empty{padding:24px 0;text-align:center;font-size:12.5px;color:var(--premium-gray)}
+.form-error-banner{
+  display:flex;align-items:flex-start;gap:8px;border:1px solid var(--danger);
+  background:var(--danger-bg);border-radius:var(--r-md);padding:8px 12px;
+  font-size:12.5px;color:var(--c-ink);
+}
+.form-error-banner svg.lucide{width:15px;height:15px;color:var(--danger);margin-top:1px}
+
+/* ── AutoSaveBar (autosave-bar.tsx) ── */
+.autosave-wrap{height:2px;width:100%;overflow:hidden;background:var(--premium-bone)}
+.autosave-bar{height:100%;background:var(--premium-ink);width:40%;transform:translateX(-100%)}
+@media (prefers-reduced-motion:no-preference){
+  @keyframes autosaveBar{from{transform:translateX(-100%)}to{transform:translateX(300%)}}
+  .autosave-bar{animation:autosaveBar 1.1s var(--ease) infinite}
+}
+@media (prefers-reduced-motion:reduce){.autosave-bar{width:100%;transform:none}}
+
+/* ── Busca pill da topbar (topbar.tsx) ── */
+.search-pill{
+  display:inline-flex;align-items:center;gap:10px;background:var(--premium-bone);
+  border:1px solid transparent;border-radius:var(--r-pill);padding:9px 16px;
+  color:var(--premium-gray);cursor:pointer;width:280px;transition:all .14s var(--ease);
+  font-size:13px;font-family:inherit;
+}
+.search-pill:hover{border-color:var(--premium-mist)}
+.search-pill kbd{
+  font-size:10px;background:var(--premium-white);border:1px solid var(--premium-mist);
+  border-radius:4px;padding:2px 6px;margin-left:auto;font-family:inherit;
+}
+
+/* ── Cards (card.tsx + protótipo) ── */
+.card{
+  background:var(--premium-white);border:1px solid var(--premium-mist);
+  border-radius:var(--r-lg);box-shadow:var(--sh-sm);
+}
+.card.hoverable{cursor:pointer;transition:all .15s var(--ease)}
+.card.hoverable:hover{box-shadow:var(--sh-md);transform:translateY(-2px)}
+.card-h{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid var(--premium-mist)}
+.card-h h3{font-size:15px;font-weight:700}
+.card-b{padding:16px 18px}
+.stat{padding:16px 18px;display:flex;flex-direction:column;gap:10px;min-width:190px}
+.stat .ic{width:34px;height:34px;border-radius:var(--r-md);display:flex;align-items:center;justify-content:center}
+.stat .num{font-size:30px;font-weight:700;letter-spacing:-.02em;line-height:1}
+.stat .lbl{font-size:12px;color:var(--premium-gray);font-weight:500}
+.stat.feat{background:var(--brand-ink);border-color:var(--brand-ink)}
+.stat.feat .num{color:#fff}
+.stat.feat .lbl{color:rgba(255,255,255,.55)}
+.stat.feat .ic{background:rgba(251,218,37,.14);color:var(--yellow)}
+.progress{height:6px;background:var(--premium-bone);border-radius:999px;overflow:hidden}
+.progress>i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--yellow),var(--amber))}
+.kcard{
+  background:var(--premium-white);border:1px solid var(--premium-mist);border-radius:var(--r-lg);
+  box-shadow:var(--sh-sm);padding:14px;display:flex;flex-direction:column;gap:10px;width:262px;
+  cursor:pointer;transition:all .15s var(--ease);
+}
+.kcard:hover{box-shadow:var(--sh-md);transform:translateY(-2px)}
+.kcard h4{font-size:14px;font-weight:500;line-height:1.35}
+.kcard .cli{font-size:11.5px;color:var(--premium-gray)}
+.kcard .foot{display:flex;align-items:center;justify-content:space-between;margin-top:2px}
+.kcard .meta{display:flex;align-items:center;gap:10px;font-size:11px;color:var(--premium-gray)}
+.kcard .meta svg.lucide{width:13px;height:13px}
+.kcard.locked{
+  opacity:.62;background:repeating-linear-gradient(45deg,var(--premium-white),var(--premium-white) 8px,var(--premium-bone) 8px,var(--premium-bone) 9px);
+}
+.tag{
+  display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.04em;padding:3px 9px;border-radius:var(--r-pill);
+}
+.tag svg.lucide{width:11px;height:11px}
+.stagebar{display:flex;gap:3px}
+.stagebar i{height:4px;flex:1;border-radius:999px;background:var(--premium-mist)}
+.stagebar i.done{background:var(--success)}
+.stagebar i.cur{background:var(--yellow)}
+.meta-card .meta-row{
+  display:flex;justify-content:space-between;gap:12px;padding:8px 0;
+  border-bottom:1px solid var(--premium-bone);font-size:12.5px;
+}
+.meta-card .meta-row:last-child{border-bottom:0}
+.meta-card .meta-row b{font-weight:500}
+.meta-card .meta-row span{color:var(--premium-gray)}
+
+/* ── Tabela (§4.5) ── */
+.table-wrap{
+  background:var(--premium-white);border:1px solid var(--premium-mist);
+  border-radius:var(--r-lg);box-shadow:var(--sh-sm);overflow:hidden;width:100%;
+}
+table.ds{width:100%;border-collapse:collapse}
+table.ds thead th{
+  font-size:10.5px;text-transform:uppercase;font-weight:700;letter-spacing:.05em;
+  color:var(--premium-gray);background:var(--premium-paper);text-align:left;
+  padding:11px 16px;border-bottom:1px solid var(--premium-mist);
+}
+table.ds tbody td{font-size:13.5px;vertical-align:middle;padding:13px 16px;border-bottom:1px solid var(--premium-bone)}
+table.ds tbody tr:last-child td{border-bottom:0}
+table.ds tbody tr.click{cursor:pointer;transition:background .12s}
+table.ds tbody tr.click:hover{background:var(--premium-paper)}
+
+/* ── Kanban (§4.6) ── */
+.board{display:flex;gap:16px;overflow-x:auto;align-items:stretch}
+.kcol{flex:0 0 290px;background:var(--premium-bone);border-radius:var(--r-lg);display:flex;flex-direction:column;max-height:480px}
+.kcol-h{display:flex;align-items:center;gap:8px;padding:13px 14px;flex:none}
+.kcol-h .dot{width:9px;height:9px;border-radius:50%}
+.kcol-h b{font-size:11px;text-transform:uppercase;letter-spacing:.06em;font-weight:700;color:var(--premium-steel)}
+.kcol-h .n{margin-left:auto;background:var(--premium-white);border-radius:999px;font-size:11px;font-weight:700;padding:1px 8px;color:var(--premium-steel)}
+.kcol-b{flex:1;min-height:0;overflow-y:auto;padding:0 10px 12px;display:flex;flex-direction:column;gap:10px}
+.kcol-b .kcard{width:auto}
+.kanban-col-scroll{scrollbar-width:thin;scrollbar-color:var(--premium-silver) transparent}
+.kanban-col-scroll::-webkit-scrollbar{width:8px}
+.kanban-col-scroll::-webkit-scrollbar-track{background:transparent}
+.kanban-col-scroll::-webkit-scrollbar-thumb{background:var(--premium-silver);border-radius:var(--r-pill);border:2px solid transparent;background-clip:padding-box}
+.kanban-col-scroll:hover::-webkit-scrollbar-thumb{background:var(--premium-steel)}
+.drop-hint{
+  border:2px dashed var(--premium-mist);border-radius:var(--r-lg);padding:18px;
+  text-align:center;font-size:12px;color:var(--premium-gray);
+}
+
+/* ── Avatar (avatar.tsx) ── */
+.avatar{
+  border-radius:50%;display:inline-flex;align-items:center;justify-content:center;
+  font-weight:700;color:#000;flex:none;
+}
+.avatar.sm{width:26px;height:26px;font-size:10px}
+.avatar.md{width:36px;height:36px;font-size:13px}
+.avatar.lg{width:44px;height:44px;font-size:15px}
+.avatar-stack{display:inline-flex}
+.avatar-stack .avatar{border:2px solid var(--c-surface)}
+.avatar-stack .avatar+.avatar{margin-left:-7px}
+
+/* ── Tooltip (tooltip.tsx) ── */
+.tt-wrap{position:relative;display:inline-flex}
+.tt{
+  position:absolute;left:100%;top:50%;margin-left:8px;transform:translateY(-50%);
+  background:#0A0A0A;color:#fff;font-size:12px;font-weight:500;padding:4px 8px;
+  border-radius:var(--r-sm);border:1px solid rgba(255,255,255,.1);white-space:nowrap;
+  opacity:0;pointer-events:none;transition:opacity .1s;z-index:50;box-shadow:var(--sh-md);
+}
+.tt-wrap:hover .tt,.tt-wrap:focus-within .tt{opacity:1}
+
+/* ── Breadcrumb (breadcrumb.tsx) ── */
+.breadcrumb{display:flex;flex-wrap:wrap;align-items:center;gap:5px;font-size:12px;font-weight:500;list-style:none}
+.breadcrumb a{color:var(--premium-steel);text-decoration:none;padding:3px 0;transition:color .12s}
+.breadcrumb a:hover{color:var(--premium-ink)}
+.breadcrumb .cur{color:var(--premium-ink)}
+.breadcrumb svg.lucide{width:14px;height:14px;color:var(--premium-silver)}
+
+/* ── Accordion (accordion.tsx) ── */
+.acc{border:1px solid var(--premium-mist);border-radius:var(--r-lg);overflow:hidden;background:var(--c-surface)}
+.acc-h{display:flex;align-items:center;gap:8px;background:var(--premium-paper);border-bottom:1px solid var(--premium-mist);padding-right:8px}
+.acc-trigger{
+  display:flex;min-height:44px;flex:1;align-items:center;gap:8px;padding:10px 14px;
+  background:transparent;border:0;cursor:pointer;text-align:left;font-family:inherit;
+  font-size:13.5px;font-weight:700;color:var(--c-ink);
+}
+.acc-trigger svg.lucide{color:var(--premium-gray);transition:transform .15s}
+.acc.open .acc-trigger svg.lucide{transform:rotate(180deg)}
+.acc-b{padding:16px;display:none;font-size:13px;color:var(--premium-steel)}
+.acc.open .acc-b{display:block}
+.acc.open .acc-h{border-bottom:1px solid var(--premium-mist)}
+.acc:not(.open) .acc-h{border-bottom:0}
+
+/* ── Empty state / note / banner admin (§4.15–4.17) ── */
+.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 16px;text-align:center}
+.empty svg.lucide{width:38px;height:38px;color:var(--premium-silver);margin-bottom:14px}
+.empty h3{font-size:15px;font-weight:700;color:var(--premium-steel);margin-bottom:4px}
+.empty p{font-size:12.5px;color:var(--premium-gray);max-width:300px;margin-bottom:14px}
+.note{
+  display:flex;gap:9px;background:var(--gold-bg);border:1px solid var(--gold);
+  border-radius:var(--r-md);padding:10px 12px;font-size:11.5px;color:var(--premium-gray);
+  line-height:1.5;align-items:flex-start;
+}
+.note svg.lucide{width:14px;height:14px;color:var(--amber);margin-top:1px}
+.adm-banner{
+  display:flex;align-items:center;gap:12px;background:var(--brand-ink);color:#fff;
+  border-radius:var(--r-lg);padding:13px 16px;font-size:13px;
+}
+.adm-banner .sq{
+  width:32px;height:32px;border-radius:var(--r-md);background:var(--yellow);color:#000;
+  display:flex;align-items:center;justify-content:center;flex:none;
+}
+
+/* ── Toast (toast.tsx) ── */
+.toast{
+  display:flex;align-items:center;gap:12px;border-radius:var(--r-lg);
+  border:1px solid rgba(255,255,255,.1);background:var(--brand-ink);padding:12px;
+  box-shadow:var(--sh-lg);width:min(420px,100%);
+}
+.toast .t-ic{width:28px;height:28px;display:flex;align-items:center;justify-content:center;color:var(--yellow);flex:none}
+.toast p{flex:1;min-width:0;font-size:13px;line-height:1.45;color:var(--brand-on-ink)}
+.toast .t-action{
+  background:none;border:0;min-height:40px;padding:0 12px;font-size:12px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.05em;color:var(--yellow);cursor:pointer;
+  border-radius:var(--r-sm);font-family:inherit;
+}
+.toast .t-action:hover{background:rgba(255,255,255,.1)}
+.toast .t-close{
+  background:none;border:0;width:40px;height:40px;display:flex;align-items:center;
+  justify-content:center;color:var(--premium-silver);cursor:pointer;border-radius:var(--r-sm);
+}
+.toast .t-close:hover{background:rgba(255,255,255,.1);color:#fff}
+#toast-live{
+  position:fixed;left:50%;top:76px;transform:translateX(-50%);z-index:100;
+  display:flex;flex-direction:column;align-items:center;gap:8px;pointer-events:none;
+  width:min(420px,calc(100vw - 2rem));
+}
+#toast-live .toast{pointer-events:auto;animation:toastIn .2s var(--ease)}
+@keyframes toastIn{from{transform:translateY(-4px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+/* ── Slide-over (slide-over.tsx) ── */
+.so-scrim{position:fixed;inset:0;background:rgba(0,0,0,.4);backdrop-filter:blur(4px);z-index:50}
+.so-panel{
+  position:fixed;right:16px;top:16px;bottom:16px;width:480px;max-width:calc(100vw - 2rem);
+  background:var(--premium-white);border-radius:var(--r-xl);box-shadow:var(--sh-lg);
+  display:flex;flex-direction:column;overflow:hidden;z-index:51;
+  animation:soIn .2s var(--ease);
+}
+@keyframes soIn{from{transform:translateX(8px);opacity:0}to{transform:translateX(0);opacity:1}}
+.so-h{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid var(--premium-mist)}
+.so-h h2{font-size:18px;font-weight:700}
+.so-close{
+  width:32px;height:32px;border-radius:var(--r-md);border:0;background:none;cursor:pointer;
+  color:var(--premium-gray);display:flex;align-items:center;justify-content:center;
+}
+.so-close:hover{background:var(--premium-bone);color:var(--premium-ink)}
+.so-b{flex:1;overflow-y:auto;padding:20px 24px;display:flex;flex-direction:column;gap:16px}
+.so-f{display:flex;align-items:center;justify-content:space-between;gap:12px;border-top:1px solid var(--premium-mist);padding:16px 24px}
+
+/* ── Confirm dialog (confirm-dialog.tsx) ── */
+.dlg-scrim{position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:60}
+.dlg{
+  position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:61;
+  background:var(--c-surface);border-radius:var(--r-xl);box-shadow:var(--sh-lg);
+  padding:24px;max-width:420px;width:calc(100vw - 32px);
+}
+.dlg .dlg-head{display:flex;align-items:flex-start;gap:12px;margin-bottom:16px}
+.dlg .dlg-ic{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex:none;background:var(--danger-bg);color:var(--danger)}
+.dlg .dlg-ic.neutral{background:var(--premium-bone);color:var(--premium-steel)}
+.dlg h3{font-size:18px;font-weight:700;color:var(--c-ink)}
+.dlg .dlg-msg{font-size:13.5px;color:var(--premium-steel);margin-top:4px}
+.dlg .dlg-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:20px}
+
+/* ── FAB (fab.tsx) ── */
+.fab-demo{position:relative;height:300px;background:var(--c-bg);border-radius:var(--r-lg);border:1px dashed var(--c-border);overflow:hidden}
+.fab{position:absolute;right:24px;bottom:24px;display:flex;flex-direction:column;align-items:flex-end;gap:12px}
+.fab-main{
+  width:56px;height:56px;border-radius:50%;border:0;background:var(--yellow);color:#000;
+  box-shadow:var(--sh-gold);display:flex;align-items:center;justify-content:center;
+  cursor:grab;transition:background .15s var(--ease);
+}
+.fab-main:hover{background:var(--gold)}
+.fab-main svg.lucide{width:24px;height:24px}
+.fab-dial{display:flex;flex-direction:column;align-items:flex-end;gap:12px;opacity:0;transform:translateY(8px) scale(.96);transition:all .14s var(--ease);pointer-events:none}
+.fab:hover .fab-dial,.fab:focus-within .fab-dial{opacity:1;transform:none;pointer-events:auto}
+.fab-item{display:flex;align-items:center;gap:12px}
+.fab-lbl{
+  font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;
+  background:var(--c-surface);color:var(--c-ink);border:1px solid var(--premium-mist);
+  border-radius:var(--r-md);padding:6px 12px;box-shadow:var(--sh-sm);white-space:nowrap;
+}
+.fab-mini{
+  width:44px;height:44px;border-radius:50%;background:var(--c-surface);color:var(--c-ink);
+  border:1px solid var(--premium-mist);box-shadow:var(--sh-md);display:flex;align-items:center;
+  justify-content:center;cursor:pointer;transition:border-color .15s;
+}
+.fab-mini:hover{border-color:var(--premium-ink)}
+
+/* ── Calendário (§4.12 / date-picker.tsx) ── */
+.cal{width:256px;background:var(--c-surface);border:1px solid var(--premium-mist);border-radius:var(--r-lg);box-shadow:var(--sh-lg);padding:12px}
+.cal-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.cal-h b{font-size:12.5px;font-weight:700}
+.cal-nav{width:28px;height:28px;border-radius:var(--r-sm);border:0;background:none;color:var(--premium-gray);cursor:pointer;display:flex;align-items:center;justify-content:center}
+.cal-nav:hover{background:var(--premium-bone);color:var(--premium-ink)}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+.cal-dow{height:24px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;text-transform:uppercase;color:var(--premium-gray)}
+.cal-d{
+  height:32px;border-radius:var(--r-sm);border:0;background:none;font-size:12px;font-family:inherit;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--premium-ink);
+  position:relative;transition:background .12s;
+}
+.cal-d:hover{background:var(--premium-bone)}
+.cal-d.sel{background:var(--yellow);color:#000;font-weight:700}
+.cal-d.today{box-shadow:inset 0 0 0 1px var(--premium-silver);font-weight:700}
+.cal-d.muted{color:var(--premium-silver)}
+.cal-d.has::after{content:"";position:absolute;bottom:3px;left:50%;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:var(--amber)}
+.cal-d:disabled{opacity:.3;cursor:not-allowed}
+.cal-f{display:flex;align-items:center;justify-content:space-between;margin-top:8px;padding-top:8px;border-top:1px solid var(--premium-mist);font-size:11.5px}
+.cal-f button{background:none;border:0;cursor:pointer;font-family:inherit;font-size:11.5px}
+.cal-f .hoje{color:var(--premium-ink);font-weight:500}
+.cal-f .hoje:hover{text-decoration:underline}
+.cal-f .limpar{color:var(--premium-gray)}
+.cal-f .limpar:hover{color:var(--danger)}
+
+/* ── Comentários / menções / histórico (§4.13–4.14) ── */
+.cmt{display:flex;gap:12px}
+.cmt .body{flex:1;min-width:0}
+.cmt .head{display:flex;align-items:baseline;gap:8px}
+.cmt .head b{font-size:13px}
+.cmt .head span{font-size:11px;color:var(--premium-gray)}
+.cmt .text{font-size:13.5px;line-height:1.55;color:var(--premium-steel);margin-top:3px}
+.mention{background:var(--info-bg);color:var(--info);border-radius:var(--r-sm);padding:1px 5px;font-weight:500}
+.hist{list-style:none;position:relative}
+.hist li{display:flex;gap:12px;position:relative;padding-bottom:20px}
+.hist li::before{content:"";position:absolute;left:14px;top:30px;bottom:0;width:2px;background:var(--premium-bone)}
+.hist li:last-child::before{display:none}
+.hist .h-ic{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex:none;z-index:1}
+.hist .h-ic svg.lucide{width:14px;height:14px}
+.hist .h-tx{font-size:13px;line-height:1.45;padding-top:4px}
+.hist .h-tx span{display:block;font-size:11px;color:var(--premium-gray);margin-top:2px}
+
+/* ── Workflow timeline (§4.7) ── */
+.wf{display:flex;gap:18px;overflow-x:auto}
+.wf-step{flex:0 0 170px;display:flex;flex-direction:column;gap:8px}
+.wf-step .bar{height:6px;border-radius:999px;background:var(--premium-mist)}
+.wf-step.done .bar{background:var(--success)}
+.wf-step.cur .bar{background:var(--yellow)}
+.wf-step b{font-size:13px;font-weight:700}
+.wf-step .resp{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--premium-steel)}
+.wf-step .resp .avatar{width:20px;height:20px;font-size:8px}
+.wf-pill{display:inline-flex;align-self:flex-start;font-size:10px;font-weight:700;padding:3px 9px;border-radius:var(--r-pill)}
+
+/* ── Code block (code-block.tsx) ── */
+.codeblock{border-radius:var(--r-md);border:1px solid var(--code-border);background:var(--code-bg);overflow:hidden;width:100%}
+.codeblock .cb-h{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 8px 6px 14px;border-bottom:1px solid var(--code-border)}
+.codeblock .cb-lang{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--code-comment)}
+.codeblock .cb-copy{width:40px;height:40px;border-radius:var(--r-md);border:0;background:none;color:var(--code-fg);cursor:pointer;display:flex;align-items:center;justify-content:center}
+.codeblock .cb-copy:hover{color:var(--brand-yellow)}
+.codeblock pre{padding:12px 14px;overflow-x:auto;font-size:12.5px;line-height:1.65;color:var(--code-fg)}
+.codeblock code{font-family:ui-monospace,"SFMono-Regular",Menlo,monospace;white-space:pre}
+.code-scroll{scrollbar-width:thin;scrollbar-color:var(--code-punct) transparent}
+.code-scroll::-webkit-scrollbar{height:8px}
+.code-scroll::-webkit-scrollbar-track{background:transparent}
+.code-scroll::-webkit-scrollbar-thumb{background:var(--code-border);border-radius:var(--r-pill)}
+.tok-keyword{color:var(--code-keyword)}
+.tok-string{color:var(--code-string)}
+.tok-number{color:var(--code-number)}
+.tok-comment{color:var(--code-comment);font-style:italic}
+.tok-property{color:var(--code-property)}
+.tok-punct{color:var(--code-punct)}
+
+/* ── Skeleton (§5.7) ── */
+.skel{background:var(--premium-bone);border-radius:var(--r-sm);position:relative;overflow:hidden}
+@media (prefers-reduced-motion:no-preference){
+  .skel::after{
+    content:"";position:absolute;inset:0;
+    background:linear-gradient(90deg,transparent,color-mix(in srgb, var(--c-surface) 60%, transparent),transparent);
+    animation:shimmer 1.4s var(--ease) infinite;
+  }
+  @keyframes shimmer{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
+}
+
+/* ── ContextIconButton (context-icon-button.tsx) ── */
+.ctx-btn{
+  min-width:40px;min-height:40px;display:inline-flex;align-items:center;justify-content:center;
+  border-radius:var(--r-md);border:0;background:transparent;color:var(--premium-gray);
+  cursor:pointer;transition:all .14s var(--ease);
+}
+.ctx-btn:hover:not(:disabled){background:var(--premium-bone);color:var(--premium-ink)}
+.ctx-btn:disabled{opacity:.5;cursor:default}
+.ctx-btn.destaque{background:var(--c-emphasis);color:var(--c-on-emphasis)}
+.ctx-btn.destaque:hover:not(:disabled),.ctx-btn.destaque.demo-hover{background:var(--c-emphasis-hover);color:var(--brand-yellow)}
+html.dark .ctx-btn.destaque:hover:not(:disabled),html.dark .ctx-btn.destaque.demo-hover{background:var(--brand-ink)} /* no escuro o chip claro inverte p/ tinta — amarelo sobre chip claro não tem contraste */
+.ctx-btn:focus-visible{outline:none;box-shadow:0 0 0 2px var(--yellow-50)}
+.ctx-btn .spinner{border-color:color-mix(in srgb, currentColor 30%, transparent);border-top-color:currentColor}
+
+/* ── MultiSelect (multi-select.tsx) ── */
+.msel-field{
+  display:flex;min-height:44px;width:100%;align-items:center;gap:8px;
+  border:1px solid var(--premium-mist);border-radius:var(--r-md);background:var(--c-surface);
+  padding:8px 12px;cursor:pointer;transition:border-color .15s;
+}
+.msel-field:hover{border-color:var(--premium-ink)}
+.msel-badge{
+  display:inline-flex;align-items:center;gap:6px;border-radius:999px;background:var(--premium-bone);
+  padding:3px 6px 3px 8px;font-size:12px;font-weight:500;color:var(--c-ink);
+}
+.msel-badge .rm{
+  width:18px;height:18px;border-radius:50%;border:0;background:none;color:var(--premium-gray);
+  display:inline-flex;align-items:center;justify-content:center;cursor:pointer;
+}
+.msel-badge .rm:hover{background:var(--premium-mist);color:var(--c-ink)}
+.msel-item{
+  display:flex;width:100%;align-items:center;gap:8px;min-height:40px;padding:0 12px;
+  border:1px solid transparent;border-radius:var(--r-md);background:none;font-size:13px;
+  font-family:inherit;color:var(--c-ink);text-align:left;cursor:pointer;transition:background .12s;
+}
+.msel-item:hover{background:var(--premium-bone)}
+.msel-item.sel{background:var(--gold-bg);border-color:var(--gold)}
+.msel-item.sel svg.lucide{color:var(--gold)}
+
+/* ── Paginação (pagination.tsx) ── */
+.pgn-btn{
+  display:inline-flex;align-items:center;gap:4px;height:36px;padding:0 12px;
+  border-radius:var(--r-md);border:1px solid var(--premium-mist);background:none;
+  font-size:13px;font-weight:500;font-family:inherit;color:var(--premium-ink);
+  cursor:pointer;transition:border-color .15s;
+}
+.pgn-btn:hover:not(:disabled){border-color:var(--premium-ink)}
+.pgn-btn:disabled{opacity:.4;cursor:not-allowed}
+.pgn-btn svg.lucide{width:15px;height:15px}
+
+/* ── Ordenação (sort-controls.tsx) ── */
+.sort-toggle{
+  display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;
+  border-radius:50%;border:1px solid var(--premium-mist);background:var(--premium-white);
+  cursor:pointer;transition:border-color .15s;
+}
+.sort-toggle svg.lucide{width:12px;height:12px;color:var(--premium-gray)}
+.sort-toggle:hover{border-color:var(--premium-steel)}
+.sort-toggle.on{background:var(--brand-ink);border-color:var(--premium-ink)}
+.sort-toggle.on svg.lucide{color:var(--yellow)}
+th.sortable button{
+  display:inline-flex;align-items:center;gap:5px;background:none;border:0;padding:0;
+  font:inherit;font-weight:700;text-transform:uppercase;letter-spacing:.05em;
+  color:inherit;cursor:pointer;transition:color .15s;
+}
+th.sortable button:hover{color:var(--premium-ink)}
+th.sortable svg.lucide{width:12px;height:12px;color:var(--premium-silver)}
+th.sortable.on svg.lucide{color:var(--premium-ink)}
+
+/* ── Indicador de digitação (digitando-indicador.tsx) ── */
+.typing{display:flex;align-items:center;gap:8px;font-size:12px;font-style:italic;color:var(--premium-gray)}
+.typing .dots{display:inline-flex;align-items:flex-end;gap:2px}
+.typing .dots i{width:4px;height:4px;border-radius:50%;background:var(--premium-silver)}
+@media (prefers-reduced-motion:no-preference){
+  @keyframes typingPulse{0%,100%{opacity:1}50%{opacity:.35}}
+  .typing .dots i{animation:typingPulse 1.2s ease-in-out infinite}
+  .typing .dots i:nth-child(2){animation-delay:150ms}
+  .typing .dots i:nth-child(3){animation-delay:300ms}
+}
+
+/* ── Presença (presenca-avatares.tsx) ── */
+.presenca .avatar{box-shadow:0 0 0 2px var(--c-surface)}
+.presenca .avatar+.avatar,.presenca .extra{margin-left:-7px}
+.presenca .extra{
+  display:inline-flex;align-items:center;justify-content:center;height:26px;min-width:26px;
+  border-radius:50%;background:var(--premium-bone);color:var(--premium-steel);
+  font-size:10px;font-weight:700;padding:0 4px;box-shadow:0 0 0 2px var(--c-surface);
+}
+
+/* ── Emoji picker (emoji-picker.tsx — mock estático do popover) ── */
+.emoji-pop{
+  width:max-content;max-width:100%;border:1px solid var(--premium-mist);border-radius:var(--r-md);
+  background:var(--c-surface);padding:6px;box-shadow:var(--sh-md);
+}
+.emoji-row{display:flex;flex-wrap:wrap;gap:2px;padding-bottom:6px}
+.emoji-btn{
+  width:40px;height:40px;border-radius:var(--r-sm);border:0;background:none;font-size:16px;
+  display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:background .12s;
+}
+.emoji-btn:hover{background:var(--premium-bone)}
+.emoji-grid{
+  border-top:1px solid var(--premium-mist);padding-top:6px;display:grid;
+  grid-template-columns:repeat(7,36px);gap:0;justify-content:center;
+}
+.emoji-grid button{
+  width:36px;height:36px;border:0;background:none;border-radius:var(--r-sm);font-size:22px;
+  display:inline-flex;align-items:center;justify-content:center;cursor:pointer;
+}
+.emoji-grid button:hover{background:var(--premium-bone)}
+
+/* ── Lightbox (lightbox.tsx — mock estático) ── */
+.lb{
+  position:relative;border-radius:var(--r-lg);overflow:hidden;background:rgba(0,0,0,.9);
+  color:#fff;display:flex;flex-direction:column;min-height:300px;width:100%;
+}
+.lb-h{display:flex;align-items:center;gap:12px;padding:12px 16px;font-size:13px;font-weight:500}
+.lb-h .n{margin-left:auto;font-size:12px;color:rgba(255,255,255,.7)}
+.lb-ctrl{
+  width:40px;height:40px;border-radius:var(--r-md);border:0;background:var(--c-surface);
+  color:var(--c-ink);box-shadow:var(--sh-sm);display:inline-flex;align-items:center;
+  justify-content:center;cursor:pointer;flex:none;transition:background .12s;
+}
+.lb-ctrl:hover:not(:disabled){background:var(--premium-bone)}
+.lb-ctrl:disabled{opacity:.4;cursor:not-allowed}
+.lb-stage{flex:1;display:flex;align-items:center;justify-content:center;position:relative;padding:0 60px 16px}
+.lb-nav-l{position:absolute;left:12px;top:50%;transform:translateY(-50%)}
+.lb-nav-r{position:absolute;right:12px;top:50%;transform:translateY(-50%)}
+.lb-zoom{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);display:flex;gap:8px}
+
+/* ── Swatches de token (só do showroom) ── */
+.swatches{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:12px}
+.swatch{border:1px solid var(--c-border);border-radius:var(--r-md);overflow:hidden;background:var(--c-surface)}
+.swatch .chipc{height:56px;display:flex;align-items:flex-end;padding:6px}
+.swatch .info{padding:8px 10px;display:flex;flex-direction:column;gap:1px}
+.swatch .info b{font-size:11px;font-family:ui-monospace,Menlo,monospace;font-weight:500}
+.swatch .info .hex{font-size:10.5px;color:var(--c-muted);font-family:ui-monospace,Menlo,monospace}
+.swatch .info .use{font-size:10.5px;color:var(--c-muted)}
+.shadow-demo{width:150px;height:84px;background:var(--c-surface);border-radius:var(--r-lg);display:flex;align-items:center;justify-content:center;font-size:11px;font-family:ui-monospace,Menlo,monospace;color:var(--c-muted)}
+.radius-demo{width:108px;height:72px;background:var(--c-sunken);border:2px solid var(--c-border-strong);display:flex;align-items:center;justify-content:center;font-size:11px;font-family:ui-monospace,Menlo,monospace;color:var(--c-muted)}
+.type-row{display:flex;align-items:baseline;gap:18px;padding:10px 0;border-bottom:1px solid var(--c-border)}
+.type-row:last-child{border-bottom:0}
+.type-row .spec{flex:0 0 220px;font-size:11px;color:var(--c-muted);font-family:ui-monospace,Menlo,monospace}
+.space-demo{display:flex;align-items:flex-end;gap:14px}
+.space-demo .sp{background:var(--yellow);display:block}
+.space-demo figure{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:10.5px;color:var(--c-muted);font-family:ui-monospace,Menlo,monospace}
+
+@media (max-width:900px){
+  .ds-nav{display:none}
+  .ds-content{padding:20px 16px}
+}
+</style>
+</head>
+<body>
+
+<!-- ════════ NAV LATERAL (espelha a sidebar real) ════════ -->
+<nav class="ds-nav">
+  <div class="ds-brand">
+    <i data-lucide="trophy"></i>
+    <div><b>PREMIUM</b><span>DESIGN&nbsp;SYSTEM</span></div>
+  </div>
+  <div class="nav-label">Fundamentos</div>
+  <a href="#cores" class="active">Cores</a>
+  <a href="#tipografia">Tipografia</a>
+  <a href="#raios-sombras">Raios &amp; sombras</a>
+  <a href="#espacamento">Espaçamento &amp; motion</a>
+  <div class="nav-label">Componentes</div>
+  <a href="#botoes">Botões</a>
+  <a href="#badges">Badges &amp; chips</a>
+  <a href="#tabs">Tabs</a>
+  <a href="#formularios">Formulários</a>
+  <a href="#multi-select">Multi-select</a>
+  <a href="#cards">Cards</a>
+  <a href="#tabela">Tabela</a>
+  <a href="#paginacao">Paginação &amp; ordenação</a>
+  <a href="#kanban">Kanban</a>
+  <a href="#avatares">Avatares</a>
+  <a href="#presenca">Presença &amp; digitação</a>
+  <a href="#pessoas-picker">Seletor de pessoas</a>
+  <a href="#navegacao">Navegação</a>
+  <a href="#overlays">Slide-over &amp; diálogo</a>
+  <a href="#lightbox">Lightbox</a>
+  <a href="#toast">Toast</a>
+  <a href="#fab">FAB</a>
+  <a href="#calendario">Calendário</a>
+  <a href="#workflow">Workflow</a>
+  <a href="#conteudo">Comentários &amp; histórico</a>
+  <a href="#emoji">Emoji picker</a>
+  <a href="#estados">Empty, nota &amp; loading</a>
+  <a href="#progresso">Progresso &amp; expansíveis</a>
+  <a href="#codigo">Bloco de código</a>
+  <a href="#graficos">Gráficos</a>
+  <a href="#outros">Outros primitivos</a>
+</nav>
+
+<main class="ds-main">
+  <!-- ════════ TOPBAR ════════ -->
+  <header class="ds-topbar">
+    <div style="flex:1;min-width:0">
+      <div class="eyebrow">Premium · Marketing 360°</div>
+      <h1>Design System — Showroom</h1>
+      <div class="sub">Tokens e componentes vivos, fiéis a <code style="font-size:11px">src/app/globals.css</code> e <code style="font-size:11px">src/components/ui/</code></div>
+    </div>
+    <button class="search-pill" type="button" aria-label="Buscar (demonstração)">
+      <i data-lucide="search"></i> Buscar... <kbd>⌘K</kbd>
+    </button>
+    <button class="icon-btn" id="theme-toggle" aria-label="Alternar tema" title="Alternar tema claro/escuro">
+      <i data-lucide="moon" id="theme-icon-moon"></i>
+      <i data-lucide="sun" id="theme-icon-sun" style="display:none"></i>
+    </button>
+    <span class="avatar md" style="background:var(--yellow)">PM</span>
+  </header>
+
+  <div class="ds-content">
+
+  <!-- ════════ CORES ════════ -->
+  <section class="ds-sec" id="cores">
+    <h2>Cores</h2>
+    <p class="sub">Arquitetura em camadas: marca crua (fixa) → semântico <code>--c-*</code> (muda por tema) → utilities. Os valores abaixo são <strong>lidos ao vivo</strong> do CSS — alterne o tema na topbar e veja a camada semântica trocar enquanto a marca permanece.</p>
+
+    <div class="ds-sub">Marca (fixa nos dois temas)</div>
+    <div class="swatches" data-swatches='[
+      ["--brand-yellow","Botão primário, acento de seleção"],
+      ["--brand-gold","Hover do amarelo"],
+      ["--brand-amber","Active / progresso"],
+      ["--brand-ink","Sidebar, btn-dark, banners"],
+      ["--yellow-50","Halo de foco (somente anel — nunca fundo)"]
+    ]'></div>
+
+    <div class="ds-sub">Amarelo temático (par escuro próprio — muda por tema)</div>
+    <div class="swatches" data-swatches='[
+      ["--gold-bg","Seleção, callouts, flash de item novo"],
+      ["--timer-idle","Dígitos do cronômetro parado (alerta)"]
+    ]'></div>
+
+    <div class="ds-sub">Semânticas — camada <code>--c-*</code> (única que muda por tema)</div>
+    <div class="swatches" data-swatches='[
+      ["--c-bg","Fundo da página"],
+      ["--c-surface","Superfície de card"],
+      ["--c-sunken","Chip, thead, tabs"],
+      ["--c-ink","Texto principal"],
+      ["--c-muted","Texto auxiliar"],
+      ["--c-subtle","Ícones / desabilitado"],
+      ["--c-border","Borda padrão"],
+      ["--c-border-strong","Borda forte"],
+      ["--c-emphasis","Ênfase (btn-dark)"],
+      ["--c-sidebar","Sidebar (sempre escura)"]
+    ]'></div>
+
+    <div class="ds-sub">Neutros <code>--premium-*</code> (fachada compatível; recalibram no escuro)</div>
+    <div class="swatches" data-swatches='[
+      ["--premium-black","Fundo brand banner"],
+      ["--premium-ink","Texto principal"],
+      ["--premium-coal","Hover em superfícies escuras"],
+      ["--premium-graphite","Borda em superfícies escuras"],
+      ["--premium-steel","Texto secundário"],
+      ["--premium-gray","Texto auxiliar / placeholder"],
+      ["--premium-silver","Bordas / desabilitado"],
+      ["--premium-mist","Borda de cards/inputs"],
+      ["--premium-bone","Chip, thead, segmented"],
+      ["--premium-paper","Fundo da página"],
+      ["--premium-white","Superfície de card"]
+    ]'></div>
+
+    <div class="ds-sub">Status (sempre em par <code>cor</code> + <code>cor-bg</code>)</div>
+    <div class="swatches" data-swatches='[
+      ["--success","Concluído, no prazo"],
+      ["--success-bg","Fundo do badge success"],
+      ["--warning","Fazendo, atenção"],
+      ["--warning-bg","Fundo do badge warning"],
+      ["--danger","Atrasada, destrutivo"],
+      ["--danger-bg","Fundo do badge danger"],
+      ["--info","Novas, neutro positivo"],
+      ["--info-bg","Fundo do badge info"]
+    ]'></div>
+
+    <div class="ds-sub">Auxiliares (departamentos / categorias)</div>
+    <div class="swatches" data-swatches='[
+      ["--violet","Aprovação interna, Criação"],
+      ["--violet-bg","Fundo violet"],
+      ["--teal","Redação"],
+      ["--teal-bg","Fundo teal"],
+      ["--slate","Audiovisual, neutro"],
+      ["--slate-bg","Fundo slate"]
+    ]'></div>
+
+    <div class="ds-sub">Code theme (realce de sintaxe da doc pública)</div>
+    <div class="swatches" data-swatches='[
+      ["--code-bg","Fundo do bloco"],
+      ["--code-fg","Texto do código"],
+      ["--code-keyword","Palavras-chave / métodos HTTP"],
+      ["--code-string","Strings"],
+      ["--code-number","Números / booleanos"],
+      ["--code-comment","Comentários"],
+      ["--code-property","Chaves de objeto"],
+      ["--code-punct","Pontuação"]
+    ]'></div>
+    <p class="spec-note">Regra-zero: <strong>nenhum hex em componente</strong> — sempre <code>var(--token)</code>. O realce de sintaxe é a exceção controlada: as cores vivem como tokens e o componente nunca usa hex.</p>
+  </section>
+
+  <!-- ════════ TIPOGRAFIA ════════ -->
+  <section class="ds-sec" id="tipografia">
+    <h2>Tipografia</h2>
+    <p class="sub">Família <strong>Ubuntu</strong> (300 / 400 / 500 / 700), fallback <code>system-ui, sans-serif</code>. Escala derivada do protótipo.</p>
+    <div class="specimen col">
+      <div class="type-row"><span class="spec">32px / 700 / ls -0.02em</span><span style="font-size:32px;font-weight:700;letter-spacing:-.02em">Título de página (h1)</span></div>
+      <div class="type-row"><span class="spec">22–30px / 700 / ls -0.02em</span><span style="font-size:30px;font-weight:700;letter-spacing:-.02em">R$ 48.350</span></div>
+      <div class="type-row"><span class="spec">18px / 700</span><span style="font-size:18px;font-weight:700">Título de slide-over / diálogo</span></div>
+      <div class="type-row"><span class="spec">15–16px / 700</span><span style="font-size:15px;font-weight:700">Título de painel / card (h3, h4)</span></div>
+      <div class="type-row"><span class="spec">14px / 400 · --premium-gray</span><span style="font-size:14px;color:var(--premium-gray)">Subtítulo — explica o propósito da tela em uma linha.</span></div>
+      <div class="type-row"><span class="spec">13–14px / 400–500</span><span style="font-size:13.5px">Corpo de texto. Tudo em pt-BR formal, sempre acentuado.</span></div>
+      <div class="type-row"><span class="spec">11px / 700 / caps / ls .05em</span><span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--premium-gray)">Label de formulário</span></div>
+      <div class="type-row"><span class="spec">10.5px / 700 / caps / ls .05em</span><span style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--premium-gray)">Cabeçalho de tabela / coluna</span></div>
+      <div class="type-row"><span class="spec">10px / 700 / caps / ls .20em</span><span class="eyebrow">Eyebrow — premium · marketing 360°</span></div>
+    </div>
+  </section>
+
+  <!-- ════════ RAIOS & SOMBRAS ════════ -->
+  <section class="ds-sec" id="raios-sombras">
+    <h2>Raios &amp; sombras</h2>
+    <p class="sub">Nunca raio ou sombra arbitrários — somente os tokens abaixo.</p>
+    <div class="ds-sub">Raios</div>
+    <div class="specimen">
+      <div class="radius-demo" style="border-radius:var(--r-sm)">--r-sm 6px</div>
+      <div class="radius-demo" style="border-radius:var(--r-md)">--r-md 8px</div>
+      <div class="radius-demo" style="border-radius:var(--r-lg)">--r-lg 12px</div>
+      <div class="radius-demo" style="border-radius:var(--r-xl)">--r-xl 18px</div>
+      <div class="radius-demo" style="border-radius:var(--r-pill);width:140px">--r-pill 999px</div>
+    </div>
+    <p class="spec-note"><code>sm</code> chip/dia/badge interno · <code>md</code> botão/input/icon-btn · <code>lg</code> card/painel/coluna · <code>xl</code> modal/slide-over · <code>pill</code> chips de filtro/badges/avatar.</p>
+    <div class="ds-sub">Sombras</div>
+    <div class="specimen on-paper">
+      <div class="shadow-demo" style="box-shadow:var(--sh-sm)">--sh-sm</div>
+      <div class="shadow-demo" style="box-shadow:var(--sh-md)">--sh-md</div>
+      <div class="shadow-demo" style="box-shadow:var(--sh-lg)">--sh-lg</div>
+      <div class="shadow-demo" style="box-shadow:var(--sh-gold);background:var(--yellow);color:#000">--sh-gold</div>
+    </div>
+    <p class="spec-note"><code>sm</code> card padrão · <code>md</code> hover de card · <code>lg</code> slide-over/overlay · <code>gold</code> exclusiva do botão primário amarelo e do FAB. No tema escuro as sombras intensificam automaticamente.</p>
+  </section>
+
+  <!-- ════════ ESPAÇAMENTO & MOTION ════════ -->
+  <section class="ds-sec" id="espacamento">
+    <h2>Espaçamento &amp; motion</h2>
+    <p class="sub">Grid de 4px. Curva única de easing <code>--ease: cubic-bezier(.22,.61,.36,1)</code>.</p>
+    <div class="specimen">
+      <div class="space-demo">
+        <figure><span class="sp" style="width:4px;height:4px"></span>4</figure>
+        <figure><span class="sp" style="width:8px;height:8px"></span>8</figure>
+        <figure><span class="sp" style="width:12px;height:12px"></span>12</figure>
+        <figure><span class="sp" style="width:16px;height:16px"></span>16</figure>
+        <figure><span class="sp" style="width:24px;height:24px"></span>24</figure>
+        <figure><span class="sp" style="width:32px;height:32px"></span>32</figure>
+        <figure><span class="sp" style="width:48px;height:48px"></span>48</figure>
+      </div>
+    </div>
+    <p class="spec-note">
+      Padrões: padding de página <code>26px 30px 60px</code> · topbar <code>68px</code> (88px com page-head embutido) · sidebar <code>248px</code> (colapsada 64px) · padding de card <code>16–18px</code> · gap de grade <code>14–16px</code> · detalhe <code>grid 1fr 320px</code> gap 22px.<br><br>
+      Motion: hover/transição de clicáveis <strong>140ms</strong> · fade-in de tela <strong>300ms</strong> + translateY(8px) · hover de card sobe <strong>2px</strong> + <code>--sh-md</code> · sempre respeitar <code>prefers-reduced-motion</code>.
+    </p>
+  </section>
+
+  <!-- ════════ BOTÕES ════════ -->
+  <section class="ds-sec" id="botoes">
+    <h2>Botões</h2>
+    <p class="sub"><code>button.tsx</code> — variantes <code>primary</code> (ação principal da tela, no máx. 1), <code>dark</code>, <code>ghost</code>, <code>danger</code> (destrutivo — nunca amarelo); tamanhos <code>default</code> e <code>sm</code>. Uppercase, 700, ícone 16px antes do texto.</p>
+    <div class="ds-sub">Variantes</div>
+    <div class="specimen">
+      <button class="btn btn-primary"><i data-lucide="plus"></i> Nova demanda</button>
+      <button class="btn btn-dark"><i data-lucide="check"></i> Confirmar</button>
+      <button class="btn btn-ghost">Cancelar</button>
+      <button class="btn btn-danger"><i data-lucide="trash-2"></i> Excluir</button>
+      <button class="icon-btn" aria-label="Notificações"><i data-lucide="bell"></i></button>
+    </div>
+    <div class="ds-sub">Tamanho sm</div>
+    <div class="specimen">
+      <button class="btn btn-primary btn-sm">Nova demanda</button>
+      <button class="btn btn-dark btn-sm">Confirmar</button>
+      <button class="btn btn-ghost btn-sm">Cancelar</button>
+      <button class="btn btn-danger btn-sm">Excluir</button>
+    </div>
+    <div class="ds-sub">Estados (interaja com hover / clique / Tab)</div>
+    <div class="specimen">
+      <div class="state-cell"><span class="state-label">Normal + hover + active</span><button class="btn btn-primary">Interagir</button></div>
+      <div class="state-cell"><span class="state-label">Focus (Tab)</span><button class="btn btn-primary">Focar</button></div>
+      <div class="state-cell"><span class="state-label">Disabled</span><button class="btn btn-primary" disabled>Indisponível</button></div>
+      <div class="state-cell"><span class="state-label">Loading (submit)</span><button class="btn btn-primary loading" disabled aria-busy="true"><span class="btn-label">Salvar demanda</span><span class="spinner"></span></button></div>
+    </div>
+    <p class="spec-note">Active = <code>translateY(1px)</code> + tom âmbar. Disabled = <code>opacity .5</code> + <code>cursor: not-allowed</code>. Loading (<code>prop loading</code>) cruza o rótulo para um spinner <strong>sem alterar a largura</strong> do botão (crossfade ~150ms) + <code>aria-busy</code> — nunca full-page.</p>
+    <div class="ds-sub">ContextIconButton (context-icon-button.tsx) — ação de contexto só-ícone</div>
+    <div class="specimen">
+      <div class="state-cell"><span class="state-label">Neutro</span><button class="ctx-btn" title="Exportar quadro" aria-label="Exportar quadro"><i data-lucide="download"></i></button></div>
+      <div class="state-cell"><span class="state-label">Neutro (hover)</span><button class="ctx-btn" style="background:var(--premium-bone);color:var(--premium-ink)" title="Configurações" aria-label="Configurações"><i data-lucide="settings"></i></button></div>
+      <div class="state-cell"><span class="state-label">Destaque (criação principal)</span><button class="ctx-btn destaque" title="Novo grupo" aria-label="Novo grupo"><i data-lucide="plus"></i></button></div>
+      <div class="state-cell"><span class="state-label">Destaque (hover)</span><button class="ctx-btn destaque demo-hover" title="Novo grupo" aria-label="Novo grupo"><i data-lucide="plus"></i></button></div>
+      <div class="state-cell"><span class="state-label">Loading</span><button class="ctx-btn" disabled aria-busy="true" aria-label="Gerando link"><span class="spinner"></span></button></div>
+      <div class="state-cell"><span class="state-label">Disabled</span><button class="ctx-btn" disabled title="Exportar quadro" aria-label="Exportar quadro"><i data-lucide="download"></i></button></div>
+    </div>
+    <p class="spec-note">Alvo ≥ 40×40, <code>title</code> + <code>aria-label</code> obrigatórios (o rótulo vira ambos). Variante <code>destaque</code> = espelho só-ícone do <code>Button variant="dark"</code>, reservada à criação principal da tela — em repouso sem amarelo; <strong>no hover assume a assinatura da marca</strong> (ícone amarelo sobre tinta) nos dois temas: no claro só o ícone muda, no escuro o chip claro inverte para tinta. Vive na zona de contexto da FilterBar (<code>contextActions</code>).</p>
+  </section>
+
+  <!-- ════════ BADGES & CHIPS ════════ -->
+  <section class="ds-sec" id="badges">
+    <h2>Badges, tags &amp; chips</h2>
+    <p class="sub"><code>badge.tsx</code> + chips do <code>filter-bar.tsx</code>. Badges sempre em par de tokens <code>cor</code>/<code>cor-bg</code>.</p>
+    <div class="ds-sub">Badge de status — 9 variantes</div>
+    <div class="specimen">
+      <span class="badge badge-default">Default</span>
+      <span class="badge badge-info">Novas</span>
+      <span class="badge badge-warning">Fazendo</span>
+      <span class="badge badge-violet">Aprovação</span>
+      <span class="badge badge-success">Finalizadas</span>
+      <span class="badge badge-danger">Atrasada</span>
+      <span class="badge badge-gold">Comunicado</span>
+      <span class="badge badge-teal">Redação</span>
+      <span class="badge badge-slate">Audiovisual</span>
+    </div>
+    <div class="ds-sub">Badge numérico (menu) &amp; pri-dots</div>
+    <div class="specimen">
+      <span class="badge-num">12</span>
+      <span style="display:inline-flex;align-items:center;gap:6px;font-size:12.5px"><i class="pri-dot" style="background:var(--danger)"></i> Alta</span>
+      <span style="display:inline-flex;align-items:center;gap:6px;font-size:12.5px"><i class="pri-dot" style="background:var(--warning)"></i> Média</span>
+      <span style="display:inline-flex;align-items:center;gap:6px;font-size:12.5px"><i class="pri-dot" style="background:var(--premium-silver)"></i> Baixa</span>
+    </div>
+    <div class="ds-sub">Tags de departamento</div>
+    <div class="specimen">
+      <span class="tag" style="background:var(--violet-bg);color:var(--violet)"><i data-lucide="pen-tool"></i> Criação</span>
+      <span class="tag" style="background:var(--teal-bg);color:var(--teal)"><i data-lucide="type"></i> Redação</span>
+      <span class="tag" style="background:var(--slate-bg);color:var(--slate)"><i data-lucide="video"></i> Audiovisual</span>
+      <span class="tag" style="background:var(--info-bg);color:var(--info)"><i data-lucide="megaphone"></i> Tráfego</span>
+    </div>
+    <div class="ds-sub">Chips de filtro (FilterBar) — idle / ativo / toggle ligado / multiselect / limpar</div>
+    <div class="specimen">
+      <button class="chip"><i data-lucide="briefcase"></i> Cliente <i data-lucide="chevron-down"></i></button>
+      <button class="chip active"><i data-lucide="briefcase"></i> Cliente: Acme <i data-lucide="chevron-down"></i></button>
+      <button class="chip on"><i data-lucide="wand-2"></i> Ordenar automático</button>
+      <button class="chip active"><i data-lucide="layers"></i> Departamento <span class="count">3</span> <i data-lucide="chevron-down"></i></button>
+      <button class="chip-clear" aria-label="Limpar filtros" title="Limpar filtros"><i data-lucide="x"></i></button>
+    </div>
+    <p class="spec-note">Estado dos filtros sempre serializado em <code>searchParams</code> (URL compartilhável). O chip "ligado" usa fundo <code>--brand-ink</code> fixo com ícone amarelo nos dois temas. Padrão global atual: barra em <strong>linha única</strong> com rolagem horizontal, dropdowns em <strong>portal</strong> (não são cortados pela barra), busca colapsável (lupa que expande) e persistência por usuário via <code>telaKey</code>.</p>
+  </section>
+
+  <!-- ════════ TABS ════════ -->
+  <section class="ds-sec" id="tabs">
+    <h2>Tabs / segmented control</h2>
+    <p class="sub"><code>segmented-tabs.tsx</code> e <code>ViewTabsPill</code> do <code>filter-bar.tsx</code>. Container <code>--premium-bone</code>; ativo ganha fundo de superfície + <code>--sh-sm</code> + 700 — na implementação React a pílula branca <strong>desliza</strong> até a aba ativa (200ms, curva <code>--ease</code>). Estado em <code>?view=</code>.</p>
+    <div class="specimen">
+      <div class="tabs" role="tablist" data-demo-tabs>
+        <button class="tab active" role="tab" aria-selected="true"><i data-lucide="kanban-square"></i> Kanban</button>
+        <button class="tab" role="tab" aria-selected="false"><i data-lucide="list"></i> Lista</button>
+        <button class="tab" role="tab" aria-selected="false"><i data-lucide="table-2"></i> Tabela</button>
+        <button class="tab" role="tab" aria-selected="false"><i data-lucide="calendar"></i> Calendário</button>
+      </div>
+      <div class="tabs" role="tablist" data-demo-tabs>
+        <button class="tab active" role="tab" aria-selected="true">Demandas <span class="badge-num">8</span></button>
+        <button class="tab" role="tab" aria-selected="false">Pedidos</button>
+        <button class="tab" role="tab" aria-selected="false">Config</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════ FORMULÁRIOS ════════ -->
+  <section class="ds-sec" id="formularios">
+    <h2>Formulários</h2>
+    <p class="sub"><code>input.tsx</code>, <code>textarea.tsx</code>, <code>select.tsx</code>, <code>date-picker.tsx</code>, <code>form-error-banner.tsx</code>, <code>autosave-bar.tsx</code>. Label = eyebrow 11px. Foco = borda ink + halo <code>--yellow-50</code>. Texto longo usa o editor rico (Markdown), nunca textarea.</p>
+    <div class="ds-sub">Input — estados</div>
+    <div class="specimen">
+      <div class="field">
+        <label for="f1">Nome do cliente</label>
+        <input class="input" id="f1" placeholder="Ex.: Acme Indústria">
+      </div>
+      <div class="field">
+        <label for="f2">Com foco (clique)</label>
+        <input class="input" id="f2" value="Premium Marketing">
+      </div>
+      <div class="field">
+        <label for="f3">Com erro</label>
+        <input class="input error" id="f3" value="email-invalido">
+        <span class="err-msg">Informe um e-mail válido.</span>
+      </div>
+      <div class="field">
+        <label for="f4">Desabilitado</label>
+        <input class="input" id="f4" value="Somente leitura" disabled>
+      </div>
+    </div>
+    <div class="ds-sub">Textarea &amp; select custom (clique para abrir)</div>
+    <div class="specimen" style="align-items:flex-start">
+      <div class="field" style="flex:1;min-width:260px">
+        <label for="f5">Motivo (texto curto multilinha)</label>
+        <textarea class="textarea" id="f5" placeholder="Descreva em uma ou duas linhas..."></textarea>
+      </div>
+      <div class="field">
+        <label for="f6">Departamento</label>
+        <div class="dsel" data-dsel>
+          <button class="dsel-trigger" id="f6" type="button" role="combobox" aria-haspopup="listbox" aria-expanded="false">
+            <span class="val placeholder">Selecione...</span>
+            <i data-lucide="chevron-down" class="chev"></i>
+          </button>
+          <div class="dsel-pop">
+            <div class="dsel-list" role="listbox">
+              <button class="dsel-item is-placeholder" type="button" role="option">
+                <span class="lbl">Selecione...</span><i data-lucide="check" class="dsel-check"></i>
+              </button>
+              <button class="dsel-item" type="button" role="option"><span class="lbl">Criação</span><i data-lucide="check" class="dsel-check"></i></button>
+              <button class="dsel-item" type="button" role="option"><span class="lbl">Redação</span><i data-lucide="check" class="dsel-check"></i></button>
+              <button class="dsel-item" type="button" role="option"><span class="lbl">Audiovisual</span><i data-lucide="check" class="dsel-check"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="field">
+        <label for="f7">Cliente (8+ opções → busca)</label>
+        <div class="dsel" data-dsel>
+          <button class="dsel-trigger" id="f7" type="button" role="combobox" aria-haspopup="listbox" aria-expanded="false">
+            <span class="val">Acme Indústria</span>
+            <i data-lucide="chevron-down" class="chev"></i>
+          </button>
+          <div class="dsel-pop">
+            <div class="dsel-search">
+              <i data-lucide="search"></i>
+              <input type="text" placeholder="Buscar..." aria-label="Buscar em Cliente">
+            </div>
+            <div class="dsel-list" role="listbox">
+              <button class="dsel-item sel" type="button" role="option" aria-selected="true"><span class="lbl">Acme Indústria</span><i data-lucide="check" class="dsel-check"></i></button>
+              <button class="dsel-item" type="button" role="option"><span class="lbl">Bistrô do Vale</span><i data-lucide="check" class="dsel-check"></i></button>
+              <button class="dsel-item" type="button" role="option"><span class="lbl">Clínica Vitalle</span><i data-lucide="check" class="dsel-check"></i></button>
+              <button class="dsel-item" type="button" role="option"><span class="lbl">Construtora Horizonte</span><i data-lucide="check" class="dsel-check"></i></button>
+              <button class="dsel-item" type="button" role="option"><span class="lbl">Escola Saber</span><i data-lucide="check" class="dsel-check"></i></button>
+              <button class="dsel-item" type="button" role="option"><span class="lbl">Farmácia Bem-Estar</span><i data-lucide="check" class="dsel-check"></i></button>
+              <button class="dsel-item" type="button" role="option"><span class="lbl">Pet Center Amigo</span><i data-lucide="check" class="dsel-check"></i></button>
+              <button class="dsel-item" type="button" role="option"><span class="lbl">Restaurante Sabor &amp; Arte</span><i data-lucide="check" class="dsel-check"></i></button>
+            </div>
+            <div class="dsel-empty" hidden>Nenhuma opção encontrada.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="spec-note">O <code>Select</code> é <strong>custom</strong> (não usa o <code>&lt;select&gt;</code> nativo) — popover no padrão do workflow (responsável/nova etapa): itens de 40px com hover bone, selecionado com <code>check</code>, e <strong>busca filtrável</strong> automática em listas com 8+ opções. Na implementação React o painel é portal e reposiciona em scroll/resize.</p>
+    <div class="ds-sub">Editor rico (texto longo — toolbar do rich-editor.tsx)</div>
+    <div class="specimen col" style="padding:0;overflow:hidden">
+      <div style="display:flex;gap:2px;padding:8px;border-bottom:1px solid var(--c-border)">
+        <button class="icon-btn" style="width:32px;height:32px;border:0" aria-label="Negrito"><i data-lucide="bold"></i></button>
+        <button class="icon-btn" style="width:32px;height:32px;border:0" aria-label="Itálico"><i data-lucide="italic"></i></button>
+        <button class="icon-btn" style="width:32px;height:32px;border:0" aria-label="Título 2"><i data-lucide="heading-2"></i></button>
+        <button class="icon-btn" style="width:32px;height:32px;border:0" aria-label="Lista"><i data-lucide="list"></i></button>
+        <button class="icon-btn" style="width:32px;height:32px;border:0" aria-label="Lista ordenada"><i data-lucide="list-ordered"></i></button>
+        <button class="icon-btn" style="width:32px;height:32px;border:0" aria-label="Citação"><i data-lucide="quote"></i></button>
+        <button class="icon-btn" style="width:32px;height:32px;border:0" aria-label="Código"><i data-lucide="code"></i></button>
+        <button class="icon-btn" style="width:32px;height:32px;border:0" aria-label="Tabela"><i data-lucide="table"></i></button>
+        <button class="icon-btn" style="width:32px;height:32px;border:0" aria-label="Link"><i data-lucide="link-2"></i></button>
+      </div>
+      <div style="padding:14px;min-height:110px;font-size:13.5px;line-height:1.65;color:var(--premium-steel)">
+        <p style="margin:6px 0">Briefing da campanha com <b>Markdown</b> — salva GFM e renderiza sanitizado.</p>
+        <p style="margin:6px 0;color:var(--premium-gray)">Caminhos do Google Drive colados viram trechos <code>drive://</code> que copiam o caminho ao clicar.</p>
+      </div>
+    </div>
+    <div class="ds-sub">Erro de submit (banner inline — nunca toast) &amp; auto-save</div>
+    <div class="specimen col" style="gap:12px">
+      <div class="form-error-banner" role="alert">
+        <i data-lucide="alert-circle"></i>
+        <span>Não conseguimos salvar o lançamento. Verifique os campos destacados e tente novamente.</span>
+      </div>
+      <div>
+        <span class="state-label">AutoSaveBar (barra indeterminada — feedback de auto-save)</span>
+        <div class="autosave-wrap" role="progressbar" aria-label="Salvando"><div class="autosave-bar"></div></div>
+      </div>
+    </div>
+    <p class="spec-note">Edição de registro existente <strong>auto-salva</strong> (on-blur para texto, on-change para seleção) — botão fica reservado à criação e ações sensíveis (senha, tokens). Em falha, o campo reverte ao último valor salvo.</p>
+  </section>
+
+  <!-- ════════ MULTI-SELECT ════════ -->
+  <section class="ds-sec" id="multi-select">
+    <h2>Multi-select</h2>
+    <p class="sub"><code>multi-select.tsx</code> — seleção múltipla genérica (estilo react-select) para valores arbitrários, como departamentos. Para <strong>pessoas</strong>, use o <code>PessoasPicker</code> (avatares + grupos). Itens escolhidos viram badges removíveis no campo; item selecionado no popover ganha fundo <code>--gold-bg</code> + borda <code>--gold</code> + check dourado.</p>
+    <div class="specimen" style="align-items:flex-start;gap:32px">
+      <div class="state-cell" style="align-items:flex-start">
+        <span class="state-label">Campo — 2 selecionados (badges removíveis)</span>
+        <div class="msel-field" role="button" tabindex="0" aria-haspopup="listbox" style="width:280px">
+          <span style="display:flex;flex-wrap:wrap;gap:6px;flex:1">
+            <span class="msel-badge"><i style="width:8px;height:8px;border-radius:50%;background:var(--violet);display:inline-block"></i> Criação <button class="rm" aria-label="Remover Criação"><i data-lucide="x" style="width:13px;height:13px"></i></button></span>
+            <span class="msel-badge"><i style="width:8px;height:8px;border-radius:50%;background:var(--teal);display:inline-block"></i> Redação <button class="rm" aria-label="Remover Redação"><i data-lucide="x" style="width:13px;height:13px"></i></button></span>
+          </span>
+          <i data-lucide="chevron-down" style="width:16px;height:16px;color:var(--premium-gray)"></i>
+        </div>
+      </div>
+      <div class="state-cell" style="align-items:flex-start">
+        <span class="state-label">Popover aberto (portal, busca com 8+ opções)</span>
+        <div style="width:260px;border:1px solid var(--premium-mist);border-radius:var(--r-lg);background:var(--c-surface);padding:12px;box-shadow:var(--sh-lg)">
+          <button class="msel-item sel" type="button" aria-pressed="true"><i style="width:10px;height:10px;border-radius:50%;background:var(--violet);display:inline-block;flex:none"></i><span style="flex:1">Criação</span><i data-lucide="check" style="width:16px;height:16px"></i></button>
+          <button class="msel-item sel" type="button" aria-pressed="true"><i style="width:10px;height:10px;border-radius:50%;background:var(--teal);display:inline-block;flex:none"></i><span style="flex:1">Redação</span><i data-lucide="check" style="width:16px;height:16px"></i></button>
+          <button class="msel-item" type="button" aria-pressed="false"><i style="width:10px;height:10px;border-radius:50%;background:var(--slate);display:inline-block;flex:none"></i><span style="flex:1">Audiovisual</span></button>
+          <button class="msel-item" type="button" aria-pressed="false"><i style="width:10px;height:10px;border-radius:50%;background:var(--info);display:inline-block;flex:none"></i><span style="flex:1">Tráfego</span></button>
+        </div>
+      </div>
+      <div class="state-cell" style="align-items:flex-start">
+        <span class="state-label">Vazio / desabilitado</span>
+        <div class="msel-field" style="width:220px" aria-disabled="true">
+          <span style="flex:1;font-size:13px;color:var(--premium-gray)">Selecionar...</span>
+          <i data-lucide="chevron-down" style="width:16px;height:16px;color:var(--premium-gray)"></i>
+        </div>
+        <div class="msel-field" style="width:220px;opacity:.5;cursor:not-allowed;margin-top:10px" aria-disabled="true">
+          <span class="msel-badge">Criação</span>
+          <i data-lucide="chevron-down" style="width:16px;height:16px;color:var(--premium-gray);margin-left:auto"></i>
+        </div>
+      </div>
+    </div>
+    <p class="spec-note">Controlado por <code>value: string[]</code>; <code>minSelecionados</code> impede remover abaixo do mínimo; busca acento-insensível automática com 8+ opções; ponto colorido opcional por opção (<code>cor</code>). Popover em portal com flip/clamp (<code>popover-pos.ts</code>), fecha por Esc/clique fora.</p>
+  </section>
+
+  <!-- ════════ CARDS ════════ -->
+  <section class="ds-sec" id="cards">
+    <h2>Cards</h2>
+    <p class="sub">Base comum: superfície + borda <code>--premium-mist</code> + <code>--r-lg</code> + <code>--sh-sm</code>; clicável ganha hover <code>--sh-md</code> e sobe 2px.</p>
+    <div class="ds-sub">Stat cards (dashboard) — padrão e variante feat</div>
+    <div class="specimen on-paper" style="border:0;box-shadow:none;padding:0">
+      <div class="card stat">
+        <span class="ic" style="background:var(--info-bg);color:var(--info)"><i data-lucide="inbox"></i></span>
+        <span class="num">24</span><span class="lbl">Demandas ativas</span>
+      </div>
+      <div class="card stat">
+        <span class="ic" style="background:var(--warning-bg);color:var(--warning)"><i data-lucide="alert-triangle"></i></span>
+        <span class="num">3</span><span class="lbl">Atrasadas</span>
+      </div>
+      <div class="card stat feat">
+        <span class="ic"><i data-lucide="trophy"></i></span>
+        <span class="num">92%</span><span class="lbl">Entregas no prazo</span>
+      </div>
+    </div>
+    <div class="ds-sub">Painel com header + card de projeto + meta-card</div>
+    <div class="specimen on-paper" style="border:0;box-shadow:none;padding:0;align-items:stretch">
+      <div class="card" style="width:300px">
+        <div class="card-h"><h3>Demandas para hoje</h3><span class="badge badge-default">4</span></div>
+        <div class="card-b" style="display:flex;flex-direction:column;gap:10px">
+          <div style="font-size:13px">Post carrossel — lançamento <span class="badge badge-warning" style="margin-left:6px">Fazendo</span></div>
+          <div style="font-size:13px">Roteiro reels institucional <span class="badge badge-info" style="margin-left:6px">Novas</span></div>
+        </div>
+      </div>
+      <div class="card hoverable" style="width:280px;padding:16px;display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span class="badge badge-success">No prazo</span>
+          <i data-lucide="star" style="width:15px;height:15px;color:var(--amber)"></i>
+        </div>
+        <b style="font-size:16px;font-weight:700">Campanha Dia das Mães</b>
+        <span style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--premium-gray)"><i data-lucide="briefcase" style="width:13px;height:13px"></i> Acme Indústria</span>
+        <div class="progress"><i style="width:64%"></i></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;font-size:11.5px;color:var(--premium-gray)">
+          <span>8/12 demandas</span>
+          <span class="avatar sm" style="background:var(--teal)">RM</span>
+        </div>
+      </div>
+      <div class="card meta-card" style="width:260px;padding:16px">
+        <div style="display:flex;align-items:center;gap:9px;margin-bottom:8px">
+          <span class="ic" style="width:28px;height:28px;border-radius:var(--r-md);background:var(--yellow);color:#000;display:flex;align-items:center;justify-content:center"><i data-lucide="info" style="width:14px;height:14px"></i></span>
+          <b style="font-size:14px">Detalhes</b>
+        </div>
+        <div class="meta-row"><span>Cliente</span><b>Acme Indústria</b></div>
+        <div class="meta-row"><span>Prazo</span><b>12 jun 2026</b></div>
+        <div class="meta-row"><span>Prioridade</span><b style="display:inline-flex;align-items:center;gap:6px"><i class="pri-dot" style="background:var(--danger)"></i> Alta</b></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════ TABELA ════════ -->
+  <section class="ds-sec" id="tabela">
+    <h2>Tabela</h2>
+    <p class="sub">Wrap com a mesma moldura dos cards. A <strong>linha inteira</strong> navega (hover + cursor); controles internos usam <code>stopPropagation</code>. Acionável por teclado.</p>
+    <div class="table-wrap">
+      <table class="ds">
+        <thead><tr><th>Demanda</th><th>Cliente</th><th>Etapa atual</th><th>Status</th><th>Prazo</th><th>Resp.</th></tr></thead>
+        <tbody>
+          <tr class="click" tabindex="0">
+            <td style="font-weight:500">Post carrossel — lançamento</td><td>Acme Indústria</td><td>Criação</td>
+            <td><span class="badge badge-warning">Fazendo</span></td><td>Hoje 18h</td>
+            <td><span class="avatar sm" style="background:var(--violet)">JT</span></td>
+          </tr>
+          <tr class="click" tabindex="0">
+            <td style="font-weight:500">Roteiro reels institucional</td><td>Bistrô do Vale</td><td>Redação</td>
+            <td><span class="badge badge-info">Novas</span></td><td>12 jun</td>
+            <td><span class="avatar sm" style="background:var(--teal)">RM</span></td>
+          </tr>
+          <tr class="click" tabindex="0">
+            <td style="font-weight:500">KV campanha de inverno</td><td>Acme Indústria</td><td>Aprovação cliente</td>
+            <td><span class="badge badge-danger">Atrasada</span></td><td style="color:var(--danger)">Há 2 dias</td>
+            <td><span class="avatar sm" style="background:var(--yellow)">PM</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ════════ PAGINAÇÃO & ORDENAÇÃO ════════ -->
+  <section class="ds-sec" id="paginacao">
+    <h2>Paginação &amp; ordenação</h2>
+    <p class="sub"><code>pagination.tsx</code> e <code>sort-controls.tsx</code> — estado sempre na URL (<code>?pagina=</code>, <code>?sort=</code>), preservando os demais parâmetros; mudar filtro ou ordenação reseta para a página 1. Oculta com uma página ou menos.</p>
+    <div class="ds-sub">Pagination — Anterior · Página X de Y · Próxima</div>
+    <div class="specimen col" style="gap:14px">
+      <nav aria-label="Paginação" style="display:flex;align-items:center;justify-content:flex-end;gap:8px">
+        <button class="pgn-btn" type="button" aria-label="Página anterior"><i data-lucide="chevron-left"></i> Anterior</button>
+        <span style="font-size:13px;color:var(--premium-gray);padding:0 4px">Página 3 de 8</span>
+        <button class="pgn-btn" type="button" aria-label="Próxima página">Próxima <i data-lucide="chevron-right"></i></button>
+      </nav>
+      <nav aria-label="Paginação (primeira página)" style="display:flex;align-items:center;justify-content:flex-end;gap:8px">
+        <button class="pgn-btn" type="button" disabled aria-label="Página anterior"><i data-lucide="chevron-left"></i> Anterior</button>
+        <span style="font-size:13px;color:var(--premium-gray);padding:0 4px">Página 1 de 8</span>
+        <button class="pgn-btn" type="button" aria-label="Próxima página">Próxima <i data-lucide="chevron-right"></i></button>
+      </nav>
+    </div>
+    <div class="ds-sub">SortableTh — cabeçalho de tabela clicável &amp; ColumnSortToggle do kanban</div>
+    <div class="spec-row">
+      <div class="table-wrap" style="flex:1.4;min-width:320px">
+        <table class="ds">
+          <thead>
+            <tr>
+              <th class="sortable on" aria-sort="descending"><button type="button" aria-label="Ordenar por prazo">Prazo <i data-lucide="arrow-down"></i></button></th>
+              <th class="sortable" aria-sort="none"><button type="button" aria-label="Ordenar por cliente">Cliente <i data-lucide="arrow-up-down"></i></button></th>
+              <th class="sortable" aria-sort="none"><button type="button" aria-label="Ordenar por status">Status <i data-lucide="arrow-up-down"></i></button></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Hoje 18h</td><td>Acme Indústria</td><td><span class="badge badge-warning">Fazendo</span></td></tr>
+            <tr><td>12 jun</td><td>Bistrô do Vale</td><td><span class="badge badge-info">Novas</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="specimen" style="flex:1;min-width:260px">
+        <div class="state-cell"><span class="state-label">Natural</span><button class="sort-toggle" type="button" aria-label="Ordenar por prazo"><i data-lucide="arrow-up-down"></i></button></div>
+        <div class="state-cell"><span class="state-label">Crescente</span><button class="sort-toggle on" type="button" aria-label="Ordenar por prazo — crescente"><i data-lucide="arrow-up"></i></button></div>
+        <div class="state-cell"><span class="state-label">Decrescente</span><button class="sort-toggle on" type="button" aria-label="Ordenar por prazo — decrescente"><i data-lucide="arrow-down"></i></button></div>
+      </div>
+    </div>
+    <p class="spec-note">O toggle do kanban cicla natural → ↑ → ↓ → natural e ordena só a coluna (param próprio por coluna); ativo usa fundo <code>--brand-ink</code> + ícone amarelo, o mesmo par do chip "ligado". O header ativo da tabela expõe <code>aria-sort</code>.</p>
+  </section>
+
+  <!-- ════════ KANBAN ════════ -->
+  <section class="ds-sec" id="kanban">
+    <h2>Kanban</h2>
+    <p class="sub">Colunas <code>--premium-bone</code> de 290px com cabeçalho fixo + corpo rolável (<code>.kanban-col-scroll</code>). Kcard com tag de departamento, stagebar e rodapé com avatares + meta. Variante <code>locked</code> listrada.</p>
+    <div class="board">
+      <div class="kcol">
+        <div class="kcol-h"><span class="dot" style="background:var(--info)"></span><b>Novas</b><span class="n">2</span></div>
+        <div class="kcol-b kanban-col-scroll">
+          <div class="kcard">
+            <span class="tag" style="background:var(--teal-bg);color:var(--teal);align-self:flex-start"><i data-lucide="type"></i> Redação</span>
+            <h4>Roteiro reels institucional</h4>
+            <span class="cli">Bistrô do Vale</span>
+            <div class="stagebar"><i class="cur"></i><i></i><i></i><i></i></div>
+            <div class="foot">
+              <span class="avatar-stack"><span class="avatar sm" style="background:var(--teal)">RM</span><span class="avatar sm" style="background:var(--violet)">JT</span></span>
+              <span class="meta"><span style="display:inline-flex;align-items:center;gap:4px"><i data-lucide="calendar"></i>12 jun</span><span style="display:inline-flex;align-items:center;gap:4px"><i data-lucide="message-square"></i>3</span><i class="pri-dot" style="background:var(--warning)"></i></span>
+            </div>
+          </div>
+          <div class="kcard locked">
+            <span class="tag" style="background:var(--slate-bg);color:var(--slate);align-self:flex-start"><i data-lucide="video"></i> Audiovisual</span>
+            <h4 style="display:flex;align-items:center;gap:6px"><i data-lucide="lock" style="width:13px;height:13px"></i> Captação evento</h4>
+            <span class="cli">Acme Indústria</span>
+            <div class="stagebar"><i class="done"></i><i class="cur"></i><i></i></div>
+          </div>
+        </div>
+      </div>
+      <div class="kcol">
+        <div class="kcol-h"><span class="dot" style="background:var(--warning)"></span><b>Fazendo</b><span class="n">1</span></div>
+        <div class="kcol-b kanban-col-scroll">
+          <div class="kcard">
+            <span class="tag" style="background:var(--violet-bg);color:var(--violet);align-self:flex-start"><i data-lucide="pen-tool"></i> Criação</span>
+            <h4>Post carrossel — lançamento</h4>
+            <span class="cli">Acme Indústria</span>
+            <div class="stagebar"><i class="done"></i><i class="done"></i><i class="cur"></i><i></i></div>
+            <div class="foot">
+              <span class="avatar sm" style="background:var(--violet)">JT</span>
+              <span class="meta"><span style="display:inline-flex;align-items:center;gap:4px"><i data-lucide="calendar"></i>Hoje</span><i class="pri-dot" style="background:var(--danger)"></i></span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="kcol">
+        <div class="kcol-h"><span class="dot" style="background:var(--success)"></span><b>Finalizadas</b><span class="n">0</span></div>
+        <div class="kcol-b">
+          <div class="drop-hint">Solte aqui.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════ AVATARES ════════ -->
+  <section class="ds-sec" id="avatares">
+    <h2>Avatares</h2>
+    <p class="sub"><code>avatar.tsx</code> — iniciais em preto bold sobre cor do colaborador/departamento (ou foto). Stack com sobreposição -7px e borda de 2px da superfície.</p>
+    <div class="specimen">
+      <div class="state-cell"><span class="state-label">sm 26px</span><span class="avatar sm" style="background:var(--yellow)">PM</span></div>
+      <div class="state-cell"><span class="state-label">md 36px</span><span class="avatar md" style="background:var(--teal)">RM</span></div>
+      <div class="state-cell"><span class="state-label">lg 44px</span><span class="avatar lg" style="background:var(--violet)">JT</span></div>
+      <div class="state-cell"><span class="state-label">Stack</span>
+        <span class="avatar-stack">
+          <span class="avatar sm" style="background:var(--yellow)">PM</span>
+          <span class="avatar sm" style="background:var(--teal)">RM</span>
+          <span class="avatar sm" style="background:var(--violet)">JT</span>
+          <span class="avatar sm" style="background:var(--premium-bone);color:var(--premium-steel)">+2</span>
+        </span>
+      </div>
+      <div class="state-cell"><span class="state-label">Tooltip (hover/foco)</span>
+        <span class="tt-wrap"><span class="avatar md" style="background:var(--yellow)" tabindex="0">PM</span><span class="tt" role="tooltip">Patrícia Mendes · Diretora</span></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════ PRESENÇA & DIGITAÇÃO ════════ -->
+  <section class="ds-sec" id="presenca">
+    <h2>Presença &amp; indicador de digitação</h2>
+    <p class="sub"><code>presenca-avatares.tsx</code> — pilha "quem está vendo" da presença em tempo real; <code>digitando-indicador.tsx</code> — linha "está digitando…" junto à thread de comentários. Ambos <strong>não renderizam nada</strong> quando vazios (ausência total, sem erro).</p>
+    <div class="specimen" style="gap:40px">
+      <div class="state-cell"><span class="state-label">PresencaAvatares (hover/foco mostra os nomes)</span>
+        <span class="tt-wrap">
+          <span class="presenca" role="img" tabindex="0" aria-label="Patrícia, Rafael, Júlia e mais 2 estão vendo esta tela" style="display:inline-flex;align-items:center;min-height:40px;padding:0 2px;border-radius:var(--r-pill)">
+            <span class="avatar sm" style="background:var(--yellow)">PM</span>
+            <span class="avatar sm" style="background:var(--teal)">RM</span>
+            <span class="avatar sm" style="background:var(--violet)">JT</span>
+            <span class="extra" aria-hidden>+2</span>
+          </span>
+          <span class="tt" role="tooltip">Patrícia, Rafael e Júlia estão vendo esta tela</span>
+        </span>
+      </div>
+      <div class="state-cell"><span class="state-label">DigitandoIndicador</span>
+        <div class="typing" aria-live="polite">
+          <span class="dots" aria-hidden><i></i><i></i><i></i></span>
+          <span>Rafael Moreira está digitando…</span>
+        </div>
+        <div class="typing" aria-live="polite" style="margin-top:8px">
+          <span class="dots" aria-hidden><i></i><i></i><i></i></span>
+          <span>Rafael e Júlia estão digitando…</span>
+        </div>
+      </div>
+    </div>
+    <p class="spec-note">O anel separador da pilha usa <code>--c-surface</code> (adapta ao tema), nunca "borda branca" fixa. Nomes compostos com <code>Intl.ListFormat pt-BR</code> ("A, B e C"). Os três pontos pulsam e respeitam <code>prefers-reduced-motion</code>; o indicador some sozinho ~5s após o último sinal.</p>
+  </section>
+
+  <!-- ════════ SELETOR DE PESSOAS ════════ -->
+  <section class="ds-sec" id="pessoas-picker">
+    <h2>Seletor de pessoas (busca + badges)</h2>
+    <p class="sub"><code>pessoas-picker.tsx</code> — clicar abre busca; cada escolhido vira badge (avatar + nome). Multi mantém o popover aberto e marca com <i data-lucide="check" style="width:14px;height:14px;vertical-align:-2px"></i>; single fecha ao escolher. Substitui chips de toggle e o <code>Select</code> para pessoas.</p>
+    <div class="specimen" style="align-items:flex-start;gap:32px">
+      <div class="state-cell" style="align-items:flex-start">
+        <span class="state-label">Campo (multi) — 2 selecionados</span>
+        <div style="display:flex;min-height:44px;width:260px;align-items:center;gap:8px;border:1px solid var(--premium-mist);border-radius:var(--r-md);background:var(--c-surface);padding:6px 12px">
+          <span style="display:inline-flex;flex-wrap:wrap;gap:6px;flex:1">
+            <span style="display:inline-flex;align-items:center;gap:6px;border-radius:999px;background:var(--premium-bone);padding:3px 6px 3px 3px">
+              <span class="avatar sm" style="background:var(--teal)">RM</span>
+              <span style="font-size:12px;font-weight:500;color:var(--c-ink)">Rafael M.</span>
+              <i data-lucide="x" style="width:13px;height:13px;color:var(--premium-gray)"></i>
+            </span>
+            <span style="display:inline-flex;align-items:center;gap:6px;border-radius:999px;background:var(--premium-bone);padding:3px 6px 3px 3px">
+              <span class="avatar sm" style="background:var(--violet)">JT</span>
+              <span style="font-size:12px;font-weight:500;color:var(--c-ink)">Júlia T.</span>
+              <i data-lucide="x" style="width:13px;height:13px;color:var(--premium-gray)"></i>
+            </span>
+          </span>
+          <i data-lucide="chevron-down" style="width:16px;height:16px;color:var(--premium-gray)"></i>
+        </div>
+      </div>
+      <div class="state-cell" style="align-items:flex-start">
+        <span class="state-label">Popover aberto (busca + seções)</span>
+        <div style="width:260px;border:1px solid var(--premium-mist);border-radius:var(--r-lg);background:var(--c-surface);padding:12px;box-shadow:var(--sh-lg)">
+          <div style="position:relative;margin-bottom:12px">
+            <i data-lucide="search" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);width:16px;height:16px;color:var(--premium-gray)"></i>
+            <input type="text" placeholder="Buscar colaborador..." style="width:100%;border:1px solid var(--premium-mist);border-radius:var(--r-md);background:var(--c-surface);padding:11px 12px 11px 36px;font-size:13px;color:var(--c-ink)">
+          </div>
+          <div class="eyebrow" style="margin-bottom:4px">Equipe do projeto</div>
+          <div style="display:flex;align-items:center;gap:12px;min-height:44px;padding:8px 12px;border-radius:var(--r-md);background:var(--gold-bg);border:1px solid var(--gold)">
+            <span class="avatar md" style="background:var(--teal)">RM</span>
+            <span style="flex:1;font-size:13.5px;font-weight:500;color:var(--c-ink)">Rafael M.</span>
+            <i data-lucide="check" style="width:16px;height:16px;color:var(--gold)"></i>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;min-height:44px;padding:8px 12px;border-radius:var(--r-md)">
+            <span class="avatar md" style="background:var(--violet)">JT</span>
+            <span style="flex:1;font-size:13.5px;font-weight:500;color:var(--c-ink)">Júlia T.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="spec-note">Estados: skeleton no carregamento, "Nenhum colaborador encontrado." no vazio, erro inline (sem toast). Painel em portal com <code>data-pessoas-pop</code>; alvos ≥ 40px; <code>Esc</code> fecha só o popover; remover tem <code>aria-label="Remover &lt;nome&gt;"</code>. Cores só por token (claro + escuro).</p>
+  </section>
+
+  <!-- ════════ NAVEGAÇÃO ════════ -->
+  <section class="ds-sec" id="navegacao">
+    <h2>Navegação</h2>
+    <p class="sub"><code>breadcrumb.tsx</code> substitui o "Voltar" em telas de detalhe; sidebar/topbar são o shell global (a navegação à esquerda desta página replica a sidebar real, inclusive o item ativo com borda amarela).</p>
+    <div class="ds-sub">Breadcrumb</div>
+    <div class="specimen">
+      <nav aria-label="Trilha de navegação">
+        <ol class="breadcrumb">
+          <li><a href="#">Projetos</a></li>
+          <li aria-hidden="true"><i data-lucide="chevron-right"></i></li>
+          <li><a href="#">Campanha Dia das Mães</a></li>
+          <li aria-hidden="true"><i data-lucide="chevron-right"></i></li>
+          <li><span class="cur" aria-current="page">Post carrossel — lançamento</span></li>
+        </ol>
+      </nav>
+    </div>
+    <div class="ds-sub">Accordion (clique para alternar)</div>
+    <div class="specimen col" style="background:var(--c-bg);gap:10px">
+      <div class="acc open" data-acc>
+        <div class="acc-h">
+          <button class="acc-trigger" aria-expanded="true"><i data-lucide="chevron-down"></i> Layout v3 — aprovado</button>
+          <span class="badge badge-success" style="margin-right:6px">Atual</span>
+        </div>
+        <div class="acc-b">Conteúdo do bloco: materiais do layout, links e ações. Cabeçalho em <code>--premium-paper</code>, gatilho ≥ 44px, chevron rotaciona 180°.</div>
+      </div>
+      <div class="acc" data-acc>
+        <div class="acc-h">
+          <button class="acc-trigger" aria-expanded="false"><i data-lucide="chevron-down"></i> Layout v2</button>
+          <span class="badge badge-default" style="margin-right:6px">Anterior</span>
+        </div>
+        <div class="acc-b">Versão anterior do layout.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════ OVERLAYS ════════ -->
+  <section class="ds-sec" id="overlays">
+    <h2>Slide-over &amp; confirm dialog</h2>
+    <p class="sub"><code>slide-over.tsx</code> — painel flutuante 480px à direita, <code>--r-xl</code> + <code>--sh-lg</code>, scrim com blur, rodapé fixo de ações; fecha por Esc/scrim; suporta empilhamento. <code>confirm-dialog.tsx</code> — diálogo central para confirmação; destrutivo em <code>danger</code>, nunca amarelo.</p>
+    <div class="specimen">
+      <button class="btn btn-primary" id="open-so"><i data-lucide="plus"></i> Abrir slide-over</button>
+      <button class="btn btn-ghost" id="open-dlg" style="color:var(--danger)"><i data-lucide="trash-2"></i> Abrir confirmação</button>
+      <button class="btn btn-ghost" id="open-dlg-neutral"><i data-lucide="clock"></i> Diálogo neutro</button>
+    </div>
+    <p class="spec-note">Proibido modal central novo para formulários (use slide-over) e proibido <code>window.alert/confirm/prompt</code> — sempre a camada Premium.</p>
+  </section>
+
+  <!-- ════════ LIGHTBOX ════════ -->
+  <section class="ds-sec" id="lightbox">
+    <h2>Lightbox</h2>
+    <p class="sub"><code>lightbox.tsx</code> — visualizador em tela cheia dos materiais do layout. Fundo escuro <strong>fixo nos dois temas</strong> (mídia em tela cheia pede fundo escuro); controles de 40px em <code>--c-surface</code>. Mock estático em escala reduzida:</p>
+    <div class="lb" role="img" aria-label="Mock estático do lightbox">
+      <div class="lb-h">
+        <span>KV-campanha-inverno-v3.png</span>
+        <span class="n">2 / 5</span>
+        <button class="lb-ctrl" type="button" aria-label="Fechar"><i data-lucide="x"></i></button>
+      </div>
+      <div class="lb-stage">
+        <button class="lb-ctrl lb-nav-l" type="button" aria-label="Material anterior"><i data-lucide="chevron-left"></i></button>
+        <div style="width:min(320px,60%);height:170px;border-radius:var(--r-md);background:repeating-linear-gradient(45deg,#2a2a2a,#2a2a2a 12px,#222 12px,#222 24px);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.5);font-size:12px">Imagem (zoom + arrastar)</div>
+        <button class="lb-ctrl lb-nav-r" type="button" aria-label="Próximo material"><i data-lucide="chevron-right"></i></button>
+        <div class="lb-zoom">
+          <button class="lb-ctrl" type="button" aria-label="Reduzir zoom"><i data-lucide="zoom-out"></i></button>
+          <button class="lb-ctrl" type="button" disabled aria-label="Restaurar zoom"><i data-lucide="rotate-ccw"></i></button>
+          <button class="lb-ctrl" type="button" aria-label="Ampliar zoom"><i data-lucide="zoom-in"></i></button>
+        </div>
+      </div>
+    </div>
+    <p class="spec-note">Na implementação real: overlay full-viewport <code>bg-black/90</code> com <code>role="dialog"</code> e foco gerenciado (devolve ao gatilho); Esc/scrim/botão fecham; setas navegam <strong>apenas</strong> entre os materiais do layout atual; zoom 1–4× em passos de 0,5 com arrastar quando ampliado; vídeo/áudio pelo leitor próprio (<code>DriveMediaViewer</code>). Respeita <code>prefers-reduced-motion</code>.</p>
+  </section>
+
+  <!-- ════════ TOAST ════════ -->
+  <section class="ds-sec" id="toast">
+    <h2>Toast</h2>
+    <p class="sub"><code>toast.tsx</code> via <code>useToast</code> — feedback transitório não bloqueante, topo central (offset 76px), fundo escuro de marca fixo + acento amarelo; a variante muda só o ícone. Auto-dismiss 4s, pausa no hover, máx. 3, undo opcional. <strong>Erro de submit nunca usa toast.</strong></p>
+    <div class="ds-sub">Variantes (estáticas)</div>
+    <div class="specimen col" style="background:var(--c-bg);align-items:center">
+      <div class="toast"><span class="t-ic"><i data-lucide="check-circle-2"></i></span><p>Cliente salvo.</p><button class="t-close" aria-label="Dispensar aviso"><i data-lucide="x"></i></button></div>
+      <div class="toast"><span class="t-ic"><i data-lucide="info"></i></span><p>Link de aprovação copiado.</p><button class="t-close" aria-label="Dispensar aviso"><i data-lucide="x"></i></button></div>
+      <div class="toast"><span class="t-ic"><i data-lucide="alert-triangle"></i></span><p>Não foi possível copiar. Copie manualmente.</p><button class="t-close" aria-label="Dispensar aviso"><i data-lucide="x"></i></button></div>
+      <div class="toast"><span class="t-ic"><i data-lucide="check-circle-2"></i></span><p>Lançamento arquivado.</p><button class="t-action">Desfazer</button><button class="t-close" aria-label="Dispensar aviso"><i data-lucide="x"></i></button></div>
+    </div>
+    <div class="ds-sub">Ao vivo</div>
+    <div class="specimen">
+      <button class="btn btn-dark btn-sm" data-toast="success" data-msg="Cliente salvo.">toast.success()</button>
+      <button class="btn btn-dark btn-sm" data-toast="info" data-msg="Link copiado.">toast.info()</button>
+      <button class="btn btn-dark btn-sm" data-toast="warning" data-msg="Verifique a conexão.">toast.warning()</button>
+    </div>
+  </section>
+
+  <!-- ════════ FAB ════════ -->
+  <section class="ds-sec" id="fab">
+    <h2>FAB — botão de ação flutuante</h2>
+    <p class="sub"><code>fab.tsx</code> — entrada única de criação do shell. 56px amarelo + <code>--sh-gold</code>, canto inferior direito, arrastável; speed-dial revela atalhos de 44px no hover/foco. Passe o mouse sobre o botão amarelo:</p>
+    <div class="fab-demo">
+      <div class="fab">
+        <div class="fab-dial" role="menu" aria-label="Ações de criação">
+          <span class="fab-item"><span class="fab-lbl">Criar projeto</span><button class="fab-mini" role="menuitem" aria-label="Criar projeto"><i data-lucide="folder-kanban"></i></button></span>
+          <span class="fab-item"><span class="fab-lbl">Criar atividade</span><button class="fab-mini" role="menuitem" aria-label="Criar atividade"><i data-lucide="check-square"></i></button></span>
+        </div>
+        <span class="fab-item">
+          <span class="fab-lbl" style="opacity:0" data-fab-plabel>Criar demanda</span>
+          <button class="fab-main" aria-haspopup="menu" aria-label="Criar demanda" title="Criar demanda · arraste para mover"><i data-lucide="plus"></i></button>
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════ CALENDÁRIO ════════ -->
+  <section class="ds-sec" id="calendario">
+    <h2>Calendário / DatePicker</h2>
+    <p class="sub"><code>date-picker.tsx</code> — substitui o <code>input type="date"</code> nativo em <strong>todo</strong> lugar: formulários (<code>variant="field"</code>), chip de período do FilterBar e popover de prazos do workflow (<code>variant="inline"</code>). Dia selecionado = amarelo + preto 700; hoje = anel <code>--premium-silver</code>; dot âmbar = dia com item (widget de dashboard).</p>
+    <div class="specimen" style="align-items:flex-start">
+      <div class="field" style="min-width:240px">
+        <label for="f-dt">Prazo final (gatilho)</label>
+        <button class="input" id="f-dt" style="display:flex;justify-content:space-between;align-items:center;cursor:pointer;text-align:left">
+          <span>10/06/2026</span><i data-lucide="calendar" style="width:15px;height:15px;color:var(--premium-gray)"></i>
+        </button>
+      </div>
+      <div class="cal" role="dialog" aria-label="Escolher data">
+        <div class="cal-h">
+          <button class="cal-nav" aria-label="Mês anterior"><i data-lucide="chevron-left"></i></button>
+          <b>Junho 2026</b>
+          <button class="cal-nav" aria-label="Próximo mês"><i data-lucide="chevron-right"></i></button>
+        </div>
+        <div class="cal-grid">
+          <span class="cal-dow">D</span><span class="cal-dow">S</span><span class="cal-dow">T</span><span class="cal-dow">Q</span><span class="cal-dow">Q</span><span class="cal-dow">S</span><span class="cal-dow">S</span>
+          <button class="cal-d muted">31</button><button class="cal-d">1</button><button class="cal-d">2</button><button class="cal-d">3</button><button class="cal-d">4</button><button class="cal-d">5</button><button class="cal-d">6</button>
+          <button class="cal-d">7</button><button class="cal-d">8</button><button class="cal-d has">9</button><button class="cal-d sel">10</button><button class="cal-d today">11</button><button class="cal-d has">12</button><button class="cal-d">13</button>
+          <button class="cal-d">14</button><button class="cal-d">15</button><button class="cal-d">16</button><button class="cal-d">17</button><button class="cal-d">18</button><button class="cal-d">19</button><button class="cal-d">20</button>
+          <button class="cal-d">21</button><button class="cal-d">22</button><button class="cal-d">23</button><button class="cal-d">24</button><button class="cal-d">25</button><button class="cal-d">26</button><button class="cal-d">27</button>
+          <button class="cal-d">28</button><button class="cal-d">29</button><button class="cal-d">30</button><button class="cal-d" disabled>1</button><button class="cal-d" disabled>2</button><button class="cal-d" disabled>3</button><button class="cal-d" disabled>4</button>
+        </div>
+        <div class="cal-f"><button class="hoje">Hoje</button><button class="limpar">Limpar</button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════ WORKFLOW ════════ -->
+  <section class="ds-sec" id="workflow">
+    <h2>Workflow timeline</h2>
+    <p class="sub">Timeline horizontal de etapas: barrinha 6px — verde concluída, amarela atual, cinza futura. Pílula de data colorida pela cor da etapa (setor do responsável). Colunas limpas, sem moldura de card.</p>
+    <div class="specimen">
+      <div class="wf" style="width:100%">
+        <div class="wf-step done">
+          <div class="bar"></div><b>Briefing</b>
+          <span class="resp"><span class="avatar" style="background:var(--yellow)">PM</span> Patrícia</span>
+          <span class="wf-pill" style="background:var(--success-bg);color:var(--success)">02 jun – 03 jun</span>
+        </div>
+        <div class="wf-step done">
+          <div class="bar"></div><b>Redação</b>
+          <span class="resp"><span class="avatar" style="background:var(--teal)">RM</span> Rafael</span>
+          <span class="wf-pill" style="background:var(--teal-bg);color:var(--teal)">04 jun – 06 jun</span>
+        </div>
+        <div class="wf-step cur">
+          <div class="bar"></div><b>Criação</b>
+          <span class="resp"><span class="avatar" style="background:var(--violet)">JT</span> Júlia</span>
+          <span class="wf-pill" style="background:var(--violet-bg);color:var(--violet)">07 jun – 11 jun</span>
+        </div>
+        <div class="wf-step">
+          <div class="bar"></div><b>Aprovação cliente</b>
+          <span class="resp"><span class="avatar" style="background:var(--yellow)">PM</span> Patrícia</span>
+          <span class="wf-pill" style="background:var(--slate-bg);color:var(--slate)">Sem prazo</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════ COMENTÁRIOS & HISTÓRICO ════════ -->
+  <section class="ds-sec" id="conteudo">
+    <h2>Comentários, menções &amp; histórico</h2>
+    <p class="sub">Menção <code>@Nome</code> = chip info (apenas destaque visual). Histórico = timeline vertical com bolinha de 30px em cor semântica do evento.</p>
+    <div class="spec-row">
+      <div class="specimen col" style="flex:1;min-width:300px">
+        <div class="cmt">
+          <span class="avatar md" style="background:var(--teal)">RM</span>
+          <div class="body">
+            <div class="head"><b>Rafael Moreira</b><span>Hoje 14h</span></div>
+            <p class="text">Copy ajustada conforme o briefing. <span class="mention">@Júlia Tavares</span> pode seguir para a arte.</p>
+          </div>
+        </div>
+        <div class="cmt">
+          <span class="avatar md" style="background:var(--violet)">JT</span>
+          <div class="body">
+            <div class="head"><b>Júlia Tavares</b><span>Hoje 15h</span></div>
+            <p class="text">Recebido! Primeira versão sobe ainda hoje.</p>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:4px">
+          <input class="input" placeholder="Escreva um comentário... use @ para mencionar" style="flex:1">
+          <button class="btn btn-dark btn-sm" aria-label="Enviar comentário"><i data-lucide="send"></i></button>
+        </div>
+      </div>
+      <div class="specimen" style="flex:1;min-width:300px">
+        <ul class="hist">
+          <li>
+            <span class="h-ic" style="background:var(--success-bg);color:var(--success)"><i data-lucide="check-circle"></i></span>
+            <div class="h-tx">Etapa <b>Redação</b> concluída por Rafael.<span>Hoje 14h22</span></div>
+          </li>
+          <li>
+            <span class="h-ic" style="background:var(--info-bg);color:var(--info)"><i data-lucide="message-square"></i></span>
+            <div class="h-tx">Novo comentário de Rafael.<span>Hoje 14h20</span></div>
+          </li>
+          <li>
+            <span class="h-ic" style="background:var(--violet-bg);color:var(--violet)"><i data-lucide="git-commit"></i></span>
+            <div class="h-tx">Demanda movida para <b>Criação</b>.<span>Hoje 14h22</span></div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════ EMOJI PICKER ════════ -->
+  <section class="ds-sec" id="emoji">
+    <h2>Emoji picker</h2>
+    <p class="sub"><code>emoji-picker.tsx</code> — reações em comentários. Encapsula o <strong>emoji-mart</strong> vanilla (dataset local, i18n pt, emojis nativos) atrás de um wrapper único; nenhum consumidor importa a lib diretamente. Mock estático do popover:</p>
+    <div class="specimen" style="align-items:flex-start;gap:32px">
+      <div class="state-cell"><span class="state-label">Gatilho (40px)</span>
+        <button type="button" aria-label="Adicionar reação" style="width:40px;height:40px;border-radius:50%;border:0;background:none;color:var(--premium-steel);display:inline-flex;align-items:center;justify-content:center;cursor:pointer"><i data-lucide="smile-plus"></i></button>
+      </div>
+      <div class="state-cell" style="align-items:flex-start"><span class="state-label">Popover — frequentes + painel completo</span>
+        <div class="emoji-pop" role="dialog" aria-label="Seletor de emoji">
+          <div class="emoji-row">
+            <button class="emoji-btn" type="button" aria-label="Reagir com 👍">👍</button>
+            <button class="emoji-btn" type="button" aria-label="Reagir com ❤️">❤️</button>
+            <button class="emoji-btn" type="button" aria-label="Reagir com 😄">😄</button>
+            <button class="emoji-btn" type="button" aria-label="Reagir com 🎉">🎉</button>
+            <button class="emoji-btn" type="button" aria-label="Reagir com 👀">👀</button>
+            <button class="emoji-btn" type="button" aria-label="Reagir com 🚀">🚀</button>
+          </div>
+          <div style="border-top:1px solid var(--premium-mist);padding:8px 4px 4px">
+            <div style="position:relative;margin-bottom:6px">
+              <i data-lucide="search" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);width:13px;height:13px;color:var(--premium-gray)"></i>
+              <input type="text" placeholder="Pesquisar" aria-label="Pesquisar emoji" style="width:100%;border:1px solid var(--premium-mist);border-radius:var(--r-md);background:var(--c-surface);color:var(--c-ink);font-size:12.5px;font-family:inherit;padding:7px 10px 7px 30px;outline:none">
+            </div>
+            <div class="eyebrow" style="margin:4px 2px">Sorrisos e emoções</div>
+            <div class="emoji-grid" aria-hidden>
+              <button type="button">😀</button><button type="button">😃</button><button type="button">😄</button><button type="button">😁</button><button type="button">😆</button><button type="button">😅</button><button type="button">🤣</button>
+              <button type="button">😂</button><button type="button">🙂</button><button type="button">😉</button><button type="button">😊</button><button type="button">😇</button><button type="button">🥰</button><button type="button">😍</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="spec-note">Painel pesado carrega sob demanda (import dinâmico, <code>ssr:false</code>) só na abertura; a linha de <strong>frequentes</strong> fica sempre visível e é o fallback se o painel falhar — reagir nunca quebra. Portal + <code>popoverPos</code> (flip/clamp), Esc fecha e devolve o foco; tema segue a classe <code>dark</code> do documento.</p>
+  </section>
+
+  <!-- ════════ EMPTY / NOTA / LOADING ════════ -->
+  <section class="ds-sec" id="estados">
+    <h2>Empty state, nota, banner &amp; loading</h2>
+    <p class="sub"><code>empty-state.tsx</code>, callout <code>.note</code>, banner admin e skeletons (nunca spinner full-page).</p>
+    <div class="spec-row">
+      <div class="specimen" style="flex:1;min-width:280px">
+        <div class="empty" style="width:100%">
+          <i data-lucide="inbox"></i>
+          <h3>Nenhuma demanda hoje</h3>
+          <p>Que tal revisar a fila de aprovações?</p>
+          <button class="btn btn-ghost btn-sm">Ver aprovações</button>
+        </div>
+      </div>
+      <div style="flex:1;min-width:300px;display:flex;flex-direction:column;gap:12px">
+        <div class="note">
+          <i data-lucide="lightbulb"></i>
+          <span>Ao solicitar ajuste, uma etapa <b>Ajuste</b> entra no workflow e o responsável é notificado.</span>
+        </div>
+        <div class="adm-banner">
+          <span class="sq"><i data-lucide="lock"></i></span>
+          <span>Área restrita — visível apenas para administradores.</span>
+        </div>
+        <div class="specimen col" style="gap:10px">
+          <span class="state-label">Skeleton (loading de lista)</span>
+          <div class="skel" style="height:14px;width:60%"></div>
+          <div class="skel" style="height:14px;width:85%"></div>
+          <div class="skel" style="height:14px;width:40%"></div>
+          <div style="display:flex;gap:10px;margin-top:4px">
+            <div class="skel" style="height:64px;flex:1;border-radius:var(--r-lg)"></div>
+            <div class="skel" style="height:64px;flex:1;border-radius:var(--r-lg)"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════ PROGRESSO, CONTADOR & EXPANSÍVEIS ════════ -->
+  <section class="ds-sec" id="progresso">
+    <h2>Progresso, contador &amp; expansíveis</h2>
+    <p class="sub">Primitivos de micro-animação (Motion, curva <code>--ease</code>, todos inertes sob <code>prefers-reduced-motion</code>): <code>barra-progresso.tsx</code>, <code>contador.tsx</code>, <code>texto-expansivel.tsx</code> e <code>expansivel.tsx</code>.</p>
+    <div class="ds-sub">BarraProgresso — preenchimento cresce da esquerda na entrada (scaleX, 500ms)</div>
+    <div class="specimen col" style="gap:14px">
+      <div>
+        <span class="state-label">Padrão (trilho --premium-bone, altura 8px)</span>
+        <div class="progress" style="height:8px"><i style="width:64%"></i></div>
+      </div>
+      <div>
+        <span class="state-label">Cor por token semântico (ex.: --success)</span>
+        <div class="progress" style="height:8px"><i style="width:88%;background:var(--success)"></i></div>
+      </div>
+    </div>
+    <div class="ds-sub">Contador — número com contagem crescente animada</div>
+    <div class="specimen">
+      <div class="card stat">
+        <span class="ic" style="background:var(--success-bg);color:var(--success)"><i data-lucide="trending-up"></i></span>
+        <span class="num" data-countup="48350" data-format="brl">R$ 0</span><span class="lbl">Receita do mês (clique para reanimar)</span>
+      </div>
+      <div class="card stat">
+        <span class="ic" style="background:var(--info-bg);color:var(--info)"><i data-lucide="inbox"></i></span>
+        <span class="num" data-countup="127">0</span><span class="lbl">Demandas entregues</span>
+      </div>
+    </div>
+    <div class="ds-sub">TextoExpansivel — prévia clampada + "ver mais" (clique para alternar)</div>
+    <div class="specimen col">
+      <div data-texp style="max-width:560px">
+        <div data-texp-body style="position:relative;max-height:72px;overflow:hidden;transition:max-height .2s var(--ease)">
+          <p style="font-size:13.5px;line-height:1.65;color:var(--premium-steel)">Briefing completo da campanha de inverno: a peça principal é um carrossel de cinco cards apresentando a nova linha, com foco na durabilidade do produto e no diferencial de garantia estendida. O tom deve ser próximo e direto, evitando jargões técnicos. Público prioritário: decisores de compra entre 30 e 55 anos, já clientes da marca. Entregáveis: KV, três variações de copy, adaptações para stories e feed, e uma versão para mídia impressa no ponto de venda.</p>
+          <div data-texp-fade aria-hidden style="pointer-events:none;position:absolute;inset:auto 0 0 0;height:40px;background:linear-gradient(to bottom,transparent,var(--c-surface))"></div>
+        </div>
+        <div style="display:flex;justify-content:flex-end">
+          <button data-texp-btn type="button" aria-expanded="false" style="display:inline-flex;align-items:center;gap:4px;min-height:40px;border:0;background:none;padding:0 4px;border-radius:var(--r-sm);font-size:12px;font-family:inherit;color:var(--premium-steel);cursor:pointer"><i data-lucide="chevron-down" style="width:14px;height:14px;transition:transform .2s var(--ease)"></i> <span>ver mais</span></button>
+        </div>
+      </div>
+    </div>
+    <p class="spec-note"><code>TextoExpansivel</code> mede <code>scrollHeight</code> contra a altura da prévia (via <code>ResizeObserver</code>) — o controle só aparece quando o conteúdo realmente transborda; fade em token (<code>fadeColor</code>, padrão <code>--c-surface</code>); <code>expandirAoFocar</code> para conteúdo editável. <code>Expansivel</code> anima <code>height: 0 ↔ auto</code> + opacity (~200ms) e é a base do accordion, das raias do Kanban e da árvore de docs — o accordion da seção Navegação demonstra o comportamento.</p>
+  </section>
+
+  <!-- ════════ CODE BLOCK ════════ -->
+  <section class="ds-sec" id="codigo">
+    <h2>Bloco de código</h2>
+    <p class="sub"><code>code-block.tsx</code> — realce por tokenizador próprio com tokens de code theme; botão de copiar (40px) dispara toast. Usado na doc pública <code>/docs</code>.</p>
+    <div class="specimen col" style="padding:0;border:0;box-shadow:none;background:none">
+      <div class="codeblock">
+        <div class="cb-h">
+          <span class="cb-lang">curl</span>
+          <button class="cb-copy" aria-label="Copiar código" data-copy><i data-lucide="copy"></i></button>
+        </div>
+        <pre class="code-scroll"><code><span class="tok-keyword">curl</span> -X <span class="tok-keyword">POST</span> https://tasks.agpremium.com.br/api/v1/demandas \
+  -H <span class="tok-string">"Authorization: Bearer $TOKEN"</span> \
+  -H <span class="tok-string">"Content-Type: application/json"</span> \
+  -d <span class="tok-string">'{"titulo": "Post carrossel", "clienteId": "..."}'</span></code></pre>
+      </div>
+      <div class="codeblock">
+        <div class="cb-h">
+          <span class="cb-lang">JSON</span>
+          <button class="cb-copy" aria-label="Copiar código" data-copy><i data-lucide="copy"></i></button>
+        </div>
+        <pre class="code-scroll"><code><span class="tok-punct">{</span>
+  <span class="tok-property">"id"</span><span class="tok-punct">:</span> <span class="tok-string">"dem_8f2k"</span><span class="tok-punct">,</span>
+  <span class="tok-property">"status"</span><span class="tok-punct">:</span> <span class="tok-string">"FAZENDO"</span><span class="tok-punct">,</span>
+  <span class="tok-property">"prioridade"</span><span class="tok-punct">:</span> <span class="tok-number">2</span> <span class="tok-comment">// 1 = alta</span>
+<span class="tok-punct">}</span></code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════ GRÁFICOS ════════ -->
+  <section class="ds-sec" id="graficos">
+    <h2>Gráficos</h2>
+    <p class="sub"><code>bar-chart.tsx</code>, <code>pie-chart.tsx</code> e <code>line-chart.tsx</code> — SVG próprio, sem lib; cores só por token (claro/escuro automáticos); <code>role="img"</code> + <code>&lt;title&gt;</code> por elemento; a tabela adjacente é a fonte completa dos dados.</p>
+    <div class="spec-row">
+      <div class="specimen" style="flex:1.4;min-width:340px">
+        <svg role="img" aria-label="Fluxo de caixa: entradas e saídas por mês" viewBox="0 0 480 220" width="100%" style="max-width:520px">
+          <title>Fluxo de caixa: entradas e saídas por mês</title>
+          <g font-size="9" fill="var(--premium-gray)">
+            <line x1="64" x2="472" y1="184" y2="184" stroke="var(--premium-mist)"/><text x="58" y="187" text-anchor="end">0</text>
+            <line x1="64" x2="472" y1="141" y2="141" stroke="var(--premium-mist)"/><text x="58" y="144" text-anchor="end">15k</text>
+            <line x1="64" x2="472" y1="98" y2="98" stroke="var(--premium-mist)"/><text x="58" y="101" text-anchor="end">30k</text>
+            <line x1="64" x2="472" y1="55" y2="55" stroke="var(--premium-mist)"/><text x="58" y="58" text-anchor="end">45k</text>
+            <line x1="64" x2="472" y1="12" y2="12" stroke="var(--premium-mist)"/><text x="58" y="15" text-anchor="end">60k</text>
+          </g>
+          <g>
+            <rect x="92" y="64" width="34" height="120" rx="3" fill="var(--success)"><title>Mar · Entradas: R$ 42.000</title></rect>
+            <rect x="130" y="110" width="34" height="74" rx="3" fill="var(--danger)"><title>Mar · Saídas: R$ 26.000</title></rect>
+            <rect x="228" y="41" width="34" height="143" rx="3" fill="var(--success)"><title>Abr · Entradas: R$ 50.000</title></rect>
+            <rect x="266" y="98" width="34" height="86" rx="3" fill="var(--danger)"><title>Abr · Saídas: R$ 30.000</title></rect>
+            <rect x="364" y="55" width="34" height="129" rx="3" fill="var(--success)"><title>Mai · Entradas: R$ 45.000</title></rect>
+            <rect x="402" y="121" width="34" height="63" rx="3" fill="var(--danger)"><title>Mai · Saídas: R$ 22.000</title></rect>
+          </g>
+          <g font-size="9.5" fill="var(--premium-gray)" text-anchor="middle">
+            <text x="128" y="208">Mar</text><text x="264" y="208">Abr</text><text x="400" y="208">Mai</text>
+          </g>
+          <polyline points="128,127 264,113 400,98" fill="none" stroke="var(--info)" stroke-width="2" stroke-linejoin="round"/>
+          <g>
+            <circle cx="128" cy="127" r="3.5" fill="var(--info)" stroke="var(--premium-white)" stroke-width="1.5"><title>Mar · Saldo: R$ 16.000</title></circle>
+            <circle cx="264" cy="113" r="3.5" fill="var(--info)" stroke="var(--premium-white)" stroke-width="1.5"><title>Abr · Saldo: R$ 20.000</title></circle>
+            <circle cx="400" cy="98" r="3.5" fill="var(--info)" stroke="var(--premium-white)" stroke-width="1.5"><title>Mai · Saldo: R$ 23.000</title></circle>
+          </g>
+        </svg>
+      </div>
+      <div class="specimen" style="flex:1;min-width:300px">
+        <svg role="img" aria-label="Despesas por categoria" viewBox="0 0 168 168" width="168" height="168" style="flex:none">
+          <title>Despesas por categoria</title>
+          <path d="M 84 84 L 84 2 A 82 82 0 0 1 161.9 110.3 Z" fill="var(--violet)" stroke="var(--premium-white)" stroke-width="1.5"><title>Equipe: R$ 14.000 (44%)</title></path>
+          <path d="M 84 84 L 161.9 110.3 A 82 82 0 0 1 41.8 156.5 Z" fill="var(--teal)" stroke="var(--premium-white)" stroke-width="1.5"><title>Mídia: R$ 9.500 (30%)</title></path>
+          <path d="M 84 84 L 41.8 156.5 A 82 82 0 0 1 6.5 60.1 Z" fill="var(--info)" stroke="var(--premium-white)" stroke-width="1.5"><title>Ferramentas: R$ 5.200 (16%)</title></path>
+          <path d="M 84 84 L 6.5 60.1 A 82 82 0 0 1 84 2 Z" fill="var(--warning)" stroke="var(--premium-white)" stroke-width="1.5"><title>Outros: R$ 3.300 (10%)</title></path>
+          <circle cx="84" cy="84" r="45" fill="var(--premium-white)"/>
+          <text x="84" y="88" text-anchor="middle" font-size="12" font-weight="700" fill="var(--premium-ink)">R$ 32k</text>
+        </svg>
+        <figcaption style="display:flex;flex-direction:column;gap:6px;font-size:12px;min-width:160px">
+          <span style="display:flex;align-items:center;gap:8px"><i style="width:10px;height:10px;border-radius:3px;background:var(--violet)"></i><span style="color:var(--premium-steel);flex:1">Equipe</span><b style="font-weight:500">R$ 14.000</b><span style="color:var(--premium-gray)">44%</span></span>
+          <span style="display:flex;align-items:center;gap:8px"><i style="width:10px;height:10px;border-radius:3px;background:var(--teal)"></i><span style="color:var(--premium-steel);flex:1">Mídia</span><b style="font-weight:500">R$ 9.500</b><span style="color:var(--premium-gray)">30%</span></span>
+          <span style="display:flex;align-items:center;gap:8px"><i style="width:10px;height:10px;border-radius:3px;background:var(--info)"></i><span style="color:var(--premium-steel);flex:1">Ferramentas</span><b style="font-weight:500">R$ 5.200</b><span style="color:var(--premium-gray)">16%</span></span>
+          <span style="display:flex;align-items:center;gap:8px"><i style="width:10px;height:10px;border-radius:3px;background:var(--warning)"></i><span style="color:var(--premium-steel);flex:1">Outros</span><b style="font-weight:500">R$ 3.300</b><span style="color:var(--premium-gray)">10%</span></span>
+        </figcaption>
+      </div>
+    </div>
+    <div class="ds-sub">LineChart (line-chart.tsx) — série temporal, linha em <code>--premium-ink</code></div>
+    <div class="specimen">
+      <svg role="img" aria-label="Cards concluídos por semana" viewBox="0 0 480 200" width="100%" style="max-width:560px">
+        <title>Cards concluídos por semana</title>
+        <g font-size="9" fill="var(--premium-gray)">
+          <line x1="44" x2="468" y1="160" y2="160" stroke="var(--premium-mist)"/><text x="38" y="163" text-anchor="end">0</text>
+          <line x1="44" x2="468" y1="123" y2="123" stroke="var(--premium-mist)"/><text x="38" y="126" text-anchor="end">6</text>
+          <line x1="44" x2="468" y1="86" y2="86" stroke="var(--premium-mist)"/><text x="38" y="89" text-anchor="end">12</text>
+          <line x1="44" x2="468" y1="49" y2="49" stroke="var(--premium-mist)"/><text x="38" y="52" text-anchor="end">18</text>
+          <line x1="44" x2="468" y1="12" y2="12" stroke="var(--premium-mist)"/><text x="38" y="15" text-anchor="end">24</text>
+        </g>
+        <polyline points="80,111 174,86 268,98 362,49 456,61" fill="none" stroke="var(--premium-ink)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+        <g>
+          <circle cx="80" cy="111" r="3.5" fill="var(--premium-ink)" stroke="var(--premium-white)" stroke-width="1.5"><title>Sem 27: 8</title></circle>
+          <circle cx="174" cy="86" r="3.5" fill="var(--premium-ink)" stroke="var(--premium-white)" stroke-width="1.5"><title>Sem 28: 12</title></circle>
+          <circle cx="268" cy="98" r="3.5" fill="var(--premium-ink)" stroke="var(--premium-white)" stroke-width="1.5"><title>Sem 29: 10</title></circle>
+          <circle cx="362" cy="49" r="3.5" fill="var(--premium-ink)" stroke="var(--premium-white)" stroke-width="1.5"><title>Sem 30: 18</title></circle>
+          <circle cx="456" cy="61" r="3.5" fill="var(--premium-ink)" stroke="var(--premium-white)" stroke-width="1.5"><title>Sem 31: 16</title></circle>
+        </g>
+        <g font-size="9.5" fill="var(--premium-gray)" text-anchor="middle">
+          <text x="80" y="190">Sem 27</text><text x="174" y="190">Sem 28</text><text x="268" y="190">Sem 29</text><text x="362" y="190">Sem 30</text><text x="456" y="190">Sem 31</text>
+        </g>
+      </svg>
+    </div>
+    <p class="spec-note">Na implementação React a linha se "traça" na entrada (<code>pathLength</code> 0→1, 600ms) e os pontos surgem em sequência; largura via <code>ResizeObserver</code> com rolagem horizontal abaixo do mínimo legível (480px). Usado no throughput de Quadros (WIP/aging).</p>
+  </section>
+
+  <!-- ════════ OUTROS PRIMITIVOS ════════ -->
+  <section class="ds-sec" id="outros">
+    <h2>Outros primitivos (sem demo visual)</h2>
+    <p class="sub">Primitivos de infraestrutura ou dependentes de dados reais do Drive — sem mock estático fiel possível. Referência rápida apontando o fonte em <code>src/components/ui/</code>.</p>
+    <div class="spec-row">
+      <div class="card" style="flex:1;min-width:260px;padding:16px">
+        <b style="font-size:13.5px">DriveMediaViewer</b>
+        <p style="font-size:12px;color:var(--premium-gray);margin:6px 0 8px;line-height:1.5">Leitor próprio de mídia do Drive (imagem/vídeo/áudio) com fallback original → rendição → erro. Base do Lightbox.</p>
+        <code style="font-size:11px;background:var(--c-sunken);padding:1px 5px;border-radius:var(--r-sm)">drive-media-viewer.tsx</code>
+      </div>
+      <div class="card" style="flex:1;min-width:260px;padding:16px">
+        <b style="font-size:13.5px">DriveOnlineLink</b>
+        <p style="font-size:12px;color:var(--premium-gray);margin:6px 0 8px;line-height:1.5">Link "abrir no Drive" com resolução do arquivo/pasta online e estados de carregamento/erro.</p>
+        <code style="font-size:11px;background:var(--c-sunken);padding:1px 5px;border-radius:var(--r-sm)">drive-online-link.tsx</code>
+      </div>
+      <div class="card" style="flex:1;min-width:260px;padding:16px">
+        <b style="font-size:13.5px">DrivePrefsContext</b>
+        <p style="font-size:12px;color:var(--premium-gray);margin:6px 0 8px;line-height:1.5">Contexto de preferências de exibição do Drive (grade/lista etc.) compartilhado entre superfícies.</p>
+        <code style="font-size:11px;background:var(--c-sunken);padding:1px 5px;border-radius:var(--r-sm)">drive-prefs-context.tsx</code>
+      </div>
+    </div>
+    <div class="spec-row" style="margin-top:14px">
+      <div class="card" style="flex:1;min-width:260px;padding:16px">
+        <b style="font-size:13.5px">MotionProvider</b>
+        <p style="font-size:12px;color:var(--premium-gray);margin:6px 0 8px;line-height:1.5">Provider do Motion (LazyMotion + <code>MotionConfig reducedMotion</code>) que habilita os presets de animação do app.</p>
+        <code style="font-size:11px;background:var(--c-sunken);padding:1px 5px;border-radius:var(--r-sm)">motion-provider.tsx</code>
+      </div>
+      <div class="card" style="flex:1;min-width:260px;padding:16px">
+        <b style="font-size:13.5px">ColunaInfinita</b>
+        <p style="font-size:12px;color:var(--premium-gray);margin:6px 0 8px;line-height:1.5">Scroll infinito de coluna do Kanban (sentinela + carregamento incremental) — comportamento, não visual.</p>
+        <code style="font-size:11px;background:var(--c-sunken);padding:1px 5px;border-radius:var(--r-sm)">coluna-infinita.tsx</code>
+      </div>
+      <div class="card" style="flex:1;min-width:260px;padding:16px">
+        <b style="font-size:13.5px">code-highlight</b>
+        <p style="font-size:12px;color:var(--premium-gray);margin:6px 0 8px;line-height:1.5">Tokenizador leve que emite as classes <code>.tok-*</code> do bloco de código (seção Bloco de código) — sem hex no TSX.</p>
+        <code style="font-size:11px;background:var(--c-sunken);padding:1px 5px;border-radius:var(--r-sm)">code-highlight.ts</code>
+      </div>
+    </div>
+  </section>
+
+  <footer style="border-top:1px solid var(--c-border);padding-top:18px;font-size:11.5px;color:var(--c-muted);line-height:1.6">
+    Showroom do Design System Premium. Fontes da verdade: <code>src/app/globals.css</code> (tokens), <code>src/components/ui/</code> (primitivos) e <code>docs/design-system/ui-guidelines.md</code> (regras).
+    Documentação completa em <code>docs/design-system/</code>. Este arquivo é excluído do build (<code>@source not "../../docs"</code>).
+  </footer>
+  </div>
+</main>
+
+<!-- Toast vivo -->
+<div id="toast-live" aria-live="polite" role="status"></div>
+
+<!-- Slide-over demo -->
+<div id="so-demo" hidden>
+  <div class="so-scrim" data-so-close></div>
+  <div class="so-panel" role="dialog" aria-modal="true" aria-label="Nova demanda">
+    <div class="so-h">
+      <h2>Nova demanda</h2>
+      <button class="so-close" data-so-close aria-label="Fechar"><i data-lucide="x"></i></button>
+    </div>
+    <div class="autosave-wrap" style="visibility:hidden"><div class="autosave-bar"></div></div>
+    <div class="so-b">
+      <div class="field"><label for="so-f1">Título</label><input class="input" id="so-f1" placeholder="Ex.: Post carrossel — lançamento"></div>
+      <div class="field"><label for="so-f2">Cliente</label>
+        <div class="dsel" data-dsel>
+          <button class="dsel-trigger" id="so-f2" type="button" role="combobox" aria-haspopup="listbox" aria-expanded="false">
+            <span class="val">Acme Indústria</span><i data-lucide="chevron-down" class="chev"></i>
+          </button>
+          <div class="dsel-pop"><div class="dsel-list" role="listbox">
+            <button class="dsel-item sel" type="button" role="option" aria-selected="true"><span class="lbl">Acme Indústria</span><i data-lucide="check" class="dsel-check"></i></button>
+            <button class="dsel-item" type="button" role="option"><span class="lbl">Bistrô do Vale</span><i data-lucide="check" class="dsel-check"></i></button>
+          </div></div>
+        </div>
+      </div>
+      <div class="field"><label for="so-f3">Prioridade</label>
+        <div class="dsel" data-dsel>
+          <button class="dsel-trigger" id="so-f3" type="button" role="combobox" aria-haspopup="listbox" aria-expanded="false">
+            <span class="val">Média</span><i data-lucide="chevron-down" class="chev"></i>
+          </button>
+          <div class="dsel-pop"><div class="dsel-list" role="listbox">
+            <button class="dsel-item" type="button" role="option"><span class="lbl">Alta</span><i data-lucide="check" class="dsel-check"></i></button>
+            <button class="dsel-item sel" type="button" role="option" aria-selected="true"><span class="lbl">Média</span><i data-lucide="check" class="dsel-check"></i></button>
+            <button class="dsel-item" type="button" role="option"><span class="lbl">Baixa</span><i data-lucide="check" class="dsel-check"></i></button>
+          </div></div>
+        </div>
+      </div>
+      <div class="note"><i data-lucide="lightbulb"></i><span>O workflow é montado a partir do modelo do tipo de demanda escolhido.</span></div>
+    </div>
+    <div class="so-f">
+      <button class="btn btn-ghost" data-so-close>Cancelar</button>
+      <button class="btn btn-primary" data-so-close>Criar demanda</button>
+    </div>
+  </div>
+</div>
+
+<!-- Confirm dialog demo -->
+<div id="dlg-demo" hidden>
+  <div class="dlg-scrim" data-dlg-close></div>
+  <div class="dlg" role="dialog" aria-modal="true">
+    <div class="dlg-head">
+      <span class="dlg-ic" id="dlg-ic"><i data-lucide="alert-triangle"></i></span>
+      <div>
+        <h3 id="dlg-title">Excluir demanda?</h3>
+        <p class="dlg-msg" id="dlg-msg">Esta ação não pode ser desfeita. Os comentários e o histórico serão perdidos.</p>
+      </div>
+    </div>
+    <div class="dlg-actions">
+      <button class="btn btn-ghost btn-sm" data-dlg-close>Cancelar</button>
+      <button class="btn btn-danger btn-sm" id="dlg-confirm" data-dlg-close>Excluir</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ── Tema (mesma mecânica do app: classe .dark em <html>, chave premium-theme) ── */
+(function(){
+  var saved = null;
+  try { saved = localStorage.getItem("premium-theme"); } catch(e){}
+  var dark = saved ? saved === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
+  document.documentElement.classList.toggle("dark", dark);
+})();
+function syncThemeIcon(){
+  var dark = document.documentElement.classList.contains("dark");
+  document.getElementById("theme-icon-moon").style.display = dark ? "none" : "";
+  document.getElementById("theme-icon-sun").style.display = dark ? "" : "none";
+}
+document.getElementById("theme-toggle").addEventListener("click", function(){
+  var dark = document.documentElement.classList.toggle("dark");
+  try { localStorage.setItem("premium-theme", dark ? "dark" : "light"); } catch(e){}
+  syncThemeIcon();
+  renderSwatches();
+});
+
+/* ── Swatches lidas ao vivo do CSS (atualizam com o tema) ── */
+function rgbToHex(rgb){
+  var m = rgb.match(/\d+/g);
+  if(!m) return rgb;
+  return "#" + m.slice(0,3).map(function(n){ return (+n).toString(16).padStart(2,"0"); }).join("").toUpperCase();
+}
+function renderSwatches(){
+  var probe = document.createElement("span");
+  document.body.appendChild(probe);
+  document.querySelectorAll("[data-swatches]").forEach(function(grid){
+    var defs = JSON.parse(grid.getAttribute("data-swatches"));
+    grid.innerHTML = "";
+    defs.forEach(function(d){
+      var token = d[0], use = d[1];
+      var raw = getComputedStyle(document.documentElement).getPropertyValue(token).trim();
+      probe.style.color = "";
+      probe.style.color = raw;
+      var hex = raw.startsWith("#") ? raw.toUpperCase() : rgbToHex(getComputedStyle(probe).color);
+      var card = document.createElement("div");
+      card.className = "swatch";
+      card.innerHTML =
+        '<div class="chipc" style="background:'+raw+'"></div>' +
+        '<div class="info"><b>'+token+'</b><span class="hex">'+hex+'</span><span class="use">'+use+'</span></div>';
+      grid.appendChild(card);
+    });
+  });
+  probe.remove();
+}
+
+/* ── Tabs demo ── */
+document.querySelectorAll("[data-demo-tabs]").forEach(function(group){
+  group.querySelectorAll(".tab").forEach(function(tab){
+    tab.addEventListener("click", function(){
+      group.querySelectorAll(".tab").forEach(function(t){
+        t.classList.remove("active"); t.setAttribute("aria-selected","false");
+      });
+      tab.classList.add("active"); tab.setAttribute("aria-selected","true");
+    });
+  });
+});
+
+/* ── Accordion demo ── */
+document.querySelectorAll("[data-acc] .acc-trigger").forEach(function(btn){
+  btn.addEventListener("click", function(){
+    var acc = btn.closest(".acc");
+    var open = acc.classList.toggle("open");
+    btn.setAttribute("aria-expanded", String(open));
+  });
+});
+
+/* ── Toast vivo (auto-dismiss 4s, pausa no hover, máx. 3) ── */
+var ICONS = { success:"check-circle-2", info:"info", warning:"alert-triangle" };
+function showToast(variant, msg){
+  var live = document.getElementById("toast-live");
+  while(live.children.length >= 3) live.firstChild.remove();
+  var el = document.createElement("div");
+  el.className = "toast";
+  el.innerHTML = '<span class="t-ic"><i data-lucide="'+ICONS[variant]+'"></i></span><p></p>' +
+    '<button class="t-close" aria-label="Dispensar aviso"><i data-lucide="x"></i></button>';
+  el.querySelector("p").textContent = msg;
+  live.appendChild(el);
+  lucide.createIcons();
+  var remaining = 4000, start = Date.now(), timer = setTimeout(dismiss, remaining);
+  function dismiss(){ el.remove(); }
+  el.addEventListener("mouseenter", function(){ clearTimeout(timer); remaining -= Date.now() - start; });
+  el.addEventListener("mouseleave", function(){ start = Date.now(); timer = setTimeout(dismiss, Math.max(0, remaining)); });
+  el.querySelector(".t-close").addEventListener("click", function(){ clearTimeout(timer); dismiss(); });
+}
+document.querySelectorAll("[data-toast]").forEach(function(btn){
+  btn.addEventListener("click", function(){ showToast(btn.dataset.toast, btn.dataset.msg); });
+});
+
+/* ── Copiar do code block ── */
+document.querySelectorAll("[data-copy]").forEach(function(btn){
+  btn.addEventListener("click", function(){
+    var code = btn.closest(".codeblock").querySelector("code").innerText;
+    navigator.clipboard.writeText(code).then(
+      function(){ showToast("success","Copiado."); },
+      function(){ showToast("warning","Não foi possível copiar. Copie manualmente."); }
+    );
+  });
+});
+
+/* ── Slide-over / dialog demo (Esc fecha; foco simples) ── */
+function bindOverlay(openBtnId, overlayId){
+  var overlay = document.getElementById(overlayId);
+  var openBtn = document.getElementById(openBtnId);
+  if(openBtn) openBtn.addEventListener("click", function(){ overlay.hidden = false; });
+  overlay.querySelectorAll("[data-so-close],[data-dlg-close]").forEach(function(b){
+    b.addEventListener("click", function(){ overlay.hidden = true; });
+  });
+  document.addEventListener("keydown", function(e){
+    if(e.key === "Escape" && !overlay.hidden) overlay.hidden = true;
+  });
+}
+bindOverlay("open-so","so-demo");
+bindOverlay("open-dlg","dlg-demo");
+document.getElementById("open-dlg-neutral").addEventListener("click", function(){
+  var ic = document.getElementById("dlg-ic");
+  ic.className = "dlg-ic neutral";
+  ic.innerHTML = '<i data-lucide="clock"></i>';
+  document.getElementById("dlg-title").textContent = "Registrar horas?";
+  document.getElementById("dlg-msg").textContent = "Informe o tempo dedicado a esta etapa antes de concluir.";
+  var c = document.getElementById("dlg-confirm");
+  c.className = "btn btn-primary btn-sm"; c.textContent = "Confirmar";
+  document.getElementById("dlg-demo").hidden = false;
+  lucide.createIcons();
+});
+
+/* ── Select custom (dsel): abre/fecha, seleciona, busca, Esc/clique fora ── */
+document.querySelectorAll("[data-dsel]").forEach(function(dsel){
+  var trigger = dsel.querySelector(".dsel-trigger");
+  var val = trigger.querySelector(".val");
+  var items = Array.prototype.slice.call(dsel.querySelectorAll(".dsel-item"));
+  var search = dsel.querySelector(".dsel-search input");
+  var empty = dsel.querySelector(".dsel-empty");
+  function norm(s){ return s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,""); }
+  function close(){ dsel.classList.remove("open"); trigger.setAttribute("aria-expanded","false"); }
+  function filtra(t){
+    var termo = norm(t.trim()), visiveis = 0;
+    items.forEach(function(it){
+      var hit = !termo || norm(it.textContent).indexOf(termo) !== -1;
+      it.style.display = hit ? "" : "none";
+      if(hit) visiveis++;
+    });
+    if(empty) empty.hidden = visiveis > 0;
+  }
+  trigger.addEventListener("click", function(){
+    var open = dsel.classList.toggle("open");
+    trigger.setAttribute("aria-expanded", String(open));
+    if(open && search){ search.value = ""; filtra(""); setTimeout(function(){ search.focus(); }, 0); }
+  });
+  items.forEach(function(it){
+    it.addEventListener("click", function(){
+      items.forEach(function(o){ o.classList.remove("sel"); o.setAttribute("aria-selected","false"); });
+      it.classList.add("sel"); it.setAttribute("aria-selected","true");
+      val.textContent = it.querySelector(".lbl").textContent;
+      val.classList.toggle("placeholder", it.classList.contains("is-placeholder"));
+      close(); trigger.focus();
+    });
+  });
+  if(search) search.addEventListener("input", function(){ filtra(search.value); });
+  document.addEventListener("mousedown", function(e){ if(!dsel.contains(e.target)) close(); });
+  dsel.addEventListener("keydown", function(e){
+    if(e.key === "Escape"){ e.stopPropagation(); close(); trigger.focus(); }
+  });
+});
+
+/* ── FAB: rótulo principal aparece junto com o dial ── */
+var fab = document.querySelector(".fab");
+var plabel = document.querySelector("[data-fab-plabel]");
+if(fab && plabel){
+  fab.addEventListener("mouseenter", function(){ plabel.style.opacity = "1"; });
+  fab.addEventListener("mouseleave", function(){ plabel.style.opacity = "0"; });
+}
+
+/* ── Contador (contador.tsx): contagem crescente; reanima no clique ── */
+var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+function fmtCount(el, n){
+  if(el.dataset.format === "brl") return "R$ " + Math.round(n).toLocaleString("pt-BR");
+  return String(Math.round(n));
+}
+function animateCount(el){
+  var alvo = +el.dataset.countup;
+  if(reduceMotion){ el.textContent = fmtCount(el, alvo); return; }
+  var t0 = performance.now(), dur = 800;
+  function tick(t){
+    var p = Math.min(1, (t - t0) / dur);
+    var eased = 1 - Math.pow(1 - p, 3);
+    el.textContent = fmtCount(el, alvo * eased);
+    if(p < 1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+document.querySelectorAll("[data-countup]").forEach(function(el){
+  animateCount(el);
+  el.closest(".card").style.cursor = "pointer";
+  el.closest(".card").addEventListener("click", function(){ animateCount(el); });
+});
+
+/* ── TextoExpansivel: alterna prévia clampada ↔ altura natural ── */
+document.querySelectorAll("[data-texp]").forEach(function(wrap){
+  var body = wrap.querySelector("[data-texp-body]");
+  var fade = wrap.querySelector("[data-texp-fade]");
+  var btn = wrap.querySelector("[data-texp-btn]");
+  btn.addEventListener("click", function(){
+    var aberto = btn.getAttribute("aria-expanded") === "true";
+    btn.setAttribute("aria-expanded", String(!aberto));
+    body.style.maxHeight = aberto ? "72px" : body.scrollHeight + "px";
+    fade.style.display = aberto ? "" : "none";
+    btn.querySelector("svg") && (btn.querySelector("svg").style.transform = aberto ? "" : "rotate(180deg)");
+    btn.querySelector("span").textContent = aberto ? "ver mais" : "ver menos";
+  });
+});
+
+/* ── Scrollspy simples na nav lateral ── */
+var navLinks = Array.prototype.slice.call(document.querySelectorAll(".ds-nav a"));
+var sections = navLinks.map(function(a){ return document.querySelector(a.getAttribute("href")); });
+window.addEventListener("scroll", function(){
+  var y = window.scrollY + 120, current = 0;
+  sections.forEach(function(s, i){ if(s && s.offsetTop <= y) current = i; });
+  navLinks.forEach(function(a, i){ a.classList.toggle("active", i === current); });
+}, { passive:true });
+
+lucide.createIcons();
+syncThemeIcon();
+renderSwatches();
+</script>
+</body>
+</html>

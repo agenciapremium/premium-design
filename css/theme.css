@@ -1,0 +1,45 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   PREMIUM · MARKETING 360° — Ponte Tailwind CSS v4
+   Só faz sentido em projetos com Tailwind v4 (config CSS-first). Gera as
+   utilities semânticas: bg-bg, bg-surface, bg-sunken, text-ink, text-muted,
+   text-subtle, border-border, border-border-strong, bg-brand, text-on-brand,
+   bg-success-bg, text-danger, …
+   Projetos sem Tailwind: importe apenas tokens.css/base.css e ignore este.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Variante dark dirigida por classe (html.dark), padrão dos sistemas Premium.
+   O toggle de tema estampa/remove .dark no <html> (chave localStorage
+   `premium-theme`; sem escolha salva, siga prefers-color-scheme). */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme inline {
+  --font-sans: "Ubuntu", system-ui, sans-serif;
+
+  /* Semânticos → --c-* (utilities bg-surface, text-ink, border-border, …) */
+  --color-bg: var(--c-bg);
+  --color-surface: var(--c-surface);
+  --color-sunken: var(--c-sunken);
+  --color-ink: var(--c-ink);
+  --color-muted: var(--c-muted);
+  --color-subtle: var(--c-subtle);
+  --color-border: var(--c-border);
+  --color-border-strong: var(--c-border-strong);
+
+  /* Compatibilidade: utilities bg-background / text-foreground existentes */
+  --color-background: var(--c-bg);
+  --color-foreground: var(--c-ink);
+
+  /* Marca (fixa — não muda por tema) */
+  --color-brand: var(--brand-yellow);
+  --color-on-brand: #000000;
+
+  /* Status */
+  --color-success: var(--success);
+  --color-success-bg: var(--success-bg);
+  --color-warning: var(--warning);
+  --color-warning-bg: var(--warning-bg);
+  --color-danger: var(--danger);
+  --color-danger-bg: var(--danger-bg);
+  --color-info: var(--info);
+  --color-info-bg: var(--info-bg);
+}

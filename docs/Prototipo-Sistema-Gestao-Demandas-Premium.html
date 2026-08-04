@@ -1,0 +1,1139 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Premium · Gestão de Demandas (Protótipo)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+:root{
+  --premium-black:#000;--premium-ink:#0A0A0A;--premium-coal:#1A1A1A;--premium-graphite:#2A2A2A;
+  --premium-steel:#4A4A4A;--premium-gray:#8A8A8A;--premium-silver:#BFBFBF;--premium-mist:#E5E5E5;
+  --premium-bone:#F2F2F2;--premium-paper:#FAFAFA;--premium-white:#FFF;
+  --yellow:#FBDA25;--gold:#FCD028;--amber:#F7BA30;--yellow-50:#FFFBE0;
+  --success:#1E8E4A;--success-bg:#E6F4EA;--warning:#C97A0F;--warning-bg:#FFF3DB;
+  --danger:#C0322B;--danger-bg:#FBE9E7;--info:#1A6FB0;--info-bg:#E6F1FA;
+  --violet:#6E56CF;--violet-bg:#EDE9FB;--teal:#0E8C8C;--teal-bg:#E2F3F3;--slate:#5B6472;--slate-bg:#EDF0F3;
+  --r-sm:6px;--r-md:8px;--r-lg:12px;--r-xl:18px;--r-pill:999px;
+  --sh-sm:0 1px 3px rgba(10,10,10,.08),0 1px 2px rgba(10,10,10,.04);
+  --sh-md:0 4px 12px rgba(10,10,10,.08),0 2px 4px rgba(10,10,10,.04);
+  --sh-lg:0 12px 32px rgba(10,10,10,.12),0 4px 8px rgba(10,10,10,.06);
+  --sh-gold:0 12px 28px rgba(251,218,37,.40),0 4px 8px rgba(247,186,48,.22);
+  --ease:cubic-bezier(.22,.61,.36,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:"Ubuntu",system-ui,sans-serif;background:var(--premium-paper);color:var(--premium-ink);-webkit-font-smoothing:antialiased;display:flex;min-height:100vh}
+::selection{background:var(--yellow);color:#000}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-thumb{background:var(--premium-mist);border-radius:999px;border:2px solid var(--premium-paper)}
+.eyebrow{font-weight:700;font-size:10px;letter-spacing:.20em;text-transform:uppercase;color:var(--premium-gray)}
+
+/* ---------- SIDEBAR ---------- */
+.sidebar{width:248px;flex:0 0 248px;background:var(--premium-ink);color:#fff;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;padding:22px 16px;gap:6px}
+.brand{display:flex;align-items:center;gap:11px;padding:6px 8px 18px}
+.brand .trophy{width:34px;height:34px;color:var(--yellow);flex:0 0 auto}
+.brand .wm{line-height:1}
+.brand .wm b{font-weight:700;font-size:19px;letter-spacing:.02em;color:#fff;display:block}
+.brand .wm span{font-size:8px;letter-spacing:.30em;color:var(--gold);font-weight:500}
+.nav-label{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--premium-steel);padding:14px 10px 6px;font-weight:700}
+.nav-item{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:var(--r-md);color:var(--premium-silver);cursor:pointer;font-size:14px;font-weight:500;border-left:3px solid transparent;transition:all .14s var(--ease);position:relative}
+.nav-item svg{width:18px;height:18px}
+.nav-item:hover{background:var(--premium-coal);color:#fff}
+.nav-item.active{background:var(--premium-coal);color:var(--yellow);border-left-color:var(--yellow)}
+.nav-item .badge{margin-left:auto;background:var(--yellow);color:#000;font-size:10px;font-weight:700;padding:1px 7px;border-radius:999px}
+.nav-item.admin-only .lock{margin-left:auto;width:13px;height:13px;color:var(--premium-steel)}
+.side-foot{margin-top:auto;border-top:1px solid var(--premium-graphite);padding-top:14px;display:flex;align-items:center;gap:11px}
+.avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex:0 0 auto;color:#000}
+.side-foot .meta{line-height:1.3}
+.side-foot .meta b{font-size:13px;color:#fff;display:block;font-weight:500}
+.side-foot .meta span{font-size:11px;color:var(--premium-gray)}
+
+/* ---------- MAIN ---------- */
+.main{flex:1;min-width:0;display:flex;flex-direction:column}
+.topbar{height:68px;flex:0 0 68px;background:rgba(255,255,255,.82);backdrop-filter:blur(12px) saturate(140%);border-bottom:1px solid var(--premium-mist);display:flex;align-items:center;gap:18px;padding:0 26px;position:sticky;top:0;z-index:20}
+.search{flex:1;max-width:440px;display:flex;align-items:center;gap:10px;background:var(--premium-bone);border:1px solid transparent;border-radius:var(--r-pill);padding:10px 16px;color:var(--premium-gray);cursor:text;transition:all .14s var(--ease)}
+.search:hover{border-color:var(--premium-mist)}
+.search svg{width:16px;height:16px}
+.search input{border:0;background:transparent;outline:none;font-family:inherit;font-size:14px;flex:1;color:var(--premium-ink)}
+.search kbd{font-family:inherit;font-size:10px;background:#fff;border:1px solid var(--premium-mist);border-radius:4px;padding:2px 6px;color:var(--premium-gray)}
+.top-actions{margin-left:auto;display:flex;align-items:center;gap:14px}
+.btn{font-family:inherit;font-weight:700;font-size:13px;letter-spacing:.03em;text-transform:uppercase;border:1px solid transparent;border-radius:var(--r-md);cursor:pointer;display:inline-flex;align-items:center;gap:8px;padding:11px 18px;transition:all .14s var(--ease)}
+.btn svg{width:16px;height:16px}
+.btn-primary{background:var(--yellow);color:#000;box-shadow:var(--sh-gold)}
+.btn-primary:hover{background:var(--gold)}
+.btn-primary:active{background:var(--amber);transform:translateY(1px)}
+.btn-dark{background:var(--premium-ink);color:#fff}
+.btn-dark:hover{background:var(--premium-graphite)}
+.btn-ghost{background:transparent;color:var(--premium-ink);border-color:var(--premium-mist)}
+.btn-ghost:hover{border-color:var(--premium-ink)}
+.btn-sm{padding:8px 12px;font-size:11px}
+.icon-btn{width:40px;height:40px;border-radius:var(--r-md);border:1px solid var(--premium-mist);background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--premium-steel);position:relative;transition:all .14s var(--ease)}
+.icon-btn:hover{border-color:var(--premium-ink);color:var(--premium-ink)}
+.icon-btn svg{width:18px;height:18px}
+.dot{position:absolute;top:8px;right:9px;width:8px;height:8px;background:var(--danger);border-radius:50%;border:2px solid #fff}
+
+.content{padding:26px 30px 60px;overflow-y:auto;flex:1}
+.screen{display:none;animation:fade .3s var(--ease)}
+.screen.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.page-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:22px;flex-wrap:wrap}
+.page-head h1{font-size:32px;font-weight:700;letter-spacing:-.02em;display:flex;align-items:center;gap:10px}
+.page-head .sub{color:var(--premium-gray);font-size:14px;margin-top:3px}
+.page-head .edit{width:18px;height:18px;color:var(--premium-silver);cursor:pointer}
+
+/* tabs / segmented */
+.tabs{display:flex;gap:4px;background:var(--premium-bone);padding:4px;border-radius:var(--r-md)}
+.tab{padding:8px 16px;border-radius:var(--r-sm);font-size:13px;font-weight:500;color:var(--premium-steel);cursor:pointer;border:0;background:transparent;font-family:inherit;display:flex;align-items:center;gap:7px}
+.tab.active{background:#fff;color:#000;box-shadow:var(--sh-sm);font-weight:700}
+.tab .count{font-size:11px;color:var(--premium-gray)}
+.tab.active .count{color:var(--amber)}
+.filters{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:20px}
+.chip-filter{display:inline-flex;align-items:center;gap:7px;background:#fff;border:1px solid var(--premium-mist);border-radius:var(--r-pill);padding:8px 14px;font-size:13px;color:var(--premium-steel);cursor:pointer;font-weight:500}
+.chip-filter svg{width:14px;height:14px;color:var(--premium-gray)}
+.chip-filter:hover{border-color:var(--premium-steel)}
+.chip-auto{margin-left:auto;background:var(--premium-ink);color:#fff;border-color:var(--premium-ink)}
+.chip-auto svg{color:var(--yellow)}
+
+/* ---------- DASHBOARD ---------- */
+.dash-grid{display:grid;grid-template-columns:1fr 332px;gap:22px;align-items:start}
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
+.stat{background:#fff;border:1px solid var(--premium-mist);border-radius:var(--r-lg);padding:16px 18px;box-shadow:var(--sh-sm)}
+.stat .ico{width:34px;height:34px;border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;margin-bottom:12px}
+.stat .ico svg{width:18px;height:18px}
+.stat .num{font-size:30px;font-weight:700;letter-spacing:-.02em;line-height:1}
+.stat .lbl{font-size:12px;color:var(--premium-gray);margin-top:4px}
+.stat.feat{background:var(--premium-ink);border-color:var(--premium-ink);color:#fff}
+.stat.feat .lbl{color:rgba(255,255,255,.6)}
+.stat.feat .ico{background:var(--yellow);color:#000}
+
+.panel{background:#fff;border:1px solid var(--premium-mist);border-radius:var(--r-lg);box-shadow:var(--sh-sm);margin-bottom:22px;overflow:hidden}
+.panel-h{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid var(--premium-mist)}
+.panel-h h3{font-size:15px;font-weight:700}
+.panel-h .link{font-size:12px;color:var(--premium-steel);font-weight:500;cursor:pointer;display:flex;align-items:center;gap:5px}
+.panel-h .link svg{width:13px;height:13px}
+.panel-b{padding:8px 8px}
+
+.row-item{display:flex;align-items:center;gap:13px;padding:11px 12px;border-radius:var(--r-md);cursor:pointer;transition:background .14s}
+.row-item:hover{background:var(--premium-paper)}
+.row-item .stripe{width:4px;height:34px;border-radius:4px;flex:0 0 auto}
+.row-item .ri-body{flex:1;min-width:0}
+.row-item .ri-title{font-size:13.5px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row-item .ri-sub{font-size:11.5px;color:var(--premium-gray);margin-top:2px}
+.row-item .ri-time{font-size:12px;color:var(--premium-steel);font-weight:500;flex:0 0 auto}
+
+.check{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:var(--r-md)}
+.check:hover{background:var(--premium-paper)}
+.check .box{width:18px;height:18px;border:2px solid var(--premium-silver);border-radius:5px;flex:0 0 auto;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.check .box svg{width:12px;height:12px;color:#fff;opacity:0}
+.check.done .box{background:var(--success);border-color:var(--success)}
+.check.done .box svg{opacity:1}
+.check.done .ck-title{text-decoration:line-through;color:var(--premium-gray)}
+.check .ck-title{font-size:13.5px;flex:1}
+.check .pri{font-size:10px;font-weight:700;padding:2px 8px;border-radius:999px;text-transform:uppercase;letter-spacing:.04em}
+
+.client-pills{display:flex;flex-wrap:wrap;gap:9px;padding:6px}
+.client-pill{display:flex;align-items:center;gap:9px;border:1px solid var(--premium-mist);border-radius:var(--r-pill);padding:6px 14px 6px 6px;font-size:13px;font-weight:500;cursor:pointer;transition:all .14s}
+.client-pill:hover{border-color:var(--premium-ink);box-shadow:var(--sh-sm)}
+.client-pill .av{width:26px;height:26px;border-radius:50%;font-size:11px}
+
+.fav-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:6px}
+.fav{border:1px solid var(--premium-mist);border-radius:var(--r-lg);padding:14px;cursor:pointer;transition:all .14s;position:relative;overflow:hidden}
+.fav:hover{box-shadow:var(--sh-md);transform:translateY(-2px)}
+.fav .star{position:absolute;top:12px;right:12px;width:15px;height:15px;color:var(--gold);fill:var(--gold)}
+.fav .ft{font-size:14px;font-weight:700;margin-bottom:3px;padding-right:20px}
+.fav .fc{font-size:11.5px;color:var(--premium-gray)}
+.fav .bar{height:6px;background:var(--premium-bone);border-radius:999px;margin-top:13px;overflow:hidden}
+.fav .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--yellow),var(--amber));border-radius:999px}
+.fav .pct{font-size:11px;color:var(--premium-steel);font-weight:700;margin-top:6px;display:flex;justify-content:space-between}
+.fav .go{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--amber);margin-top:10px}
+.fav .go svg{width:13px;height:13px}
+
+/* calendar widget */
+.cal{padding:16px}
+.cal-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.cal-h b{font-size:14px;font-weight:700}
+.cal-h .nav{display:flex;gap:6px}
+.cal-h .nav span{width:26px;height:26px;border-radius:var(--r-sm);border:1px solid var(--premium-mist);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--premium-steel)}
+.cal-h .nav span:hover{border-color:var(--premium-ink)}
+.cal-h .nav svg{width:13px;height:13px}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;text-align:center}
+.cal-grid .dow{font-size:10px;color:var(--premium-gray);font-weight:700;padding:4px 0}
+.cal-grid .day{font-size:12.5px;padding:7px 0;border-radius:var(--r-sm);cursor:pointer;color:var(--premium-steel);position:relative}
+.cal-grid .day:hover{background:var(--premium-bone)}
+.cal-grid .day.muted{color:var(--premium-silver)}
+.cal-grid .day.today{background:#000;color:var(--yellow);font-weight:700}
+.cal-grid .day.has::after{content:"";position:absolute;bottom:3px;left:50%;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:var(--amber)}
+.cal-grid .day.today.has::after{background:var(--yellow)}
+
+.agenda{padding:6px 8px 10px}
+.ag-item{display:flex;gap:11px;padding:9px 8px}
+.ag-item .tl{display:flex;flex-direction:column;align-items:center}
+.ag-item .tl .d{width:10px;height:10px;border-radius:50%;border:2px solid var(--amber);margin-top:4px}
+.ag-item .tl .line{width:2px;flex:1;background:var(--premium-mist);margin-top:3px}
+.ag-item:last-child .tl .line{display:none}
+.ag-item .ab{flex:1;padding-bottom:4px}
+.ag-item .ab .t{font-size:13px;font-weight:500}
+.ag-item .ab .s{font-size:11.5px;color:var(--premium-gray);margin-top:2px}
+.ag-item .ab .time{font-size:11px;color:var(--premium-steel);font-weight:700}
+
+/* ---------- KANBAN ---------- */
+/* Colunas em altura total e uniforme (stretch); cabecalho fixo (sticky) acima
+   da area rolavel; corpo da coluna rola por conta propria com barra fina. */
+.board{display:flex;gap:16px;align-items:stretch;overflow-x:auto;padding-bottom:10px;height:calc(100vh - 230px)}
+.col{flex:0 0 290px;background:var(--premium-bone);border-radius:var(--r-lg);padding:0 12px 12px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--premium-silver) transparent}
+.col::-webkit-scrollbar{width:8px}
+.col::-webkit-scrollbar-track{background:transparent}
+.col::-webkit-scrollbar-thumb{background:var(--premium-silver);border-radius:var(--r-pill);border:2px solid transparent;background-clip:padding-box}
+.col:hover::-webkit-scrollbar-thumb{background:var(--premium-steel)}
+.col-h{position:sticky;top:0;z-index:1;background:var(--premium-bone);display:flex;align-items:center;gap:8px;padding:12px 0 12px}
+.col-h .ttl{font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.04em}
+.col-h .cnt{font-size:11px;background:#fff;color:var(--premium-steel);border-radius:999px;padding:1px 8px;font-weight:700}
+.col-h .dotmark{width:9px;height:9px;border-radius:50%}
+/* Coluna vazia: hint discreto de drop em altura total. */
+.col-empty{flex:1;min-height:120px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;border:2px dashed var(--premium-mist);border-radius:var(--r-md);color:var(--premium-gray);font-size:12px}
+.kcard{background:#fff;border:1px solid var(--premium-mist);border-radius:var(--r-lg);padding:13px;margin-bottom:11px;cursor:pointer;box-shadow:var(--sh-sm);transition:all .14s var(--ease)}
+.kcard:hover{box-shadow:var(--sh-md);transform:translateY(-2px);border-color:var(--premium-silver)}
+.kcard .tag{display:inline-flex;align-items:center;gap:6px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:3px 9px;border-radius:999px;margin-bottom:9px}
+.kcard .kt{font-size:14px;font-weight:500;line-height:1.35;margin-bottom:5px}
+.kcard .kc{font-size:11.5px;color:var(--premium-gray);display:flex;align-items:center;gap:5px;margin-bottom:11px}
+.kcard .kc svg{width:12px;height:12px}
+.kcard .stagebar{display:flex;gap:3px;margin-bottom:11px}
+.kcard .stagebar i{height:4px;flex:1;border-radius:2px;background:var(--premium-mist)}
+.kcard .kf{display:flex;align-items:center;justify-content:space-between}
+.avstack{display:flex}
+.avstack .av{width:26px;height:26px;border-radius:50%;border:2px solid #fff;margin-left:-7px;font-size:10px}
+.avstack .av:first-child{margin-left:0}
+.kmeta{display:flex;align-items:center;gap:12px;color:var(--premium-gray);font-size:11.5px}
+.kmeta span{display:flex;align-items:center;gap:4px}
+.kmeta svg{width:13px;height:13px}
+.kmeta .late{color:var(--danger);font-weight:700}
+.pri-dot{width:8px;height:8px;border-radius:50%}
+.kcard.locked{opacity:.62;background:repeating-linear-gradient(135deg,#fff,#fff 10px,#fcfcfc 10px,#fcfcfc 20px)}
+.kcard.locked .lockrow{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--premium-gray);font-weight:500;margin-top:4px}
+.kcard.locked .lockrow svg{width:13px;height:13px}
+
+/* tag colors */
+.t-social{background:var(--warning-bg);color:var(--warning)}
+.t-criacao{background:var(--violet-bg);color:var(--violet)}
+.t-redacao{background:var(--teal-bg);color:var(--teal)}
+.t-audio{background:var(--slate-bg);color:var(--slate)}
+.t-trafego{background:var(--success-bg);color:var(--success)}
+.pri-alta{background:var(--danger-bg);color:var(--danger)}
+.pri-media{background:var(--warning-bg);color:var(--warning)}
+.pri-baixa{background:var(--premium-bone);color:var(--premium-steel)}
+.bg-social{background:var(--amber)}.bg-criacao{background:var(--violet)}.bg-redacao{background:var(--teal)}.bg-audio{background:var(--slate)}.bg-trafego{background:var(--success)}
+
+/* ---------- TABLE ---------- */
+.table-wrap{background:#fff;border:1px solid var(--premium-mist);border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--sh-sm)}
+table{width:100%;border-collapse:collapse}
+thead th{text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--premium-gray);font-weight:700;padding:13px 16px;border-bottom:1px solid var(--premium-mist);background:var(--premium-paper)}
+tbody td{padding:13px 16px;border-bottom:1px solid var(--premium-bone);font-size:13.5px;vertical-align:middle}
+tbody tr{cursor:pointer;transition:background .12s}
+tbody tr:hover{background:var(--premium-paper)}
+tbody tr:last-child td{border-bottom:0}
+.td-title{font-weight:500}
+.badge-st{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:3px 10px;border-radius:999px;display:inline-block}
+.st-novas{background:var(--info-bg);color:var(--info)}
+.st-fazendo{background:var(--warning-bg);color:var(--warning)}
+.st-aprov{background:var(--violet-bg);color:var(--violet)}
+.st-final{background:var(--success-bg);color:var(--success)}
+.mini-pri{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:500}
+
+/* ---------- PROJECTS ---------- */
+.proj-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.proj-card{background:#fff;border:1px solid var(--premium-mist);border-radius:var(--r-lg);padding:18px;box-shadow:var(--sh-sm);cursor:pointer;transition:all .14s}
+.proj-card:hover{box-shadow:var(--sh-md);transform:translateY(-2px)}
+.proj-card .pc-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px}
+.proj-card .pc-st{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:3px 9px;border-radius:999px}
+.proj-card h4{font-size:16px;font-weight:700;letter-spacing:-.01em;margin-bottom:5px}
+.proj-card .pc-cli{font-size:12.5px;color:var(--premium-gray);display:flex;align-items:center;gap:6px}
+.proj-card .pc-cli svg{width:13px;height:13px}
+.proj-card .bar{height:7px;background:var(--premium-bone);border-radius:999px;margin:16px 0 8px;overflow:hidden}
+.proj-card .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--yellow),var(--amber))}
+.proj-card .pc-foot{display:flex;align-items:center;justify-content:space-between;margin-top:13px}
+.proj-card .pc-resp{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--premium-steel)}
+
+/* ---------- DEMAND DETAIL ---------- */
+.dd-back{display:inline-flex;align-items:center;gap:7px;font-size:13px;color:var(--premium-steel);font-weight:500;cursor:pointer;margin-bottom:14px}
+.dd-back svg{width:15px;height:15px}
+.dd-layout{display:grid;grid-template-columns:1fr 320px;gap:22px;align-items:start}
+.dd-main{background:#fff;border:1px solid var(--premium-mist);border-radius:var(--r-lg);box-shadow:var(--sh-sm);overflow:hidden}
+.dd-tabs{display:flex;gap:2px;border-bottom:1px solid var(--premium-mist);padding:0 8px;overflow-x:auto}
+.dd-tab{padding:15px 16px;font-size:13px;font-weight:500;color:var(--premium-steel);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;display:flex;align-items:center;gap:7px}
+.dd-tab svg{width:15px;height:15px}
+.dd-tab.active{color:#000;border-bottom-color:var(--yellow);font-weight:700}
+.dd-pane{display:none;padding:22px}
+.dd-pane.active{display:block}
+.field{margin-bottom:18px}
+.field .fl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--premium-gray);margin-bottom:7px;display:block}
+.field .fv{font-size:14px;line-height:1.6;color:var(--premium-ink)}
+.briefbox{background:var(--premium-paper);border:1px solid var(--premium-mist);border-radius:var(--r-md);padding:14px 16px;font-size:13.5px;line-height:1.65;color:var(--premium-steel)}
+
+/* workflow timeline */
+.wf{display:flex;gap:0;margin:6px 0 4px;overflow-x:auto;padding-bottom:6px}
+.wf-step{flex:1;min-width:128px;position:relative;padding:0 6px}
+.wf-step .bar{height:6px;border-radius:3px;background:var(--premium-mist)}
+.wf-step.done .bar{background:var(--success)}
+.wf-step.current .bar{background:var(--yellow)}
+.wf-step .nm{font-size:12px;font-weight:700;margin-top:10px;display:flex;align-items:center;gap:6px}
+.wf-step .nm .ic{width:16px;height:16px}
+.wf-step.done .nm .ic{color:var(--success)}
+.wf-step.current .nm .ic{color:var(--amber)}
+.wf-step.todo .nm{color:var(--premium-gray)}
+.wf-step .who{font-size:11px;color:var(--premium-gray);margin-top:4px;display:flex;align-items:center;gap:6px}
+.wf-step .who .av{width:20px;height:20px;border-radius:50%;font-size:9px}
+.wf-step .dep{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;margin-top:6px;display:inline-block;padding:2px 7px;border-radius:999px}
+.wf-step .dt{font-size:10.5px;color:var(--premium-silver);margin-top:5px}
+
+/* layouts / drive preview */
+.drive-input{display:flex;gap:10px;margin-bottom:18px}
+.drive-input input{flex:1;border:1px solid var(--premium-mist);border-radius:var(--r-md);padding:11px 14px;font-family:inherit;font-size:13px;outline:none}
+.drive-input input:focus{border-color:var(--premium-ink);box-shadow:0 0 0 2px var(--yellow-50)}
+.layout-item{border:1px solid var(--premium-mist);border-radius:var(--r-lg);overflow:hidden;margin-bottom:16px}
+.li-head{display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--premium-paper);border-bottom:1px solid var(--premium-mist)}
+.li-head .gd{width:22px;height:22px;flex:0 0 auto}
+.li-head .li-t{font-size:13.5px;font-weight:700;flex:1}
+.li-head .li-link{font-size:11.5px;color:var(--info);display:flex;align-items:center;gap:5px}
+.li-head .li-link svg{width:13px;height:13px}
+.li-head .ver{font-size:10px;font-weight:700;background:#000;color:var(--yellow);padding:2px 8px;border-radius:999px}
+.media-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding:14px}
+.media{border-radius:var(--r-md);overflow:hidden;border:1px solid var(--premium-mist);cursor:pointer;position:relative;aspect-ratio:4/5;display:flex;align-items:center;justify-content:center}
+.media:hover{box-shadow:var(--sh-md)}
+.media .ovl{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:#fff}
+.media .ovl svg{width:34px;height:34px}
+.media .cap{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,.75));color:#fff;font-size:10.5px;padding:16px 10px 8px;display:flex;align-items:center;gap:5px}
+.media .cap svg{width:12px;height:12px}
+.m1{background:linear-gradient(135deg,#FBDA25,#F7BA30)}
+.m2{background:linear-gradient(135deg,#2A2A2A,#000)}
+.m3{background:linear-gradient(135deg,#6E56CF,#0E8C8C)}
+.m4{background:linear-gradient(135deg,#1A6FB0,#0E8C8C)}
+.drive-empty{border:2px dashed var(--premium-mist);border-radius:var(--r-lg);padding:34px;text-align:center;color:var(--premium-gray)}
+.drive-empty svg{width:38px;height:38px;color:var(--premium-silver);margin-bottom:10px}
+
+/* comments */
+.cmt{display:flex;gap:12px;margin-bottom:18px}
+.cmt .av{width:34px;height:34px;border-radius:50%;font-size:12px;flex:0 0 auto}
+.cmt .cb{flex:1}
+.cmt .ch{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.cmt .ch b{font-size:13px;font-weight:700}
+.cmt .ch span{font-size:11px;color:var(--premium-gray)}
+.cmt .ct{font-size:13.5px;line-height:1.55;color:var(--premium-steel)}
+.cmt .ct .mention{color:var(--info);font-weight:500}
+.cmt-box{display:flex;gap:10px;align-items:center;border:1px solid var(--premium-mist);border-radius:var(--r-md);padding:8px 8px 8px 14px;margin-top:6px}
+.cmt-box input{flex:1;border:0;outline:none;font-family:inherit;font-size:13px}
+/* ajustes */
+textarea{font-family:inherit;font-size:13px;width:100%;border:1px solid var(--premium-mist);border-radius:var(--r-md);padding:11px 14px;outline:none;resize:vertical;min-height:76px;color:var(--premium-ink)}
+textarea:focus{border-color:var(--premium-ink);box-shadow:0 0 0 2px var(--yellow-50)}
+.adj{border:1px solid var(--premium-mist);border-radius:var(--r-lg);padding:15px 16px;margin-bottom:13px}
+.adj .ah{display:flex;align-items:center;gap:11px;margin-bottom:10px}
+.adj .ah .ic{width:32px;height:32px;border-radius:var(--r-md);background:var(--warning-bg);color:var(--warning);display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.adj .ah .ic svg{width:16px;height:16px}
+.adj .desc{font-size:13.5px;line-height:1.55;color:var(--premium-ink);margin-bottom:11px}
+.adj .meta{display:flex;gap:18px;flex-wrap:wrap;font-size:11.5px;color:var(--premium-gray)}
+.adj .meta b{color:var(--premium-steel);font-weight:700}
+.adj-flow{display:flex;align-items:center;gap:9px;font-size:11px;color:var(--premium-gray);margin-top:12px;background:var(--premium-paper);border:1px solid var(--premium-mist);border-radius:var(--r-md);padding:9px 13px;flex-wrap:wrap}
+.adj-flow svg{width:13px;height:13px;color:var(--premium-silver)}
+.adj-flow .pin{font-weight:700;color:var(--premium-steel)}
+
+/* history */
+.hist{position:relative;padding-left:6px}
+.hist-i{display:flex;gap:13px;padding-bottom:18px;position:relative}
+.hist-i .hd{width:30px;height:30px;border-radius:50%;background:var(--premium-bone);display:flex;align-items:center;justify-content:center;flex:0 0 auto;color:var(--premium-steel);z-index:1}
+.hist-i .hd svg{width:14px;height:14px}
+.hist-i::before{content:"";position:absolute;left:15px;top:30px;bottom:0;width:2px;background:var(--premium-mist)}
+.hist-i:last-child::before{display:none}
+.hist-i .hb .t{font-size:13px}
+.hist-i .hb .t b{font-weight:700}
+.hist-i .hb .s{font-size:11px;color:var(--premium-gray);margin-top:2px}
+
+/* side meta card */
+.meta-card{background:#fff;border:1px solid var(--premium-mist);border-radius:var(--r-lg);box-shadow:var(--sh-sm);overflow:hidden}
+.meta-card .mc-h{padding:14px 16px;border-bottom:1px solid var(--premium-mist);font-size:13px;font-weight:700;display:flex;align-items:center;gap:8px}
+.meta-card .mc-h svg{width:15px;height:15px;color:var(--amber)}
+.meta-card .mc-b{padding:8px 16px 16px}
+.meta-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--premium-bone);font-size:13px}
+.meta-row:last-child{border-bottom:0}
+.meta-row .k{color:var(--premium-gray)}
+.meta-row .v{font-weight:500;display:flex;align-items:center;gap:7px}
+
+/* ---------- ENTREGAS (admin) ---------- */
+.adm-banner{background:var(--premium-ink);color:#fff;border-radius:var(--r-lg);padding:16px 20px;display:flex;align-items:center;gap:13px;margin-bottom:22px}
+.adm-banner .lk{width:38px;height:38px;border-radius:var(--r-md);background:var(--yellow);color:#000;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.adm-banner .lk svg{width:19px;height:19px}
+.adm-banner b{font-size:14px;display:block}
+.adm-banner span{font-size:12.5px;color:rgba(255,255,255,.6)}
+.deliv-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.deliv{background:#fff;border:1px solid var(--premium-mist);border-radius:var(--r-lg);box-shadow:var(--sh-sm);padding:18px;cursor:pointer;transition:all .14s}
+.deliv:hover{box-shadow:var(--sh-md);transform:translateY(-2px)}
+.deliv .dh{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.deliv .dh .av{width:44px;height:44px;border-radius:50%;font-size:15px}
+.deliv .dh b{font-size:15px;font-weight:700;display:block}
+.deliv .dh .dep{font-size:11.5px;color:var(--premium-gray)}
+.deliv .km{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+.deliv .km .kx .n{font-size:22px;font-weight:700;letter-spacing:-.02em}
+.deliv .km .kx .n small{font-size:12px;color:var(--premium-gray);font-weight:500}
+.deliv .km .kx .l{font-size:10.5px;color:var(--premium-gray);text-transform:uppercase;letter-spacing:.04em;font-weight:700;margin-top:2px}
+.occ{margin-top:6px}
+.occ .ol{display:flex;justify-content:space-between;font-size:11px;margin-bottom:5px}
+.occ .ol b{font-weight:700}
+.occ .obar{height:8px;background:var(--premium-bone);border-radius:999px;overflow:hidden}
+.occ .obar i{display:block;height:100%;border-radius:999px}
+.ontime{color:var(--success)}.late-t{color:var(--danger)}
+
+/* ---------- CONFIG ---------- */
+.cfg-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px}
+.cfg{background:#fff;border:1px solid var(--premium-mist);border-radius:var(--r-lg);box-shadow:var(--sh-sm);padding:18px;cursor:pointer;transition:all .14s}
+.cfg:hover{box-shadow:var(--sh-md);transform:translateY(-2px);border-color:var(--premium-silver)}
+.cfg .ci{width:40px;height:40px;border-radius:var(--r-md);background:var(--premium-bone);display:flex;align-items:center;justify-content:center;margin-bottom:13px;color:var(--premium-ink)}
+.cfg .ci svg{width:20px;height:20px}
+.cfg h4{font-size:15px;font-weight:700;margin-bottom:5px}
+.cfg p{font-size:12.5px;color:var(--premium-gray);line-height:1.5}
+.cfg .arr{margin-top:12px;display:flex;align-items:center;gap:6px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--amber)}
+.cfg .arr svg{width:13px;height:13px}
+
+/* workflow builder mock */
+.wfb{background:#fff;border:1px solid var(--premium-mist);border-radius:var(--r-lg);box-shadow:var(--sh-sm);padding:20px}
+.wfb-title{font-size:15px;font-weight:700;margin-bottom:4px}
+.wfb-sub{font-size:12.5px;color:var(--premium-gray);margin-bottom:18px}
+.wfb-flow{display:flex;align-items:stretch;gap:0;flex-wrap:wrap}
+.wfb-stage{border:1px solid var(--premium-mist);border-radius:var(--r-md);padding:13px 15px;min-width:170px;position:relative}
+.wfb-stage .top{height:5px;border-radius:3px;margin-bottom:10px}
+.wfb-stage .sn{font-size:13px;font-weight:700}
+.wfb-stage .stp{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--premium-gray);margin-top:3px}
+.wfb-stage .sdep{font-size:10.5px;margin-top:9px;display:inline-flex;align-items:center;gap:5px;padding:3px 8px;border-radius:999px;font-weight:700}
+.wfb-arrow{display:flex;align-items:center;color:var(--premium-silver);padding:0 9px}
+.wfb-arrow svg{width:18px;height:18px}
+.wfb-add{border:2px dashed var(--premium-mist);border-radius:var(--r-md);min-width:120px;display:flex;align-items:center;justify-content:center;gap:7px;color:var(--premium-gray);font-size:12px;font-weight:700;cursor:pointer}
+.wfb-add svg{width:15px;height:15px}
+.wfb-add:hover{border-color:var(--amber);color:var(--amber)}
+
+.note{font-size:11.5px;color:var(--premium-gray);margin-top:18px;display:flex;align-items:center;gap:7px;background:var(--yellow-50);border:1px solid var(--gold);border-radius:var(--r-md);padding:11px 14px}
+.note svg{width:15px;height:15px;color:var(--amber);flex:0 0 auto}
+@media(max-width:1100px){.dash-grid,.dd-layout{grid-template-columns:1fr}.stat-row{grid-template-columns:1fr 1fr}.proj-grid,.deliv-grid,.cfg-grid{grid-template-columns:1fr 1fr}}
+/* FAB — botão de ação flutuante (ui-guidelines §4.18) */
+.fab-wrap{position:fixed;right:24px;bottom:24px;z-index:40;display:flex;flex-direction:column;align-items:flex-end;gap:12px}
+.fab{width:56px;height:56px;border-radius:999px;border:none;background:var(--yellow);color:#000;box-shadow:var(--sh-gold);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .14s var(--ease),transform .14s var(--ease)}
+.fab:hover{background:var(--gold)}
+.fab svg{width:24px;height:24px}
+.fab-dial{display:flex;flex-direction:column;align-items:flex-end;gap:12px;opacity:0;transform:translateY(8px) scale(.96);transition:opacity .14s var(--ease),transform .14s var(--ease)}
+.fab-wrap:hover .fab-dial{opacity:1;transform:none}
+.fab-plabel{opacity:0;transition:opacity .14s var(--ease)}
+.fab-wrap:hover .fab-plabel{opacity:1}
+.fab-item{display:flex;align-items:center;gap:12px}
+.fab-label{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;background:#fff;border:1px solid var(--premium-mist);border-radius:var(--r-md);padding:6px 12px;box-shadow:var(--sh-sm);white-space:nowrap}
+.fab-mini{width:44px;height:44px;border-radius:999px;border:1px solid var(--premium-mist);background:#fff;color:var(--premium-ink);box-shadow:var(--sh-md);display:flex;align-items:center;justify-content:center;cursor:pointer}
+.fab-mini svg{width:18px;height:18px}
+@media(prefers-reduced-motion:reduce){.fab-dial{transition:none;transform:none}.fab svg{transition:none}}
+</style>
+</head>
+<body>
+
+<!-- ============ SIDEBAR ============ -->
+<aside class="sidebar">
+  <div class="brand">
+    <i data-lucide="trophy" class="trophy"></i>
+    <div class="wm"><b>PREMIUM</b><span>MARKETING 360°</span></div>
+  </div>
+  <div class="nav-label">Operação</div>
+  <div class="nav-item active" data-screen="dashboard"><i data-lucide="layout-dashboard"></i> Dashboard</div>
+  <div class="nav-item" data-screen="atividades"><i data-lucide="check-square"></i> Minhas Atividades <span class="badge">5</span></div>
+  <div class="nav-item" data-screen="demandas"><i data-lucide="kanban-square"></i> Minhas Demandas <span class="badge">8</span></div>
+  <div class="nav-label">Gestão</div>
+  <div class="nav-item" data-screen="gestao-demandas"><i data-lucide="layers"></i> Gestão de Demandas</div>
+  <div class="nav-item" data-screen="projetos"><i data-lucide="folder-kanban"></i> Gestão de Projetos</div>
+  <div class="nav-item admin-only" data-screen="entregas"><i data-lucide="bar-chart-3"></i> Entregas <i data-lucide="lock" class="lock"></i></div>
+  <div class="nav-label">Sistema</div>
+  <div class="nav-item" data-screen="config"><i data-lucide="settings"></i> Configurações</div>
+  <div class="side-foot">
+    <div class="avatar" style="background:var(--yellow)">NO</div>
+    <div class="meta"><b>Nelson Oliveira</b><span>Diretor · Admin</span></div>
+  </div>
+</aside>
+
+<!-- ============ MAIN ============ -->
+<div class="main">
+  <header class="topbar">
+    <div class="search" onclick="this.querySelector('input').focus()">
+      <i data-lucide="search"></i>
+      <input placeholder="Buscar demandas, projetos, clientes, pessoas...">
+      <kbd>Ctrl K</kbd>
+    </div>
+    <div class="top-actions">
+      <!-- "Nova demanda" saiu da topbar: a criação agora é o FAB (canto inferior direito) -->
+      <div class="icon-btn"><i data-lucide="bell"></i><span class="dot"></span></div>
+      <div class="icon-btn"><i data-lucide="moon"></i></div>
+    </div>
+  </header>
+
+  <main class="content">
+
+  <!-- ====== DASHBOARD ====== -->
+  <section class="screen active" id="screen-dashboard">
+    <div class="page-head">
+      <div>
+        <div class="eyebrow">Quinta-feira, 4 de junho de 2026</div>
+        <h1>Bom dia, Nelson.</h1>
+        <div class="sub">Você tem 8 demandas e 5 atividades para hoje. 2 demandas estão atrasadas.</div>
+      </div>
+      <button class="btn btn-ghost btn-sm"><i data-lucide="sliders-horizontal"></i> Personalizar</button>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat"><div class="ico" style="background:var(--info-bg);color:var(--info)"><i data-lucide="inbox"></i></div><div class="num">23</div><div class="lbl">Demandas abertas</div></div>
+      <div class="stat"><div class="ico" style="background:var(--danger-bg);color:var(--danger)"><i data-lucide="alert-triangle"></i></div><div class="num">2</div><div class="lbl">Atrasadas</div></div>
+      <div class="stat"><div class="ico" style="background:var(--violet-bg);color:var(--violet)"><i data-lucide="eye"></i></div><div class="num">6</div><div class="lbl">Aguardando aprovação</div></div>
+      <div class="stat feat"><div class="ico"><i data-lucide="check-square"></i></div><div class="num">5</div><div class="lbl">Atividades pendentes</div></div>
+    </div>
+
+    <div class="dash-grid">
+      <div>
+        <div class="panel">
+          <div class="panel-h"><h3>Demandas para hoje</h3><span class="link" data-screen="demandas">Ver todas <i data-lucide="arrow-right"></i></span></div>
+          <div class="panel-b">
+            <div class="row-item" onclick="openDemand()"><div class="stripe bg-social"></div><div class="ri-body"><div class="ri-title">Post institucional · Outubro Rosa</div><div class="ri-sub">Drogaria Vida · Etapa: Criação</div></div><div class="ri-time" style="color:var(--danger)">Atrasada</div></div>
+            <div class="row-item"><div class="stripe bg-audio"></div><div class="ri-body"><div class="ri-title">Reels · Ofertas da semana</div><div class="ri-sub">Supermercado BomPreço · Etapa: Redação</div></div><div class="ri-time">Hoje 14h</div></div>
+            <div class="row-item"><div class="stripe bg-criacao"></div><div class="ri-body"><div class="ri-title">Carrossel · Lançamento de serviço</div><div class="ri-sub">Auto Shopping RO · Etapa: Aprovação Interna</div></div><div class="ri-time">Hoje 17h</div></div>
+            <div class="row-item"><div class="stripe bg-trafego"></div><div class="ri-body"><div class="ri-title">Campanha · Dia dos Namorados</div><div class="ri-sub">Dr. Marcelo Odonto · Etapa: Publicação</div></div><div class="ri-time">Hoje 18h</div></div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-h"><h3>Clientes atendidos por você</h3><span class="link">Gerenciar <i data-lucide="arrow-right"></i></span></div>
+          <div class="client-pills">
+            <div class="client-pill"><div class="avatar av" style="background:var(--amber)">DV</div> Drogaria Vida</div>
+            <div class="client-pill"><div class="avatar av" style="background:var(--violet)">BP</div> Supermercado BomPreço</div>
+            <div class="client-pill"><div class="avatar av" style="background:var(--teal)">AS</div> Auto Shopping RO</div>
+            <div class="client-pill"><div class="avatar av" style="background:var(--slate)">MO</div> Dr. Marcelo Odonto</div>
+            <div class="client-pill"><div class="avatar av" style="background:var(--success)">CN</div> Construtora Norte</div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-h"><h3>Projetos favoritos</h3><span class="link" data-screen="projetos">Todos os projetos <i data-lucide="arrow-right"></i></span></div>
+          <div class="fav-grid">
+            <div class="fav" data-screen="projeto-detalhe"><i data-lucide="star" class="star"></i><div class="ft">Social Media Mensal</div><div class="fc">Drogaria Vida</div><div class="bar"><i style="width:72%"></i></div><div class="pct"><span>72% concluído</span></div><div class="go" data-screen="projeto-detalhe">Abrir projeto <i data-lucide="arrow-right"></i></div></div>
+            <div class="fav"><i data-lucide="star" class="star"></i><div class="ft">Campanha Dia das Mães</div><div class="fc">Supermercado BomPreço</div><div class="bar"><i style="width:45%"></i></div><div class="pct"><span>45% concluído</span></div><div class="go">Abrir projeto <i data-lucide="arrow-right"></i></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="panel">
+          <div class="cal">
+            <div class="cal-h"><b>Junho 2026</b><div class="nav"><span><i data-lucide="chevron-left"></i></span><span><i data-lucide="chevron-right"></i></span></div></div>
+            <div class="cal-grid">
+              <div class="dow">D</div><div class="dow">S</div><div class="dow">T</div><div class="dow">Q</div><div class="dow">Q</div><div class="dow">S</div><div class="dow">S</div>
+              <div class="day muted">31</div><div class="day">1</div><div class="day has">2</div><div class="day">3</div><div class="day today has">4</div><div class="day has">5</div><div class="day">6</div>
+              <div class="day">7</div><div class="day">8</div><div class="day has">9</div><div class="day">10</div><div class="day">11</div><div class="day has">12</div><div class="day">13</div>
+              <div class="day">14</div><div class="day">15</div><div class="day">16</div><div class="day has">17</div><div class="day">18</div><div class="day">19</div><div class="day">20</div>
+              <div class="day">21</div><div class="day">22</div><div class="day">23</div><div class="day">24</div><div class="day">25</div><div class="day">26</div><div class="day">27</div>
+              <div class="day">28</div><div class="day">29</div><div class="day">30</div><div class="day muted">1</div><div class="day muted">2</div><div class="day muted">3</div><div class="day muted">4</div>
+            </div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-h"><h3>Atividades para hoje</h3><span class="link" data-screen="atividades">To-do <i data-lucide="arrow-right"></i></span></div>
+          <div class="panel-b">
+            <div class="check" onclick="this.classList.toggle('done')"><div class="box"><i data-lucide="check"></i></div><div class="ck-title">Aprovar roteiro do vídeo institucional</div><span class="pri pri-alta">Alta</span></div>
+            <div class="check" onclick="this.classList.toggle('done')"><div class="box"><i data-lucide="check"></i></div><div class="ck-title">Reunião de briefing · Construtora Norte</div><span class="pri pri-media">Média</span></div>
+            <div class="check done" onclick="this.classList.toggle('done')"><div class="box"><i data-lucide="check"></i></div><div class="ck-title">Enviar relatório mensal · BomPreço</div><span class="pri pri-baixa">Baixa</span></div>
+            <div class="check" onclick="this.classList.toggle('done')"><div class="box"><i data-lucide="check"></i></div><div class="ck-title">Revisar pauta de tráfego pago</div><span class="pri pri-media">Média</span></div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-h"><h3>Notificações</h3><span class="link">Marcar lidas</span></div>
+          <div class="agenda">
+            <div class="ag-item"><div class="tl"><div class="d"></div><div class="line"></div></div><div class="ab"><div class="t">Carla mencionou você</div><div class="s">Carrossel · Lançamento de serviço</div></div></div>
+            <div class="ag-item"><div class="tl"><div class="d"></div><div class="line"></div></div><div class="ab"><div class="t">Cliente aprovou a arte</div><div class="s">Reels · Ofertas da semana</div></div></div>
+            <div class="ag-item"><div class="tl"><div class="d"></div></div><div class="ab"><div class="t">Etapa liberada: Criação</div><div class="s">Post · Outubro Rosa</div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== MINHAS ATIVIDADES ====== -->
+  <section class="screen" id="screen-atividades">
+    <div class="page-head">
+      <div><h1>Minhas Atividades</h1><div class="sub">To-do pessoal. Organize o que não está formalizado como demanda.</div></div>
+      <button class="btn btn-dark btn-sm"><i data-lucide="plus"></i> Nova atividade</button>
+    </div>
+    <div class="filters">
+      <div class="tabs">
+        <button class="tab active"><i data-lucide="kanban-square"></i> Kanban</button>
+        <button class="tab"><i data-lucide="list"></i> Lista</button>
+        <button class="tab"><i data-lucide="calendar"></i> Calendário</button>
+      </div>
+      <div class="chip-filter"><i data-lucide="user"></i> Responsável</div>
+      <div class="chip-filter"><i data-lucide="briefcase"></i> Cliente</div>
+    </div>
+    <div class="board">
+      <div class="col">
+        <div class="col-h"><span class="dotmark" style="background:var(--info)"></span><span class="ttl">Atividades</span><span class="cnt">3</span></div>
+        <div class="kcard"><div class="kt">Aprovar roteiro do vídeo institucional</div><div class="kc"><i data-lucide="briefcase"></i> Construtora Norte</div><div class="kf"><div class="avstack"><div class="avatar av" style="background:var(--yellow)">NO</div></div><div class="kmeta"><span><i data-lucide="calendar"></i> Hoje</span><span class="pri-dot" style="background:var(--danger)"></span></div></div></div>
+        <div class="kcard"><div class="kt">Revisar pauta de tráfego pago</div><div class="kc"><i data-lucide="list-checks"></i> 2 subtarefas</div><div class="kf"><div class="avstack"><div class="avatar av" style="background:var(--success)">EN</div></div><div class="kmeta"><span><i data-lucide="calendar"></i> Hoje</span><span class="pri-dot" style="background:var(--warning)"></span></div></div></div>
+        <div class="kcard"><div class="kt">Organizar arquivos da marca no Drive</div><div class="kc"><i data-lucide="briefcase"></i> Interno</div><div class="kf"><div class="avstack"><div class="avatar av" style="background:var(--violet)">BL</div></div><div class="kmeta"><span><i data-lucide="calendar"></i> 06 jun</span><span class="pri-dot" style="background:var(--premium-silver)"></span></div></div></div>
+      </div>
+      <div class="col">
+        <div class="col-h"><span class="dotmark" style="background:var(--warning)"></span><span class="ttl">Fazendo</span><span class="cnt">1</span></div>
+        <div class="kcard"><div class="kt">Reunião de briefing · Construtora Norte</div><div class="kc"><i data-lucide="briefcase"></i> Construtora Norte</div><div class="kf"><div class="avstack"><div class="avatar av" style="background:var(--yellow)">NO</div></div><div class="kmeta"><span><i data-lucide="clock"></i> 15h</span><span class="pri-dot" style="background:var(--warning)"></span></div></div></div>
+      </div>
+      <div class="col">
+        <div class="col-h"><span class="dotmark" style="background:var(--success)"></span><span class="ttl">Concluídas</span><span class="cnt">1</span></div>
+        <div class="kcard" style="opacity:.7"><div class="kt" style="text-decoration:line-through;color:var(--premium-gray)">Enviar relatório mensal · BomPreço</div><div class="kc"><i data-lucide="check-circle"></i> Concluída hoje</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== MINHAS DEMANDAS ====== -->
+  <section class="screen" id="screen-demandas">
+    <div class="page-head">
+      <div><h1>Minhas Demandas</h1><div class="sub">Tudo em que você é responsável por alguma etapa.</div></div>
+      <div class="tabs">
+        <button class="tab active" onclick="toggleView('demandas','kanban',this)"><i data-lucide="kanban-square"></i> Kanban</button>
+        <button class="tab" onclick="toggleView('demandas','table',this)"><i data-lucide="table"></i> Tabela</button>
+      </div>
+    </div>
+    <div class="filters">
+      <div class="chip-filter"><i data-lucide="briefcase"></i> Cliente</div>
+      <div class="chip-filter"><i data-lucide="folder"></i> Projeto</div>
+      <div class="chip-filter"><i data-lucide="flag"></i> Prioridade</div>
+      <div class="chip-filter"><i data-lucide="git-branch"></i> Etapa: Disponível</div>
+      <div class="chip-filter chip-auto"><i data-lucide="wand-2"></i> Ordenar automático</div>
+    </div>
+
+    <div id="demandas-kanban">
+      <div class="board">
+        <div class="col">
+          <div class="col-h"><span class="dotmark" style="background:var(--info)"></span><span class="ttl">Novas</span><span class="cnt">2</span></div>
+          <div class="kcard" onclick="openDemand()">
+            <span class="tag t-social"><i data-lucide="instagram"></i> Social Media</span>
+            <div class="kt">Post institucional · Outubro Rosa</div>
+            <div class="kc"><i data-lucide="briefcase"></i> Drogaria Vida</div>
+            <div class="stagebar"><i style="background:var(--premium-silver)"></i><i></i><i></i><i></i><i></i></div>
+            <div class="kf"><div class="avstack"><div class="avatar av" style="background:var(--amber)">AP</div></div><div class="kmeta"><span class="late"><i data-lucide="alert-triangle"></i> Atrasada</span><span class="pri-dot" style="background:var(--danger)"></span></div></div>
+          </div>
+          <div class="kcard" onclick="openDemand()">
+            <span class="tag t-trafego"><i data-lucide="target"></i> Tráfego</span>
+            <div class="kt">Campanha · Black Friday (planejamento)</div>
+            <div class="kc"><i data-lucide="briefcase"></i> Supermercado BomPreço</div>
+            <div class="stagebar"><i style="background:var(--premium-silver)"></i><i></i><i></i><i></i></div>
+            <div class="kf"><div class="avstack"><div class="avatar av" style="background:var(--success)">EN</div></div><div class="kmeta"><span><i data-lucide="calendar"></i> 12 jun</span><span class="pri-dot" style="background:var(--warning)"></span></div></div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="col-h"><span class="dotmark" style="background:var(--warning)"></span><span class="ttl">Fazendo</span><span class="cnt">3</span></div>
+          <div class="kcard" onclick="openDemand()">
+            <span class="tag t-audio"><i data-lucide="video"></i> Audiovisual</span>
+            <div class="kt">Reels · Ofertas da semana</div>
+            <div class="kc"><i data-lucide="briefcase"></i> Supermercado BomPreço</div>
+            <div class="stagebar"><i style="background:var(--success)"></i><i style="background:var(--yellow)"></i><i></i><i></i></div>
+            <div class="kf"><div class="avstack"><div class="avatar av" style="background:var(--slate)">DA</div><div class="avatar av" style="background:var(--teal)">CS</div></div><div class="kmeta"><span><i data-lucide="message-square"></i> 4</span><span><i data-lucide="calendar"></i> Hoje</span></div></div>
+          </div>
+          <div class="kcard" onclick="openDemand()">
+            <span class="tag t-redacao"><i data-lucide="pen-line"></i> Redação</span>
+            <div class="kt">Blog · 5 dicas de saúde bucal</div>
+            <div class="kc"><i data-lucide="briefcase"></i> Dr. Marcelo Odonto</div>
+            <div class="stagebar"><i style="background:var(--yellow)"></i><i></i><i></i></div>
+            <div class="kf"><div class="avstack"><div class="avatar av" style="background:var(--teal)">CS</div></div><div class="kmeta"><span><i data-lucide="calendar"></i> 05 jun</span><span class="pri-dot" style="background:var(--premium-silver)"></span></div></div>
+          </div>
+          <div class="kcard locked">
+            <span class="tag t-criacao"><i data-lucide="palette"></i> Criação</span>
+            <div class="kt">Arte · Aniversário da loja</div>
+            <div class="kc"><i data-lucide="briefcase"></i> Auto Shopping RO</div>
+            <div class="lockrow"><i data-lucide="lock"></i> Aguardando etapa de Redação</div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="col-h"><span class="dotmark" style="background:var(--violet)"></span><span class="ttl">Aguardando Aprovação</span><span class="cnt">2</span></div>
+          <div class="kcard" onclick="openDemand()">
+            <span class="tag t-criacao"><i data-lucide="palette"></i> Criação</span>
+            <div class="kt">Carrossel · Lançamento de serviço</div>
+            <div class="kc"><i data-lucide="briefcase"></i> Auto Shopping RO</div>
+            <div class="stagebar"><i style="background:var(--success)"></i><i style="background:var(--success)"></i><i style="background:var(--yellow)"></i><i></i></div>
+            <div class="kf"><div class="avstack"><div class="avatar av" style="background:var(--violet)">BL</div></div><div class="kmeta"><span><i data-lucide="eye"></i> Interna</span><span><i data-lucide="calendar"></i> Hoje</span></div></div>
+          </div>
+          <div class="kcard" onclick="openDemand()">
+            <span class="tag t-social"><i data-lucide="instagram"></i> Social Media</span>
+            <div class="kt">Stories · Promoção relâmpago</div>
+            <div class="kc"><i data-lucide="briefcase"></i> Drogaria Vida</div>
+            <div class="stagebar"><i style="background:var(--success)"></i><i style="background:var(--success)"></i><i style="background:var(--yellow)"></i></div>
+            <div class="kf"><div class="avstack"><div class="avatar av" style="background:var(--amber)">AP</div></div><div class="kmeta"><span><i data-lucide="user-check"></i> Cliente</span></div></div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="col-h"><span class="dotmark" style="background:var(--success)"></span><span class="ttl">Finalizadas</span><span class="cnt">0</span></div>
+          <div class="col-empty"><i data-lucide="inbox"></i><span>Solte aqui.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="demandas-table" style="display:none">
+      <div class="tabs" style="margin-bottom:16px;width:max-content">
+        <button class="tab active">Todas <span class="count">8</span></button>
+        <button class="tab">Para hoje <span class="count">4</span></button>
+        <button class="tab">Atrasadas <span class="count">2</span></button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Tipo</th><th>Demanda</th><th>Cliente</th><th>Etapa atual</th><th>Prioridade</th><th>Data fim</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr onclick="openDemand()"><td><span class="tag t-social">Social</span></td><td class="td-title">Post institucional · Outubro Rosa</td><td>Drogaria Vida</td><td>Criação</td><td><span class="mini-pri"><span class="pri-dot" style="background:var(--danger)"></span>Alta</span></td><td style="color:var(--danger);font-weight:700">02 jun</td><td><span class="badge-st st-novas">Novas</span></td></tr>
+            <tr onclick="openDemand()"><td><span class="tag t-audio">Audio</span></td><td class="td-title">Reels · Ofertas da semana</td><td>BomPreço</td><td>Redação</td><td><span class="mini-pri"><span class="pri-dot" style="background:var(--warning)"></span>Média</span></td><td>04 jun</td><td><span class="badge-st st-fazendo">Fazendo</span></td></tr>
+            <tr onclick="openDemand()"><td><span class="tag t-criacao">Criação</span></td><td class="td-title">Carrossel · Lançamento de serviço</td><td>Auto Shopping RO</td><td>Aprovação Interna</td><td><span class="mini-pri"><span class="pri-dot" style="background:var(--warning)"></span>Média</span></td><td>04 jun</td><td><span class="badge-st st-aprov">Aguardando</span></td></tr>
+            <tr onclick="openDemand()"><td><span class="tag t-redacao">Redação</span></td><td class="td-title">Blog · 5 dicas de saúde bucal</td><td>Dr. Marcelo Odonto</td><td>Redação</td><td><span class="mini-pri"><span class="pri-dot" style="background:var(--premium-silver)"></span>Baixa</span></td><td>05 jun</td><td><span class="badge-st st-fazendo">Fazendo</span></td></tr>
+            <tr onclick="openDemand()"><td><span class="tag t-trafego">Tráfego</span></td><td class="td-title">Campanha · Dia dos Namorados</td><td>Dr. Marcelo Odonto</td><td>Publicação</td><td><span class="mini-pri"><span class="pri-dot" style="background:var(--warning)"></span>Média</span></td><td>04 jun</td><td><span class="badge-st st-final">Finalizada</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== GESTÃO DE DEMANDAS ====== -->
+  <section class="screen" id="screen-gestao-demandas">
+    <div class="page-head">
+      <div><h1>Gestão de Demandas</h1><div class="sub">Visão de toda a agência. Distribua, priorize e acompanhe o que está em risco.</div></div>
+      <div class="tabs">
+        <button class="tab active">Tabela</button>
+        <button class="tab">Kanban</button>
+      </div>
+    </div>
+    <div class="filters">
+      <div class="chip-filter"><i data-lucide="user"></i> Responsável</div>
+      <div class="chip-filter"><i data-lucide="git-branch"></i> Etapa do workflow</div>
+      <div class="chip-filter"><i data-lucide="briefcase"></i> Cliente</div>
+      <div class="chip-filter"><i data-lucide="folder"></i> Projeto</div>
+      <div class="chip-filter"><i data-lucide="flag"></i> Prioridade</div>
+      <div class="chip-filter chip-auto"><i data-lucide="wand-2"></i> Ordenar automático</div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Demanda</th><th>Cliente</th><th>Responsável</th><th>Etapa</th><th>Prioridade</th><th>Data fim</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr onclick="openDemand()"><td class="td-title">Post institucional · Outubro Rosa</td><td>Drogaria Vida</td><td><span class="mini-pri"><span class="avatar av" style="width:24px;height:24px;background:var(--amber);font-size:9px">AP</span> Ana Paula</span></td><td>Criação</td><td><span class="mini-pri"><span class="pri-dot" style="background:var(--danger)"></span>Alta</span></td><td style="color:var(--danger);font-weight:700">02 jun</td><td><span class="badge-st st-novas">Novas</span></td></tr>
+          <tr onclick="openDemand()"><td class="td-title">Reels · Ofertas da semana</td><td>BomPreço</td><td><span class="mini-pri"><span class="avatar av" style="width:24px;height:24px;background:var(--slate);font-size:9px">DA</span> Diego Alves</span></td><td>Redação</td><td><span class="mini-pri"><span class="pri-dot" style="background:var(--warning)"></span>Média</span></td><td>04 jun</td><td><span class="badge-st st-fazendo">Fazendo</span></td></tr>
+          <tr onclick="openDemand()"><td class="td-title">Carrossel · Lançamento de serviço</td><td>Auto Shopping RO</td><td><span class="mini-pri"><span class="avatar av" style="width:24px;height:24px;background:var(--violet);font-size:9px">BL</span> Bruno Lima</span></td><td>Aprovação Interna</td><td><span class="mini-pri"><span class="pri-dot" style="background:var(--warning)"></span>Média</span></td><td>04 jun</td><td><span class="badge-st st-aprov">Aguardando</span></td></tr>
+          <tr onclick="openDemand()"><td class="td-title">Vídeo institucional · 30s</td><td>Construtora Norte</td><td><span class="mini-pri"><span class="avatar av" style="width:24px;height:24px;background:var(--slate);font-size:9px">DA</span> Diego Alves</span></td><td>Produção</td><td><span class="mini-pri"><span class="pri-dot" style="background:var(--danger)"></span>Alta</span></td><td style="color:var(--danger);font-weight:700">03 jun</td><td><span class="badge-st st-fazendo">Fazendo</span></td></tr>
+          <tr onclick="openDemand()"><td class="td-title">Blog · 5 dicas de saúde bucal</td><td>Dr. Marcelo Odonto</td><td><span class="mini-pri"><span class="avatar av" style="width:24px;height:24px;background:var(--teal);font-size:9px">CS</span> Carla Souza</span></td><td>Redação</td><td><span class="mini-pri"><span class="pri-dot" style="background:var(--premium-silver)"></span>Baixa</span></td><td>05 jun</td><td><span class="badge-st st-fazendo">Fazendo</span></td></tr>
+          <tr onclick="openDemand()"><td class="td-title">Stories · Promoção relâmpago</td><td>Drogaria Vida</td><td><span class="mini-pri"><span class="avatar av" style="width:24px;height:24px;background:var(--amber);font-size:9px">AP</span> Ana Paula</span></td><td>Aprovação Cliente</td><td><span class="mini-pri"><span class="pri-dot" style="background:var(--warning)"></span>Média</span></td><td>05 jun</td><td><span class="badge-st st-aprov">Aguardando</span></td></tr>
+          <tr onclick="openDemand()"><td class="td-title">Campanha · Dia dos Namorados</td><td>Dr. Marcelo Odonto</td><td><span class="mini-pri"><span class="avatar av" style="width:24px;height:24px;background:var(--success);font-size:9px">EN</span> Erika Nunes</span></td><td>Publicação</td><td><span class="mini-pri"><span class="pri-dot" style="background:var(--warning)"></span>Média</span></td><td>04 jun</td><td><span class="badge-st st-final">Finalizada</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ====== GESTÃO DE PROJETOS ====== -->
+  <section class="screen" id="screen-projetos">
+    <div class="page-head">
+      <div><h1>Gestão de Projetos</h1><div class="sub">Todos os projetos cadastrados no sistema.</div></div>
+      <button class="btn btn-dark btn-sm"><i data-lucide="plus"></i> Novo projeto</button>
+    </div>
+    <div class="filters">
+      <div class="tabs">
+        <button class="tab active">Todos os projetos <span class="count">12</span></button>
+        <button class="tab">Meus projetos <span class="count">4</span></button>
+      </div>
+      <div class="chip-filter"><i data-lucide="grid-2x2"></i> Cards</div>
+      <div class="chip-filter"><i data-lucide="list"></i> Lista</div>
+    </div>
+    <div class="proj-grid">
+      <div class="proj-card" data-screen="projeto-detalhe">
+        <div class="pc-top"><i data-lucide="star" style="width:16px;height:16px;color:var(--gold);fill:var(--gold)"></i><span class="pc-st st-fazendo">Em andamento</span></div>
+        <h4>Social Media Mensal</h4><div class="pc-cli"><i data-lucide="briefcase"></i> Drogaria Vida</div>
+        <div class="bar"><i style="width:72%"></i></div>
+        <div class="pc-foot"><div class="pc-resp"><span class="avatar av" style="width:26px;height:26px;background:var(--amber);font-size:10px">AP</span> Ana Paula</div><b style="font-size:14px">72%</b></div>
+      </div>
+      <div class="proj-card" data-screen="projeto-detalhe">
+        <div class="pc-top"><i data-lucide="folder" style="width:16px;height:16px;color:var(--premium-silver)"></i><span class="pc-st st-fazendo">Em andamento</span></div>
+        <h4>Campanha Dia das Mães</h4><div class="pc-cli"><i data-lucide="briefcase"></i> Supermercado BomPreço</div>
+        <div class="bar"><i style="width:45%"></i></div>
+        <div class="pc-foot"><div class="pc-resp"><span class="avatar av" style="width:26px;height:26px;background:var(--slate);font-size:10px">DA</span> Diego Alves</div><b style="font-size:14px">45%</b></div>
+      </div>
+      <div class="proj-card" data-screen="projeto-detalhe">
+        <div class="pc-top"><i data-lucide="folder" style="width:16px;height:16px;color:var(--premium-silver)"></i><span class="pc-st st-aprov">Autorizado</span></div>
+        <h4>Branding completo</h4><div class="pc-cli"><i data-lucide="briefcase"></i> Auto Shopping RO</div>
+        <div class="bar"><i style="width:20%"></i></div>
+        <div class="pc-foot"><div class="pc-resp"><span class="avatar av" style="width:26px;height:26px;background:var(--violet);font-size:10px">BL</span> Bruno Lima</div><b style="font-size:14px">20%</b></div>
+      </div>
+      <div class="proj-card" data-screen="projeto-detalhe">
+        <div class="pc-top"><i data-lucide="folder" style="width:16px;height:16px;color:var(--premium-silver)"></i><span class="pc-st st-fazendo">Em andamento</span></div>
+        <h4>Tráfego Pago · Performance</h4><div class="pc-cli"><i data-lucide="briefcase"></i> Dr. Marcelo Odonto</div>
+        <div class="bar"><i style="width:88%"></i></div>
+        <div class="pc-foot"><div class="pc-resp"><span class="avatar av" style="width:26px;height:26px;background:var(--success);font-size:10px">EN</span> Erika Nunes</div><b style="font-size:14px">88%</b></div>
+      </div>
+      <div class="proj-card" data-screen="projeto-detalhe">
+        <div class="pc-top"><i data-lucide="folder" style="width:16px;height:16px;color:var(--premium-silver)"></i><span class="pc-st st-final">Finalizado</span></div>
+        <h4>Vídeo Institucional</h4><div class="pc-cli"><i data-lucide="briefcase"></i> Construtora Norte</div>
+        <div class="bar"><i style="width:100%"></i></div>
+        <div class="pc-foot"><div class="pc-resp"><span class="avatar av" style="width:26px;height:26px;background:var(--slate);font-size:10px">DA</span> Diego Alves</div><b style="font-size:14px">100%</b></div>
+      </div>
+      <div class="proj-card" data-screen="projeto-detalhe">
+        <div class="pc-top"><i data-lucide="folder" style="width:16px;height:16px;color:var(--premium-silver)"></i><span class="pc-st st-fazendo">Em andamento</span></div>
+        <h4>Lançamento de Filial</h4><div class="pc-cli"><i data-lucide="users"></i> Grupo Norte (4 lojas)</div>
+        <div class="bar"><i style="width:34%"></i></div>
+        <div class="pc-foot"><div class="pc-resp"><span class="avatar av" style="width:26px;height:26px;background:var(--amber);font-size:10px">AP</span> Ana Paula</div><b style="font-size:14px">34%</b></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== PROJETO DETALHE ====== -->
+  <section class="screen" id="screen-projeto-detalhe">
+    <div class="dd-back" data-screen="projetos"><i data-lucide="arrow-left"></i> Voltar para projetos</div>
+    <div class="page-head">
+      <div><div class="eyebrow">Drogaria Vida · Em andamento</div><h1>Social Media Mensal <i data-lucide="edit-3" class="edit"></i></h1><div class="sub">Responsável: Ana Paula · 12 demandas · 72% concluído</div></div>
+      <button class="btn btn-ghost btn-sm"><i data-lucide="settings"></i> Configurações do projeto</button>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Tipo</th><th>Nome</th><th>Etapa atual</th><th>Responsáveis</th><th>Data fim</th><th>Prioridade</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr onclick="openDemand()"><td><span class="tag t-social">Social</span></td><td class="td-title">Post · Outubro Rosa</td><td>Criação</td><td><div class="avstack"><span class="avatar av" style="width:24px;height:24px;background:var(--amber);font-size:9px">AP</span></div></td><td style="color:var(--danger);font-weight:700">02 jun</td><td><span class="mini-pri"><span class="pri-dot" style="background:var(--danger)"></span>Alta</span></td><td><span class="badge-st st-novas">Novas</span></td></tr>
+          <tr onclick="openDemand()"><td><span class="tag t-social">Social</span></td><td class="td-title">Stories · Promoção relâmpago</td><td>Aprovação Cliente</td><td><div class="avstack"><span class="avatar av" style="width:24px;height:24px;background:var(--amber);font-size:9px">AP</span></div></td><td>05 jun</td><td><span class="mini-pri"><span class="pri-dot" style="background:var(--warning)"></span>Média</span></td><td><span class="badge-st st-aprov">Aguardando</span></td></tr>
+          <tr onclick="openDemand()"><td><span class="tag t-criacao">Criação</span></td><td class="td-title">Feed · Linha do mês (12 posts)</td><td>Produção</td><td><div class="avstack"><span class="avatar av" style="width:24px;height:24px;background:var(--violet);font-size:9px">BL</span><span class="avatar av" style="width:24px;height:24px;background:var(--teal);font-size:9px">CS</span></div></td><td>10 jun</td><td><span class="mini-pri"><span class="pri-dot" style="background:var(--warning)"></span>Média</span></td><td><span class="badge-st st-fazendo">Fazendo</span></td></tr>
+          <tr onclick="openDemand()"><td><span class="tag t-redacao">Redação</span></td><td class="td-title">Legendas · Semana 2</td><td>Concluída</td><td><div class="avstack"><span class="avatar av" style="width:24px;height:24px;background:var(--teal);font-size:9px">CS</span></div></td><td>01 jun</td><td><span class="mini-pri"><span class="pri-dot" style="background:var(--premium-silver)"></span>Baixa</span></td><td><span class="badge-st st-final">Finalizada</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note"><i data-lucide="info"></i> Nas Configurações do projeto define-se a equipe base por departamento. Os responsáveis das etapas de cada nova demanda são preenchidos automaticamente a partir dessa equipe.</div>
+  </section>
+
+  <!-- ====== DETALHE DA DEMANDA ====== -->
+  <section class="screen" id="screen-demanda">
+    <div class="dd-back" data-screen="demandas"><i data-lucide="arrow-left"></i> Voltar para Minhas Demandas</div>
+    <div class="page-head">
+      <div><div class="eyebrow">Drogaria Vida · Social Media Mensal</div><h1>Post institucional · Outubro Rosa</h1><div class="sub">Modelo: Post Social Media · Publicação: 02 jun 2026</div></div>
+      <div style="display:flex;gap:10px"><button class="btn btn-ghost btn-sm"><i data-lucide="check"></i> Concluir etapa</button><button class="btn btn-primary btn-sm"><i data-lucide="arrow-right"></i> Avançar workflow</button></div>
+    </div>
+
+    <!-- workflow timeline -->
+    <div class="panel" style="padding:18px 20px 14px">
+      <div class="eyebrow" style="margin-bottom:14px">Workflow · etapa atual destacada</div>
+      <div class="wf">
+        <div class="wf-step done"><div class="bar"></div><div class="nm"><i data-lucide="check-circle" class="ic"></i> Redação</div><div class="who"><span class="avatar av" style="background:var(--teal)">CS</span> Carla Souza</div><span class="dep t-redacao">Redação</span><div class="dt">29 mai · concluída</div></div>
+        <div class="wf-step current"><div class="bar"></div><div class="nm"><i data-lucide="loader" class="ic"></i> Criação</div><div class="who"><span class="avatar av" style="background:var(--violet)">BL</span> Bruno Lima</div><span class="dep t-criacao">Criação</span><div class="dt">início 30 mai · prazo 02 jun</div></div>
+        <div class="wf-step todo"><div class="bar"></div><div class="nm"><i data-lucide="circle" class="ic"></i> Aprovação Interna</div><div class="who"><span class="avatar av" style="background:var(--amber)">AP</span> Ana Paula</div><span class="dep" style="background:var(--violet-bg);color:var(--violet)">Aprov. Interna</span><div class="dt">prevista 02 jun</div></div>
+        <div class="wf-step todo"><div class="bar"></div><div class="nm"><i data-lucide="circle" class="ic"></i> Aprovação Cliente</div><div class="who"><i data-lucide="user" style="width:14px;height:14px"></i> Contato cliente</div><span class="dep" style="background:var(--info-bg);color:var(--info)">Aprov. Cliente</span><div class="dt">prevista 02 jun</div></div>
+        <div class="wf-step todo"><div class="bar"></div><div class="nm"><i data-lucide="circle" class="ic"></i> Publicação</div><div class="who"><span class="avatar av" style="background:var(--amber)">AP</span> Ana Paula</div><span class="dep t-social">Social Media</span><div class="dt">prevista 02 jun</div></div>
+      </div>
+    </div>
+
+    <div class="dd-layout">
+      <div class="dd-main">
+        <div class="dd-tabs">
+          <div class="dd-tab active" onclick="ddTab('brief',this)"><i data-lucide="file-text"></i> Briefing</div>
+          <div class="dd-tab" onclick="ddTab('texto',this)"><i data-lucide="type"></i> Texto</div>
+          <div class="dd-tab" onclick="ddTab('layouts',this)"><i data-lucide="image"></i> Layouts <span style="background:var(--yellow);color:#000;font-size:10px;font-weight:700;padding:0 6px;border-radius:999px;margin-left:2px">2</span></div>
+          <div class="dd-tab" onclick="ddTab('coment',this)"><i data-lucide="message-square"></i> Comentários <span style="color:var(--premium-gray);font-size:11px;margin-left:2px">4</span></div>
+          <div class="dd-tab" onclick="ddTab('ajustes',this)"><i data-lucide="wrench"></i> Ajustes <span style="color:var(--premium-gray);font-size:11px;margin-left:2px">2</span></div>
+          <div class="dd-tab" onclick="ddTab('hist',this)"><i data-lucide="history"></i> Histórico</div>
+        </div>
+
+        <div class="dd-pane active" id="pane-brief">
+          <div class="field"><span class="fl">Briefing</span><div class="briefbox">Peça para a campanha de Outubro Rosa da Drogaria Vida. Tom acolhedor e informativo, reforçando a importância da prevenção. Incluir chamada para a ação de agendamento de exames na rede. Seguir a paleta da campanha (rosa + identidade da marca). Formato: post único para feed (1080x1350).</div></div>
+          <div class="field"><span class="fl">Prioridade</span><div class="fv"><span class="mini-pri"><span class="pri-dot" style="background:var(--danger)"></span>Alta</span></div></div>
+          <div class="field"><span class="fl">Datas de publicação / entrega</span><div class="fv"><i data-lucide="calendar" style="width:15px;height:15px;vertical-align:-2px;color:var(--amber)"></i> 02 de junho de 2026</div></div>
+        </div>
+
+        <div class="dd-pane" id="pane-texto">
+          <div class="field"><span class="fl">Texto da peça (editor)</span>
+            <div class="briefbox" style="background:#fff">
+              <p style="margin-bottom:10px"><b>Outubro Rosa: cuidar de você é o nosso compromisso.</b></p>
+              <p style="margin-bottom:10px">Neste mês de conscientização, a Drogaria Vida reforça: a prevenção salva vidas. Agende seus exames e conte com a gente em cada passo dessa jornada.</p>
+              <p style="color:var(--premium-gray)">#OutubroRosa #DrogariaVida #PrevenirÉCuidar</p>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;color:var(--premium-gray);font-size:12px"><i data-lucide="save" style="width:14px;height:14px"></i> Salvo automaticamente · versão por Carla Souza</div>
+        </div>
+
+        <div class="dd-pane" id="pane-layouts">
+          <span class="fl">Anexar material (cole um link do Google Drive)</span>
+          <div class="drive-input">
+            <input id="driveUrl" placeholder="https://drive.google.com/drive/folders/...">
+            <button class="btn btn-dark btn-sm" onclick="addDrive()"><i data-lucide="link"></i> Anexar</button>
+          </div>
+
+          <div class="layout-item">
+            <div class="li-head">
+              <i data-lucide="folder" class="gd" style="color:var(--amber)"></i>
+              <span class="li-t">Arte final · Outubro Rosa</span>
+              <span class="ver">V2</span>
+              <span class="li-link"><i data-lucide="external-link"></i> Abrir no Drive</span>
+            </div>
+            <div style="padding:9px 14px 0;font-size:11.5px;color:var(--premium-gray);display:flex;align-items:center;gap:6px"><i data-lucide="folder-open" style="width:13px;height:13px"></i> Pasta detectada · subpasta <b style="color:var(--premium-steel)">Vídeo e Imagem</b> · 3 mídias em preview</div>
+            <div class="media-grid">
+              <div class="media m1"><div class="ovl"><i data-lucide="image"></i></div><div class="cap"><i data-lucide="image"></i> post-feed-final.jpg</div></div>
+              <div class="media m2"><div class="ovl"><i data-lucide="play-circle"></i></div><div class="cap"><i data-lucide="video"></i> making-of.mp4</div></div>
+              <div class="media m3"><div class="ovl"><i data-lucide="image"></i></div><div class="cap"><i data-lucide="image"></i> story-9x16.jpg</div></div>
+            </div>
+          </div>
+
+          <div class="layout-item">
+            <div class="li-head">
+              <i data-lucide="file-image" class="gd" style="color:var(--info)"></i>
+              <span class="li-t">Referência aprovada pelo cliente</span>
+              <span class="ver">V1</span>
+              <span class="li-link"><i data-lucide="external-link"></i> Abrir no Drive</span>
+            </div>
+            <div class="media-grid">
+              <div class="media m4"><div class="ovl"><i data-lucide="image"></i></div><div class="cap"><i data-lucide="image"></i> referencia.png</div></div>
+            </div>
+          </div>
+          <div class="note"><i data-lucide="info"></i> Ao colar um link do Drive, o sistema lê a pasta, encontra a subpasta de Vídeo e Imagem e exibe os arquivos em preview aqui dentro. Vídeos abrem em player embutido, sem sair da plataforma.</div>
+        </div>
+
+        <div class="dd-pane" id="pane-coment">
+          <div class="cmt"><div class="avatar av" style="background:var(--teal)">CS</div><div class="cb"><div class="ch"><b>Carla Souza</b><span>· há 2 dias</span></div><div class="ct">Texto finalizado e revisado. <span class="mention">@Bruno Lima</span> pode seguir com a arte, segui a paleta da campanha no briefing.</div></div></div>
+          <div class="cmt"><div class="avatar av" style="background:var(--violet)">BL</div><div class="cb"><div class="ch"><b>Bruno Lima</b><span>· há 1 dia</span></div><div class="ct">Subi a V1 na aba Layouts. <span class="mention">@Ana Paula</span> dá uma olhada antes da aprovação interna?</div></div></div>
+          <div class="cmt"><div class="avatar av" style="background:var(--amber)">AP</div><div class="cb"><div class="ch"><b>Ana Paula</b><span>· há 5 horas</span></div><div class="ct">Ajustar o CTA para ficar mais visível e subir a V2. Depois mando pro cliente.</div></div></div>
+          <div class="cmt"><div class="avatar av" style="background:var(--violet)">BL</div><div class="cb"><div class="ch"><b>Bruno Lima</b><span>· há 1 hora</span></div><div class="ct">Feito, V2 no ar com o CTA reforçado.</div></div></div>
+          <div class="cmt-box"><div class="avatar av" style="width:30px;height:30px;background:var(--yellow);font-size:11px">NO</div><input placeholder="Escreva um comentário... use @ para mencionar"><button class="btn btn-primary btn-sm"><i data-lucide="send"></i></button></div>
+        </div>
+
+        <div class="dd-pane" id="pane-ajustes">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:14px;margin-bottom:16px">
+            <div>
+              <span class="fl" style="margin:0">Solicitações de ajuste</span>
+              <div style="font-size:12.5px;color:var(--premium-gray);margin-top:5px;max-width:540px">Disponível para o responsável das etapas de Aprovação Interna e Aprovação Cliente. Ao pedir ajuste, o sistema cria uma etapa Ajuste logo antes da aprovação atual e devolve a demanda para a aprovação quando o ajuste é concluído.</div>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="toggleAdjForm()" style="flex:0 0 auto"><i data-lucide="wrench"></i> Pedir ajuste</button>
+          </div>
+
+          <div id="adjForm" style="display:none;border:1px solid var(--premium-mist);border-radius:var(--r-lg);padding:16px;margin-bottom:20px;background:var(--premium-paper)">
+            <span class="fl">Descreva o ajuste</span>
+            <textarea placeholder="O que precisa ser corrigido nesta peça..."></textarea>
+            <div style="display:flex;gap:24px;flex-wrap:wrap;margin-top:14px">
+              <div><span class="fl">Responsável pelo ajuste</span><div class="chip-filter" style="cursor:pointer"><span class="avatar av" style="width:22px;height:22px;background:var(--violet);font-size:9px">BL</span> Bruno Lima <i data-lucide="chevron-down"></i></div></div>
+              <div><span class="fl">Prazo para devolver</span><div class="chip-filter" style="cursor:pointer"><i data-lucide="calendar"></i> 02 jun, 14h</div></div>
+            </div>
+            <div style="display:flex;gap:10px;margin-top:16px">
+              <button class="btn btn-primary btn-sm"><i data-lucide="wrench"></i> Solicitar ajuste</button>
+              <button class="btn btn-ghost btn-sm" onclick="toggleAdjForm()">Cancelar</button>
+            </div>
+            <div class="note" style="margin-top:14px"><i data-lucide="info"></i> Ao solicitar, uma etapa Ajuste entra no workflow antes de Aprovação Interna. A demanda volta para essa aprovação assim que o responsável concluir.</div>
+          </div>
+
+          <div class="adj">
+            <div class="ah">
+              <div class="ic"><i data-lucide="wrench"></i></div>
+              <div style="flex:1"><b style="font-size:13.5px">Ajuste na Aprovação Interna</b><div style="font-size:11.5px;color:var(--premium-gray)">solicitado por Ana Paula · há 5 horas</div></div>
+              <span class="badge-st st-final">Concluído</span>
+            </div>
+            <div class="desc">Reforçar o CTA do post para ficar mais visível e aumentar levemente o logo da Drogaria Vida no rodapé.</div>
+            <div class="meta"><span><i data-lucide="user" style="width:13px;height:13px;vertical-align:-2px"></i> Responsável: <b>Bruno Lima</b></span><span><i data-lucide="calendar" style="width:13px;height:13px;vertical-align:-2px"></i> Prazo: <b>02 jun, 14h</b></span><span><i data-lucide="check-circle" style="width:13px;height:13px;vertical-align:-2px;color:var(--success)"></i> Devolvido na V2</span></div>
+            <div class="adj-flow"><span class="pin">Aprovação Interna</span> <i data-lucide="arrow-right"></i> <span style="color:var(--warning);font-weight:700">Ajuste · Bruno</span> <i data-lucide="arrow-right"></i> <span class="pin">Aprovação Interna</span></div>
+          </div>
+
+          <div class="adj">
+            <div class="ah">
+              <div class="ic" style="background:var(--info-bg);color:var(--info)"><i data-lucide="wrench"></i></div>
+              <div style="flex:1"><b style="font-size:13.5px">Ajuste na Aprovação Cliente</b><div style="font-size:11.5px;color:var(--premium-gray)">solicitado pelo cliente · há 1 hora</div></div>
+              <span class="badge-st st-fazendo">Em ajuste</span>
+            </div>
+            <div class="desc">Trocar a foto principal por uma da própria loja e alinhar o tom de rosa com a paleta oficial da campanha.</div>
+            <div class="meta"><span><i data-lucide="user" style="width:13px;height:13px;vertical-align:-2px"></i> Responsável: <b>Bruno Lima</b></span><span><i data-lucide="calendar" style="width:13px;height:13px;vertical-align:-2px"></i> Prazo: <b>05 jun, 12h</b></span></div>
+            <div class="adj-flow"><span class="pin">Aprovação Cliente</span> <i data-lucide="arrow-right"></i> <span style="color:var(--warning);font-weight:700">Ajuste · Bruno</span> <i data-lucide="arrow-right"></i> <span class="pin">Aprovação Cliente</span></div>
+          </div>
+        </div>
+
+        <div class="dd-pane" id="pane-hist">
+          <div class="hist">
+            <div class="hist-i"><div class="hd" style="background:var(--violet-bg);color:var(--violet)"><i data-lucide="image"></i></div><div class="hb"><div class="t"><b>Bruno Lima</b> anexou a versão <b>V2</b> em Layouts</div><div class="s">Hoje, 09:12</div></div></div>
+            <div class="hist-i"><div class="hd" style="background:var(--warning-bg);color:var(--warning)"><i data-lucide="git-commit"></i></div><div class="hb"><div class="t">Etapa avançou de <b>Redação</b> para <b>Criação</b></div><div class="s">30 mai, 10:40</div></div></div>
+            <div class="hist-i"><div class="hd" style="background:var(--success-bg);color:var(--success)"><i data-lucide="check"></i></div><div class="hb"><div class="t"><b>Carla Souza</b> concluiu a etapa de <b>Redação</b></div><div class="s">29 mai, 16:20</div></div></div>
+            <div class="hist-i"><div class="hd" style="background:var(--info-bg);color:var(--info)"><i data-lucide="plus"></i></div><div class="hb"><div class="t">Demanda criada a partir do modelo <b>Post Social Media</b></div><div class="s">28 mai, 11:05</div></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="meta-card" style="margin-bottom:18px">
+          <div class="mc-h"><i data-lucide="info"></i> Detalhes</div>
+          <div class="mc-b">
+            <div class="meta-row"><span class="k">Status</span><span class="v"><span class="badge-st st-novas">Novas</span></span></div>
+            <div class="meta-row"><span class="k">Etapa atual</span><span class="v">Criação</span></div>
+            <div class="meta-row"><span class="k">Responsável</span><span class="v"><span class="avatar av" style="width:22px;height:22px;background:var(--violet);font-size:9px">BL</span> Bruno</span></div>
+            <div class="meta-row"><span class="k">Prioridade</span><span class="v"><span class="pri-dot" style="background:var(--danger)"></span> Alta</span></div>
+            <div class="meta-row"><span class="k">Entrega</span><span class="v" style="color:var(--danger)">02 jun</span></div>
+            <div class="meta-row"><span class="k">Projeto</span><span class="v">Social Media Mensal</span></div>
+          </div>
+        </div>
+        <div class="meta-card">
+          <div class="mc-h"><i data-lucide="sparkles"></i> HERMES sugere</div>
+          <div class="mc-b" style="font-size:13px;color:var(--premium-steel);line-height:1.6">
+            Esta demanda está <b style="color:var(--danger)">atrasada</b> e bloqueia a publicação. Priorize a etapa de Criação hoje. O briefing está completo e o layout V2 já tem link válido, pronto para aprovação interna.
+            <button class="btn btn-ghost btn-sm" style="margin-top:14px;width:100%;justify-content:center"><i data-lucide="zap"></i> Aplicar sugestão</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== ENTREGAS POR COLABORADOR (ADMIN) ====== -->
+  <section class="screen" id="screen-entregas">
+    <div class="page-head">
+      <div><h1>Entregas por Colaborador</h1><div class="sub">Visão de produtividade e capacidade da equipe.</div></div>
+      <div class="filters" style="margin:0">
+        <div class="chip-filter"><i data-lucide="calendar"></i> Junho 2026</div>
+        <div class="chip-filter"><i data-lucide="layers"></i> Departamento</div>
+        <button class="btn btn-ghost btn-sm"><i data-lucide="download"></i> Exportar</button>
+      </div>
+    </div>
+    <div class="adm-banner"><div class="lk"><i data-lucide="lock"></i></div><div><b>Tela restrita a administradores</b><span>Os indicadores apoiam a distribuição justa de trabalho e o dimensionamento da equipe, não rankings punitivos.</span></div></div>
+    <div class="deliv-grid">
+      <div class="deliv">
+        <div class="dh"><div class="avatar av" style="background:var(--amber)">AP</div><div><b>Ana Paula</b><div class="dep">Social Media</div></div></div>
+        <div class="km">
+          <div class="kx"><div class="n">18</div><div class="l">Entregas no mês</div></div>
+          <div class="kx"><div class="n ontime">94<small>%</small></div><div class="l">No prazo</div></div>
+          <div class="kx"><div class="n">7</div><div class="l">Em aberto</div></div>
+          <div class="kx"><div class="n">11<small>%</small></div><div class="l">Retrabalho</div></div>
+        </div>
+        <div class="occ"><div class="ol"><span>Ocupação</span><b>82%</b></div><div class="obar"><i style="width:82%;background:linear-gradient(90deg,var(--yellow),var(--amber))"></i></div></div>
+      </div>
+      <div class="deliv">
+        <div class="dh"><div class="avatar av" style="background:var(--violet)">BL</div><div><b>Bruno Lima</b><div class="dep">Criação</div></div></div>
+        <div class="km">
+          <div class="kx"><div class="n">24</div><div class="l">Entregas no mês</div></div>
+          <div class="kx"><div class="n late-t">79<small>%</small></div><div class="l">No prazo</div></div>
+          <div class="kx"><div class="n">9</div><div class="l">Em aberto</div></div>
+          <div class="kx"><div class="n">18<small>%</small></div><div class="l">Retrabalho</div></div>
+        </div>
+        <div class="occ"><div class="ol"><span>Ocupação</span><b style="color:var(--danger)">96%</b></div><div class="obar"><i style="width:96%;background:linear-gradient(90deg,var(--amber),var(--danger))"></i></div></div>
+      </div>
+      <div class="deliv">
+        <div class="dh"><div class="avatar av" style="background:var(--teal)">CS</div><div><b>Carla Souza</b><div class="dep">Redação</div></div></div>
+        <div class="km">
+          <div class="kx"><div class="n">31</div><div class="l">Entregas no mês</div></div>
+          <div class="kx"><div class="n ontime">98<small>%</small></div><div class="l">No prazo</div></div>
+          <div class="kx"><div class="n">4</div><div class="l">Em aberto</div></div>
+          <div class="kx"><div class="n">6<small>%</small></div><div class="l">Retrabalho</div></div>
+        </div>
+        <div class="occ"><div class="ol"><span>Ocupação</span><b>68%</b></div><div class="obar"><i style="width:68%;background:linear-gradient(90deg,var(--success),var(--teal))"></i></div></div>
+      </div>
+      <div class="deliv">
+        <div class="dh"><div class="avatar av" style="background:var(--slate)">DA</div><div><b>Diego Alves</b><div class="dep">Audiovisual</div></div></div>
+        <div class="km">
+          <div class="kx"><div class="n">12</div><div class="l">Entregas no mês</div></div>
+          <div class="kx"><div class="n ontime">90<small>%</small></div><div class="l">No prazo</div></div>
+          <div class="kx"><div class="n">6</div><div class="l">Em aberto</div></div>
+          <div class="kx"><div class="n">9<small>%</small></div><div class="l">Retrabalho</div></div>
+        </div>
+        <div class="occ"><div class="ol"><span>Ocupação</span><b>74%</b></div><div class="obar"><i style="width:74%;background:linear-gradient(90deg,var(--yellow),var(--amber))"></i></div></div>
+      </div>
+      <div class="deliv">
+        <div class="dh"><div class="avatar av" style="background:var(--success)">EN</div><div><b>Erika Nunes</b><div class="dep">Tráfego</div></div></div>
+        <div class="km">
+          <div class="kx"><div class="n">15</div><div class="l">Entregas no mês</div></div>
+          <div class="kx"><div class="n ontime">93<small>%</small></div><div class="l">No prazo</div></div>
+          <div class="kx"><div class="n">5</div><div class="l">Em aberto</div></div>
+          <div class="kx"><div class="n">8<small>%</small></div><div class="l">Retrabalho</div></div>
+        </div>
+        <div class="occ"><div class="ol"><span>Ocupação</span><b>71%</b></div><div class="obar"><i style="width:71%;background:linear-gradient(90deg,var(--success),var(--teal))"></i></div></div>
+      </div>
+      <div class="deliv" style="border-style:dashed;display:flex;align-items:center;justify-content:center;color:var(--premium-gray);text-align:center">
+        <div><i data-lucide="bar-chart-3" style="width:30px;height:30px;color:var(--premium-silver)"></i><div style="margin-top:10px;font-size:13px;font-weight:500">Ver relatório completo<br>da equipe (BI)</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== CONFIGURAÇÕES ====== -->
+  <section class="screen" id="screen-config">
+    <div class="page-head">
+      <div><h1>Configurações</h1><div class="sub">Cadastros base e modelos que alimentam todo o sistema.</div></div>
+    </div>
+    <div class="cfg-grid">
+      <div class="cfg"><div class="ci"><i data-lucide="users"></i></div><h4>Colaboradores</h4><p>Nome, e-mail, departamento, acesso ao sistema, contato, Discord e permissões.</p><div class="arr">Gerenciar <i data-lucide="arrow-right"></i></div></div>
+      <div class="cfg"><div class="ci"><i data-lucide="briefcase"></i></div><h4>Clientes</h4><p>Nome, CNPJ, razão social, endereço e colaborador responsável.</p><div class="arr">Gerenciar <i data-lucide="arrow-right"></i></div></div>
+      <div class="cfg"><div class="ci"><i data-lucide="users-round"></i></div><h4>Grupos de clientes</h4><p>Agrupe clientes e inicie projetos para o grupo todo.</p><div class="arr">Gerenciar <i data-lucide="arrow-right"></i></div></div>
+      <div class="cfg"><div class="ci"><i data-lucide="file-stack"></i></div><h4>Modelos de demanda</h4><p>Título, briefing padrão, status e workflow vinculado.</p><div class="arr">Gerenciar <i data-lucide="arrow-right"></i></div></div>
+      <div class="cfg"><div class="ci"><i data-lucide="git-branch"></i></div><h4>Modelos de workflow</h4><p>Construtor de etapas com tipo, cor e departamento.</p><div class="arr">Gerenciar <i data-lucide="arrow-right"></i></div></div>
+      <div class="cfg"><div class="ci"><i data-lucide="layers"></i></div><h4>Departamentos</h4><p>CRUD de departamentos e funções por setor.</p><div class="arr">Gerenciar <i data-lucide="arrow-right"></i></div></div>
+    </div>
+
+    <div class="wfb">
+      <div class="wfb-title">Construtor de workflow · exemplo: Social Media</div>
+      <div class="wfb-sub">Cada etapa tem um tipo (Produção, Aprovação Interna, Aprovação Cliente), uma cor e um departamento vinculado. O responsável é puxado da equipe base do projeto.</div>
+      <div class="wfb-flow">
+        <div class="wfb-stage"><div class="top" style="background:var(--teal)"></div><div class="sn">Redação</div><div class="stp">Produção</div><span class="sdep t-redacao">Redação</span></div>
+        <div class="wfb-arrow"><i data-lucide="arrow-right"></i></div>
+        <div class="wfb-stage"><div class="top" style="background:var(--violet)"></div><div class="sn">Criação</div><div class="stp">Produção</div><span class="sdep t-criacao">Criação</span></div>
+        <div class="wfb-arrow"><i data-lucide="arrow-right"></i></div>
+        <div class="wfb-stage"><div class="top" style="background:var(--amber)"></div><div class="sn">Aprovação Interna</div><div class="stp">Aprov. Interna</div><span class="sdep t-social">Social Media</span></div>
+        <div class="wfb-arrow"><i data-lucide="arrow-right"></i></div>
+        <div class="wfb-stage"><div class="top" style="background:var(--info)"></div><div class="sn">Aprovação Cliente</div><div class="stp">Aprov. Cliente</div><span class="sdep" style="background:var(--info-bg);color:var(--info)">Atendimento</span></div>
+        <div class="wfb-arrow"><i data-lucide="arrow-right"></i></div>
+        <div class="wfb-stage"><div class="top" style="background:var(--success)"></div><div class="sn">Publicação</div><div class="stp">Produção</div><span class="sdep t-social">Social Media</span></div>
+        <div class="wfb-arrow"><i data-lucide="arrow-right"></i></div>
+        <div class="wfb-add"><i data-lucide="plus"></i> Nova etapa</div>
+      </div>
+    </div>
+  </section>
+
+  </main>
+</div>
+
+<!-- FAB: entrada única de criação, contextual à tela (ui-guidelines §4.18). -->
+<div class="fab-wrap">
+  <div class="fab-dial">
+    <div class="fab-item"><span class="fab-label">Criar atividade</span><button class="fab-mini"><i data-lucide="check-square"></i></button></div>
+    <div class="fab-item"><span class="fab-label">Criar projeto</span><button class="fab-mini"><i data-lucide="folder-kanban"></i></button></div>
+  </div>
+  <div class="fab-item"><span class="fab-label fab-plabel">Criar demanda</span><button class="fab" aria-haspopup="menu" aria-expanded="false" title="Criar demanda"><i data-lucide="plus"></i></button></div>
+</div>
+
+<script>
+function showScreen(name){
+  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active')});
+  var el=document.getElementById('screen-'+name);
+  if(el)el.classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(function(n){
+    n.classList.toggle('active', n.getAttribute('data-screen')===name);
+  });
+  document.querySelector('.content').scrollTop=0;
+  if(window.lucide)lucide.createIcons();
+}
+document.querySelectorAll('[data-screen]').forEach(function(el){
+  el.addEventListener('click',function(e){
+    e.stopPropagation();
+    showScreen(el.getAttribute('data-screen'));
+  });
+});
+function openDemand(){showScreen('demanda');}
+function toggleView(screen,view,btn){
+  btn.parentNode.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active')});
+  btn.classList.add('active');
+  document.getElementById(screen+'-kanban').style.display = view==='kanban'?'block':'none';
+  document.getElementById(screen+'-table').style.display = view==='table'?'block':'none';
+}
+function ddTab(name,btn){
+  btn.parentNode.querySelectorAll('.dd-tab').forEach(function(t){t.classList.remove('active')});
+  btn.classList.add('active');
+  document.querySelectorAll('.dd-pane').forEach(function(p){p.classList.remove('active')});
+  document.getElementById('pane-'+name).classList.add('active');
+  if(window.lucide)lucide.createIcons();
+}
+function addDrive(){
+  var v=document.getElementById('driveUrl').value.trim();
+  if(!v){document.getElementById('driveUrl').focus();return;}
+  document.getElementById('driveUrl').value='';
+  alert('Protótipo: o sistema leria a pasta do Drive em "'+v+'", localizaria a subpasta Vídeo e Imagem e exibiria as mídias em preview abaixo.');
+}
+function toggleAdjForm(){var f=document.getElementById('adjForm');f.style.display=(f.style.display==='none'||!f.style.display)?'block':'none';if(window.lucide)lucide.createIcons();}
+// generic tab toggles (segmented controls without explicit handler)
+document.querySelectorAll('.tabs').forEach(function(group){
+  group.querySelectorAll('.tab').forEach(function(tab){
+    if(tab.getAttribute('onclick'))return;
+    tab.addEventListener('click',function(){
+      group.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active')});
+      tab.classList.add('active');
+    });
+  });
+});
+if(window.lucide)lucide.createIcons();
+</script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   PREMIUM · MARKETING 360° — Identidade visual (entrada única)
+   Em projetos Tailwind v4, importe no globals.css DEPOIS de
+   `@import "tailwindcss";`:
+
+     @import "tailwindcss";
+     @import "@agenciapremium/premium-design";
+
+   Projetos sem Tailwind podem importar tokens.css + base.css + motion.css
+   diretamente (theme.css contém at-rules do Tailwind, ignoradas por
+   navegadores mas inúteis fora dele).
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@import "./tokens.css";
+@import "./theme.css";
+@import "./base.css";
+@import "./motion.css";

@@ -1,0 +1,190 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   PREMIUM · MARKETING 360° — Tokens de identidade visual
+   Fonte da verdade dos tokens da Agência Premium. Consumido por todos os
+   sistemas (Tasks, Central de Mídia, Ultra Popular, portais).
+   Arquitetura em camadas:
+     1A. Marca crua (--brand-*)  — fixa nos dois temas
+     1B. Semântica (--c-*)       — ÚNICA camada que muda por tema (html.dark)
+   A escala neutra literal (--premium-*) é fachada de compatibilidade: no claro
+   mantém os valores originais; no escuro é recalibrada (texto vence).
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── Camada 1A · Marca crua (fixa nos dois temas) ──────────────────────────
+     Cores literais da marca. Nunca mudam entre claro/escuro. */
+  --brand-yellow: #FBDA25;
+  --brand-gold: #FCD028;
+  --brand-amber: #F7BA30;
+  --brand-ink: #0A0A0A;    /* âncora escura da marca: sidebar, btn-dark, banners */
+  --brand-on-ink: #FFFFFF; /* texto sobre a âncora escura */
+
+  /* Aliases de marca mantidos para compatibilidade com componentes existentes. */
+  --yellow: var(--brand-yellow);
+  --gold: var(--brand-gold);
+  --amber: var(--brand-amber);
+  --yellow-50: #FFFBE0;    /* SOMENTE anel de foco (0 0 0 2px); nunca fundo — use --gold-bg */
+
+  /* Par temático de fundo amarelo suave (seleção, callouts, destaques). No claro
+     vale o valor histórico de --yellow-50; html.dark dá um tom escuro dourado
+     próprio (nunca o claro com opacidade). */
+  --gold-bg: #FFFBE0;
+
+  /* Amarelo de alerta sobre chip escuro (par invertido, ex.: cronômetro parado).
+     No claro o chip é escuro → amarelo da marca (AA). No escuro o chip fica
+     claro; o valor é escurecido em html.dark para manter AA de texto pequeno
+     ("amarelo só em fundo escuro"). Só cor por token — componente nunca usa hex. */
+  --timer-idle: var(--brand-yellow);
+
+  /* Escala neutra literal — valores do modo CLARO (inalterados). */
+  --premium-black: #000000;
+  --premium-ink: #0A0A0A;
+  --premium-coal: #1A1A1A;
+  --premium-graphite: #2A2A2A;
+  --premium-steel: #4A4A4A;
+  --premium-gray: #8A8A8A;
+  --premium-silver: #BFBFBF;
+  --premium-mist: #E5E5E5;
+  --premium-bone: #F2F2F2;
+  --premium-paper: #FAFAFA;
+  --premium-white: #FFFFFF;
+
+  /* ── Camada 1B · Semântico --c-* (varia por tema) ──────────────────────────
+     No claro aponta para os neutros claros. Trocar tema = sobrescrever estes. */
+  --c-bg: var(--premium-paper);            /* fundo da página */
+  --c-surface: var(--premium-white);       /* superfície de card */
+  --c-sunken: var(--premium-bone);         /* chip, thead, tabs, segmented */
+  --c-ink: var(--premium-ink);             /* texto principal */
+  --c-muted: var(--premium-gray);          /* texto auxiliar */
+  --c-subtle: var(--premium-silver);       /* ícones / desabilitado */
+  --c-border: var(--premium-mist);         /* borda padrão */
+  --c-border-strong: var(--premium-graphite); /* borda forte */
+
+  /* Zona "sempre escura" da marca (sidebar): escura nos dois temas, só eleva
+     levemente no escuro para separar da página. */
+  --c-sidebar: var(--brand-ink);
+  --c-sidebar-elevated: #1A1A1A;
+  --c-sidebar-muted: #BFBFBF;
+  --c-sidebar-section: #4A4A4A; /* rótulos de seção / cadeado (dim) */
+
+  /* Ênfase neutra (btn-dark / chips e tabs invertidos): preto no claro,
+     inverte para claro no escuro — um preto sobre página preta sumiria. */
+  --c-emphasis: var(--brand-ink);
+  --c-on-emphasis: var(--brand-on-ink);
+  --c-emphasis-hover: #2A2A2A;
+
+  --success: #1E8E4A;
+  --success-bg: #E6F4EA;
+  --warning: #C97A0F;
+  --warning-bg: #FFF3DB;
+  --danger: #C0322B;
+  --danger-bg: #FBE9E7;
+  --info: #1A6FB0;
+  --info-bg: #E6F1FA;
+
+  --violet: #6E56CF;
+  --violet-bg: #EDE9FB;
+  --teal: #0E8C8C;
+  --teal-bg: #E2F3F3;
+  --slate: #5B6472;
+  --slate-bg: #EDF0F3;
+
+  --r-sm: 6px;
+  --r-md: 8px;
+  --r-lg: 12px;
+  --r-xl: 18px;
+  --r-pill: 999px;
+
+  --sh-sm: 0 1px 3px rgba(10,10,10,.08), 0 1px 2px rgba(10,10,10,.04);
+  --sh-md: 0 4px 12px rgba(10,10,10,.08), 0 2px 4px rgba(10,10,10,.04);
+  --sh-lg: 0 12px 32px rgba(10,10,10,.12), 0 4px 8px rgba(10,10,10,.06);
+  --sh-gold: 0 12px 28px rgba(251,218,37,.40), 0 4px 8px rgba(247,186,48,.22);
+
+  --ease: cubic-bezier(.22,.61,.36,1);
+
+  /* ── Code theme (realce de sintaxe em documentação) ────────────────────────
+     O realce é a exceção controlada à regra "sem hex em componente": as cores
+     de sintaxe vivem como tokens aqui (camada de valor) e o componente nunca
+     usa hex. Valores do tema CLARO; html.dark sobrescreve. Contraste AA. */
+  --code-bg: #f6f6f4;
+  --code-fg: #1a1a1a;
+  --code-border: #e5e5e5;
+  --code-keyword: #8a3ffc;     /* palavras-chave / métodos HTTP */
+  --code-string: #0f7b46;     /* strings */
+  --code-number: #9a5b00;     /* números / booleanos / null */
+  --code-comment: #6a6a6a;    /* comentários */
+  --code-property: #1565a8;   /* chaves de objeto / propriedades */
+  --code-punct: #4a4a4a;      /* pontuação */
+}
+
+/* ── Tema escuro · sobrescreve a camada semântica + neutros + status ──────────
+   Paleta calibrada à mão (ref. midia.agpremium.com.br), NÃO inversão. */
+html.dark {
+  /* Semântico --c-* */
+  --c-bg: #0a0a0a;
+  --c-surface: #161616;
+  --c-sunken: #202020;
+  --c-ink: #fafafa;
+  --c-muted: #b8b8b8;
+  --c-subtle: #8a8a8a;
+  --c-border: #2e2e2e;
+  --c-border-strong: #4a4a4a;
+
+  /* Sidebar eleva-se acima da página (#0a0a0a) para criar separação. */
+  --c-sidebar: #161616;
+  --c-sidebar-elevated: #232323;
+  --c-sidebar-section: #6a6a6a;
+  /* --c-sidebar-muted permanece claro: a sidebar é sempre escura. */
+
+  /* Ênfase inverte: botão claro sobre página escura tem alto contraste. */
+  --c-emphasis: #fafafa;
+  --c-on-emphasis: #0a0a0a;
+  --c-emphasis-hover: #e2e2e2;
+
+  /* Neutros --premium-* recalibrados (texto vence: ink/coal/graphite claros).
+     Superfícies intencionalmente escuras usam --brand-ink (ver componentes). */
+  --premium-paper: #0a0a0a;   /* → --c-bg */
+  --premium-white: #161616;   /* → --c-surface */
+  --premium-bone: #202020;    /* → --c-sunken */
+  --premium-mist: #2e2e2e;    /* → --c-border */
+  --premium-graphite: #4a4a4a;/* → --c-border-strong */
+  --premium-silver: #5a5a5a;  /* ícones / desabilitado */
+  --premium-gray: #b8b8b8;    /* → --c-muted */
+  --premium-steel: #d0d0d0;   /* texto secundário */
+  --premium-coal: #f2f2f2;    /* texto / hover claro */
+  --premium-ink: #fafafa;     /* → --c-ink (texto principal) */
+  /* --premium-black permanece #000 (reservado a banner de marca). */
+
+  /* Status recalibrados para fundo escuro */
+  --success: #34d17d;  --success-bg: #0f2e1d;
+  --warning: #e6b24a;  --warning-bg: #2e2410;
+  --danger: #e87a72;   --danger-bg: #2e1513;
+  --info: #5aa6dd;     --info-bg: #102433;
+
+  /* Tons auxiliares (fundos escuros próprios, sem opacidade) */
+  --violet: #a594e8;   --violet-bg: #211a33;
+  --teal: #4cc3c3;     --teal-bg: #0f2b2b;
+  --slate: #9aa3b2;    --slate-bg: #1c212a;
+  --gold-bg: #2e2410;  /* fundo amarelo suave no escuro (par de --warning-bg) */
+  /* No escuro o chip invertido fica claro (#fafafa); o amarelo da marca não
+     passa AA como texto sobre claro. Gold escurecido: contraste ≈ 5:1 sobre
+     #fafafa, mantendo a leitura "dourado/alerta". */
+  --timer-idle: #846a00;
+
+  /* Sombras intensificadas */
+  --sh-sm: 0 1px 3px rgba(0,0,0,.4), 0 1px 2px rgba(0,0,0,.2);
+  --sh-md: 0 4px 12px rgba(0,0,0,.4), 0 2px 4px rgba(0,0,0,.2);
+  --sh-lg: 0 12px 32px rgba(0,0,0,.5), 0 4px 8px rgba(0,0,0,.3);
+
+  /* Code theme — tema escuro (calibrado, contraste AA sobre #1b1b1b). */
+  --code-bg: #1b1b1b;
+  --code-fg: #e6e6e6;
+  --code-border: #2e2e2e;
+  --code-keyword: #c792ea;
+  --code-string: #7fd6a0;
+  --code-number: #f2b35e;
+  --code-comment: #8a8a8a;
+  --code-property: #82c5f5;
+  --code-punct: #b8b8b8;
+
+  color-scheme: dark;
+}

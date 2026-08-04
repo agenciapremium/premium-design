@@ -1,0 +1,51 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   PREMIUM · MARKETING 360° — Padrões de movimento compartilhados
+   Curva única --ease (definida em tokens.css) e keyframes de identidade.
+   Tudo condicionado a prefers-reduced-motion: sem preferência de movimento,
+   nada anima (o significado permanece pela cor/estado estático).
+   Presets de overlay (modal, slide-over, menu, toast) são código de app —
+   ver docs/motion.md.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Fade-in de tela para skeletons/rotas (150ms, sem deslocamento). */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+}
+
+/* Crossfade de conteúdo em navegação server-nav (View Transitions API,
+   progressive enhancement). Duração curta para não pesar. */
+@media (prefers-reduced-motion: no-preference) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 0.2s;
+  }
+}
+
+/* Flash sutil de fundo em item recém-chegado (tempo real / envio otimista).
+   Token temático com par escuro próprio (--gold-bg), dissolvendo em ~600ms. */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes flashNovo {
+    from { background-color: var(--gold-bg); }
+    to { background-color: transparent; }
+  }
+  .flash-novo {
+    animation: flashNovo 0.6s var(--ease);
+    border-radius: var(--r-md);
+  }
+}
+
+/* Pulso suave de alerta discreto (ex.: cronômetro parado). Opacidade 1→0.55,
+   ciclo lento (1.6s) e simétrico (ease-in-out) — exceção documentada à curva
+   única. Sob prefers-reduced-motion NÃO anima — o alerta permanece pela cor. */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes timerPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.55; }
+  }
+  .timer-pulse {
+    animation: timerPulse 1.6s ease-in-out infinite;
+  }
+}

@@ -1,0 +1,41 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   PREMIUM · MARKETING 360° — Base global de identidade
+   Tipografia, seleção e scrollbar padrão dos sistemas Premium.
+   A fonte Ubuntu (300/400/500/700) NÃO é embutida no pacote: cada app a
+   carrega do seu jeito (next/font, @font-face ou <link>), com fallback
+   system-ui garantido aqui.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+body {
+  font-family: "Ubuntu", system-ui, sans-serif;
+  background: var(--c-bg);
+  color: var(--c-ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Seleção de texto: amarelo da marca com texto preto, nos dois temas. */
+::selection {
+  background: var(--yellow);
+  color: #000;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--premium-mist);
+  border-radius: 999px;
+  border: 2px solid var(--premium-paper);
+}
+
+/* Rótulo "eyebrow" (10px/700, uppercase, tracking largo) — assinatura
+   tipográfica da marca acima de títulos e em cabeçalhos de coluna. */
+.eyebrow {
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.20em;
+  text-transform: uppercase;
+  color: var(--premium-gray);
+}
