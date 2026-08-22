@@ -934,6 +934,21 @@ th.sortable.on svg.lucide{color:var(--premium-ink)}
       ["--slate-bg","Fundo slate"]
     ]'></div>
 
+    <div class="ds-sub">Cor de dado — paleta fechada de cadastro</div>
+    <p class="spec-note">Cor escolhida pelo usuário e gravada no banco (departamento, motivo de ausência) é <strong>dado</strong>, não estilo: por isso hex literal, fixo nos dois temas, e não <code>var()</code>. O que a torna segura é a lista ser <strong>fechada</strong> — dez valores, todos espelhando token, nenhum usado como texto sobre fundo claro. Seletor livre de cor, nunca.</p>
+    <div class="swatches" data-swatches-fixos='[
+      ["#FBDA25","--brand-yellow"],
+      ["#F7BA30","--amber"],
+      ["#6E56CF","--violet"],
+      ["#0E8C8C","--teal"],
+      ["#5B6472","--slate"],
+      ["#1E8E4A","--success"],
+      ["#1A6FB0","--info"],
+      ["#C0322B","--danger"],
+      ["#C97A0F","--warning"],
+      ["#8A8A8A","--premium-gray · padrão de cadastro novo"]
+    ]'></div>
+
     <div class="ds-sub">Code theme (realce de sintaxe da doc pública)</div>
     <div class="swatches" data-swatches='[
       ["--code-bg","Fundo do bloco"],
@@ -2117,6 +2132,22 @@ function renderSwatches(){
       grid.appendChild(card);
     });
   });
+
+  /* Swatches de hex fixo (cor de dado): o valor É o hex, não um token a resolver. */
+  document.querySelectorAll("[data-swatches-fixos]").forEach(function(grid){
+    var defs = JSON.parse(grid.getAttribute("data-swatches-fixos"));
+    grid.innerHTML = "";
+    defs.forEach(function(d){
+      var hex = d[0], origem = d[1];
+      var card = document.createElement("div");
+      card.className = "swatch";
+      card.innerHTML =
+        '<div class="chipc" style="background:'+hex+'"></div>' +
+        '<div class="info"><b>'+hex+'</b><span class="use">espelha '+origem+'</span></div>';
+      grid.appendChild(card);
+    });
+  });
+
   probe.remove();
 }
 

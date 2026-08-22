@@ -90,6 +90,37 @@ No claro, valores literais originais; no escuro, **recalibrados** (texto e super
 
 Departamentos têm cor própria por convenção — o mapeamento cor → departamento é feito uma única vez em helper dedicado, nunca espalhado pelas telas.
 
+### Cor de dado — paleta fechada de cadastro
+
+A exceção à regra "cor só por token". Quando a cor é **escolhida pelo usuário e gravada no banco** (departamento, motivo de ausência, categoria), ela é **dado**, não estilo: precisa sobreviver ao componente, ao tema e à próxima versão do design system. Por isso é hex, e não `var()`.
+
+O que impede isso de virar um abacaxi de acessibilidade é a lista ser **fechada**. Nada de seletor livre onde alguém pinta um item de branco sobre fundo branco:
+
+| Hex | Espelha |
+|---|---|
+| `#FBDA25` | `--brand-yellow` |
+| `#F7BA30` | `--amber` |
+| `#6E56CF` | `--violet` |
+| `#0E8C8C` | `--teal` |
+| `#5B6472` | `--slate` |
+| `#1E8E4A` | `--success` |
+| `#1A6FB0` | `--info` |
+| `#C0322B` | `--danger` |
+| `#C97A0F` | `--warning` |
+| `#8A8A8A` | `--premium-gray` — **padrão** de cadastro novo |
+
+Regras:
+
+1. **Uma lista para o sistema inteiro**, num módulo próprio — nunca dentro de uma tela. Duas telas escolhendo cor de listas diferentes é o começo de uma divergência visual.
+2. **Validada no servidor**: a action rejeita hex fora da lista. A UI oferecer só dez opções não é garantia — é dica visual.
+3. **Escolha por amostras**, nunca `<input type="color">`. Amostra selecionada ganha `outline: 3px solid var(--premium-ink)`; as demais, `2px solid var(--premium-mist)`. Com `aria-pressed` e `aria-label` nomeando a cor.
+4. Todas são **fundo, ponto ou faixa de identificação** — nenhuma é texto sobre fundo claro. Os dez valores vêm de tokens que já passam AA nesse papel.
+5. Cor **nunca é a única** portadora de significado: sempre acompanha rótulo (ver [`acessibilidade.md`](acessibilidade.md)).
+
+Note que os valores são os do tema **claro**, fixos: cor de dado não tem par escuro — ela é a mesma nos dois temas, e é o papel dela (fundo com texto claro, ponto, faixa) que garante o contraste.
+
+Implementação de referência: [`src/lib/cores-cadastro.ts`](https://github.com/agenciapremium/tasks/blob/main/src/lib/cores-cadastro.ts) no Tasks. Vale o modelo de registry — cada sistema copia a lista, não importa CSS.
+
 ### Code theme (`doc-code-block`)
 
 Tokens dedicados ao realce de sintaxe da documentação pública (`/docs`). Contraste AA nos dois temas.

@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Modelo canônico — E-mail transacional Premium</title>
+<!--
+  MODELO CANÔNICO DE E-MAIL TRANSACIONAL — Design System Premium.
+
+  Referência viva do esqueleto descrito em `docs/email.md`. Abra no navegador
+  para ver as variantes lado a lado; no e-mail real cada uma chega sozinha.
+
+  Este arquivo não é o template de produção de nenhum sistema: cada app tem o
+  seu (no Tasks, `src/emails/`, sobre React Email). O papel dele é ser o que o
+  layout precisa parecer, e o que se aprova ANTES de escrever o componente —
+  e-mail não tem hot reload, cada rodada custa um envio de verdade.
+
+  As quatro regras invariantes (todas já custaram um bug em produção):
+    - Cores em hex literal: cliente de e-mail não resolve var(--premium-ink).
+      É a exceção legítima à regra de "cor sempre por token" — mas cada hex
+      aqui é cópia de um token, nunca cor inventada.
+    - Logo em PNG por URL absoluta: Gmail/Outlook/Yahoo não renderizam WebP e o
+      e-mail não tem acesso ao app.
+    - Centralizar imagem exige display:block + margin:0 auto; só textAlign no
+      pai não centraliza <img> no Outlook. O CTA é o inverso: o alinhamento
+      mora no container (textAlign), nunca no <a> (float é ignorado).
+    - Recuo por tabela interna de 520px, NÃO por padding na célula-pai: tabelas
+      aninhadas com width:100% vazam padding no Titan.
+-->
+<style>
+  /* ---- Cromatismo da marca (espelho de css/tokens.css em hex literal) ----
+     INK #0A0A0A · BONE #F2F2F2 · MIST #E5E5E5 · STEEL #4A4A4A
+     GRAY #8A8A8A · SILVER #BFBFBF · YELLOW #FBDA25                        */
+  body { margin:0; padding:0; background:#DEDEDE;
+         font-family:"Ubuntu", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  .nota { max-width:600px; margin:32px auto 8px; padding:14px 18px; background:#FFFBE0;
+          border:1px solid #FBDA25; border-radius:10px; font-size:13px; line-height:1.6; color:#4A4A4A; }
+  .nota strong { color:#0A0A0A; }
+  .rotulo { max-width:600px; margin:36px auto 10px; font-size:11px; font-weight:700;
+            letter-spacing:.12em; text-transform:uppercase; color:#4A4A4A; }
+  .palco { background:#F2F2F2; padding:40px 16px; }
+  .card { background:#FFFFFF; border-radius:14px; max-width:600px; width:100%;
+          margin:0 auto; overflow:hidden; }
+  /* Logo centralizada. `display:block` + margem auto é o que funciona nos
+     webmails; `text-align:center` na célula-pai não centraliza <img> no Outlook. */
+  .header { background:#0A0A0A; padding:40px 44px; text-align:center; }
+  .header img { height:30px; width:auto; display:block; margin:0 auto; }
+  .corpo { padding:44px 0 8px; }
+  .wrap { max-width:520px; width:100%; margin:0 auto; }        /* o recuo confiável */
+  .chip { display:inline-block; font-size:10.5px; font-weight:700; letter-spacing:.12em;
+          text-transform:uppercase; padding:5px 11px; border-radius:999px; margin:0 0 20px; }
+  .titulo { margin:0 0 12px; font-size:21px; line-height:1.35; font-weight:700; color:#0A0A0A; }
+  .msg { margin:0 0 28px; font-size:15.5px; line-height:1.7; color:#4A4A4A; }
+  .painel { background:#F2F2F2; border:1px solid #E5E5E5; border-radius:12px; padding:22px 24px; margin:0 0 30px; }
+  .linha { font-size:13.5px; line-height:1.9; color:#4A4A4A; }
+  .linha b { color:#0A0A0A; font-weight:700; }
+  /* Botão alinhado à direita: o alinhamento mora no container, não no <a>
+     (`float` é ignorado por vários clientes de e-mail; `text-align` não). */
+  .acao { text-align:right; }
+  .cta { display:inline-block; background:#FBDA25; color:#0A0A0A; text-decoration:none;
+         font-size:14px; font-weight:700; padding:14px 28px; border-radius:10px; }
+  .rodape { padding:34px 0 40px; }
+  .rodape .wrap { border-top:1px solid #E5E5E5; padding-top:22px; }
+  .mini { margin:0; font-size:12px; line-height:1.7; color:#8A8A8A; }
+  .mini a { color:#8A8A8A; }
+</style>
+</head>
+<body>
+
+<div class="nota">
+  <strong>Protótipo para avaliação.</strong> Três variantes empilhadas — no e-mail real cada uma
+  chega sozinha. O que muda entre elas é <strong>a pílula de contexto, o título, o painel de
+  detalhe e o texto do botão</strong>; a moldura (header preto, container branco, recuo de 520px,
+  rodapé) é idêntica, porque é <strong>um único template</strong> servindo os dois contextos.
+</div>
+
+<!-- ══════════════════ 1. INTERNO — etapa liberada ══════════════════ -->
+<div class="rotulo">1 · Interno — etapa liberada (categoria: etapas e prazos)</div>
+<div class="palco">
+  <div class="card">
+    <div class="header">
+      <img src="https://tasks.agpremium.com.br/brand/logo-horizontal-branca.png" alt="Premium Marketing 360°">
+    </div>
+    <div class="corpo">
+      <div class="wrap">
+        <span class="chip" style="background:#E6F1FA; color:#1A6FB0;">A bola é sua</span>
+        <p class="titulo">CRIAÇÃO liberada em “Post carrossel de lançamento”</p>
+        <p class="msg">
+          A etapa anterior foi concluída e a demanda avançou para você. O prazo desta etapa
+          termina em <b>12 de agosto</b>.
+        </p>
+        <div class="painel">
+          <div class="linha">
+            <b>Cliente</b> · Rede Hospitalar Samar<br>
+            <b>Projeto</b> · [SAMAR] — Campanha Agosto<br>
+            <b>Etapa</b> · CRIAÇÃO · Designer<br>
+            <b>Entrega da demanda</b> · 15 de agosto
+          </div>
+        </div>
+        <div class="acao"><a class="cta" href="https://tasks.agpremium.com.br/demandas/exemplo">Abrir a demanda</a></div>
+      </div>
+    </div>
+    <div class="rodape">
+      <div class="wrap">
+        <p class="mini">
+          Você recebe este e-mail porque ligou a categoria <b>Etapas e prazos</b> nas suas
+          notificações. Para ajustar, acesse <a href="https://tasks.agpremium.com.br">sua conta no Tasks</a>.<br>
+          Agência Premium · Rondônia, Brasil
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ 2. INTERNO — menção ══════════════════ -->
+<div class="rotulo">2 · Interno — menção em comentário (categoria: menções e comentários)</div>
+<div class="palco">
+  <div class="card">
+    <div class="header">
+      <img src="https://tasks.agpremium.com.br/brand/logo-horizontal-branca.png" alt="Premium Marketing 360°">
+    </div>
+    <div class="corpo">
+      <div class="wrap">
+        <span class="chip" style="background:#EDE9FB; color:#6E56CF;">Falaram com você</span>
+        <p class="titulo">Marina mencionou você num comentário</p>
+        <p class="msg">Em <b>“Vídeo bumper — CDL Ji-Paraná”</b>:</p>
+        <div class="painel">
+          <div class="linha">
+            “@você consegue revisar a legenda antes de subir? Acho que o CTA ficou
+            longo demais para o formato.”
+          </div>
+        </div>
+        <div class="acao"><a class="cta" href="https://tasks.agpremium.com.br/demandas/exemplo">Responder no Tasks</a></div>
+      </div>
+    </div>
+    <div class="rodape">
+      <div class="wrap">
+        <p class="mini">
+          Você recebe este e-mail porque ligou a categoria <b>Menções e comentários</b>.
+          Para ajustar, acesse <a href="https://tasks.agpremium.com.br">sua conta no Tasks</a>.<br>
+          Agência Premium · Rondônia, Brasil
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ 3. CLIENTE — aprovação pendente ══════════════════ -->
+<div class="rotulo">3 · Cliente — material aguardando aprovação (copy e CTA próprios)</div>
+<div class="palco">
+  <div class="card">
+    <div class="header">
+      <img src="https://tasks.agpremium.com.br/brand/logo-horizontal-branca.png" alt="Premium Marketing 360°">
+    </div>
+    <div class="corpo">
+      <div class="wrap">
+        <span class="chip" style="background:#FFF3DB; color:#C97A0F;">Aguardando você</span>
+        <p class="titulo">Um material está pronto para a sua aprovação</p>
+        <p class="msg">
+          Olá, Cleberson. Finalizamos um material da campanha e ele já está disponível para
+          você aprovar ou pedir ajustes — sem precisar de senha, direto pelo link.
+        </p>
+        <div class="painel">
+          <div class="linha">
+            <b>Material</b> · Post carrossel de lançamento<br>
+            <b>Projeto</b> · Campanha Agosto<br>
+            <b>Enviado em</b> · 7 de agosto
+          </div>
+        </div>
+        <div class="acao"><a class="cta" href="https://tasks.agpremium.com.br/aprovar/exemplo">Ver e aprovar</a></div>
+      </div>
+    </div>
+    <div class="rodape">
+      <div class="wrap">
+        <p class="mini">
+          Você recebe este e-mail como contato da conta na Agência Premium. Se não for a
+          pessoa certa, responda avisando que ajustamos.<br>
+          Agência Premium · Rondônia, Brasil
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="nota" style="margin-bottom:48px;">
+  <strong>O que quero que você avalie:</strong> (a) a pílula de contexto colorida no topo cumpre
+  o papel de dizer “por que estou recebendo isto” logo de cara? (b) o painel cinza de detalhe
+  é útil ou vira ruído num e-mail curto? (c) o rodapé explicando a categoria e o caminho para
+  desligar está claro o bastante — é ele que evita o e-mail virar spam aos olhos de quem recebe?
+  (d) para o cliente, o tom está adequado?
+</div>
+
+</body>
+</html>

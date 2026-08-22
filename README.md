@@ -75,6 +75,11 @@ E use os tokens direto: `var(--c-surface)`, `var(--brand-yellow)`, etc.
 4. **Acessível por padrão.** Contraste AA, foco visível, alvo ≥ 40px, `prefers-reduced-motion` em toda animação.
 5. **pt-BR formal e acentuado, sem emoji em UI de produção.**
 
+A regra 1 tem exatamente **duas exceções**, ambas documentadas — e nenhuma delas é "achei mais fácil assim":
+
+- **E-mail** ([`docs/email.md`](docs/email.md)): cliente de e-mail não resolve `var(--token)`, então é hex literal. Mas cada hex é cópia de um token, declarado no topo do arquivo.
+- **Cor de dado** ([`docs/tokens.md`](docs/tokens.md#cor-de-dado--paleta-fechada-de-cadastro)): cor escolhida pelo usuário e gravada no banco (departamento, motivo de ausência) é dado, não estilo. Lista **fechada** de dez valores espelhando tokens; seletor livre de cor, nunca.
+
 A referência completa está em [`docs/`](docs/) — em especial [`docs/ui-guidelines.md`](docs/ui-guidelines.md) (regras de uso) e [`docs/componentes.md`](docs/componentes.md) (catálogo de primitivos, cuja implementação de referência vive no repositório [Tasks](https://github.com/agenciapremium/tasks)).
 
 ## Governança

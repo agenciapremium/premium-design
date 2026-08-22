@@ -61,6 +61,8 @@ Kanban / Lista / Tabela / Calendário via tabs na zona de views; estado em `?vie
 
 Clicar numa mídia abre o `Lightbox`: overlay full-viewport com fundo escuro fixo nos **dois** temas, nome do arquivo + contador "X / Y" no topo. Imagem tem zoom (botões ampliar/reduzir/restaurar, 1–4x) e arrasto quando ampliada; vídeo/áudio usam o leitor próprio. Setas `←`/`→` navegam **apenas** entre os materiais do layout atual; `Esc`, scrim ou botão fecham, devolvendo o foco ao gatilho.
 
+**A mídia cabe inteira, sempre** — inclusive vídeo vertical de reels. Quem garante isso é o wrapper com altura definida (`h-full`), não uma classe de tamanho passada ao leitor: `max-height` percentual contra pai indefinido vira `none`, e o palco corta o excedente. Detalhe da armadilha em [`ui-guidelines.md`](ui-guidelines.md) §4.22 e §2.8.
+
 ## Aprovação / reprovação
 
 - Aprovar = `btn-primary` (amarelo). Reprovar = `btn-ghost` com texto `--danger`.

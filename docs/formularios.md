@@ -16,6 +16,7 @@ Como o sistema coleta dados: campos, validação, erro e — central no produto 
 | Escolha múltipla em filtro | `FilterBar multiselect` | Dropdown de checkboxes |
 | Dado curto pontual (horas, motivo de uma linha) | **Entrada rápida** | Popover ancorado ou `ConfirmDialog` com `children` |
 | Comentário | `comentario-input` | Tratamento próprio (menções `@`) |
+| Cor de um cadastro (departamento, motivo de ausência) | **Amostras da paleta fechada** | Dez opções da lista canônica, nunca `<input type="color">`; selecionada com `outline: 3px solid var(--premium-ink)`, demais `2px solid var(--premium-mist)`; `aria-pressed` + `aria-label` com o nome da cor. Ver [`tokens.md`](tokens.md#cor-de-dado--paleta-fechada-de-cadastro) |
 
 ## Anatomia padrão
 
@@ -41,6 +42,16 @@ mensagem de erro (11px / --danger)               só quando inválido
 | Sub-fluxo opcional/independente (ex.: matriz de permissões no cadastro) | **Slide-over aninhado** (empilhado) — preferir ao wizard |
 | Dado curto na hora (apontar horas ao concluir etapa) | **Entrada rápida**: popover/dialog compacto, foco no primeiro campo, primária desabilitada enquanto inválido |
 | Detalhe complexo com abas | Rota dedicada + auto-save |
+
+> [!IMPORTANT]
+> **Popover é para escolha atômica, não para formulário.** Um valor, uma data,
+> um emoji, um campo — passou disso, é slide-over. Popover não tem rodapé fixo
+> de ações, briga com `overflow` de ancestrais, some ao clicar fora no meio do
+> preenchimento e não empilha; quem constrói um formulário dentro dele acaba
+> reimplementando mal um pedaço do slide-over, um problema de cada vez.
+>
+> Sinais de que é slide-over: **mais de dois campos**; precisa de Cancelar +
+> Salvar; o conteúdo pode crescer; abriria um sub-fluxo.
 
 ## Auto-save (regra de negócio)
 

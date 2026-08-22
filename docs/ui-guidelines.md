@@ -93,6 +93,16 @@ Semânticas (sempre em pares `cor` + `cor-bg` para badges/tags):
 > (`Departamento.cor` no Prisma, default `#8A8A8A`), não de um mapa fixo no
 > código. Consuma sempre a cor vinda do registro.
 
+**Cor de dado** (departamento, motivo de ausência, categoria) é a exceção à
+regra de "cor só por token": ela é escolhida pelo usuário e gravada no banco,
+então é hex. O que a torna segura é a **lista fechada** de dez valores, todos
+espelhando token — ver [`tokens.md`](tokens.md#cor-de-dado--paleta-fechada-de-cadastro).
+Uma lista por sistema, num módulo próprio, validada no servidor; seletor livre
+de cor, nunca.
+
+**E-mail** é a outra exceção, e por motivo técnico: cliente de e-mail não
+resolve `var(--token)`. Regras próprias em [`email.md`](email.md).
+
 #### Arquitetura de tokens (4 camadas)
 
 As cores em `globals.css` são organizadas em camadas de indireção, de modo que
@@ -220,6 +230,32 @@ automaticamente. Detalhes do mecanismo em §9.
   elas não adaptam. Use tokens (`bg-[var(--premium-white)]`, `bg-surface`).
   `text-black` só é permitido sobre amarelo/cores fixas (avatar, badge, botão).
 - Critério de aceite por feature: capturar tela em ambos os temas antes do PR.
+
+### 2.8 Composição de classes — `cn()` não resolve conflito
+
+> [!WARNING]
+> O helper `cn()` é **join puro**: ele concatena strings, não desempata classes
+> Tailwind. Não há `tailwind-merge` no caminho.
+
+A consequência é silenciosa e cara: passar `max-h-[80vh]` a um componente cujo
+default interno é `max-h-full` **não substitui** o default — as duas classes
+convivem no atributo e quem vence é a que aparecer depois no CSS gerado, que
+ninguém controla a partir do JSX. O componente parece funcionar até o dia em que
+a ordem muda.
+
+Enquanto for assim:
+
+- **Elimine o conflito, não arbitre.** Se o default interno do componente já é o
+  desejado, não passe classe de tamanho nenhuma; se não é, ajuste o **wrapper**,
+  não o filho.
+- Componente que aceita `className` **documenta quais dimensões ele já define** —
+  quem consome precisa saber contra o que estaria competindo.
+- Não empilhe a mesma propriedade em dois lugares esperando que a mais específica
+  vença. Tailwind não tem especificidade crescente aqui.
+
+Adotar `tailwind-merge` no `cn()` resolveria a classe inteira de bug, mas é
+mudança de fundação com efeito em todo o app — fica registrada como evolução
+possível do design system, não como algo a fazer no meio de um fix.
 
 ---
 
@@ -378,8 +414,8 @@ Tipos:
 
 - **Situação da Demanda (capability demanda-situacao-standby-finalizada):** além do
   status derivado das etapas, a Demanda tem uma situação explícita
-  (`SituacaoDemanda`: Aberta/StandBy/Finalizada) editável por GESTOR/ADMIN no select
-  do cabeçalho do detalhe. `STANDBY` ganha coluna própria ("StandBy", token neutro
+  (`SituacaoDemanda`: Aberta/StandBy/Finalizada) editável, por quem tem escrita no
+  módulo, no select do cabeçalho do detalhe. `STANDBY` ganha coluna própria ("StandBy", token neutro
   `--premium-gray`/badge `slate`); `FINALIZADA` cai em "Finalizadas". Finalizar fecha
   as etapas restantes e contabiliza o SLA padrão delas em
   `Etapa.tempoSlaContabilizadoMin` (separado do `tempoTrabalhadoMin` real) — reversível
@@ -397,9 +433,15 @@ Tipos:
   simétrico — **sem reserva de FAB**, ver §4.18 / `app/(app)/layout.tsx`). No
   **mobile** (abaixo do breakpoint §10) as colunas voltam à altura natural e quem
   rola é a página (`items-start`, sem altura fixa).
-- Coluna `.col` (`flex: 0 0 290px; background: var(--premium-bone); border-radius:
-  var(--r-lg)`) como **flex column**: **cabeçalho fixo** acima da área rolável +
-  **corpo rolável**.
+- Coluna `.col` (`background: var(--premium-bone); border-radius: var(--r-lg)`)
+  como **flex column**: **cabeçalho fixo** acima da área rolável + **corpo
+  rolável**.
+- **Largura da coluna: elástica entre 280px e 360px** (`flex-1 min-w-[280px]
+  max-w-[360px]`). A coluna cresce para ocupar a largura disponível, mas **para
+  em 360px**: sem o teto, um board de três colunas viraria três faixas gigantes
+  de card estreito, e a leitura do quadro se perde. A sobra fica **à direita** —
+  os containers são `justify-start`, então colapsar uma coluna não desloca as
+  vizinhas. Board de **largura fixa por coluna** (ex.: Quadros) não se aplica.
 - Header `.col-h` (`flex: none`): dot 9×9 colorido por status + título uppercase +
   contagem em pill branca. Fica fixo no topo da coluna durante a rolagem dos
   cards. **Sem botão de criação** — a criação é entrada única do FAB (§4.18).
@@ -506,6 +548,17 @@ Tipos:
   formulários em slide-over usam esse rodapé — sem botões soltos no corpo. A
   prop é opcional/retrocompatível; com `loading`, a primária reflete o estado.
 - Toda criação/edição não-trivial (cliente, colaborador, departamento, projeto, atividade, contrato, lançamento, modelo) usa este padrão.
+- **Formulário com vários campos não mora em popover.** O slide-over é o padrão;
+  o popover é para **escolha atômica** — um valor, uma data, um emoji, uma
+  entrada rápida de um campo (§4.24). A linha divisória é prática, não estética:
+  popover não tem rodapé fixo de ações, não sobrevive a rolagem interna, briga
+  com `overflow` de ancestrais, some ao clicar fora no meio do preenchimento e
+  não empilha. Quando alguém constrói um formulário dentro dele, esses quatro
+  problemas aparecem um a um e cada correção reimplementa mal um pedaço do
+  slide-over. Já aconteceu com o construtor de coluna do kanban, que nasceu
+  popover e migrou.
+  **Sinais de que é slide-over**: mais de dois campos; precisa de Cancelar +
+  Salvar; o conteúdo pode crescer; abriria um sub-fluxo.
 - **Slide-over aninhado (empilhado).** Um sub-fluxo dentro do slide-over pode
   abrir **outro** slide-over por cima (ex.: botão "Permissões" no cadastro do
   colaborador abre a matriz de permissões). O componente suporta empilhamento
@@ -699,6 +752,19 @@ Tipos:
   `i / n`. Fecha por `Esc`, scrim e botão; foco gerenciado (foca o diálogo ao
   abrir, devolve ao gatilho ao fechar; alvos ≥ 40px, §7). Carregamento da grade
   com skeleton (§5.7). Respeita `prefers-reduced-motion`.
+- **A mídia cabe inteira no palco — a altura mora no wrapper.** O palco é
+  `flex-1` numa coluna `fixed inset-0`, e o wrapper direto da mídia leva
+  `flex h-full w-full items-center justify-center overflow-hidden`. O `h-full`
+  não é decorativo: `max-height` percentual contra pai de **altura indefinida**
+  computa como `none` por spec CSS, e aí um vídeo vertical de 1080×1920 renderiza
+  no tamanho natural e o `overflow-hidden` do palco **corta** o que sobra. Dar
+  altura definida ao wrapper é o que faz o `max-h-full` interno do leitor voltar
+  a significar "100% do palco".
+- **Não passe classe de tamanho ao leitor de mídia.** Ele já traz
+  `max-h-full max-w-full`; mandar `max-h-[80vh] max-w-[90vw]` por cima não
+  substitui nada — `cn()` é join puro (§2.8) e as duas ficam, com o desempate
+  na ordem do CSS gerado. Com o wrapper definido, o default interno já é o
+  comportamento desejado. Vale igual no fallback de imagem que falhou.
 
 ### 4.23 Breadcrumb — navegação hierárquica — [`breadcrumb.tsx`](https://github.com/agenciapremium/tasks/blob/main/src/components/ui/breadcrumb.tsx)
 

@@ -2,7 +2,7 @@
 
 Documentação oficial do Design System do **Premium Demands System** (PREMIUM · MARKETING 360°). Este conjunto de documentos mapeia, especifica e demonstra todos os tokens, componentes e padrões visuais/comportamentais do produto.
 
-> Última sincronização completa com o código: **2026-08-04** (auditoria doc ↔ `globals.css` + `src/components/ui/`).
+> Última sincronização completa com o código: **2026-08-22** (base: auditoria de 2026-08-04 doc ↔ `globals.css` + `src/components/ui/`; incremento de 22/08: e-mail transacional, cor de dado e regras de overlay).
 >
 > Este repositório (`premium-design`) é a **casa canônica** da identidade visual da Agência Premium. Os tokens vivem em [`css/tokens.css`](../css/tokens.css); a implementação de referência dos componentes é o repositório [Tasks](https://github.com/agenciapremium/tasks).
 
@@ -10,8 +10,8 @@ Documentação oficial do Design System do **Premium Demands System** (PREMIUM �
 > **Fontes da verdade** (nesta ordem). Em conflito, vale o código:
 > 1. Tokens: [`src/app/globals.css`](https://github.com/agenciapremium/tasks/blob/main/src/app/globals.css)
 > 2. Primitivos: [`src/components/ui/`](https://github.com/agenciapremium/tasks/blob/main/src/components/ui/)
-> 3. Regras de uso: [`docs/design-system/ui-guidelines.md`](ui-guidelines.md)
-> 4. Referência visual histórica: [`docs/design-system/Prototipo-Sistema-Gestao-Demandas-Premium.html`](Prototipo-Sistema-Gestao-Demandas-Premium.html)
+> 3. Regras de uso: [`ui-guidelines.md`](ui-guidelines.md)
+> 4. Referência visual histórica: [`Prototipo-Sistema-Gestao-Demandas-Premium.html`](Prototipo-Sistema-Gestao-Demandas-Premium.html)
 
 ## Mapa da documentação
 
@@ -26,6 +26,7 @@ Documentação oficial do Design System do **Premium Demands System** (PREMIUM �
 | [`iconografia.md`](iconografia.md) | Biblioteca lucide-react, tamanhos e mapa conceito→ícone. |
 | [`dark-mode.md`](dark-mode.md) | Mecanismo do tema escuro, paleta calibrada e regras de superfícies fixas. |
 | [`acessibilidade.md`](acessibilidade.md) | Contraste WCAG, teclado, foco, ARIA e alvos de toque. |
+| [`email.md`](email.md) | E-mail transacional: as regras invariantes, o esqueleto canônico e por que hex literal é a exceção certa. Modelo vivo em [`email-modelo.html`](email-modelo.html). |
 
 ## Identidade
 

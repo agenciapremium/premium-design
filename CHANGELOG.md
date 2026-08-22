@@ -1,5 +1,18 @@
 # Changelog
 
+## v0.3.0 — 2026-08-22
+
+Diretivas que já valiam no Tasks e não estavam escritas em lugar nenhum. Só documentação — **nenhum valor de token mudou**, então consumir esta versão não altera pixel de app existente.
+
+- **`docs/email.md` (novo)** — e-mail transacional, a superfície de marca que não roda dentro do app. As quatro regras invariantes (hex literal, logo PNG por URL absoluta, `display:block`+`margin:0 auto` para centralizar, recuo por tabela interna de 520px), o esqueleto canônico com todas as medidas, os cinco tons da pílula de contexto e o checklist de envio. Cada regra existe porque um e-mail chegou quebrado a um cliente real.
+- **`docs/email-modelo.html` (novo)** — modelo canônico em HTML standalone, para aprovar layout antes de escrever componente. E-mail não tem hot reload.
+- **`docs/tokens.md`** — nova camada **cor de dado**: paleta fechada de dez hex para cor escolhida pelo usuário e gravada no banco (departamento, motivo de ausência). Segunda e última exceção ao "cor só por token", com as regras que a tornam segura (lista fechada, validação no servidor, escolha por amostras, nunca texto sobre fundo claro).
+- **`docs/ui-guidelines.md` §2.8 (novo)** — `cn()` é join puro, sem `tailwind-merge`: classes conflitantes não são desempatadas e quem vence depende da ordem do CSS gerado. Elimine o conflito, não o arbitre.
+- **`docs/ui-guidelines.md` §4.9 / `docs/formularios.md`** — popover é para **escolha atômica**; formulário com mais de dois campos é slide-over. A metade da regra que faltava, e a que mais era violada.
+- **`docs/ui-guidelines.md` §4.6** — largura da coluna do kanban: elástica entre **280px e 360px**, sobra à direita (`justify-start`).
+- **`docs/ui-guidelines.md` §4.22 / `componentes.md` / `padroes-de-interacao.md`** — contrato de dimensionamento de mídia em overlay: altura definida no wrapper (`h-full`), nenhuma classe de tamanho no leitor. `max-height` percentual contra pai indefinido computa como `none`.
+- **`docs/ui-guidelines.md` §4.6** — removida menção a `GESTOR`/`ADMIN`: o modelo de autorização por papéis não existe mais nos sistemas da agência.
+
 ## v0.2.0 — 2026-08-04
 
 Padrões de projeto opt-in em `css/patterns/` (export `./patterns/*`): CSS de recursos que nem todo sistema tem — quem implementa o recurso importa o padrão em vez de recriar o visual. Cada arquivo documenta o contrato de marcação com o app.

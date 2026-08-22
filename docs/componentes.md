@@ -355,11 +355,15 @@ Visualizador full-viewport de materiais (`role="dialog"` + `aria-modal`, z-[60])
 
 Imagem com zoom (botões +/−/reset, 1×–4× em passos de 0,5) e arrastar quando ampliada, com fallback em cascata original → rendição do Drive → erro; vídeo/áudio/demais tipos via `DriveMediaViewer`; navegação ←/→ restrita ao conjunto passado (botões desabilitados nos extremos); contador `i / n`; fecha por Esc/botão com **saída animada** (o `onClose` corre ao fim do fade) e foco devolvido ao gatilho; trava o scroll do body.
 
+**Contrato de dimensionamento**: o wrapper direto da mídia leva `flex h-full w-full items-center justify-center overflow-hidden` e **nenhuma classe de tamanho vai ao `DriveMediaViewer`**. O `h-full` dá altura definida ao pai — sem ela, o `max-h-full` interno do leitor computa como `none` e o vídeo vertical renderiza no tamanho natural, cortado pelo `overflow-hidden` do palco. Vale igual no fallback do `ZoomableImage` em `stage === "failed"`.
+
 ## DriveMediaViewer — `drive-media-viewer.tsx`
 
 Leitor próprio de mídia do Drive — reproduz **imagem, vídeo e áudio** servindo o conteúdo original pela rota de proxy; **nunca** um `<iframe>` do Drive (preview instável, sobretudo vídeo). Props: `file: DriveFile`, `context: DriveContext`, `className`.
 
 Imagem começa pelo original em alta e, se o formato não renderizar no navegador (PSD, TIFF), cai para a rendição "preview" do Drive; só então o estado de erro. `kind: "outro"` e falhas de mídia mostram o cartão de indisponível (ícone `file-question` + nome + motivo, `role="img"` com `aria-label`). Reusado na aba Layouts, no portal do cliente e dentro do Lightbox.
+
+**Já define `max-h-full max-w-full`** e concatena o `className` recebido. Não mande outra restrição de tamanho por cima: `cn()` é join puro (ver [`ui-guidelines.md`](ui-guidelines.md) §2.8), as duas classes convivem e quem vence depende da ordem do CSS gerado. Quem precisa mudar o tamanho ajusta o **wrapper**.
 
 ## EmojiPicker — `emoji-picker.tsx` (+ `emoji-picker-panel.tsx`)
 
