@@ -16,6 +16,7 @@ Como o sistema coleta dados: campos, validação, erro e — central no produto 
 | Escolha múltipla em filtro | `FilterBar multiselect` | Dropdown de checkboxes |
 | Dado curto pontual (horas, motivo de uma linha) | **Entrada rápida** | Popover ancorado ou `ConfirmDialog` com `children` |
 | Comentário | `comentario-input` | Tratamento próprio (menções `@`) |
+| Estado binário aplicado na hora (ativo/inativo, ligado/desligado) | `Switch` | Trilho + polegar do DS, nunca checkbox nativo com `accent-color`. É auto-save: sem botão Salvar. Quando a mudança precisa ser entendida antes, o consumidor confirma e só então o switch vira |
 | Cor de um cadastro (departamento, motivo de ausência) | **Amostras da paleta fechada** | Dez opções da lista canônica, nunca `<input type="color">`; selecionada com `outline: 3px solid var(--premium-ink)`, demais `2px solid var(--premium-mist)`; `aria-pressed` + `aria-label` com o nome da cor. Ver [`tokens.md`](tokens.md#cor-de-dado--paleta-fechada-de-cadastro) |
 
 ## Anatomia padrão

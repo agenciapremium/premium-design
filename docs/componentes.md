@@ -110,6 +110,23 @@ Visual: borda `--premium-mist`, `--r-md`, `px-[14px] py-[11px]`, 13px. **Foco**:
 
 Mesmo visual do Input + `min-h-[76px]`, `resize-vertical`. **Reservado a texto curto multilinha** (motivo/justificativa) e comentários. Texto longo (briefing, descrição, copy) usa o **RichEditor** — regra de produto.
 
+## Switch — `switch.tsx`
+
+Interruptor liga/desliga: `button role="switch"` com trilho 20×36 e polegar branco de 16px que desliza. **Não** é `<input type="checkbox">` com `accent-color` — controle nativo não estiliza igual entre navegadores, e o sistema não usa nativos. Ligado = `--success`; desligado = `--premium-mist`; foco = halo `--yellow-50`; deslize suprimido sob `prefers-reduced-motion`.
+
+| Prop | Tipo | Descrição |
+|---|---|---|
+| `checked` | `boolean` | Estado atual (controlado) |
+| `onCheckedChange` | `(proximo: boolean) => void` | Recebe o estado desejado, não um "inverta" |
+| `label` | `string` | Vira o `aria-label` — **obrigatório**, o switch não tem texto próprio |
+| `disabled` / `title` / `className` | — | Desabilitado usa `opacity-50` + `cursor-not-allowed` |
+
+**Quando usar**: estado binário que vale por si e é aplicado na hora (ativo/inativo, ligado/desligado) — é auto-save, não tem botão Salvar. Escolher entre várias opções é `Select` ou chips; disparar uma ação é `Button`.
+
+**Confirmação**: o switch **não muda sozinho** quando a mudança precisa ser entendida antes. O consumidor confirma no `onCheckedChange` e só troca o estado se a pessoa seguir — interruptor que se mexe e volta atrás mente sobre o que aconteceu. Ver o bloco "QA do HERMES" das Configurações do projeto, que confirma ao desligar e não confirma ao religar.
+
+**Rótulo ao lado, não dentro**: o switch é só o controle. O texto que diz o que ele controla fica à direita, em 13px, e muda com o estado.
+
 ## Select — `select.tsx`
 
 Select **custom** do DS (o `<select>` nativo não é usado) — mesmo padrão dos popovers flutuantes do workflow (responsável/nova etapa): painel portal com `--sh-lg` e entrada `motionPreset("menu")`, itens de 40px com hover bone e **busca filtrável** (ignora acentos) quando a lista tem **8+ opções**.
