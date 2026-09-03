@@ -1150,6 +1150,7 @@ action para aceitar payload parcial.
 - **Erros**: o que aconteceu + o que fazer. "Não conseguimos gerar o boleto. Verifique os dados do cliente no Asaas e tente novamente."
 - **Datas**: relativas para hoje/ontem ("Hoje 14h", "Atrasada há 2 dias"); absolutas a partir de 7 dias ("12 jun", "12 jun 2026").
 - **Pluralização**: "1 demanda" / "2 demandas". Nunca "1 demanda(s)".
+- **Travessão (`—`) não entra no texto que o usuário lê.** Separando itens ("Fulano · Vale-day off", "Fluxo de caixa · últimos 6 meses"), use **ponto médio** (`·`); marcando pausa, use **dois-pontos** quando a segunda metade explica a primeira, e **vírgula** no resto; isolando um aposto que já contém vírgulas, use **parênteses**. Em `aria-label`/`title`, **reescreva a frase** em vez de trocar o símbolo: leitores de tela anunciam `·` de forma inconsistente. A **única** exceção é o `—` sozinho como marcador de valor ausente numa célula ("Prazo: —"), que não é pontuação e permanece. Um lint (`no-restricted-syntax`) barra o resto.
 
 ---
 

@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.6.0 — 2026-09-03
+
+Só documentação — nenhum valor de token mudou.
+
+- **`docs/ui-guidelines.md` §11 (voz e tom)** — o travessão (`—`) sai do texto que o usuário lê. Ele estava sendo usado para duas intenções diferentes (separar itens e marcar pausa), e um símbolo só para as duas achata a leitura. A regra: **ponto médio** (`·`) para separar itens; **dois-pontos** quando a segunda metade explica a primeira, **vírgula** no resto; **parênteses** para aposto que já contém vírgulas. Em `aria-label`/`title`, **reescrever a frase** em vez de trocar o símbolo — leitores de tela anunciam `·` de forma inconsistente. Uma exceção: o `—` sozinho como marcador de valor ausente numa célula ("Prazo: —"), que não é pontuação e permanece. No Tasks a regra é sustentada por lint (`no-restricted-syntax`), que não alcança comentário de código.
+
 ## v0.5.0 — 2026-09-03
 
 Só documentação — **nenhum valor de token mudou**, então consumir esta versão não altera pixel de app existente.
