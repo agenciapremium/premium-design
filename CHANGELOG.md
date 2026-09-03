@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.5.0 — 2026-09-03
+
+Só documentação — **nenhum valor de token mudou**, então consumir esta versão não altera pixel de app existente.
+
+- **`docs/padroes-de-interacao.md` §"Seletor de pessoas"** — nova opção **grupo revelado por busca** (`revelarSoComBusca`): o grupo só é desenhado quando há termo digitado, com uma dica no lugar dele. Existe para o caso em que a lista curta é o comum e a longa é exceção — o seletor de responsáveis do ajuste abria com a agência inteira e enterrava a equipe do projeto. Duas regras acompanham o padrão, e são o que o torna seguro: **quem já está selecionado continua visível** mesmo sem busca (em hosts que usam o painel inline, sem badges, a lista é a única superfície da seleção — um selecionado escondido fica impossível de desmarcar), e o **estado vazio orienta a digitar** em vez de afirmar que não há ninguém.
+
 ## v0.4.0 — 2026-08-25
 
 - **`Switch` (novo primitivo)** — interruptor liga/desliga do catálogo: `button role="switch"` com trilho e polegar, nunca `<input type="checkbox">` com `accent-color`. Documentado em `docs/componentes.md` e na tabela "Escolha do campo" de `docs/formularios.md`, com a regra que faltava: quando a mudança precisa ser entendida antes, o switch **não vira sozinho** — o consumidor confirma primeiro. Já existiam duas implementações divergentes espalhadas pelo Tasks (uma com trilho, duas com checkbox nativo); esta é a canônica.

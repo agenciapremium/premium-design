@@ -77,7 +77,8 @@ Para escolher **uma ou várias pessoas**, use o `PessoasPicker` (`pessoas-picker
 - **Multi** (`multiple`): popover fica aberto, itens selecionados ganham `check`, cada escolhido é um badge removível; `minSelecionados={1}` garante "ao menos um" (ex.: responsáveis da atividade).
 - **Single:** escolhe um e fecha; mostra um badge no campo. Substitui o select de responsável em formulários.
 - **Seções:** com contexto de projeto, separe "Equipe do projeto" / "Outros colaboradores" (`grupos`); sem projeto, lista única (`colaboradores`).
-- **Estados:** skeleton no carregamento, "Nenhum colaborador encontrado." no vazio, erro inline (nunca toast).
+- **Grupo revelado por busca** (`revelarSoComBusca` no grupo): o grupo só é desenhado quando há termo digitado, e no lugar dele fica a dica "Outros colaboradores aparecem ao buscar pelo nome." Use quando o caso comum é uma lista curta e a longa é exceção — ex.: responsáveis do ajuste, onde abrir com a agência inteira enterrava a equipe do projeto. **Quem já está selecionado continua visível** mesmo sem busca: em hosts que usam o `PessoasSearchPanel` inline (sem badges), a lista é a única superfície da seleção, e um selecionado escondido fica impossível de desmarcar.
+- **Estados:** skeleton no carregamento, "Nenhum colaborador encontrado." no vazio, erro inline (nunca toast). Com um grupo escondido atrás da busca e o campo de busca vazio, o vazio orienta ("Busque pelo nome para encontrar um colaborador.") em vez de negar que exista alguém.
 - **Onde se aplica:** responsáveis da atividade (multi); responsável de etapa/ajuste no workflow (single, via `PessoasSearchPanel`); responsável do projeto, "Para" de kudo/feedback, colaborador de 1:1 e de meta (single). Filtros de listagem (FilterBar) e menções `@` seguem padrões próprios.
 
 ## Batch actions
