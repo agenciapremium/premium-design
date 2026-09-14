@@ -131,6 +131,48 @@ Com seleção múltipla ativa em tabela (checkbox na primeira coluna), **toolbar
 | `Enter` | Confirma diálogo com primária em foco; ativa linha de tabela |
 | `↑` / `↓` | Navega opções em select/dropdown aberto (`Enter` escolhe) |
 | `←` / `→` | Material anterior/próximo no lightbox |
+| `t` `f` | Abre ou fecha a gaveta de ferramentas |
+| `t` + letra | Abre a gaveta já numa ferramenta (`t` `c` Caminho do Drive, `t` `r` Tempo de roteiro, `t` `l` Contador de caracteres, `t` `u` Dias úteis) |
+
+## Gaveta de ferramentas e cartão de ferramenta
+
+Utilitário de apoio (uma conta, uma conversão, uma contagem) não vira tela no
+menu: vira card numa **gaveta lateral** que abre de qualquer lugar, pelo botão
+"Ferramentas" da topbar (à esquerda do sino) ou por `t` `f`. O valor de uma
+ferramenta dessas está em usá-la sem sair do que se está fazendo, e uma tela
+própria cobra exatamente esse preço.
+
+**A gaveta não é modal.** Painel `role="complementary"` à direita, em `z-40`:
+acima da topbar e dos popovers de página, abaixo do slide-over e do scrim dele.
+Sem scrim, sem `aria-modal`, sem prender o `Tab` e sem travar a rolagem acima de
+768px, então a página atrás continua rolando e recebendo cliques. `Esc` fecha
+apenas quando nenhum modal está aberto; com um modal por cima, quem responde ao
+`Esc` continua sendo o topo da pilha. Abaixo de 768px ela cobre a tela, ganha
+"Fechar" no cabeçalho e trava a rolagem do corpo.
+
+**Fechada, ela continua montada** (`hidden` + `inert`). É isso que faz o texto
+digitado, as escolhas e o resultado sobreviverem a fechar, reabrir e navegar
+entre telas. A recarga da página zera, e está declarado que zera.
+
+**Cartão de ferramenta.** Composição sobre `Card`, sem token novo: cabeçalho de
+44px com alça de arrastar (`GripVertical`, rótulo acessível), ícone, título em
+13px semibold, botão de recolher (`ChevronDown` girado, `aria-expanded`) e menu
+`MoreHorizontal` com "Mover para cima", "Mover para baixo" e "Ocultar". O menu
+é a alternativa por teclado ao arraste, e não fecha ao mover. Corpo com 16px de
+respiro e `Skeleton` de três linhas enquanto o componente carrega. Recolhido,
+sobra o cabeçalho; o corpo fica `hidden`, nunca desmontado.
+
+**A personalização é da pessoa.** Ordem, recolhido e oculto são gravados sozinhos
+nas preferências do colaborador e voltam em qualquer dispositivo; o rodapé
+oferece "Adicionar ferramenta" (as ocultas, com a descrição de cada uma) e
+"Restaurar padrão" (com confirmação). Ferramenta nova do sistema entra visível ao
+fim da pilha, sem apagar a ordem que a pessoa já tinha.
+
+**Ferramenta nova não mexe na gaveta.** O catálogo é declarativo (no Tasks,
+`src/lib/ferramentas/registro.ts`): id, título, descrição de uma linha, ícone,
+teclas e componente sob demanda. A gaveta, o menu de adicionar e o registro de
+atalhos leem de lá. Implementação de referência: `src/components/ferramentas/`
+no Tasks.
 
 ## Voz e microcopy
 
