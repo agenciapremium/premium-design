@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.7.0 — 2026-09-14
+
+Só documentação — nenhum valor de token mudou.
+
+- **`docs/padroes-de-interacao.md` §"Gaveta de ferramentas e cartão de ferramenta" (novo)** — utilitário de apoio (conta, conversão, contagem) não vira tela no menu: vira card numa gaveta lateral **não modal** que abre de qualquer lugar (botão "Ferramentas" na topbar ou `t` `f`), convive com o slide-over por cima e continua montada quando fechada para preservar o que a pessoa digitou. O **cartão de ferramenta** é composição sobre `Card` (alça de arrastar, recolher, menu com mover e ocultar), sem token novo; a personalização (ordem, recolhido, oculto) é da pessoa e o catálogo é declarativo, para ferramenta nova não tocar na gaveta. Tabela de atalhos ganha o prefixo `t`.
+
 ## v0.6.0 — 2026-09-03
 
 Só documentação — nenhum valor de token mudou.
