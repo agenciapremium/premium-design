@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.8.1 — 2026-09-18
+
+Só documentação — nenhum valor de token mudou.
+
+- **`docs/padroes-de-interacao.md` §"Alerta fixo"** — o ícone do **contador** também pisca, aberto ou minimizado, enquanto houver alerta pendente (pedido de quem usa o primeiro caso, o novo ajuste na peça no Tasks). Minimizar deixa de ser a pausa do piscar; a pausa passa a ser resolver o aviso, e `prefers-reduced-motion` continua parando tudo.
+
 ## v0.8.0 — 2026-09-18
 
 - **Tokens `--alert-solid`, `--alert-solid-hover` e `--on-alert-solid` (novos)** — vermelho sólido **igual nos dois temas** (`#C0322B` / `#A82A24` / `#FFFFFF`, 5,6:1), com os utilitários Tailwind `bg-alert-solid`, `hover:bg-alert-solid-hover` e `text-on-alert-solid`. Existe porque o `--danger` do escuro (`#E87A72`) é tom de texto e perde a urgência como fundo. Regra: `--alert-solid` é fundo; vermelho como texto sobre superfície continua `--danger`. Nenhum token existente mudou de valor.
