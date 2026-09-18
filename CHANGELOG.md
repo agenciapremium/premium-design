@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.9.0 — 2026-09-18
+
+Regra nova e CSS base novo. Nenhum token mudou de valor.
+
+- **`css/base.css`: o "x" nativo do campo de busca sai** — Chrome e Safari desenham um "x" de limpar em todo `input[type="search"]` (o Firefox não desenha nenhum), que se somava ao `X` do sistema: dois controles para a mesma coisa, diferentes em cada navegador. A regra base esconde `::-webkit-search-cancel-button` e as decorações nativas. O campo continua `type="search"`: teclado "Buscar" no celular, `Esc` limpa, papel `searchbox`.
+- **`docs/componentes.md` §"Campo de busca" (novo)** — primitivo `CampoBusca` para busca solta na tela, fora da barra de filtros: lupa, campo e um `X` "Limpar busca" (só com texto, alvo 28×28px, foco volta ao campo). A regra: **um controle de limpar por campo, sempre o do sistema**; campo de busca novo usa o `CampoBusca` ou o chip do `FilterBar`. A busca da árvore de Docs deixa a tabela "Padrões próprios reconhecidos", porque passa a usar o primitivo. O checklist de PR de UI (`docs/ui-guidelines.md` §12) ganha a linha correspondente.
+- **`docs/componentes.md` §FilterBar e `docs/padroes-de-interacao.md` §"Barra de ações da tela"** — o botão amarelo **Limpar filtros** só aparece com algum filtro ativo além da busca (só com a busca, o `X` dela basta, e a barra deixava três "x" lado a lado) e troca o ícone `X` pelo funil com x (`FunnelX`), para não se ler como mais um limpar de campo. O `X` da busca colapsável ganha alvo de 24×24px. Implementado primeiro no Tasks (change `busca-um-x-por-campo`).
+
 ## v0.8.1 — 2026-09-18
 
 Só documentação — nenhum valor de token mudou.

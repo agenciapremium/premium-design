@@ -39,3 +39,16 @@ body {
   text-transform: uppercase;
   color: var(--premium-gray);
 }
+
+/* Campo de busca: um controle de limpar por campo, sempre o do sistema.
+   Chrome e Safari desenham um "x" nativo em todo input[type="search"], que
+   duplicava o X do sistema (e o Firefox não desenha nenhum). O campo continua
+   type="search": teclado "Buscar" no celular, Esc limpa, papel searchbox. */
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-results-button,
+input[type="search"]::-webkit-search-results-decoration {
+  -webkit-appearance: none;
+  appearance: none;
+  display: none;
+}

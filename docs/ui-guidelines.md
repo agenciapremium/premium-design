@@ -1242,3 +1242,4 @@ inversão):
 9. Filtros (se houver) em searchParams + esquerda; tabs à direita.
 10. Slide-over flutuante (Spec 8) onde aplicável.
 11. Screenshots claro + escuro anexados.
+12. Campo de busca: um controle de limpar só, o do sistema (`CampoBusca` ou o chip do `FilterBar`).
