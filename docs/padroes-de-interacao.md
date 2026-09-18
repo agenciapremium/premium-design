@@ -29,7 +29,7 @@ Ordem fixa, válida para **toda** tela: **FILTROS (esquerda) ► CONTEXTO · VIE
 - **Linha única** por padrão: os filtros rolam horizontalmente; os dropdowns abrem em portal (não são cortados pela rolagem). Opt-out `permitirQuebra` volta ao `flex-wrap`.
 - **Busca por palavra-chave colapsável**: lupa que expande o campo ao clicar/focar (debounce de 300ms para a URL); permanece aberta enquanto há termo. Opt-out `buscaSempreAberta`.
 - Listas longas de opções (≥ 8) ganham **busca** automática no dropdown e mostram só as 6 primeiras sem termo — ao digitar, a busca cobre a lista inteira.
-- Com filtro ativo, aparece o botão amarelo **Limpar filtros** ao fim da zona de filtros.
+- Com algum filtro ativo além da busca, aparece o botão amarelo **Limpar filtros** ao fim da zona de filtros, com o ícone de funil (`FunnelX`). Só com a busca ativa ele não aparece: o `X` da própria busca já limpa.
 - Com `telaKey`, os filtros **persistem por usuário**: a tela restaura o último filtro salvo quando a URL não traz filtros; "Limpar filtros" apaga também o persistido.
 - Qualquer mudança de filtro ou visão **reseta a paginação** (`?pagina=` sai da URL).
 

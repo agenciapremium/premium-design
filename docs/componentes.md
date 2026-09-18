@@ -106,6 +106,26 @@ Visual: borda `--premium-mist`, `--r-md`, `px-[14px] py-[11px]`, 13px. **Foco**:
 > [!NOTE]
 > `<Input type="date">` **delega automaticamente para o `DatePicker`** custom (repassa `value`, `defaultValue`, `onChange`, `onBlur`, `name`, `min`, `max`, `disabled`, `placeholder`) — o date picker nativo do navegador **não é usado em lugar nenhum** (formulários, FilterBar, popover de prazos do workflow).
 
+## Campo de busca — `campo-busca.tsx`
+
+Primitivo `CampoBusca`: campo de busca solto na tela, fora da barra de filtros (ex.: árvore de Docs, Base de conhecimento, Configurações). A busca **da** barra é o chip colapsável do [FilterBar](#filterbar--filter-bartsx); a busca **dentro** de picker ou dropdown segue o padrão compacto próprio (ver "Padrões próprios reconhecidos").
+
+| Prop | Tipo | Descrição |
+|---|---|---|
+| `id` | `string` | Liga o rótulo ao campo |
+| `value` / `onValueChange` | `string` / `(v: string) => void` | Controlado |
+| `label` | `string` | Rótulo visível acima (eyebrow 11px, o mesmo do `Input`) |
+| `ariaLabel` | `string` | Nome acessível; obrigatório quando não há `label` |
+| `placeholder` | `string` | Exemplo do que buscar (nunca substitui o nome) |
+| `tamanho` | `"md" \| "sm"` | `md` 44px (padrão) · `sm` 36px, para colunas estreitas |
+| `onClear` | `() => void` | Efeito extra ao limpar (ex.: descartar um debounce pendente) |
+| `autoFocus` / `className` | — | — |
+
+Anatomia: lupa (`search`, `--premium-gray`) à esquerda; `input type="search"` com a moldura do `Input` (borda `--premium-mist`, `--r-md`, foco com borda `--premium-ink` + halo `--yellow-50`); com texto, o `X` de limpar à direita (ícone 14px `--premium-gray`, hover `--premium-ink`, alvo 28×28px `rounded-full`, foco com anel `--yellow-50`, nome acessível "Limpar busca"). Limpar esvazia o valor, chama `onClear` e devolve o foco ao campo. Não tem estado de erro nem de carregamento: o vazio de resultado é da tela.
+
+> [!IMPORTANT]
+> **Um controle de limpar por campo, sempre o do sistema.** Chrome e Safari desenham um "x" nativo em todo `input[type="search"]`, e o Firefox não desenha nenhum. Somado ao `X` do sistema, o campo mostrava dois "x" que fazem a mesma coisa, diferentes de navegador para navegador. Por isso a regra CSS base esconde o nativo (`::-webkit-search-cancel-button` e as decorações), e o campo continua `type="search"`: teclado "Buscar" no celular, `Esc` limpa, papel `searchbox` para leitor de tela. Campo de busca novo usa o `CampoBusca` ou o chip do `FilterBar`, nunca um `<input>` feito à mão.
+
 ## Textarea — `textarea.tsx`
 
 Mesmo visual do Input + `min-h-[76px]`, `resize-vertical`. **Reservado a texto curto multilinha** (motivo/justificativa) e comentários. Texto longo (briefing, descrição, copy) usa o **RichEditor** — regra de produto.
@@ -260,7 +280,7 @@ Barra de ações única da tela. **Ordem fixa**: FILTROS (esquerda) ► CONTEXTO
 
 `FilterConfig`: `{ key, label, type: "select" | "multiselect" | "daterange" | "toggle" | "search", options?, icon?, placeholder?, searchable?, limiteVisivel? }`. `daterange` serializa como `<key>De`/`<key>Ate`. `searchable` força/oculta a busca do dropdown (default: automático a partir de 8 opções); `limiteVisivel` corta a lista **sem termo de busca** (default global: 6 quando a busca está disponível — digitar busca na lista completa; nunca corta sem busca).
 
-Anatomia dos chips (pill 36px, 13px/500): **idle** (borda mist) → hover borda steel; **ativo** (borda ink); **toggle ligado** (fundo `--brand-ink` fixo + ícone amarelo — ex.: "Ordenar automático"); **select** com dropdown custom (item "Todos" que limpa + `check` no selecionado); **multiselect** com contador invertido e dropdown de checkboxes; **daterange** com dois `DatePicker variant="inline"` (Início – Fim, um limitando o outro via `min`/`max`); **search** = lupa colapsável que expande a um campo de 200px (foca ao abrir, debounce de 300ms para a URL, `Esc`/blur vazio recolhe, botão de limpar quando ativo). Nenhum controle nativo do navegador. Com qualquer filtro ativo, aparece o botão redondo amarelo de **limpar tudo**.
+Anatomia dos chips (pill 36px, 13px/500): **idle** (borda mist) → hover borda steel; **ativo** (borda ink); **toggle ligado** (fundo `--brand-ink` fixo + ícone amarelo — ex.: "Ordenar automático"); **select** com dropdown custom (item "Todos" que limpa + `check` no selecionado); **multiselect** com contador invertido e dropdown de checkboxes; **daterange** com dois `DatePicker variant="inline"` (Início – Fim, um limitando o outro via `min`/`max`); **search** = lupa colapsável que expande a um campo de 200px (foca ao abrir, debounce de 300ms para a URL, `Esc`/blur vazio recolhe; com termo, um `X` de limpar com alvo de 24×24px, o único do campo, que limpa e recolhe). Nenhum controle nativo do navegador, nem o "x" do `type="search"` (ver [Campo de busca](#campo-de-busca--campo-buscatsx)). Com algum filtro ativo além da busca, aparece o botão redondo amarelo **Limpar filtros**, com o ícone de funil (`FunnelX`); só com a busca ativa, o `X` dela basta.
 
 Comportamento estrutural: os filtros vivem em **linha única com rolagem horizontal** (scrollbar oculta) e os dropdowns renderizam em **portal `position: fixed`** (`popoverPos` + `motionPreset("menu")`) — não são cortados pela rolagem da barra. Toda mudança de filtro/visão **reseta a paginação** (remove `?pagina=`) via `useSetParams` (exportado — `router.replace` + `scroll: false`), e a troca de view passa por View Transitions quando disponíveis (`navegarComTransicao`).
 
@@ -590,7 +610,7 @@ Casos que **não** devem ser migrados para os primitivos — são bespoke por de
 | Inputs de horas/minutos do `tempo-manual-dialog` | Padrão **entrada rápida** (§4.24): largura fixa 76px, 15px tabular-nums — métrica própria |
 | CTAs grandes do portal (gate de e-mail e aprovação: 52px, sentence-case) | Identidade do portal cliente mobile-first; usam **tokens** corretamente, mas não a tipografia uppercase do `Button` |
 | Paletas hex `STAGE_COLORS` / `COLORS` de departamento | São **dados persistidos** (cor gravada no banco), não estilo de componente |
-| Campos de busca com lupa dentro de pickers/dropdowns | Padrão próprio compacto (ColaboradorPicker, Select, MultiSelect, FilterBar, docs-search) |
+| Campos de busca com lupa dentro de pickers/dropdowns | Padrão próprio compacto (ColaboradorPicker, Select, MultiSelect, dropdowns do FilterBar); busca solta na tela usa o `CampoBusca` |
 | Botões redondos minimalistas do workflow (concluir/apagar/mover) | §4.7 — identidade da timeline |
 | "Novo lançamento" como ação de contexto do financeiro | O conjunto do FAB é **estático** (demanda/atividade/projeto); criação de lançamento vive na zona de contexto da tela |
 | Superfícies **sempre escuras** (gate do portal, header de aprovação, login, toast, tooltip) | Usam `--brand-ink`/`--c-sidebar-*` — **nunca** `--premium-ink` como fundo (ele vira claro no escuro) |
