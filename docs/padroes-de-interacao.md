@@ -101,6 +101,7 @@ Com seleção múltipla ativa em tabela (checkbox na primeira coluna), **toolbar
 | Erro de submit/ação | `FormErrorBanner` inline (nunca toast) |
 | Coleta rápida de um dado | Entrada rápida (popover / dialog compacto) |
 | Salvamento automático | Barra indeterminada (`SlideOver loading` / `AutoSaveBar`) |
+| Aviso que exige ação e não pode se perder (novo ajuste na peça) | Alerta fixo — fica até a pessoa abrir o item |
 
 - **Toast**: fundo escuro de marca com acento amarelo nos dois temas; variantes `success`/`info`/`warning` mudam só o ícone — **não existe toast de erro**. No máximo 3 empilhados; o cronômetro pausa no hover/foco.
 - **ConfirmDialog**: além do destrutivo (`variant="danger"`), atende confirmações informativas (`tone="neutral"`), aceita um campo (`children`, com `confirmDisabled` enquanto inválido) e uma ação secundária destrutiva entre Cancelar e a primária; falha aparece em banner inline (`error`) mantendo o diálogo aberto.
@@ -173,6 +174,52 @@ fim da pilha, sem apagar a ordem que a pessoa já tinha.
 teclas e componente sob demanda. A gaveta, o menu de adicionar e o registro de
 atalhos leem de lá. Implementação de referência: `src/components/ferramentas/`
 no Tasks.
+
+## Alerta fixo
+
+Aviso que **fica na tela até a pessoa agir**: some só quando ela abre o item a que
+se refere. É a camada mais agressiva de feedback e existe para o caso em que um
+aviso perdido atrasa uma entrega (no Tasks: novo ajuste na peça, para quem faz o
+ajuste e para quem recebe a peça de volta). Toast some sozinho, callout é
+estático no conteúdo e o sino é passivo; nenhum dos três cobre esse caso.
+
+**Onde fica.** Canto inferior esquerdo da área de conteúdo, ao lado da sidebar
+(acompanha a largura dela, completa ou recolhida), em `z-40`: abaixo do
+slide-over e de diálogos, acima da topbar. O canto direito é do FAB e o topo é
+dos toasts. Nunca sobe além da topbar. Abaixo de 768px ocupa a largura da tela
+com 12px de margem, acima do FAB, com no máximo metade da altura. Some com o
+drawer de navegação aberto, como o FAB.
+
+**O card tem o mínimo de texto.** Fundo `--alert-solid`, texto
+`--on-alert-solid`, raio `--r-lg`, altura mínima de 64px. Conteúdo: ícone que
+identifica o tipo (num quadrado branco a 16%, piscando), o título do item em até
+duas linhas e uma etiqueta curta dizendo por que **esta** pessoa foi avisada. Sem
+rótulo de categoria, sem tempo relativo, sem "clique aqui" e **sem botão de
+fechar**: o card inteiro é um `<button>` que abre o item. O nome acessível
+carrega o que o texto visível omite (categoria, título, contexto, papel e a ação).
+
+**Pilha e contador.** Vários alertas empilham com o mais novo em cima, todos no
+mesmo formato. Abaixo deles fica um **contador fixo** ("7 ajustes") enquanto
+houver alerta pendente, inclusive com um só: clicar minimiza os cards e deixa só
+o contador (fundo `--alert-solid`); clicar de novo mostra. Aberto, o contador
+usa `--c-surface` com borda e texto `--danger`. Alerta novo reabre a pilha
+minimizada. Com muitos, a lista rola **sem barra aparente**, com degradê (máscara)
+na borda que tem mais conteúdo e `overscroll-behavior: contain`; a folga em volta
+da lista, que evita cortar a sombra dos cards, não bloqueia cliques.
+
+**Movimento.** Entrada deslizando da esquerda só no card que acabou de chegar; o
+ícone pisca em `steps(2)` abaixo de 3 vezes por segundo. Minimizar é o mecanismo
+de pausa do que pisca (WCAG 2.2.2): o contador minimizado não pisca. Sob
+`prefers-reduced-motion`, nada anima.
+
+**Acessibilidade.** Foco visível em amarelo (`--yellow`) sobre o vermelho; o
+contador tem `aria-expanded` e `aria-controls`; a chegada de alerta novo é
+anunciada numa região `aria-live="polite"`, sem roubar o foco.
+
+**Persistência e controle.** O alerta é registro no servidor por pessoa (não
+estado de tela): sobrevive a navegação e recarga, e fechar em uma aba fecha nas
+outras. Por ser agressivo, nasce com um interruptor geral em Configurações.
+Implementação de referência: `src/components/layout/alertas-ajuste.tsx` no Tasks.
 
 ## Voz e microcopy
 

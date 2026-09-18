@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.8.0 — 2026-09-18
+
+- **Tokens `--alert-solid`, `--alert-solid-hover` e `--on-alert-solid` (novos)** — vermelho sólido **igual nos dois temas** (`#C0322B` / `#A82A24` / `#FFFFFF`, 5,6:1), com os utilitários Tailwind `bg-alert-solid`, `hover:bg-alert-solid-hover` e `text-on-alert-solid`. Existe porque o `--danger` do escuro (`#E87A72`) é tom de texto e perde a urgência como fundo. Regra: `--alert-solid` é fundo; vermelho como texto sobre superfície continua `--danger`. Nenhum token existente mudou de valor.
+- **`docs/padroes-de-interacao.md` §"Alerta fixo" (novo)** — aviso que fica na tela até a pessoa abrir o item: card enxuto (ícone piscando, título, etiqueta do papel, card inteiro clicável, sem botão de fechar), pilha no canto inferior esquerdo com contador fixo que minimiza, rolagem sem barra aparente com degradê, minimizar como pausa do piscar (WCAG 2.2.2). Linha nova na tabela "Feedback — qual camada usar". Implementado primeiro no Tasks (novo ajuste na peça).
+
 ## v0.7.0 — 2026-09-14
 
 Só documentação — nenhum valor de token mudou.
