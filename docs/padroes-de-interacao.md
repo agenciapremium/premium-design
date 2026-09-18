@@ -208,9 +208,13 @@ na borda que tem mais conteúdo e `overscroll-behavior: contain`; a folga em vol
 da lista, que evita cortar a sombra dos cards, não bloqueia cliques.
 
 **Movimento.** Entrada deslizando da esquerda só no card que acabou de chegar; o
-ícone pisca em `steps(2)` abaixo de 3 vezes por segundo. Minimizar é o mecanismo
-de pausa do que pisca (WCAG 2.2.2): o contador minimizado não pisca. Sob
-`prefers-reduced-motion`, nada anima.
+ícone dos cards **e o do contador** piscam em `steps(2)` abaixo de 3 vezes por
+segundo, enquanto houver alerta pendente, inclusive com a pilha minimizada: o
+contador é a última marca na tela e continua chamando atenção. Sob
+`prefers-reduced-motion`, nada anima, e esse é o único jeito de parar o piscar.
+Por isso o padrão fica restrito a avisos que exigem ação e que somem quando a
+pessoa age; o WCAG 2.2.2 pede pausa para o que pisca por mais de 5 segundos,
+e aqui a "pausa" é resolver o aviso.
 
 **Acessibilidade.** Foco visível em amarelo (`--yellow`) sobre o vermelho; o
 contador tem `aria-expanded` e `aria-controls`; a chegada de alerta novo é
