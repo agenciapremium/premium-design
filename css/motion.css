@@ -49,3 +49,43 @@
     animation: timerPulse 1.6s ease-in-out infinite;
   }
 }
+
+/* Botão de lido virando verde (padrão "Botão de lido", v0.10.0): encolhe, passa
+   do tamanho e volta (--ease-mola); uma onda verde se abre ao redor; os traços
+   do ícone se desenham. Aplicar .lido-vira no indicador verde no instante da
+   troca. Sob prefers-reduced-motion a troca é direta. */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes lidoPop {
+    0% { transform: scale(1); }
+    35% { transform: scale(0.8); }
+    70% { transform: scale(1.14); }
+    100% { transform: scale(1); }
+  }
+  @keyframes lidoOnda {
+    from { box-shadow: 0 0 0 0 color-mix(in srgb, var(--success) 45%, transparent); }
+    to { box-shadow: 0 0 0 12px transparent; }
+  }
+  @keyframes lidoTraco {
+    from { stroke-dashoffset: 28; }
+    to { stroke-dashoffset: 0; }
+  }
+  .lido-vira {
+    animation: lidoPop 0.4s var(--ease-mola), lidoOnda 0.7s var(--ease);
+  }
+  .lido-vira svg {
+    stroke-dasharray: 28;
+    animation: lidoTraco 0.38s var(--ease) 0.06s both;
+  }
+
+  /* Item que chegou em tempo real com o painel de cards aberto: borda amarela por
+     um instante (par do .flash-novo). A entrada pela direita é do Motion. */
+  @keyframes flashBorda {
+    0%, 45% {
+      border-color: var(--brand-yellow);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-yellow) 50%, transparent), var(--sh-md);
+    }
+  }
+  .flash-borda {
+    animation: flashBorda 1.8s var(--ease) both;
+  }
+}

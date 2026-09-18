@@ -8,7 +8,7 @@ Movimento no sistema é **funcional e discreto**: orienta a atenção, confirma 
 --ease: cubic-bezier(.22, .61, .36, 1);
 ```
 
-Saída rápida, assentamento suave (ease-out pronunciado). É a curva de **todas** as transições e animações do sistema — não introduzir curvas novas. No lado React ela é espelhada pela constante `EASE` de `src/lib/motion.ts` (`[0.22, 0.61, 0.36, 1]`). Exceção única e documentada: o pulso do cronômetro parado (`timerPulse`) usa `ease-in-out`, por ser um ciclo simétrico e contínuo.
+Saída rápida, assentamento suave (ease-out pronunciado). É a curva de **todas** as transições e animações do sistema — não introduzir curvas novas. No lado React ela é espelhada pela constante `EASE` de `src/lib/motion.ts` (`[0.22, 0.61, 0.36, 1]`). Exceções documentadas: o pulso do cronômetro parado (`timerPulse`) usa `ease-in-out`, por ser um ciclo simétrico e contínuo; e o **painel de cards flutuantes** (v0.10.0) usa `--ease-mola` (`cubic-bezier(.3,1.35,.5,1)`, rebote curto) nas entradas e `--ease-sai` (`cubic-bezier(.4,0,1,1)`) nas saídas, espelhadas por `EASE_MOLA`/`EASE_SAI` em `src/lib/motion.ts` no Tasks.
 
 ## Provider de animação (`MotionProvider`)
 
@@ -37,6 +37,21 @@ Vocabulário central: cada preset tem `hidden` (inicial), `visible` (entrada) e 
 | `toast` | 180ms | 140ms | opacity + `y: -4px` → 0 | Toasts e toaster de notificações |
 
 Para expansão de altura (accordion, raias do Kanban, árvore de docs) use o componente `Expansivel` (`src/components/ui/expansivel.tsx`): anima `height: 0 ↔ auto` + opacity em ~200ms com a curva `EASE`, zerando a duração sob `prefers-reduced-motion` (altura não é transform, o `MotionConfig` não a desliga sozinho).
+
+## Painel de cards flutuantes (`painelVariantes`)
+
+Variantes dirigidas por `custom` (`{ reduzido, i, j, chega }`), porque a cascata tem teto e a saída corre de baixo para cima (`staggerChildren` não tem teto). O primitivo lê `useReducedMotion()` e troca tudo por opacidade pura sem atraso: o `MotionConfig` corta transforms, mas não os atrasos da cascata. Referência: [`src/lib/motion.ts`](https://github.com/agenciapremium/tasks/blob/main/src/lib/motion.ts) no Tasks.
+
+| Peça | Entrada | Saída |
+|---|---|---|
+| scrim | 160ms, opacity | 160ms, atraso 90ms |
+| X (sobre o gatilho) | `rotate -120 → 0`, `scale .4 → 1`, 340ms, `EASE_MOLA` | `rotate 90`, `scale .5`, 160ms, atraso 80ms, `EASE_SAI` |
+| pílula do topo (`i` = 0 mais perto do X) | `x 28 → 0`, `scale .9 → 1`, 300ms, atraso `40 + i × 45ms` | `x 18`, 140ms, atraso `60 + i × 20ms` |
+| item da lista (`i`, teto 6) | `y -18 → 0`, `rotateX -24 → 0` (perspectiva 900px), `scale .95 → 1`, 320ms, atraso `70 + i × 32ms` | `y -12`, `scale .96`, 150ms, atraso `j × 16ms` (teto 7) |
+| item que chegou (`chega`) | `x 36 → 0`, `scale .97 → 1`, 450ms | como os demais |
+| base | `y 10 → 0`, 260ms, depois da cascata | fade 100ms |
+
+Fechar leva no máximo 260ms; abrir, cerca de 560ms, com o primeiro card visível em 70ms. O card que sai do recorte "Não lidas" recolhe a altura por Web Animations (280ms, `--ease`) depois de 900ms em verde.
 
 ## Durações
 
@@ -94,7 +109,8 @@ Overlays `m.*` já nascem cobertos pelo `MotionConfig reducedMotion="user"` (tra
 | Overlays (`m.*` + presets) | `MotionConfig reducedMotion="user"` desliga os transforms automaticamente |
 | `Expansivel` | Duração zerada via `useReducedMotion` (height não é transform) |
 | Barras indeterminadas (auto-save, SlideOver) | Viram barra **cheia estática** (`width: 100%; transform: none`) — o estado continua comunicado |
-| Keyframes CSS (`fadeIn`, `flashNovo`, `timerPulse`, `autosaveBar`) | Declarados **dentro** de `@media (prefers-reduced-motion: no-preference)` |
+| Keyframes CSS (`fadeIn`, `flashNovo`, `timerPulse`, `autosaveBar`, `lidoPop`, `lidoOnda`, `lidoTraco`, `flashBorda`) | Declarados **dentro** de `@media (prefers-reduced-motion: no-preference)` |
+| Painel de cards flutuantes | Só opacidade (150/120ms), sem cascata, sem giro do X; o card lido sai sem recolher |
 | Crossfade de aba (View Transitions) | `navegarComTransicao` navega sem `startViewTransition` |
 | Cronômetro parado | Não pulsa — o alerta permanece pela cor amarela estática |
 | Skeleton / spinners | `motion-safe:animate-pulse` / `motion-reduce:animate-none` |

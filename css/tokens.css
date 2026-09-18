@@ -109,6 +109,13 @@
   --sh-gold: 0 12px 28px rgba(251,218,37,.40), 0 4px 8px rgba(247,186,48,.22);
 
   --ease: cubic-bezier(.22,.61,.36,1);
+  /* Curvas do painel de cards flutuantes (v0.10.0). A mola passa de 1 no eixo y:
+     rebote curto só nas ENTRADAS do painel e no pulso do botão de lido. A saída
+     acelera (ease-in) e é sempre mais curta que a entrada. Movimento, não cor:
+     iguais nos dois temas, não redefinir no bloco escuro. Não usar fora desses
+     padrões (a curva de todo o resto continua sendo --ease). */
+  --ease-mola: cubic-bezier(.3,1.35,.5,1);
+  --ease-sai: cubic-bezier(.4,0,1,1);
 
   /* ── Code theme (realce de sintaxe em documentação) ────────────────────────
      O realce é a exceção controlada à regra "sem hex em componente": as cores
