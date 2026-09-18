@@ -42,4 +42,9 @@
   --color-danger-bg: var(--danger-bg);
   --color-info: var(--info);
   --color-info-bg: var(--info-bg);
+
+  /* Alerta fixo (fixo nos dois temas) */
+  --color-alert-solid: var(--alert-solid);
+  --color-alert-solid-hover: var(--alert-solid-hover);
+  --color-on-alert-solid: var(--on-alert-solid);
 }

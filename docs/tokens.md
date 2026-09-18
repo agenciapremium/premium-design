@@ -80,6 +80,16 @@ No claro, valores literais originais; no escuro, **recalibrados** (texto e super
 > [!NOTE]
 > Os pares `*-bg` do escuro são **tons escuros próprios**, nunca o claro com opacidade — opacidade sobre fundo preto mataria o contraste.
 
+### Alerta sólido (fixo nos dois temas)
+
+| Token | Claro | Escuro | Uso |
+|---|---|---|---|
+| `--alert-solid` | `#C0322B` | `#C0322B` | Fundo do alerta fixo e do contador minimizado |
+| `--alert-solid-hover` | `#A82A24` | `#A82A24` | Hover do alerta fixo |
+| `--on-alert-solid` | `#FFFFFF` | `#FFFFFF` | Texto e ícone sobre `--alert-solid` (5,6:1) |
+
+É o único vermelho que **não muda com o tema**, e existe por isso. O `--danger` do escuro (`#E87A72`) é um tom claro calibrado para ser lido como texto sobre fundo escuro; como fundo de um aviso que precisa gritar, ele vira salmão e o texto em cima teria de ser preto. Regra de uso: `--alert-solid` é **fundo**; vermelho como **texto** sobre superfície continua sendo `--danger`. Só o padrão "Alerta fixo" (ver `padroes-de-interacao.md`) usa este trio.
+
 ### Auxiliares (departamentos / categorias)
 
 | Token | Claro | Escuro | BG claro | BG escuro | Convenção |

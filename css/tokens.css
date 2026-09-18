@@ -81,6 +81,15 @@
   --info: #1A6FB0;
   --info-bg: #E6F1FA;
 
+  /* Alerta fixo (padrão "Alerta fixo", v0.8.0): vermelho SÓLIDO, igual nos dois
+     temas, para aviso que fica na tela até a pessoa agir. Não é --danger: no
+     escuro --danger vira #e87a72, um tom claro feito para TEXTO, que perde a
+     urgência como fundo. Texto sobre ele é sempre --on-alert-solid (5,6:1).
+     Não redefinir no bloco escuro. Como texto sobre superfície, use --danger. */
+  --alert-solid: #C0322B;
+  --alert-solid-hover: #A82A24;
+  --on-alert-solid: #FFFFFF;
+
   --violet: #6E56CF;
   --violet-bg: #EDE9FB;
   --teal: #0E8C8C;
