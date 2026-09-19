@@ -15,6 +15,7 @@ Identidade visual da **Agência Premium** (PREMIUM · MARKETING 360°): tokens d
 | [`css/theme.css`](css/theme.css) | Ponte Tailwind v4: `@custom-variant dark` + `@theme inline` (utilities `bg-surface`, `text-ink`, `bg-brand`, …). |
 | [`css/base.css`](css/base.css) | Base global: `body`, `::selection` amarela, scrollbar, `.eyebrow`. |
 | [`css/motion.css`](css/motion.css) | Keyframes de identidade (`fadeIn`, `flash-novo`, `timer-pulse`, View Transitions), todos sob `prefers-reduced-motion`. |
+| [`brand/`](brand/) | **Logo oficial** (horizontal, vertical e ícone, em branco e preto) e favicons, os mesmos arquivos de `public/brand/` do Tasks. Regras de uso em [`docs/index.md`](docs/index.md#logo). |
 | [`css/patterns/`](css/patterns/) | **Padrões de projeto (opt-in)** — CSS de recursos que nem todo sistema tem. Se o seu sistema implementar o recurso, importe o padrão em vez de recriar o visual. |
 | [`docs/`](docs/) | Documentação completa do design system — comece por [`docs/index.md`](docs/index.md). O [`docs/showroom.html`](docs/showroom.html) demonstra tudo ao vivo nos dois temas (abra no navegador). |
 

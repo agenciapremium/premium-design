@@ -149,6 +149,8 @@ Grid de 4px. Padrões observados:
   15% de uma tela de 390px (capability `app-shell-responsivo`).
 - Topbar: **min-height 88px** (carrega título + subtítulo + breadcrumb, §3.2);
   abaixo de 768px, **64px**, com o breadcrumb oculto a partir de 640px.
+- Faixa da logo no topo da sidebar: **a mesma altura da topbar** (88px; 64px
+  abaixo de 768px, no drawer), com a logo centralizada na vertical (§3.1).
 - Sidebar width: **248px** (colapsada: 64px — ver Spec 4). Abaixo de 768px vira
   drawer, sempre com os 248px.
 - Padding de card: `16–18px`.
@@ -284,25 +286,40 @@ possível do design system, não como algo a fazer no meio de um fix.
 
 ```
 ┌──────────────┬────────────────────────────────────────────────┐
-│              │ Topbar 88px: título + sub + breadcrumb │ ações │
-│   Sidebar    ├────────────────────────────────────────────────┤
-│   248px      │ Ações da página (PageHeader `actions`)         │
-│   (collap-   │ Barra: filtros ◄  ► contexto · views · favorito│
-│    sável)    │ Conteúdo (cards, kanban, tabela, detalhe)     │
+│ Logo · 88px  │ Topbar 88px: título + sub + breadcrumb │ ações │
+│┄┄┄┄┄┄┄┄┄┄┄┄┄┄├────────────────────────────────────────────────┤
+│   Sidebar    │ Ações da página (PageHeader `actions`)         │
+│   248px      │ Barra: filtros ◄  ► contexto · views · favorito│
+│   (collap-   │ Conteúdo (cards, kanban, tabela, detalhe)      │
+│    sável)    │                                                │
+│   Usuário    │                                                │
 └──────────────┴────────────────────────────────────────────────┘
 ```
+
+A faixa da logo e a topbar dividem a mesma faixa no topo da tela: mesma altura,
+logo na linha do título, lista de navegação começando na linha da borda inferior
+da topbar. A linha pontilhada não é desenhada: a sidebar não tem divisória ali.
 
 ### 3.1 Sidebar
 - Fundo `--c-sidebar` (escura nos dois temas; eleva levemente no escuro), texto `--c-sidebar-muted`.
 - Item ativo: fundo `--c-sidebar-elevated`, texto `--yellow`, **borda esquerda 3px amarela**.
 - Seções via `nav-label` (10px / `letter-spacing .22em` / cor `--premium-steel`).
 - Itens admin têm cadeado (`lucide:lock`) à direita.
-- Rodapé com avatar + nome + papel ("Diretor · Admin").
+- **Três partes, de cima para baixo**: faixa da logo, lista de navegação e rodapé.
+  Só a lista rola; a logo e o rodapé ficam sempre à vista.
+- **Faixa da logo com a altura da topbar** (88px; 64px abaixo de 768px) e a logo
+  centralizada na vertical: logo e título da tela ficam na mesma linha, e a lista
+  começa na altura da borda inferior da topbar. Não há divisória na sidebar; o
+  alinhamento vem só da altura. Vale também recolhida (64px, logo em ícone).
+- Rodapé com avatar + nome + papel ("Diretor · Admin"), que abre o menu de conta
+  (`account-menu.tsx`). O usuário **não** fica na topbar.
 
 ### 3.2 Topbar
 - Fundo `bg-[var(--premium-white)]/80` (token — adapta ao escuro) com
-  `backdrop-filter: blur(12px) saturate(140%)`; `min-h-[88px]`, sticky.
-- Conteúdo: **[eyebrow + título + sub + breadcrumb] ← flex-1 → [busca pill ⌘K] [tema] [sino] [avatar]**.
+  `backdrop-filter: blur(12px) saturate(140%)`; `min-h-[88px]` (64px abaixo de
+  768px), sticky. A altura é a mesma da faixa da logo na sidebar (§3.1).
+- Conteúdo: **[menu, só abaixo de 768px] [eyebrow + título + sub + breadcrumb] ← flex-1 → [busca pill ⌘K] [tema] [ferramentas] [sino]**.
+  O avatar não fica aqui: mora no rodapé da sidebar (§3.1).
   O título/subtítulo vêm do contexto do header (registrados pela página via
   `PageHeader`, §3.3); a trilha compacta (`Breadcrumbs`) fica logo abaixo do
   subtítulo (§4.23).

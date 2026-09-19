@@ -3,14 +3,15 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Premium · Design System — Showroom</title>
+<title>Premium · Design System · Showroom</title>
+<link rel="icon" type="image/png" sizes="32x32" href="../brand/favicon-32.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 <style>
 /* ════════════════════════════════════════════════════════════════════════
-   TOKENS — cópia fiel de src/app/globals.css (camadas 1A marca + 1B semântica).
+   TOKENS · cópia fiel de src/app/globals.css (camadas 1A marca + 1B semântica).
    Qualquer divergência deve ser corrigida A PARTIR do globals.css (fonte da
    verdade), nunca o contrário.
    ════════════════════════════════════════════════════════════════════════ */
@@ -22,11 +23,11 @@
   --yellow-50:#FFFBE0;
 
   /* Par temático de fundo amarelo suave (seleção, callouts, destaques) e dígitos
-     do cronômetro parado — ambos com par escuro próprio em html.dark */
+     do cronômetro parado, ambos com par escuro próprio em html.dark */
   --gold-bg:#FFFBE0;
   --timer-idle:var(--brand-yellow);
 
-  /* Escala neutra literal — modo claro */
+  /* Escala neutra literal · modo claro */
   --premium-black:#000000;--premium-ink:#0A0A0A;--premium-coal:#1A1A1A;
   --premium-graphite:#2A2A2A;--premium-steel:#4A4A4A;--premium-gray:#8A8A8A;
   --premium-silver:#BFBFBF;--premium-mist:#E5E5E5;--premium-bone:#F2F2F2;
@@ -65,7 +66,7 @@
   --code-keyword:#8a3ffc;--code-string:#0f7b46;--code-number:#9a5b00;
   --code-comment:#6a6a6a;--code-property:#1565a8;--code-punct:#4a4a4a;
 }
-/* Tema escuro — paleta calibrada à mão (NÃO inversão) */
+/* Tema escuro · paleta calibrada à mão (NÃO inversão) */
 html.dark{
   --c-bg:#0a0a0a;--c-surface:#161616;--c-sunken:#202020;--c-ink:#fafafa;
   --c-muted:#b8b8b8;--c-subtle:#8a8a8a;--c-border:#2e2e2e;--c-border-strong:#4a4a4a;
@@ -97,47 +98,95 @@ html.dark{
    BASE
    ════════════════════════════════════════════════════════════════════════ */
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%}
 body{
   font-family:"Ubuntu",system-ui,sans-serif;background:var(--c-bg);color:var(--c-ink);
-  -webkit-font-smoothing:antialiased;display:flex;min-height:100vh;
+  -webkit-font-smoothing:antialiased;min-height:100vh;
 }
+/* Clique no menu rola o conteúdo até a seção; sob movimento reduzido, salta direto */
+@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
 ::selection{background:var(--yellow);color:#000}
 ::-webkit-scrollbar{width:10px;height:10px}
 ::-webkit-scrollbar-thumb{background:var(--premium-mist);border-radius:999px;border:2px solid var(--premium-paper)}
 .eyebrow{font-weight:700;font-size:10px;letter-spacing:.20em;text-transform:uppercase;color:var(--premium-gray)}
 svg.lucide{width:16px;height:16px;flex:none}
 
-/* ── Shell do showroom ── */
+/* ── Shell do showroom: menu lateral fixo (como o dashboard) e só o conteúdo rola ── */
+/* Uma medida só para a topbar e a faixa da logo: as duas dividem a mesma faixa no topo
+   (88px; 64px abaixo de 768px), a logo na altura do título e a lista começando na linha
+   da borda inferior da topbar (ui-guidelines.md §3.1) */
+:root{--ds-topo:88px}
 .ds-nav{
-  width:248px;flex:0 0 248px;background:var(--c-sidebar);color:#fff;
-  position:sticky;top:0;height:100vh;overflow-y:auto;padding:22px 16px;
-  display:flex;flex-direction:column;gap:2px;
-  align-self:flex-start; /* impede o stretch do flex — sem isso o sticky não gruda e o menu rola junto */
+  position:fixed;top:0;left:0;bottom:0;z-index:40;width:248px;
+  background:var(--c-sidebar);color:#fff;padding:0 16px 22px;
+  display:flex;flex-direction:column;
 }
-.ds-brand{display:flex;align-items:center;gap:11px;padding:6px 8px 18px}
-.ds-brand svg.lucide{width:32px;height:32px;color:var(--yellow)}
-.ds-brand b{font-weight:700;font-size:17px;letter-spacing:.02em;color:#fff;display:block;line-height:1.1}
-.ds-brand span{font-size:8px;letter-spacing:.30em;color:var(--gold);font-weight:500}
+/* Logo em cima e usuário embaixo sempre à vista; só a lista do meio rola (sidebar.tsx do Tasks) */
+.ds-nav-lista{
+  position:relative; /* referência do offsetTop dos itens, usado para manter o ativo à vista */
+  flex:1 1 auto;min-height:0;display:flex;flex-direction:column;gap:2px;
+  margin-right:-8px;padding-right:8px; /* a barra de rolagem fica na folga, sem estreitar os itens */
+  overflow-y:auto;overscroll-behavior:contain; /* a lista rola sozinha e não arrasta a página no fim */
+  scrollbar-width:thin;scrollbar-color:var(--c-sidebar-section) transparent;
+}
+.ds-nav-lista>*{flex:none}
+.ds-nav-lista::-webkit-scrollbar{width:8px}
+.ds-nav-lista::-webkit-scrollbar-track{background:transparent}
+.ds-nav-lista::-webkit-scrollbar-thumb{background:var(--c-sidebar-section);border:2px solid var(--c-sidebar);border-radius:999px}
+.ds-brand{flex:none;display:flex;align-items:center;gap:11px;height:var(--ds-topo);padding:0 8px}
+.ds-brand img{display:block;height:36px;width:auto;user-select:none} /* só a altura é fixa; a largura segue a proporção */
 .ds-nav .nav-label{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--c-sidebar-section);padding:14px 10px 6px;font-weight:700}
 .ds-nav a{
   display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:var(--r-md);
   color:var(--c-sidebar-muted);font-size:13px;font-weight:500;text-decoration:none;
-  border-left:3px solid transparent;transition:all .14s var(--ease);
+  border-left:3px solid transparent;
+  /* Propriedades nomeadas, nunca `all`: `all` animaria a visibility herdada da gaveta e o
+     link ficaria oculto (sem aceitar foco) no instante em que ela abre */
+  transition:background .14s var(--ease),color .14s var(--ease),border-color .14s var(--ease);
 }
 .ds-nav a:hover{background:var(--c-sidebar-elevated);color:#fff}
 .ds-nav a.active{background:var(--c-sidebar-elevated);color:var(--yellow);border-left-color:var(--yellow)}
+.ds-nav a:focus-visible{outline:2px solid var(--yellow);outline-offset:-2px}
+.ds-topbar .ds-menu-btn,.ds-scrim{display:none} /* o botão de menu só existe abaixo de 768px */
 
-.ds-main{flex:1;min-width:0;padding:0 0 120px}
+/* Rodapé com o menu de conta (account-menu.tsx): avatar + nome + papel; o popover
+   abre para cima e fica escuro nos dois temas (--c-sidebar, nunca --premium-coal) */
+.ds-user{position:relative;flex:none;margin-top:6px;border-top:1px solid var(--premium-graphite);padding-top:14px}
+.ds-user-btn{
+  display:flex;width:100%;align-items:center;gap:11px;padding:4px;border:0;
+  border-radius:var(--r-md);background:none;color:inherit;font-family:inherit;text-align:left;
+  cursor:pointer;transition:background .14s var(--ease);
+}
+.ds-user-btn:hover,.ds-user-btn[aria-expanded="true"]{background:var(--c-sidebar-elevated)}
+.ds-user-btn:focus-visible{outline:2px solid var(--yellow);outline-offset:-2px}
+.ds-user-tx{min-width:0;line-height:1.3}
+.ds-user-tx b{display:block;font-size:13px;font-weight:500;color:#fff}
+.ds-user-tx span{font-size:11px;color:var(--premium-gray)}
+.ds-conta-menu{
+  position:absolute;bottom:100%;left:0;right:0;margin-bottom:8px;overflow:hidden;
+  border:1px solid var(--premium-graphite);border-radius:var(--r-md);background:var(--c-sidebar);
+  padding:4px 0;box-shadow:var(--sh-lg);
+}
+.ds-conta-menu button{
+  display:flex;width:100%;align-items:center;gap:8px;padding:8px 12px;border:0;background:none;
+  font-family:inherit;font-size:13px;font-weight:500;color:#fff;text-align:left;cursor:pointer;
+}
+.ds-conta-menu button:hover,.ds-conta-menu button:focus-visible{background:var(--c-sidebar-elevated);outline:none}
+.ds-conta-menu svg.lucide{width:15px;height:15px}
+@media (prefers-reduced-motion:no-preference){
+  @keyframes contaIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+  .ds-conta-menu:not([hidden]){animation:contaIn .14s var(--ease)}
+}
+
+.ds-main{margin-left:248px;min-width:0;padding:0 0 120px}
 .ds-topbar{
-  height:68px;background:color-mix(in srgb, var(--c-surface) 82%, transparent);
+  min-height:var(--ds-topo);background:color-mix(in srgb, var(--c-surface) 82%, transparent);
   backdrop-filter:blur(12px) saturate(140%);border-bottom:1px solid var(--c-border);
-  display:flex;align-items:center;gap:18px;padding:0 30px;position:sticky;top:0;z-index:20;
+  display:flex;align-items:center;gap:18px;padding:12px 30px;position:sticky;top:0;z-index:20;
 }
 .ds-topbar h1{font-size:16px;font-weight:700;letter-spacing:-.01em}
 .ds-topbar .sub{font-size:11.5px;color:var(--c-muted)}
 .ds-content{padding:26px 30px;max-width:1180px}
-section.ds-sec{margin-bottom:56px;scroll-margin-top:84px}
+section.ds-sec{margin-bottom:56px;scroll-margin-top:calc(var(--ds-topo) + 16px)}
 .ds-sec>h2{font-size:22px;font-weight:700;letter-spacing:-.02em;margin-bottom:4px}
 .ds-sec>.sub{font-size:13px;color:var(--c-muted);margin-bottom:20px;max-width:720px}
 .ds-sub{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--c-muted);margin:26px 0 12px}
@@ -157,7 +206,7 @@ section.ds-sec{margin-bottom:56px;scroll-margin-top:84px}
 .state-cell{display:flex;flex-direction:column;align-items:flex-start}
 
 /* ════════════════════════════════════════════════════════════════════════
-   COMPONENTES — classes que espelham os primitivos de src/components/ui/
+   COMPONENTES · classes que espelham os primitivos de src/components/ui/
    ════════════════════════════════════════════════════════════════════════ */
 
 /* ── Botões (button.tsx) ── */
@@ -167,7 +216,7 @@ section.ds-sec{margin-bottom:56px;scroll-margin-top:84px}
   border:0;cursor:pointer;font-family:inherit;transition:all .15s var(--ease);
 }
 /* Loading = crossfade: rótulo some (opacity 0) sem mudar a largura; spinner centralizado.
-   Posição por left/top (sem translate — o keyframe spin já ocupa o transform). */
+   Posição por left/top (sem translate: o keyframe spin já ocupa o transform). */
 .btn.loading>.btn-label{opacity:0;transition:opacity .15s}
 .btn.loading>.spinner{position:absolute;left:calc(50% - 7px);top:calc(50% - 7px)}
 .btn:disabled{opacity:.5;cursor:not-allowed}
@@ -263,7 +312,7 @@ section.ds-sec{margin-bottom:56px;scroll-margin-top:84px}
 .textarea{min-height:76px;resize:vertical}
 .field .err-msg{font-size:11px;color:var(--danger)}
 
-/* ── Select custom (select.tsx) — popover no padrão do workflow ── */
+/* ── Select custom (select.tsx) · popover no padrão do workflow ── */
 .dsel{position:relative}
 .dsel-trigger{
   width:100%;display:flex;align-items:center;justify-content:space-between;gap:8px;
@@ -462,7 +511,7 @@ table.ds tbody tr.click:hover{background:var(--premium-paper)}
 .acc.open .acc-h{border-bottom:1px solid var(--premium-mist)}
 .acc:not(.open) .acc-h{border-bottom:0}
 
-/* ── Empty state / note / banner admin (§4.15–4.17) ── */
+/* ── Empty state / note / banner admin (§4.15 a 4.17) ── */
 .empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 16px;text-align:center}
 .empty svg.lucide{width:38px;height:38px;color:var(--premium-silver);margin-bottom:14px}
 .empty h3{font-size:15px;font-weight:700;color:var(--premium-steel);margin-bottom:4px}
@@ -593,7 +642,7 @@ table.ds tbody tr.click:hover{background:var(--premium-paper)}
 .cal-f .limpar{color:var(--premium-gray)}
 .cal-f .limpar:hover{color:var(--danger)}
 
-/* ── Comentários / menções / histórico (§4.13–4.14) ── */
+/* ── Comentários / menções / histórico (§4.13 e 4.14) ── */
 .cmt{display:flex;gap:12px}
 .cmt .body{flex:1;min-width:0}
 .cmt .head{display:flex;align-items:baseline;gap:8px}
@@ -661,7 +710,7 @@ table.ds tbody tr.click:hover{background:var(--premium-paper)}
 .ctx-btn:disabled{opacity:.5;cursor:default}
 .ctx-btn.destaque{background:var(--c-emphasis);color:var(--c-on-emphasis)}
 .ctx-btn.destaque:hover:not(:disabled),.ctx-btn.destaque.demo-hover{background:var(--c-emphasis-hover);color:var(--brand-yellow)}
-html.dark .ctx-btn.destaque:hover:not(:disabled),html.dark .ctx-btn.destaque.demo-hover{background:var(--brand-ink)} /* no escuro o chip claro inverte p/ tinta — amarelo sobre chip claro não tem contraste */
+html.dark .ctx-btn.destaque:hover:not(:disabled),html.dark .ctx-btn.destaque.demo-hover{background:var(--brand-ink)} /* no escuro o chip claro inverte p/ tinta: amarelo sobre chip claro não tem contraste */
 .ctx-btn:focus-visible{outline:none;box-shadow:0 0 0 2px var(--yellow-50)}
 .ctx-btn .spinner{border-color:color-mix(in srgb, currentColor 30%, transparent);border-top-color:currentColor}
 
@@ -740,7 +789,7 @@ th.sortable.on svg.lucide{color:var(--premium-ink)}
   font-size:10px;font-weight:700;padding:0 4px;box-shadow:0 0 0 2px var(--c-surface);
 }
 
-/* ── Emoji picker (emoji-picker.tsx — mock estático do popover) ── */
+/* ── Emoji picker (emoji-picker.tsx · mock estático do popover) ── */
 .emoji-pop{
   width:max-content;max-width:100%;border:1px solid var(--premium-mist);border-radius:var(--r-md);
   background:var(--c-surface);padding:6px;box-shadow:var(--sh-md);
@@ -761,7 +810,7 @@ th.sortable.on svg.lucide{color:var(--premium-ink)}
 }
 .emoji-grid button:hover{background:var(--premium-bone)}
 
-/* ── Lightbox (lightbox.tsx — mock estático) ── */
+/* ── Lightbox (lightbox.tsx · mock estático) ── */
 .lb{
   position:relative;border-radius:var(--r-lg);overflow:hidden;background:rgba(0,0,0,.9);
   color:#fff;display:flex;flex-direction:column;min-height:300px;width:100%;
@@ -797,9 +846,33 @@ th.sortable.on svg.lucide{color:var(--premium-ink)}
 .space-demo .sp{background:var(--yellow);display:block}
 .space-demo figure{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:10.5px;color:var(--c-muted);font-family:ui-monospace,Menlo,monospace}
 
-@media (max-width:900px){
-  .ds-nav{display:none}
+/* Abaixo de 768px o menu vira gaveta sobre o conteúdo, sempre com os 248px
+   (padroes-de-interacao.md §Responsividade): botão de menu na topbar, scrim, Esc */
+@media (max-width:767px){
+  .ds-nav{
+    transform:translateX(-100%);visibility:hidden;box-shadow:var(--sh-lg);
+    transition:transform .2s var(--ease),visibility 0s linear .2s;
+  }
+  html.nav-open .ds-nav{transform:none;visibility:visible;transition:transform .2s var(--ease)}
+  html.nav-open .ds-scrim{display:block;position:fixed;inset:0;z-index:39;background:rgba(0,0,0,.4);backdrop-filter:blur(4px)}
+  html.nav-open{overflow:hidden} /* com a gaveta aberta a página não rola por trás */
+  .ds-main{margin-left:0}
+  .ds-topbar .ds-menu-btn{display:inline-flex;flex:none}
+  :root{--ds-topo:64px}
+  .ds-topbar{padding:0 16px;gap:12px} /* sem respiro vertical: botões de 40px + borda cabem nos 64px */
+  .ds-topbar .sub{display:none}
+  .ds-topbar h1,.ds-topbar .eyebrow{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .search-pill{width:40px;height:40px;padding:0;justify-content:center}
+  .search-pill .lbl,.search-pill kbd{display:none}
   .ds-content{padding:20px 16px}
+  /* Exemplos que não cabem em 390px: nada pode abrir rolagem horizontal na página */
+  .tabs{max-width:100%;overflow-x:auto;scrollbar-width:none}
+  .tabs::-webkit-scrollbar{display:none}
+  .tt{left:0;top:100%;margin:8px 0 0;transform:none}
+  .pc-topo{flex-wrap:wrap}
+}
+@media (max-width:767px) and (prefers-reduced-motion:reduce){
+  .ds-nav,html.nav-open .ds-nav{transition:none}
 }
 /* ── Painel de cards flutuantes e botão de lido (v0.10.0) ── */
 .pc-stage{position:relative;border-radius:var(--r-lg);padding:22px;background:rgba(0,0,0,.4);display:flex;justify-content:center}
@@ -836,13 +909,15 @@ th.sortable.on svg.lucide{color:var(--premium-ink)}
 <body>
 
 <!-- ════════ NAV LATERAL (espelha a sidebar real) ════════ -->
-<nav class="ds-nav">
+<aside class="ds-nav" id="ds-nav" aria-label="Menu do showroom">
+  <!-- A logo de fato (brand/), a mesma da sidebar do Tasks: horizontal branca, 36px de altura -->
   <div class="ds-brand">
-    <i data-lucide="trophy"></i>
-    <div><b>PREMIUM</b><span>DESIGN&nbsp;SYSTEM</span></div>
+    <img src="../brand/logo-horizontal-branca.webp" alt="Agência Premium · Marketing 360°" width="194" height="36">
   </div>
+  <!-- Como no Tasks: logo e rodapé ficam sempre à vista; só a lista rola -->
+  <nav class="ds-nav-lista" id="ds-nav-lista" aria-label="Seções do showroom">
   <div class="nav-label">Fundamentos</div>
-  <a href="#cores" class="active">Cores</a>
+  <a href="#cores" class="active" aria-current="location">Cores</a>
   <a href="#tipografia">Tipografia</a>
   <a href="#raios-sombras">Raios &amp; sombras</a>
   <a href="#espacamento">Espaçamento &amp; motion</a>
@@ -874,24 +949,41 @@ th.sortable.on svg.lucide{color:var(--premium-ink)}
   <a href="#codigo">Bloco de código</a>
   <a href="#graficos">Gráficos</a>
   <a href="#outros">Outros primitivos</a>
-</nav>
+  </nav>
+
+  <!-- Rodapé: menu de conta (account-menu.tsx do Tasks). O menu abre para cima e
+       vem antes do gatilho no DOM, como lá: Shift+Tab alcança os itens -->
+  <div class="ds-user">
+    <div class="ds-conta-menu" id="conta-menu" role="menu" aria-label="Conta" hidden>
+      <button role="menuitem" type="button"><i data-lucide="user-round"></i> Minha conta</button>
+      <button role="menuitem" type="button"><i data-lucide="key-round"></i> Trocar de senha</button>
+      <button role="menuitem" type="button"><i data-lucide="keyboard"></i> Atalhos de teclado</button>
+      <button role="menuitem" type="button"><i data-lucide="log-out"></i> Sair</button>
+    </div>
+    <button class="ds-user-btn" id="conta-btn" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="conta-menu" aria-label="Abrir menu de conta">
+      <span class="avatar md" style="background:var(--yellow)">PM</span>
+      <span class="ds-user-tx"><b>Patrícia Mendes</b><span>Diretora · Admin</span></span>
+    </button>
+  </div>
+</aside>
+<div class="ds-scrim" data-nav-close></div>
 
 <main class="ds-main">
   <!-- ════════ TOPBAR ════════ -->
   <header class="ds-topbar">
+    <button class="icon-btn ds-menu-btn" id="nav-toggle" type="button" aria-label="Abrir menu" aria-controls="ds-nav" aria-expanded="false"><i data-lucide="menu"></i></button>
     <div style="flex:1;min-width:0">
       <div class="eyebrow">Premium · Marketing 360°</div>
-      <h1>Design System — Showroom</h1>
+      <h1>Design System · Showroom</h1>
       <div class="sub">Tokens e componentes vivos, fiéis a <code style="font-size:11px">src/app/globals.css</code> e <code style="font-size:11px">src/components/ui/</code></div>
     </div>
     <button class="search-pill" type="button" aria-label="Buscar (demonstração)">
-      <i data-lucide="search"></i> Buscar... <kbd>⌘K</kbd>
+      <i data-lucide="search"></i> <span class="lbl">Buscar...</span> <kbd>⌘K</kbd>
     </button>
     <button class="icon-btn" id="theme-toggle" aria-label="Alternar tema" title="Alternar tema claro/escuro">
       <i data-lucide="moon" id="theme-icon-moon"></i>
       <i data-lucide="sun" id="theme-icon-sun" style="display:none"></i>
     </button>
-    <span class="avatar md" style="background:var(--yellow)">PM</span>
   </header>
 
   <div class="ds-content">
@@ -899,7 +991,7 @@ th.sortable.on svg.lucide{color:var(--premium-ink)}
   <!-- ════════ CORES ════════ -->
   <section class="ds-sec" id="cores">
     <h2>Cores</h2>
-    <p class="sub">Arquitetura em camadas: marca crua (fixa) → semântico <code>--c-*</code> (muda por tema) → utilities. Os valores abaixo são <strong>lidos ao vivo</strong> do CSS — alterne o tema na topbar e veja a camada semântica trocar enquanto a marca permanece.</p>
+    <p class="sub">Arquitetura em camadas: marca crua (fixa) → semântico <code>--c-*</code> (muda por tema) → utilities. Os valores abaixo são <strong>lidos ao vivo</strong> do CSS. Alterne o tema na topbar e veja a camada semântica trocar enquanto a marca permanece.</p>
 
     <div class="ds-sub">Marca (fixa nos dois temas)</div>
     <div class="swatches" data-swatches='[
@@ -907,16 +999,16 @@ th.sortable.on svg.lucide{color:var(--premium-ink)}
       ["--brand-gold","Hover do amarelo"],
       ["--brand-amber","Active / progresso"],
       ["--brand-ink","Sidebar, btn-dark, banners"],
-      ["--yellow-50","Halo de foco (somente anel — nunca fundo)"]
+      ["--yellow-50","Halo de foco (somente anel, nunca fundo)"]
     ]'></div>
 
-    <div class="ds-sub">Amarelo temático (par escuro próprio — muda por tema)</div>
+    <div class="ds-sub">Amarelo temático (par escuro próprio, muda por tema)</div>
     <div class="swatches" data-swatches='[
       ["--gold-bg","Seleção, callouts, flash de item novo"],
       ["--timer-idle","Dígitos do cronômetro parado (alerta)"]
     ]'></div>
 
-    <div class="ds-sub">Semânticas — camada <code>--c-*</code> (única que muda por tema)</div>
+    <div class="ds-sub">Semânticas · camada <code>--c-*</code> (única que muda por tema)</div>
     <div class="swatches" data-swatches='[
       ["--c-bg","Fundo da página"],
       ["--c-surface","Superfície de card"],
@@ -967,8 +1059,8 @@ th.sortable.on svg.lucide{color:var(--premium-ink)}
       ["--slate-bg","Fundo slate"]
     ]'></div>
 
-    <div class="ds-sub">Cor de dado — paleta fechada de cadastro</div>
-    <p class="spec-note">Cor escolhida pelo usuário e gravada no banco (departamento, motivo de ausência) é <strong>dado</strong>, não estilo: por isso hex literal, fixo nos dois temas, e não <code>var()</code>. O que a torna segura é a lista ser <strong>fechada</strong> — dez valores, todos espelhando token, nenhum usado como texto sobre fundo claro. Seletor livre de cor, nunca.</p>
+    <div class="ds-sub">Cor de dado · paleta fechada de cadastro</div>
+    <p class="spec-note">Cor escolhida pelo usuário e gravada no banco (departamento, motivo de ausência) é <strong>dado</strong>, não estilo: por isso hex literal, fixo nos dois temas, e não <code>var()</code>. O que a torna segura é a lista ser <strong>fechada</strong>: dez valores, todos espelhando token, nenhum usado como texto sobre fundo claro. Seletor livre de cor, nunca.</p>
     <div class="swatches" data-swatches-fixos='[
       ["#FBDA25","--brand-yellow"],
       ["#F7BA30","--amber"],
@@ -993,7 +1085,7 @@ th.sortable.on svg.lucide{color:var(--premium-ink)}
       ["--code-property","Chaves de objeto"],
       ["--code-punct","Pontuação"]
     ]'></div>
-    <p class="spec-note">Regra-zero: <strong>nenhum hex em componente</strong> — sempre <code>var(--token)</code>. O realce de sintaxe é a exceção controlada: as cores vivem como tokens e o componente nunca usa hex.</p>
+    <p class="spec-note">Regra-zero: <strong>nenhum hex em componente</strong>, sempre <code>var(--token)</code>. O realce de sintaxe é a exceção controlada: as cores vivem como tokens e o componente nunca usa hex.</p>
   </section>
 
   <!-- ════════ TIPOGRAFIA ════════ -->
@@ -1002,21 +1094,21 @@ th.sortable.on svg.lucide{color:var(--premium-ink)}
     <p class="sub">Família <strong>Ubuntu</strong> (300 / 400 / 500 / 700), fallback <code>system-ui, sans-serif</code>. Escala derivada do protótipo.</p>
     <div class="specimen col">
       <div class="type-row"><span class="spec">32px / 700 / ls -0.02em</span><span style="font-size:32px;font-weight:700;letter-spacing:-.02em">Título de página (h1)</span></div>
-      <div class="type-row"><span class="spec">22–30px / 700 / ls -0.02em</span><span style="font-size:30px;font-weight:700;letter-spacing:-.02em">R$ 48.350</span></div>
+      <div class="type-row"><span class="spec">22 a 30px / 700 / ls -0.02em</span><span style="font-size:30px;font-weight:700;letter-spacing:-.02em">R$ 48.350</span></div>
       <div class="type-row"><span class="spec">18px / 700</span><span style="font-size:18px;font-weight:700">Título de slide-over / diálogo</span></div>
-      <div class="type-row"><span class="spec">15–16px / 700</span><span style="font-size:15px;font-weight:700">Título de painel / card (h3, h4)</span></div>
-      <div class="type-row"><span class="spec">14px / 400 · --premium-gray</span><span style="font-size:14px;color:var(--premium-gray)">Subtítulo — explica o propósito da tela em uma linha.</span></div>
-      <div class="type-row"><span class="spec">13–14px / 400–500</span><span style="font-size:13.5px">Corpo de texto. Tudo em pt-BR formal, sempre acentuado.</span></div>
+      <div class="type-row"><span class="spec">15 a 16px / 700</span><span style="font-size:15px;font-weight:700">Título de painel / card (h3, h4)</span></div>
+      <div class="type-row"><span class="spec">14px / 400 · --premium-gray</span><span style="font-size:14px;color:var(--premium-gray)">Subtítulo: explica o propósito da tela em uma linha.</span></div>
+      <div class="type-row"><span class="spec">13 a 14px / 400 a 500</span><span style="font-size:13.5px">Corpo de texto. Tudo em pt-BR formal, sempre acentuado.</span></div>
       <div class="type-row"><span class="spec">11px / 700 / caps / ls .05em</span><span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--premium-gray)">Label de formulário</span></div>
       <div class="type-row"><span class="spec">10.5px / 700 / caps / ls .05em</span><span style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--premium-gray)">Cabeçalho de tabela / coluna</span></div>
-      <div class="type-row"><span class="spec">10px / 700 / caps / ls .20em</span><span class="eyebrow">Eyebrow — premium · marketing 360°</span></div>
+      <div class="type-row"><span class="spec">10px / 700 / caps / ls .20em</span><span class="eyebrow">Eyebrow · premium · marketing 360°</span></div>
     </div>
   </section>
 
   <!-- ════════ RAIOS & SOMBRAS ════════ -->
   <section class="ds-sec" id="raios-sombras">
     <h2>Raios &amp; sombras</h2>
-    <p class="sub">Nunca raio ou sombra arbitrários — somente os tokens abaixo.</p>
+    <p class="sub">Nunca raio ou sombra arbitrários: somente os tokens abaixo.</p>
     <div class="ds-sub">Raios</div>
     <div class="specimen">
       <div class="radius-demo" style="border-radius:var(--r-sm)">--r-sm 6px</div>
@@ -1052,7 +1144,7 @@ th.sortable.on svg.lucide{color:var(--premium-ink)}
       </div>
     </div>
     <p class="spec-note">
-      Padrões: padding de página <code>26px 30px 60px</code> · topbar <code>68px</code> (88px com page-head embutido) · sidebar <code>248px</code> (colapsada 64px) · padding de card <code>16–18px</code> · gap de grade <code>14–16px</code> · detalhe <code>grid 1fr 320px</code> gap 22px.<br><br>
+      Padrões: padding de página <code>26px 30px 60px</code> · topbar <code>88px</code> (64px abaixo de 768px) · sidebar <code>248px</code> (colapsada 64px), com a faixa da logo na mesma altura da topbar · padding de card <code>16 a 18px</code> · gap de grade <code>14 a 16px</code> · detalhe <code>grid 1fr 320px</code> gap 22px.<br><br>
       Motion: hover/transição de clicáveis <strong>140ms</strong> · fade-in de tela <strong>300ms</strong> + translateY(8px) · hover de card sobe <strong>2px</strong> + <code>--sh-md</code> · sempre respeitar <code>prefers-reduced-motion</code> · exceção documentada: o painel de cards flutuantes usa <code>--ease-mola</code> <code>cubic-bezier(.3,1.35,.5,1)</code> nas entradas e <code>--ease-sai</code> <code>cubic-bezier(.4,0,1,1)</code> nas saídas.
     </p>
   </section>
@@ -1060,7 +1152,7 @@ th.sortable.on svg.lucide{color:var(--premium-ink)}
   <!-- ════════ BOTÕES ════════ -->
   <section class="ds-sec" id="botoes">
     <h2>Botões</h2>
-    <p class="sub"><code>button.tsx</code> — variantes <code>primary</code> (ação principal da tela, no máx. 1), <code>dark</code>, <code>ghost</code>, <code>danger</code> (destrutivo — nunca amarelo); tamanhos <code>default</code> e <code>sm</code>. Uppercase, 700, ícone 16px antes do texto.</p>
+    <p class="sub"><code>button.tsx</code> · variantes <code>primary</code> (ação principal da tela, no máx. 1), <code>dark</code>, <code>ghost</code>, <code>danger</code> (destrutivo, nunca amarelo); tamanhos <code>default</code> e <code>sm</code>. Uppercase, 700, ícone 16px antes do texto.</p>
     <div class="ds-sub">Variantes</div>
     <div class="specimen">
       <button class="btn btn-primary"><i data-lucide="plus"></i> Nova demanda</button>
@@ -1083,8 +1175,8 @@ th.sortable.on svg.lucide{color:var(--premium-ink)}
       <div class="state-cell"><span class="state-label">Disabled</span><button class="btn btn-primary" disabled>Indisponível</button></div>
       <div class="state-cell"><span class="state-label">Loading (submit)</span><button class="btn btn-primary loading" disabled aria-busy="true"><span class="btn-label">Salvar demanda</span><span class="spinner"></span></button></div>
     </div>
-    <p class="spec-note">Active = <code>translateY(1px)</code> + tom âmbar. Disabled = <code>opacity .5</code> + <code>cursor: not-allowed</code>. Loading (<code>prop loading</code>) cruza o rótulo para um spinner <strong>sem alterar a largura</strong> do botão (crossfade ~150ms) + <code>aria-busy</code> — nunca full-page.</p>
-    <div class="ds-sub">ContextIconButton (context-icon-button.tsx) — ação de contexto só-ícone</div>
+    <p class="spec-note">Active = <code>translateY(1px)</code> + tom âmbar. Disabled = <code>opacity .5</code> + <code>cursor: not-allowed</code>. Loading (<code>prop loading</code>) cruza o rótulo para um spinner <strong>sem alterar a largura</strong> do botão (crossfade ~150ms) + <code>aria-busy</code>, nunca full-page.</p>
+    <div class="ds-sub">ContextIconButton (context-icon-button.tsx) · ação de contexto só-ícone</div>
     <div class="specimen">
       <div class="state-cell"><span class="state-label">Neutro</span><button class="ctx-btn" title="Exportar quadro" aria-label="Exportar quadro"><i data-lucide="download"></i></button></div>
       <div class="state-cell"><span class="state-label">Neutro (hover)</span><button class="ctx-btn" style="background:var(--premium-bone);color:var(--premium-ink)" title="Configurações" aria-label="Configurações"><i data-lucide="settings"></i></button></div>
@@ -1093,14 +1185,14 @@ th.sortable.on svg.lucide{color:var(--premium-ink)}
       <div class="state-cell"><span class="state-label">Loading</span><button class="ctx-btn" disabled aria-busy="true" aria-label="Gerando link"><span class="spinner"></span></button></div>
       <div class="state-cell"><span class="state-label">Disabled</span><button class="ctx-btn" disabled title="Exportar quadro" aria-label="Exportar quadro"><i data-lucide="download"></i></button></div>
     </div>
-    <p class="spec-note">Alvo ≥ 40×40, <code>title</code> + <code>aria-label</code> obrigatórios (o rótulo vira ambos). Variante <code>destaque</code> = espelho só-ícone do <code>Button variant="dark"</code>, reservada à criação principal da tela — em repouso sem amarelo; <strong>no hover assume a assinatura da marca</strong> (ícone amarelo sobre tinta) nos dois temas: no claro só o ícone muda, no escuro o chip claro inverte para tinta. Vive na zona de contexto da FilterBar (<code>contextActions</code>).</p>
+    <p class="spec-note">Alvo ≥ 40×40, <code>title</code> + <code>aria-label</code> obrigatórios (o rótulo vira ambos). Variante <code>destaque</code> = espelho só-ícone do <code>Button variant="dark"</code>, reservada à criação principal da tela: em repouso sem amarelo; <strong>no hover assume a assinatura da marca</strong> (ícone amarelo sobre tinta) nos dois temas: no claro só o ícone muda, no escuro o chip claro inverte para tinta. Vive na zona de contexto da FilterBar (<code>contextActions</code>).</p>
   </section>
 
   <!-- ════════ BADGES & CHIPS ════════ -->
   <section class="ds-sec" id="badges">
     <h2>Badges, tags &amp; chips</h2>
     <p class="sub"><code>badge.tsx</code> + chips do <code>filter-bar.tsx</code>. Badges sempre em par de tokens <code>cor</code>/<code>cor-bg</code>.</p>
-    <div class="ds-sub">Badge de status — 9 variantes</div>
+    <div class="ds-sub">Badge de status · 9 variantes</div>
     <div class="specimen">
       <span class="badge badge-default">Default</span>
       <span class="badge badge-info">Novas</span>
@@ -1126,7 +1218,7 @@ th.sortable.on svg.lucide{color:var(--premium-ink)}
       <span class="tag" style="background:var(--slate-bg);color:var(--slate)"><i data-lucide="video"></i> Audiovisual</span>
       <span class="tag" style="background:var(--info-bg);color:var(--info)"><i data-lucide="megaphone"></i> Tráfego</span>
     </div>
-    <div class="ds-sub">Chips de filtro (FilterBar) — idle / ativo / toggle ligado / multiselect / limpar</div>
+    <div class="ds-sub">Chips de filtro (FilterBar) · idle / ativo / toggle ligado / multiselect / limpar</div>
     <div class="specimen">
       <button class="chip"><i data-lucide="briefcase"></i> Cliente <i data-lucide="chevron-down"></i></button>
       <button class="chip active"><i data-lucide="briefcase"></i> Cliente: Acme <i data-lucide="chevron-down"></i></button>
@@ -1140,7 +1232,7 @@ th.sortable.on svg.lucide{color:var(--premium-ink)}
   <!-- ════════ TABS ════════ -->
   <section class="ds-sec" id="tabs">
     <h2>Tabs / segmented control</h2>
-    <p class="sub"><code>segmented-tabs.tsx</code> e <code>ViewTabsPill</code> do <code>filter-bar.tsx</code>. Container <code>--premium-bone</code>; ativo ganha fundo de superfície + <code>--sh-sm</code> + 700 — na implementação React a pílula branca <strong>desliza</strong> até a aba ativa (200ms, curva <code>--ease</code>). Estado em <code>?view=</code>.</p>
+    <p class="sub"><code>segmented-tabs.tsx</code> e <code>ViewTabsPill</code> do <code>filter-bar.tsx</code>. Container <code>--premium-bone</code>; ativo ganha fundo de superfície + <code>--sh-sm</code> + 700. Na implementação React a pílula branca <strong>desliza</strong> até a aba ativa (200ms, curva <code>--ease</code>). Estado em <code>?view=</code>.</p>
     <div class="specimen">
       <div class="tabs" role="tablist" data-demo-tabs>
         <button class="tab active" role="tab" aria-selected="true"><i data-lucide="kanban-square"></i> Kanban</button>
@@ -1160,7 +1252,7 @@ th.sortable.on svg.lucide{color:var(--premium-ink)}
   <section class="ds-sec" id="formularios">
     <h2>Formulários</h2>
     <p class="sub"><code>input.tsx</code>, <code>textarea.tsx</code>, <code>select.tsx</code>, <code>date-picker.tsx</code>, <code>form-error-banner.tsx</code>, <code>autosave-bar.tsx</code>. Label = eyebrow 11px. Foco = borda ink + halo <code>--yellow-50</code>. Texto longo usa o editor rico (Markdown), nunca textarea.</p>
-    <div class="ds-sub">Input — estados</div>
+    <div class="ds-sub">Input · estados</div>
     <div class="specimen">
       <div class="field">
         <label for="f1">Nome do cliente</label>
@@ -1232,8 +1324,8 @@ th.sortable.on svg.lucide{color:var(--premium-ink)}
         </div>
       </div>
     </div>
-    <p class="spec-note">O <code>Select</code> é <strong>custom</strong> (não usa o <code>&lt;select&gt;</code> nativo) — popover no padrão do workflow (responsável/nova etapa): itens de 40px com hover bone, selecionado com <code>check</code>, e <strong>busca filtrável</strong> automática em listas com 8+ opções. Na implementação React o painel é portal e reposiciona em scroll/resize.</p>
-    <div class="ds-sub">Editor rico (texto longo — toolbar do rich-editor.tsx)</div>
+    <p class="spec-note">O <code>Select</code> é <strong>custom</strong> (não usa o <code>&lt;select&gt;</code> nativo), com popover no padrão do workflow (responsável/nova etapa): itens de 40px com hover bone, selecionado com <code>check</code>, e <strong>busca filtrável</strong> automática em listas com 8+ opções. Na implementação React o painel é portal e reposiciona em scroll/resize.</p>
+    <div class="ds-sub">Editor rico (texto longo · toolbar do rich-editor.tsx)</div>
     <div class="specimen col" style="padding:0;overflow:hidden">
       <div style="display:flex;gap:2px;padding:8px;border-bottom:1px solid var(--c-border)">
         <button class="icon-btn" style="width:32px;height:32px;border:0" aria-label="Negrito"><i data-lucide="bold"></i></button>
@@ -1247,31 +1339,31 @@ th.sortable.on svg.lucide{color:var(--premium-ink)}
         <button class="icon-btn" style="width:32px;height:32px;border:0" aria-label="Link"><i data-lucide="link-2"></i></button>
       </div>
       <div style="padding:14px;min-height:110px;font-size:13.5px;line-height:1.65;color:var(--premium-steel)">
-        <p style="margin:6px 0">Briefing da campanha com <b>Markdown</b> — salva GFM e renderiza sanitizado.</p>
+        <p style="margin:6px 0">Briefing da campanha com <b>Markdown</b>: salva GFM e renderiza sanitizado.</p>
         <p style="margin:6px 0;color:var(--premium-gray)">Caminhos do Google Drive colados viram trechos <code>drive://</code> que copiam o caminho ao clicar.</p>
       </div>
     </div>
-    <div class="ds-sub">Erro de submit (banner inline — nunca toast) &amp; auto-save</div>
+    <div class="ds-sub">Erro de submit (banner inline, nunca toast) &amp; auto-save</div>
     <div class="specimen col" style="gap:12px">
       <div class="form-error-banner" role="alert">
         <i data-lucide="alert-circle"></i>
         <span>Não conseguimos salvar o lançamento. Verifique os campos destacados e tente novamente.</span>
       </div>
       <div>
-        <span class="state-label">AutoSaveBar (barra indeterminada — feedback de auto-save)</span>
+        <span class="state-label">AutoSaveBar (barra indeterminada, feedback de auto-save)</span>
         <div class="autosave-wrap" role="progressbar" aria-label="Salvando"><div class="autosave-bar"></div></div>
       </div>
     </div>
-    <p class="spec-note">Edição de registro existente <strong>auto-salva</strong> (on-blur para texto, on-change para seleção) — botão fica reservado à criação e ações sensíveis (senha, tokens). Em falha, o campo reverte ao último valor salvo.</p>
+    <p class="spec-note">Edição de registro existente <strong>auto-salva</strong> (on-blur para texto, on-change para seleção); o botão fica reservado à criação e ações sensíveis (senha, tokens). Em falha, o campo reverte ao último valor salvo.</p>
   </section>
 
   <!-- ════════ MULTI-SELECT ════════ -->
   <section class="ds-sec" id="multi-select">
     <h2>Multi-select</h2>
-    <p class="sub"><code>multi-select.tsx</code> — seleção múltipla genérica (estilo react-select) para valores arbitrários, como departamentos. Para <strong>pessoas</strong>, use o <code>PessoasPicker</code> (avatares + grupos). Itens escolhidos viram badges removíveis no campo; item selecionado no popover ganha fundo <code>--gold-bg</code> + borda <code>--gold</code> + check dourado.</p>
+    <p class="sub"><code>multi-select.tsx</code> · seleção múltipla genérica (estilo react-select) para valores arbitrários, como departamentos. Para <strong>pessoas</strong>, use o <code>PessoasPicker</code> (avatares + grupos). Itens escolhidos viram badges removíveis no campo; item selecionado no popover ganha fundo <code>--gold-bg</code> + borda <code>--gold</code> + check dourado.</p>
     <div class="specimen" style="align-items:flex-start;gap:32px">
       <div class="state-cell" style="align-items:flex-start">
-        <span class="state-label">Campo — 2 selecionados (badges removíveis)</span>
+        <span class="state-label">Campo · 2 selecionados (badges removíveis)</span>
         <div class="msel-field" role="button" tabindex="0" aria-haspopup="listbox" style="width:280px">
           <span style="display:flex;flex-wrap:wrap;gap:6px;flex:1">
             <span class="msel-badge"><i style="width:8px;height:8px;border-radius:50%;background:var(--violet);display:inline-block"></i> Criação <button class="rm" aria-label="Remover Criação"><i data-lucide="x" style="width:13px;height:13px"></i></button></span>
@@ -1308,7 +1400,7 @@ th.sortable.on svg.lucide{color:var(--premium-ink)}
   <section class="ds-sec" id="cards">
     <h2>Cards</h2>
     <p class="sub">Base comum: superfície + borda <code>--premium-mist</code> + <code>--r-lg</code> + <code>--sh-sm</code>; clicável ganha hover <code>--sh-md</code> e sobe 2px.</p>
-    <div class="ds-sub">Stat cards (dashboard) — padrão e variante feat</div>
+    <div class="ds-sub">Stat cards (dashboard) · padrão e variante feat</div>
     <div class="specimen on-paper" style="border:0;box-shadow:none;padding:0">
       <div class="card stat">
         <span class="ic" style="background:var(--info-bg);color:var(--info)"><i data-lucide="inbox"></i></span>
@@ -1328,7 +1420,7 @@ th.sortable.on svg.lucide{color:var(--premium-ink)}
       <div class="card" style="width:300px">
         <div class="card-h"><h3>Demandas para hoje</h3><span class="badge badge-default">4</span></div>
         <div class="card-b" style="display:flex;flex-direction:column;gap:10px">
-          <div style="font-size:13px">Post carrossel — lançamento <span class="badge badge-warning" style="margin-left:6px">Fazendo</span></div>
+          <div style="font-size:13px">Post carrossel · lançamento <span class="badge badge-warning" style="margin-left:6px">Fazendo</span></div>
           <div style="font-size:13px">Roteiro reels institucional <span class="badge badge-info" style="margin-left:6px">Novas</span></div>
         </div>
       </div>
@@ -1366,7 +1458,7 @@ th.sortable.on svg.lucide{color:var(--premium-ink)}
         <thead><tr><th>Demanda</th><th>Cliente</th><th>Etapa atual</th><th>Status</th><th>Prazo</th><th>Resp.</th></tr></thead>
         <tbody>
           <tr class="click" tabindex="0">
-            <td style="font-weight:500">Post carrossel — lançamento</td><td>Acme Indústria</td><td>Criação</td>
+            <td style="font-weight:500">Post carrossel · lançamento</td><td>Acme Indústria</td><td>Criação</td>
             <td><span class="badge badge-warning">Fazendo</span></td><td>Hoje 18h</td>
             <td><span class="avatar sm" style="background:var(--violet)">JT</span></td>
           </tr>
@@ -1388,8 +1480,8 @@ th.sortable.on svg.lucide{color:var(--premium-ink)}
   <!-- ════════ PAGINAÇÃO & ORDENAÇÃO ════════ -->
   <section class="ds-sec" id="paginacao">
     <h2>Paginação &amp; ordenação</h2>
-    <p class="sub"><code>pagination.tsx</code> e <code>sort-controls.tsx</code> — estado sempre na URL (<code>?pagina=</code>, <code>?sort=</code>), preservando os demais parâmetros; mudar filtro ou ordenação reseta para a página 1. Oculta com uma página ou menos.</p>
-    <div class="ds-sub">Pagination — Anterior · Página X de Y · Próxima</div>
+    <p class="sub"><code>pagination.tsx</code> e <code>sort-controls.tsx</code> · estado sempre na URL (<code>?pagina=</code>, <code>?sort=</code>), preservando os demais parâmetros; mudar filtro ou ordenação reseta para a página 1. Oculta com uma página ou menos.</p>
+    <div class="ds-sub">Pagination: Anterior · Página X de Y · Próxima</div>
     <div class="specimen col" style="gap:14px">
       <nav aria-label="Paginação" style="display:flex;align-items:center;justify-content:flex-end;gap:8px">
         <button class="pgn-btn" type="button" aria-label="Página anterior"><i data-lucide="chevron-left"></i> Anterior</button>
@@ -1402,7 +1494,7 @@ th.sortable.on svg.lucide{color:var(--premium-ink)}
         <button class="pgn-btn" type="button" aria-label="Próxima página">Próxima <i data-lucide="chevron-right"></i></button>
       </nav>
     </div>
-    <div class="ds-sub">SortableTh — cabeçalho de tabela clicável &amp; ColumnSortToggle do kanban</div>
+    <div class="ds-sub">SortableTh (cabeçalho de tabela clicável) &amp; ColumnSortToggle do kanban</div>
     <div class="spec-row">
       <div class="table-wrap" style="flex:1.4;min-width:320px">
         <table class="ds">
@@ -1421,8 +1513,8 @@ th.sortable.on svg.lucide{color:var(--premium-ink)}
       </div>
       <div class="specimen" style="flex:1;min-width:260px">
         <div class="state-cell"><span class="state-label">Natural</span><button class="sort-toggle" type="button" aria-label="Ordenar por prazo"><i data-lucide="arrow-up-down"></i></button></div>
-        <div class="state-cell"><span class="state-label">Crescente</span><button class="sort-toggle on" type="button" aria-label="Ordenar por prazo — crescente"><i data-lucide="arrow-up"></i></button></div>
-        <div class="state-cell"><span class="state-label">Decrescente</span><button class="sort-toggle on" type="button" aria-label="Ordenar por prazo — decrescente"><i data-lucide="arrow-down"></i></button></div>
+        <div class="state-cell"><span class="state-label">Crescente</span><button class="sort-toggle on" type="button" aria-label="Ordenar por prazo em ordem crescente"><i data-lucide="arrow-up"></i></button></div>
+        <div class="state-cell"><span class="state-label">Decrescente</span><button class="sort-toggle on" type="button" aria-label="Ordenar por prazo em ordem decrescente"><i data-lucide="arrow-down"></i></button></div>
       </div>
     </div>
     <p class="spec-note">O toggle do kanban cicla natural → ↑ → ↓ → natural e ordena só a coluna (param próprio por coluna); ativo usa fundo <code>--brand-ink</code> + ícone amarelo, o mesmo par do chip "ligado". O header ativo da tabela expõe <code>aria-sort</code>.</p>
@@ -1459,7 +1551,7 @@ th.sortable.on svg.lucide{color:var(--premium-ink)}
         <div class="kcol-b kanban-col-scroll">
           <div class="kcard">
             <span class="tag" style="background:var(--violet-bg);color:var(--violet);align-self:flex-start"><i data-lucide="pen-tool"></i> Criação</span>
-            <h4>Post carrossel — lançamento</h4>
+            <h4>Post carrossel · lançamento</h4>
             <span class="cli">Acme Indústria</span>
             <div class="stagebar"><i class="done"></i><i class="done"></i><i class="cur"></i><i></i></div>
             <div class="foot">
@@ -1481,7 +1573,7 @@ th.sortable.on svg.lucide{color:var(--premium-ink)}
   <!-- ════════ AVATARES ════════ -->
   <section class="ds-sec" id="avatares">
     <h2>Avatares</h2>
-    <p class="sub"><code>avatar.tsx</code> — iniciais em preto bold sobre cor do colaborador/departamento (ou foto). Stack com sobreposição -7px e borda de 2px da superfície.</p>
+    <p class="sub"><code>avatar.tsx</code> · iniciais em preto bold sobre cor do colaborador/departamento (ou foto). Stack com sobreposição -7px e borda de 2px da superfície.</p>
     <div class="specimen">
       <div class="state-cell"><span class="state-label">sm 26px</span><span class="avatar sm" style="background:var(--yellow)">PM</span></div>
       <div class="state-cell"><span class="state-label">md 36px</span><span class="avatar md" style="background:var(--teal)">RM</span></div>
@@ -1503,7 +1595,7 @@ th.sortable.on svg.lucide{color:var(--premium-ink)}
   <!-- ════════ PRESENÇA & DIGITAÇÃO ════════ -->
   <section class="ds-sec" id="presenca">
     <h2>Presença &amp; indicador de digitação</h2>
-    <p class="sub"><code>presenca-avatares.tsx</code> — pilha "quem está vendo" da presença em tempo real; <code>digitando-indicador.tsx</code> — linha "está digitando…" junto à thread de comentários. Ambos <strong>não renderizam nada</strong> quando vazios (ausência total, sem erro).</p>
+    <p class="sub"><code>presenca-avatares.tsx</code> · pilha "quem está vendo" da presença em tempo real; <code>digitando-indicador.tsx</code> · linha "está digitando…" junto à thread de comentários. Ambos <strong>não renderizam nada</strong> quando vazios (ausência total, sem erro).</p>
     <div class="specimen" style="gap:40px">
       <div class="state-cell"><span class="state-label">PresencaAvatares (hover/foco mostra os nomes)</span>
         <span class="tt-wrap">
@@ -1533,10 +1625,10 @@ th.sortable.on svg.lucide{color:var(--premium-ink)}
   <!-- ════════ SELETOR DE PESSOAS ════════ -->
   <section class="ds-sec" id="pessoas-picker">
     <h2>Seletor de pessoas (busca + badges)</h2>
-    <p class="sub"><code>pessoas-picker.tsx</code> — clicar abre busca; cada escolhido vira badge (avatar + nome). Multi mantém o popover aberto e marca com <i data-lucide="check" style="width:14px;height:14px;vertical-align:-2px"></i>; single fecha ao escolher. Substitui chips de toggle e o <code>Select</code> para pessoas.</p>
+    <p class="sub"><code>pessoas-picker.tsx</code> · clicar abre busca; cada escolhido vira badge (avatar + nome). Multi mantém o popover aberto e marca com <i data-lucide="check" style="width:14px;height:14px;vertical-align:-2px"></i>; single fecha ao escolher. Substitui chips de toggle e o <code>Select</code> para pessoas.</p>
     <div class="specimen" style="align-items:flex-start;gap:32px">
       <div class="state-cell" style="align-items:flex-start">
-        <span class="state-label">Campo (multi) — 2 selecionados</span>
+        <span class="state-label">Campo (multi) · 2 selecionados</span>
         <div style="display:flex;min-height:44px;width:260px;align-items:center;gap:8px;border:1px solid var(--premium-mist);border-radius:var(--r-md);background:var(--c-surface);padding:6px 12px">
           <span style="display:inline-flex;flex-wrap:wrap;gap:6px;flex:1">
             <span style="display:inline-flex;align-items:center;gap:6px;border-radius:999px;background:var(--premium-bone);padding:3px 6px 3px 3px">
@@ -1579,7 +1671,7 @@ th.sortable.on svg.lucide{color:var(--premium-ink)}
   <!-- ════════ NAVEGAÇÃO ════════ -->
   <section class="ds-sec" id="navegacao">
     <h2>Navegação</h2>
-    <p class="sub"><code>breadcrumb.tsx</code> substitui o "Voltar" em telas de detalhe; sidebar/topbar são o shell global (a navegação à esquerda desta página replica a sidebar real, inclusive o item ativo com borda amarela).</p>
+    <p class="sub"><code>breadcrumb.tsx</code> substitui o "Voltar" em telas de detalhe; sidebar/topbar são o shell global (a navegação à esquerda desta página replica a sidebar real: item ativo com borda amarela e, no rodapé, o menu de conta com avatar, nome e papel).</p>
     <div class="ds-sub">Breadcrumb</div>
     <div class="specimen">
       <nav aria-label="Trilha de navegação">
@@ -1588,7 +1680,7 @@ th.sortable.on svg.lucide{color:var(--premium-ink)}
           <li aria-hidden="true"><i data-lucide="chevron-right"></i></li>
           <li><a href="#">Campanha Dia das Mães</a></li>
           <li aria-hidden="true"><i data-lucide="chevron-right"></i></li>
-          <li><span class="cur" aria-current="page">Post carrossel — lançamento</span></li>
+          <li><span class="cur" aria-current="page">Post carrossel · lançamento</span></li>
         </ol>
       </nav>
     </div>
@@ -1596,7 +1688,7 @@ th.sortable.on svg.lucide{color:var(--premium-ink)}
     <div class="specimen col" style="background:var(--c-bg);gap:10px">
       <div class="acc open" data-acc>
         <div class="acc-h">
-          <button class="acc-trigger" aria-expanded="true"><i data-lucide="chevron-down"></i> Layout v3 — aprovado</button>
+          <button class="acc-trigger" aria-expanded="true"><i data-lucide="chevron-down"></i> Layout v3 · aprovado</button>
           <span class="badge badge-success" style="margin-right:6px">Atual</span>
         </div>
         <div class="acc-b">Conteúdo do bloco: materiais do layout, links e ações. Cabeçalho em <code>--premium-paper</code>, gatilho ≥ 44px, chevron rotaciona 180°.</div>
@@ -1614,19 +1706,19 @@ th.sortable.on svg.lucide{color:var(--premium-ink)}
   <!-- ════════ OVERLAYS ════════ -->
   <section class="ds-sec" id="overlays">
     <h2>Slide-over &amp; confirm dialog</h2>
-    <p class="sub"><code>slide-over.tsx</code> — painel flutuante 480px à direita, <code>--r-xl</code> + <code>--sh-lg</code>, scrim com blur, rodapé fixo de ações; fecha por Esc/scrim; suporta empilhamento. <code>confirm-dialog.tsx</code> — diálogo central para confirmação; destrutivo em <code>danger</code>, nunca amarelo.</p>
+    <p class="sub"><code>slide-over.tsx</code> · painel flutuante 480px à direita, <code>--r-xl</code> + <code>--sh-lg</code>, scrim com blur, rodapé fixo de ações; fecha por Esc/scrim; suporta empilhamento. <code>confirm-dialog.tsx</code> · diálogo central para confirmação; destrutivo em <code>danger</code>, nunca amarelo.</p>
     <div class="specimen">
       <button class="btn btn-primary" id="open-so"><i data-lucide="plus"></i> Abrir slide-over</button>
       <button class="btn btn-ghost" id="open-dlg" style="color:var(--danger)"><i data-lucide="trash-2"></i> Abrir confirmação</button>
       <button class="btn btn-ghost" id="open-dlg-neutral"><i data-lucide="clock"></i> Diálogo neutro</button>
     </div>
-    <p class="spec-note">Proibido modal central novo para formulários (use slide-over) e proibido <code>window.alert/confirm/prompt</code> — sempre a camada Premium.</p>
+    <p class="spec-note">Proibido modal central novo para formulários (use slide-over) e proibido <code>window.alert/confirm/prompt</code>, sempre a camada Premium.</p>
   </section>
 
   <!-- ════════ PAINEL DE CARDS FLUTUANTES ════════ -->
   <section class="ds-sec" id="painel-cards">
     <h2>Painel de cards flutuantes &amp; botão de lido</h2>
-    <p class="sub"><code>painel-cards.tsx</code> — diálogo modal <strong>sem moldura</strong> sobre o scrim: topo com pílulas e o X (sobre o gatilho), cards soltos agrupados por dia, base com pílulas. Primeiro uso: central de notificações do sino. <code>botao-lido.tsx</code> — só ícone: <strong>amarelo</strong> para marcar, <strong>verde</strong> quando lida (clique no amarelo para ver a troca).</p>
+    <p class="sub"><code>painel-cards.tsx</code> · diálogo modal <strong>sem moldura</strong> sobre o scrim: topo com pílulas e o X (sobre o gatilho), cards soltos agrupados por dia, base com pílulas. Primeiro uso: central de notificações do sino. <code>botao-lido.tsx</code> · só ícone: <strong>amarelo</strong> para marcar, <strong>verde</strong> quando lida (clique no amarelo para ver a troca).</p>
     <div class="pc-stage">
       <div class="pc">
         <div class="pc-topo">
@@ -1656,7 +1748,7 @@ th.sortable.on svg.lucide{color:var(--premium-ink)}
   <!-- ════════ LIGHTBOX ════════ -->
   <section class="ds-sec" id="lightbox">
     <h2>Lightbox</h2>
-    <p class="sub"><code>lightbox.tsx</code> — visualizador em tela cheia dos materiais do layout. Fundo escuro <strong>fixo nos dois temas</strong> (mídia em tela cheia pede fundo escuro); controles de 40px em <code>--c-surface</code>. Mock estático em escala reduzida:</p>
+    <p class="sub"><code>lightbox.tsx</code> · visualizador em tela cheia dos materiais do layout. Fundo escuro <strong>fixo nos dois temas</strong> (mídia em tela cheia pede fundo escuro); controles de 40px em <code>--c-surface</code>. Mock estático em escala reduzida:</p>
     <div class="lb" role="img" aria-label="Mock estático do lightbox">
       <div class="lb-h">
         <span>KV-campanha-inverno-v3.png</span>
@@ -1674,13 +1766,13 @@ th.sortable.on svg.lucide{color:var(--premium-ink)}
         </div>
       </div>
     </div>
-    <p class="spec-note">Na implementação real: overlay full-viewport <code>bg-black/90</code> com <code>role="dialog"</code> e foco gerenciado (devolve ao gatilho); Esc/scrim/botão fecham; setas navegam <strong>apenas</strong> entre os materiais do layout atual; zoom 1–4× em passos de 0,5 com arrastar quando ampliado; vídeo/áudio pelo leitor próprio (<code>DriveMediaViewer</code>). Respeita <code>prefers-reduced-motion</code>.</p>
+    <p class="spec-note">Na implementação real: overlay full-viewport <code>bg-black/90</code> com <code>role="dialog"</code> e foco gerenciado (devolve ao gatilho); Esc/scrim/botão fecham; setas navegam <strong>apenas</strong> entre os materiais do layout atual; zoom de 1× a 4× em passos de 0,5 com arrastar quando ampliado; vídeo/áudio pelo leitor próprio (<code>DriveMediaViewer</code>). Respeita <code>prefers-reduced-motion</code>.</p>
   </section>
 
   <!-- ════════ TOAST ════════ -->
   <section class="ds-sec" id="toast">
     <h2>Toast</h2>
-    <p class="sub"><code>toast.tsx</code> via <code>useToast</code> — feedback transitório não bloqueante, topo central (offset 76px), fundo escuro de marca fixo + acento amarelo; a variante muda só o ícone. Auto-dismiss 4s, pausa no hover, máx. 3, undo opcional. <strong>Erro de submit nunca usa toast.</strong></p>
+    <p class="sub"><code>toast.tsx</code> via <code>useToast</code> · feedback transitório não bloqueante, topo central (offset 76px), fundo escuro de marca fixo + acento amarelo; a variante muda só o ícone. Auto-dismiss 4s, pausa no hover, máx. 3, undo opcional. <strong>Erro de submit nunca usa toast.</strong></p>
     <div class="ds-sub">Variantes (estáticas)</div>
     <div class="specimen col" style="background:var(--c-bg);align-items:center">
       <div class="toast"><span class="t-ic"><i data-lucide="check-circle-2"></i></span><p>Cliente salvo.</p><button class="t-close" aria-label="Dispensar aviso"><i data-lucide="x"></i></button></div>
@@ -1698,8 +1790,8 @@ th.sortable.on svg.lucide{color:var(--premium-ink)}
 
   <!-- ════════ FAB ════════ -->
   <section class="ds-sec" id="fab">
-    <h2>FAB — botão de ação flutuante</h2>
-    <p class="sub"><code>fab.tsx</code> — entrada única de criação do shell. 56px amarelo + <code>--sh-gold</code>, canto inferior direito, arrastável; speed-dial revela atalhos de 44px no hover/foco. Passe o mouse sobre o botão amarelo:</p>
+    <h2>FAB · botão de ação flutuante</h2>
+    <p class="sub"><code>fab.tsx</code> · entrada única de criação do shell. 56px amarelo + <code>--sh-gold</code>, canto inferior direito, arrastável; speed-dial revela atalhos de 44px no hover/foco. Passe o mouse sobre o botão amarelo:</p>
     <div class="fab-demo">
       <div class="fab">
         <div class="fab-dial" role="menu" aria-label="Ações de criação">
@@ -1717,7 +1809,7 @@ th.sortable.on svg.lucide{color:var(--premium-ink)}
   <!-- ════════ CALENDÁRIO ════════ -->
   <section class="ds-sec" id="calendario">
     <h2>Calendário / DatePicker</h2>
-    <p class="sub"><code>date-picker.tsx</code> — substitui o <code>input type="date"</code> nativo em <strong>todo</strong> lugar: formulários (<code>variant="field"</code>), chip de período do FilterBar e popover de prazos do workflow (<code>variant="inline"</code>). Dia selecionado = amarelo + preto 700; hoje = anel <code>--premium-silver</code>; dot âmbar = dia com item (widget de dashboard).</p>
+    <p class="sub"><code>date-picker.tsx</code> · substitui o <code>input type="date"</code> nativo em <strong>todo</strong> lugar: formulários (<code>variant="field"</code>), chip de período do FilterBar e popover de prazos do workflow (<code>variant="inline"</code>). Dia selecionado = amarelo + preto 700; hoje = anel <code>--premium-silver</code>; dot âmbar = dia com item (widget de dashboard).</p>
     <div class="specimen" style="align-items:flex-start">
       <div class="field" style="min-width:240px">
         <label for="f-dt">Prazo final (gatilho)</label>
@@ -1747,23 +1839,23 @@ th.sortable.on svg.lucide{color:var(--premium-ink)}
   <!-- ════════ WORKFLOW ════════ -->
   <section class="ds-sec" id="workflow">
     <h2>Workflow timeline</h2>
-    <p class="sub">Timeline horizontal de etapas: barrinha 6px — verde concluída, amarela atual, cinza futura. Pílula de data colorida pela cor da etapa (setor do responsável). Colunas limpas, sem moldura de card.</p>
+    <p class="sub">Timeline horizontal de etapas: barrinha de 6px (verde concluída, amarela atual, cinza futura). Pílula de data colorida pela cor da etapa (setor do responsável). Colunas limpas, sem moldura de card.</p>
     <div class="specimen">
       <div class="wf" style="width:100%">
         <div class="wf-step done">
           <div class="bar"></div><b>Briefing</b>
           <span class="resp"><span class="avatar" style="background:var(--yellow)">PM</span> Patrícia</span>
-          <span class="wf-pill" style="background:var(--success-bg);color:var(--success)">02 jun – 03 jun</span>
+          <span class="wf-pill" style="background:var(--success-bg);color:var(--success)">02 jun a 03 jun</span>
         </div>
         <div class="wf-step done">
           <div class="bar"></div><b>Redação</b>
           <span class="resp"><span class="avatar" style="background:var(--teal)">RM</span> Rafael</span>
-          <span class="wf-pill" style="background:var(--teal-bg);color:var(--teal)">04 jun – 06 jun</span>
+          <span class="wf-pill" style="background:var(--teal-bg);color:var(--teal)">04 jun a 06 jun</span>
         </div>
         <div class="wf-step cur">
           <div class="bar"></div><b>Criação</b>
           <span class="resp"><span class="avatar" style="background:var(--violet)">JT</span> Júlia</span>
-          <span class="wf-pill" style="background:var(--violet-bg);color:var(--violet)">07 jun – 11 jun</span>
+          <span class="wf-pill" style="background:var(--violet-bg);color:var(--violet)">07 jun a 11 jun</span>
         </div>
         <div class="wf-step">
           <div class="bar"></div><b>Aprovação cliente</b>
@@ -1821,12 +1913,12 @@ th.sortable.on svg.lucide{color:var(--premium-ink)}
   <!-- ════════ EMOJI PICKER ════════ -->
   <section class="ds-sec" id="emoji">
     <h2>Emoji picker</h2>
-    <p class="sub"><code>emoji-picker.tsx</code> — reações em comentários. Encapsula o <strong>emoji-mart</strong> vanilla (dataset local, i18n pt, emojis nativos) atrás de um wrapper único; nenhum consumidor importa a lib diretamente. Mock estático do popover:</p>
+    <p class="sub"><code>emoji-picker.tsx</code> · reações em comentários. Encapsula o <strong>emoji-mart</strong> vanilla (dataset local, i18n pt, emojis nativos) atrás de um wrapper único; nenhum consumidor importa a lib diretamente. Mock estático do popover:</p>
     <div class="specimen" style="align-items:flex-start;gap:32px">
       <div class="state-cell"><span class="state-label">Gatilho (40px)</span>
         <button type="button" aria-label="Adicionar reação" style="width:40px;height:40px;border-radius:50%;border:0;background:none;color:var(--premium-steel);display:inline-flex;align-items:center;justify-content:center;cursor:pointer"><i data-lucide="smile-plus"></i></button>
       </div>
-      <div class="state-cell" style="align-items:flex-start"><span class="state-label">Popover — frequentes + painel completo</span>
+      <div class="state-cell" style="align-items:flex-start"><span class="state-label">Popover · frequentes + painel completo</span>
         <div class="emoji-pop" role="dialog" aria-label="Seletor de emoji">
           <div class="emoji-row">
             <button class="emoji-btn" type="button" aria-label="Reagir com 👍">👍</button>
@@ -1850,7 +1942,7 @@ th.sortable.on svg.lucide{color:var(--premium-ink)}
         </div>
       </div>
     </div>
-    <p class="spec-note">Painel pesado carrega sob demanda (import dinâmico, <code>ssr:false</code>) só na abertura; a linha de <strong>frequentes</strong> fica sempre visível e é o fallback se o painel falhar — reagir nunca quebra. Portal + <code>popoverPos</code> (flip/clamp), Esc fecha e devolve o foco; tema segue a classe <code>dark</code> do documento.</p>
+    <p class="spec-note">Painel pesado carrega sob demanda (import dinâmico, <code>ssr:false</code>) só na abertura; a linha de <strong>frequentes</strong> fica sempre visível e é o fallback se o painel falhar: reagir nunca quebra. Portal + <code>popoverPos</code> (flip/clamp), Esc fecha e devolve o foco; tema segue a classe <code>dark</code> do documento.</p>
   </section>
 
   <!-- ════════ EMPTY / NOTA / LOADING ════════ -->
@@ -1873,7 +1965,7 @@ th.sortable.on svg.lucide{color:var(--premium-ink)}
         </div>
         <div class="adm-banner">
           <span class="sq"><i data-lucide="lock"></i></span>
-          <span>Área restrita — visível apenas para administradores.</span>
+          <span>Área restrita: visível apenas para administradores.</span>
         </div>
         <div class="specimen col" style="gap:10px">
           <span class="state-label">Skeleton (loading de lista)</span>
@@ -1893,7 +1985,7 @@ th.sortable.on svg.lucide{color:var(--premium-ink)}
   <section class="ds-sec" id="progresso">
     <h2>Progresso, contador &amp; expansíveis</h2>
     <p class="sub">Primitivos de micro-animação (Motion, curva <code>--ease</code>, todos inertes sob <code>prefers-reduced-motion</code>): <code>barra-progresso.tsx</code>, <code>contador.tsx</code>, <code>texto-expansivel.tsx</code> e <code>expansivel.tsx</code>.</p>
-    <div class="ds-sub">BarraProgresso — preenchimento cresce da esquerda na entrada (scaleX, 500ms)</div>
+    <div class="ds-sub">BarraProgresso · preenchimento cresce da esquerda na entrada (scaleX, 500ms)</div>
     <div class="specimen col" style="gap:14px">
       <div>
         <span class="state-label">Padrão (trilho --premium-bone, altura 8px)</span>
@@ -1904,7 +1996,7 @@ th.sortable.on svg.lucide{color:var(--premium-ink)}
         <div class="progress" style="height:8px"><i style="width:88%;background:var(--success)"></i></div>
       </div>
     </div>
-    <div class="ds-sub">Contador — número com contagem crescente animada</div>
+    <div class="ds-sub">Contador · número com contagem crescente animada</div>
     <div class="specimen">
       <div class="card stat">
         <span class="ic" style="background:var(--success-bg);color:var(--success)"><i data-lucide="trending-up"></i></span>
@@ -1915,7 +2007,7 @@ th.sortable.on svg.lucide{color:var(--premium-ink)}
         <span class="num" data-countup="127">0</span><span class="lbl">Demandas entregues</span>
       </div>
     </div>
-    <div class="ds-sub">TextoExpansivel — prévia clampada + "ver mais" (clique para alternar)</div>
+    <div class="ds-sub">TextoExpansivel · prévia clampada + "ver mais" (clique para alternar)</div>
     <div class="specimen col">
       <div data-texp style="max-width:560px">
         <div data-texp-body style="position:relative;max-height:72px;overflow:hidden;transition:max-height .2s var(--ease)">
@@ -1927,13 +2019,13 @@ th.sortable.on svg.lucide{color:var(--premium-ink)}
         </div>
       </div>
     </div>
-    <p class="spec-note"><code>TextoExpansivel</code> mede <code>scrollHeight</code> contra a altura da prévia (via <code>ResizeObserver</code>) — o controle só aparece quando o conteúdo realmente transborda; fade em token (<code>fadeColor</code>, padrão <code>--c-surface</code>); <code>expandirAoFocar</code> para conteúdo editável. <code>Expansivel</code> anima <code>height: 0 ↔ auto</code> + opacity (~200ms) e é a base do accordion, das raias do Kanban e da árvore de docs — o accordion da seção Navegação demonstra o comportamento.</p>
+    <p class="spec-note"><code>TextoExpansivel</code> mede <code>scrollHeight</code> contra a altura da prévia (via <code>ResizeObserver</code>): o controle só aparece quando o conteúdo realmente transborda; fade em token (<code>fadeColor</code>, padrão <code>--c-surface</code>); <code>expandirAoFocar</code> para conteúdo editável. <code>Expansivel</code> anima <code>height: 0 ↔ auto</code> + opacity (~200ms) e é a base do accordion, das raias do Kanban e da árvore de docs; o accordion da seção Navegação demonstra o comportamento.</p>
   </section>
 
   <!-- ════════ CODE BLOCK ════════ -->
   <section class="ds-sec" id="codigo">
     <h2>Bloco de código</h2>
-    <p class="sub"><code>code-block.tsx</code> — realce por tokenizador próprio com tokens de code theme; botão de copiar (40px) dispara toast. Usado na doc pública <code>/docs</code>.</p>
+    <p class="sub"><code>code-block.tsx</code> · realce por tokenizador próprio com tokens de code theme; botão de copiar (40px) dispara toast. Usado na doc pública <code>/docs</code>.</p>
     <div class="specimen col" style="padding:0;border:0;box-shadow:none;background:none">
       <div class="codeblock">
         <div class="cb-h">
@@ -1962,7 +2054,7 @@ th.sortable.on svg.lucide{color:var(--premium-ink)}
   <!-- ════════ GRÁFICOS ════════ -->
   <section class="ds-sec" id="graficos">
     <h2>Gráficos</h2>
-    <p class="sub"><code>bar-chart.tsx</code>, <code>pie-chart.tsx</code> e <code>line-chart.tsx</code> — SVG próprio, sem lib; cores só por token (claro/escuro automáticos); <code>role="img"</code> + <code>&lt;title&gt;</code> por elemento; a tabela adjacente é a fonte completa dos dados.</p>
+    <p class="sub"><code>bar-chart.tsx</code>, <code>pie-chart.tsx</code> e <code>line-chart.tsx</code> · SVG próprio, sem lib; cores só por token (claro/escuro automáticos); <code>role="img"</code> + <code>&lt;title&gt;</code> por elemento; a tabela adjacente é a fonte completa dos dados.</p>
     <div class="spec-row">
       <div class="specimen" style="flex:1.4;min-width:340px">
         <svg role="img" aria-label="Fluxo de caixa: entradas e saídas por mês" viewBox="0 0 480 220" width="100%" style="max-width:520px">
@@ -2011,7 +2103,7 @@ th.sortable.on svg.lucide{color:var(--premium-ink)}
         </figcaption>
       </div>
     </div>
-    <div class="ds-sub">LineChart (line-chart.tsx) — série temporal, linha em <code>--premium-ink</code></div>
+    <div class="ds-sub">LineChart (line-chart.tsx) · série temporal, linha em <code>--premium-ink</code></div>
     <div class="specimen">
       <svg role="img" aria-label="Cards concluídos por semana" viewBox="0 0 480 200" width="100%" style="max-width:560px">
         <title>Cards concluídos por semana</title>
@@ -2041,7 +2133,7 @@ th.sortable.on svg.lucide{color:var(--premium-ink)}
   <!-- ════════ OUTROS PRIMITIVOS ════════ -->
   <section class="ds-sec" id="outros">
     <h2>Outros primitivos (sem demo visual)</h2>
-    <p class="sub">Primitivos de infraestrutura ou dependentes de dados reais do Drive — sem mock estático fiel possível. Referência rápida apontando o fonte em <code>src/components/ui/</code>.</p>
+    <p class="sub">Primitivos de infraestrutura ou dependentes de dados reais do Drive, sem mock estático fiel possível. Referência rápida apontando o fonte em <code>src/components/ui/</code>.</p>
     <div class="spec-row">
       <div class="card" style="flex:1;min-width:260px;padding:16px">
         <b style="font-size:13.5px">DriveMediaViewer</b>
@@ -2067,12 +2159,12 @@ th.sortable.on svg.lucide{color:var(--premium-ink)}
       </div>
       <div class="card" style="flex:1;min-width:260px;padding:16px">
         <b style="font-size:13.5px">ColunaInfinita</b>
-        <p style="font-size:12px;color:var(--premium-gray);margin:6px 0 8px;line-height:1.5">Scroll infinito de coluna do Kanban (sentinela + carregamento incremental) — comportamento, não visual.</p>
+        <p style="font-size:12px;color:var(--premium-gray);margin:6px 0 8px;line-height:1.5">Scroll infinito de coluna do Kanban (sentinela + carregamento incremental). Comportamento, não visual.</p>
         <code style="font-size:11px;background:var(--c-sunken);padding:1px 5px;border-radius:var(--r-sm)">coluna-infinita.tsx</code>
       </div>
       <div class="card" style="flex:1;min-width:260px;padding:16px">
         <b style="font-size:13.5px">code-highlight</b>
-        <p style="font-size:12px;color:var(--premium-gray);margin:6px 0 8px;line-height:1.5">Tokenizador leve que emite as classes <code>.tok-*</code> do bloco de código (seção Bloco de código) — sem hex no TSX.</p>
+        <p style="font-size:12px;color:var(--premium-gray);margin:6px 0 8px;line-height:1.5">Tokenizador leve que emite as classes <code>.tok-*</code> do bloco de código (seção Bloco de código), sem hex no TSX.</p>
         <code style="font-size:11px;background:var(--c-sunken);padding:1px 5px;border-radius:var(--r-sm)">code-highlight.ts</code>
       </div>
     </div>
@@ -2098,7 +2190,7 @@ th.sortable.on svg.lucide{color:var(--premium-ink)}
     </div>
     <div class="autosave-wrap" style="visibility:hidden"><div class="autosave-bar"></div></div>
     <div class="so-b">
-      <div class="field"><label for="so-f1">Título</label><input class="input" id="so-f1" placeholder="Ex.: Post carrossel — lançamento"></div>
+      <div class="field"><label for="so-f1">Título</label><input class="input" id="so-f1" placeholder="Ex.: Post carrossel · lançamento"></div>
       <div class="field"><label for="so-f2">Cliente</label>
         <div class="dsel" data-dsel>
           <button class="dsel-trigger" id="so-f2" type="button" role="combobox" aria-haspopup="listbox" aria-expanded="false">
@@ -2393,14 +2485,106 @@ document.querySelectorAll("[data-lido]").forEach(function(btn){
   });
 });
 
-/* ── Scrollspy simples na nav lateral ── */
-var navLinks = Array.prototype.slice.call(document.querySelectorAll(".ds-nav a"));
-var sections = navLinks.map(function(a){ return document.querySelector(a.getAttribute("href")); });
+/* ── Menu lateral fixo: o clique rola o conteúdo até a seção e o scrollspy
+      acompanha a rolagem. Durante a rolagem disparada pelo clique o item
+      clicado fica marcado (senão o destaque "passeia" pelas seções do meio). ── */
+var nav = document.getElementById("ds-nav-lista"); /* a parte que rola, entre a logo e o usuário */
+var navLinks = Array.prototype.slice.call(nav.querySelectorAll("a[href^='#']"));
+var sections = navLinks.map(function(a){ return document.getElementById(a.getAttribute("href").slice(1)); });
+var topbar = document.querySelector(".ds-topbar");
+var spyTravado = false, spySolta = null, ativoAtual = -1;
+
+function marcaAtivo(i){
+  /* Só age quando a seção muda: assim quem rola a lista do menu à mão não é puxado de volta */
+  if(i === ativoAtual) return;
+  ativoAtual = i;
+  navLinks.forEach(function(a, j){
+    a.classList.toggle("active", j === i);
+    if(j === i) a.setAttribute("aria-current", "location"); else a.removeAttribute("aria-current");
+  });
+  /* Mantém o item ativo à vista dentro do menu, sem mexer na rolagem da página */
+  var a = navLinks[i], folga = 48;
+  if(!a || nav.scrollHeight <= nav.clientHeight) return;
+  var topo = a.offsetTop, base = topo + a.offsetHeight, alvo = null;
+  if(topo < nav.scrollTop + folga) alvo = topo - folga;
+  else if(base > nav.scrollTop + nav.clientHeight - folga) alvo = base - nav.clientHeight + folga;
+  if(alvo !== null) nav.scrollTo({ top: Math.max(0, alvo), behavior: reduceMotion ? "auto" : "smooth" });
+}
+function secaoAtual(){
+  /* No fim da página a última seção pode não alcançar o topo: vale a última */
+  if(window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) return sections.length - 1;
+  var linha = topbar.offsetHeight + 24, atual = 0;
+  sections.forEach(function(s, i){ if(s && s.getBoundingClientRect().top <= linha) atual = i; });
+  return atual;
+}
+function soltaSpyDepois(){
+  clearTimeout(spySolta);
+  spySolta = setTimeout(function(){ spyTravado = false; }, 150);
+}
 window.addEventListener("scroll", function(){
-  var y = window.scrollY + 120, current = 0;
-  sections.forEach(function(s, i){ if(s && s.offsetTop <= y) current = i; });
-  navLinks.forEach(function(a, i){ a.classList.toggle("active", i === current); });
+  if(spyTravado){ soltaSpyDepois(); return; }
+  marcaAtivo(secaoAtual());
 }, { passive:true });
+window.addEventListener("load", function(){ marcaAtivo(secaoAtual()); });
+
+/* Gaveta abaixo de 768px: botão de menu, scrim e Esc; o foco entra no item ativo e volta ao botão */
+var navToggle = document.getElementById("nav-toggle");
+function menuAberto(){ return document.documentElement.classList.contains("nav-open"); }
+function abreMenu(){
+  document.documentElement.classList.add("nav-open");
+  navToggle.setAttribute("aria-expanded", "true");
+  navToggle.setAttribute("aria-label", "Fechar menu");
+  (nav.querySelector("a.active") || navLinks[0]).focus();
+}
+function fechaMenu(devolveFoco){
+  fechaConta(false); /* a gaveta não reabre com o menu de conta esquecido aberto */
+  if(!menuAberto()) return;
+  document.documentElement.classList.remove("nav-open");
+  navToggle.setAttribute("aria-expanded", "false");
+  navToggle.setAttribute("aria-label", "Abrir menu");
+  if(devolveFoco) navToggle.focus();
+}
+navToggle.addEventListener("click", function(){ if(menuAberto()) fechaMenu(true); else abreMenu(); });
+document.querySelector("[data-nav-close]").addEventListener("click", function(){ fechaMenu(true); });
+
+/* Menu de conta no rodapé (account-menu.tsx): popover não modal, sem prender o Tab;
+   Esc e clique fora fecham, e escolher um item fecha também a gaveta */
+var contaBtn = document.getElementById("conta-btn");
+var contaMenu = document.getElementById("conta-menu");
+function contaAberta(){ return !contaMenu.hidden; }
+function fechaConta(devolveFoco){
+  if(!contaAberta()) return;
+  contaMenu.hidden = true;
+  contaBtn.setAttribute("aria-expanded", "false");
+  if(devolveFoco) contaBtn.focus();
+}
+contaBtn.addEventListener("click", function(){
+  if(contaAberta()){ fechaConta(false); return; }
+  contaMenu.hidden = false;
+  contaBtn.setAttribute("aria-expanded", "true");
+});
+contaMenu.querySelectorAll("[role=menuitem]").forEach(function(item){
+  item.addEventListener("click", function(){ fechaConta(true); fechaMenu(false); });
+});
+document.addEventListener("mousedown", function(e){
+  if(contaAberta() && !contaMenu.parentElement.contains(e.target)) fechaConta(false);
+});
+
+/* Esc fecha a camada de cima primeiro: o menu de conta, depois a gaveta */
+document.addEventListener("keydown", function(e){
+  if(e.key !== "Escape") return;
+  if(contaAberta()) fechaConta(true); else fechaMenu(true);
+});
+window.matchMedia("(min-width:768px)").addEventListener("change", function(e){ if(e.matches) fechaMenu(false); });
+
+navLinks.forEach(function(a, i){
+  a.addEventListener("click", function(){
+    spyTravado = true;
+    soltaSpyDepois(); /* se a página já estiver na seção, não há rolagem para soltar a trava */
+    marcaAtivo(i);
+    fechaMenu(false);
+  });
+});
 
 lucide.createIcons();
 syncThemeIcon();

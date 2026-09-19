@@ -15,10 +15,12 @@
     "./theme.css": "./css/theme.css",
     "./base.css": "./css/base.css",
     "./motion.css": "./css/motion.css",
-    "./patterns/*": "./css/patterns/*"
+    "./patterns/*": "./css/patterns/*",
+    "./brand/*": "./brand/*"
   },
   "files": [
     "css",
+    "brand",
     "docs"
   ],
   "keywords": [

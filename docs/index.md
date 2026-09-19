@@ -30,9 +30,26 @@ Documentação oficial do Design System do **Premium Demands System** (PREMIUM �
 
 ## Identidade
 
-- **Marca**: PREMIUM · MARKETING 360°. Acento de marca = **amarelo Premium** (`--brand-yellow #FBDA25`) sobre **preto Premium** (`--brand-ink #0A0A0A`). Símbolo: troféu (`lucide:trophy`) em amarelo sobre fundo escuro.
+- **Marca**: PREMIUM · MARKETING 360°. Acento de marca = **amarelo Premium** (`--brand-yellow #FBDA25`) sobre **preto Premium** (`--brand-ink #0A0A0A`). Símbolo: o troféu facetado da [logo](#logo). O `lucide:trophy` é só um ícone da interface, nunca substitui a logo.
 - **Idioma**: pt-BR formal ("você"), **sempre acentuado**. Tom direto, sem ironia, **sem emoji em UI de produção**.
 - **Tipografia**: Ubuntu (300/400/500/700), fallback `system-ui, sans-serif`.
+
+### Logo
+
+Os arquivos oficiais vivem em [`brand/`](../brand/), idênticos aos de `public/brand/` do Tasks, e o pacote os exporta em `@agenciapremium/premium-design/brand/*`. O sistema consumidor serve a pasta em `/brand/` (no Next, copiada para `public/brand/`), para que os caminhos sejam os mesmos em todos os sistemas.
+
+| Arquivo | Pixels | Uso (no Tasks) |
+|---|---|---|
+| `logo-horizontal-branca.webp` | 1024 × 190 | Sidebar expandida, **36px** de altura; topo escuro de telas avulsas (página não encontrada, aprovação), 40px |
+| `logo-vertical-branca.webp` | 1024 × 593 | Telas de entrada sobre fundo escuro (login, portal, OAuth), 110 a 140px |
+| `icon.webp` | 512 × 512 | Sidebar recolhida (64px), **30px** |
+| `logo-horizontal-branca.png` | 1024 × 190 | E-mail, **30px** (Gmail, Outlook e Yahoo não renderizam WebP; ver [`email.md`](email.md)) |
+| `logo-horizontal-preta.webp`, `logo-vertical-preta.webp` | 1024 × 190, 1024 × 587 | Fundo claro. Hoje sem uso no Tasks |
+| `favicon-32.png`, `icon-192.png`, `icon-512.png`, `apple-icon.png` | 32, 192, 512 e 180 (quadrados) | Favicon, ícones de app e do iOS |
+
+- **Fixe só a altura**; a largura segue a proporção do arquivo. Nunca recolorir, recortar, esticar, girar nem redesenhar a logo, e nunca recriá-la com o `lucide:trophy` e texto.
+- **Branca sobre fundo escuro, preta sobre fundo claro.** A sidebar é escura nos dois temas, então usa sempre a branca.
+- **Texto alternativo**: "Agência Premium · Marketing 360°".
 
 ## Princípios de design
 
