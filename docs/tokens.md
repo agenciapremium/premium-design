@@ -165,6 +165,8 @@ Tokens dedicados ao realce de sintaxe da documentação pública (`/docs`). Cont
 
 Família **Ubuntu** (300, 400, 500, 700), fallback `system-ui, sans-serif`, carregada globalmente. `-webkit-font-smoothing: antialiased`.
 
+A fonte é **servida pelo próprio app**, nunca buscada em `fonts.googleapis.com` em tempo de execução. No Tasks, o layout raiz a declara com `next/font/google`, que baixa os arquivos no build e os publica junto com os demais assets, e não há troca visível de fonte no primeiro carregamento. A família chega ao CSS pela variável `--font-ubuntu`, que alimenta o token `--font-sans` e o `body`. Componente que precise declarar a família usa a utility `font-sans` ou `var(--font-ubuntu)`, nunca o nome literal `"Ubuntu"` sozinho: ele não casa com o nome de família que o `next/font` gera. O literal só entra como reserva, `var(--font-ubuntu, "Ubuntu")`, que é como o pacote o usa em `base.css` e `theme.css`, para o sistema que carrega a fonte por `@font-face` ou `<link>` e não declara a variável. A exceção são os e-mails transacionais e o HTML da ATA em PDF, que vivem fora do documento do app e não resolvem `var()`: ali a família continua literal (ver `email.md`).
+
 | Papel | Tamanho / peso | Detalhes |
 |---|---|---|
 | H1 de página | **32px / 700** | `letter-spacing: -0.02em` |

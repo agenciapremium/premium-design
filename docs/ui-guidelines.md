@@ -34,7 +34,12 @@ Fontes da verdade:
 ### 2.1 Tipografia
 
 - Família: **Ubuntu** (300, 400, 500, 700). Fallback: `system-ui, sans-serif`.
-  Já carregada globalmente.
+  Já carregada globalmente e **servida pelo próprio app** (no Tasks,
+  `next/font/google` no layout raiz): nenhuma requisição sai para o Google e não
+  há troca de fonte no primeiro carregamento. Componente que precise declarar a
+  família usa a utility `font-sans` ou `var(--font-ubuntu)`, **nunca** o nome
+  literal `"Ubuntu"` sozinho (ver `tokens.md`). E-mails transacionais são a
+  exceção: não resolvem `var()` (`email.md`).
 - Escala observada no protótipo:
   - Título de página: vive na **topbar** (registrado via `PageHeader`, §3.3) em
     **16px / 600** (`text-base font-semibold tracking-tight`) — o `h1` de 32px
@@ -139,9 +144,13 @@ overlay), `--sh-gold` (somente botão primário amarelo). Nunca sombra arbitrár
 ### 2.5 Espaçamento
 
 Grid de 4px. Padrões observados:
-- Padding de página: `px-[30px] py-[26px]` no `main` (respiro simétrico, §4.18).
-- Topbar: **min-height 88px** (carrega título + subtítulo + breadcrumb, §3.2).
-- Sidebar width: **248px** (colapsada: 64px — ver Spec 4).
+- Padding de página: `px-[30px] py-[26px]` no `main` (respiro simétrico, §4.18);
+  abaixo de 768px cai para **16px** (`px-4 py-4`), que 30px de cada lado comem
+  15% de uma tela de 390px (capability `app-shell-responsivo`).
+- Topbar: **min-height 88px** (carrega título + subtítulo + breadcrumb, §3.2);
+  abaixo de 768px, **64px**, com o breadcrumb oculto a partir de 640px.
+- Sidebar width: **248px** (colapsada: 64px — ver Spec 4). Abaixo de 768px vira
+  drawer, sempre com os 248px.
 - Padding de card: `16–18px`.
 - Gap entre cards em grade: **14–16px**.
 - Painel de detalhe — grid `1fr 320px` com gap `22px`.
@@ -234,6 +243,13 @@ automaticamente. Detalhes do mecanismo em §9.
 - **Evite cores literais do Tailwind** (`bg-white`, `text-black`) em superfícies:
   elas não adaptam. Use tokens (`bg-[var(--premium-white)]`, `bg-surface`).
   `text-black` só é permitido sobre amarelo/cores fixas (avatar, badge, botão).
+- **Biblioteca de terceiro com tema próprio**: mapeie as variáveis de tema dela
+  para os tokens em `globals.css`, uma vez, com `var(--token)` do lado direito —
+  nunca hex, nunca cor no componente. É a mesma exceção controlada do code theme.
+  Caso vivo: o editor de blocos (BlockNote) mapeia `--bn-colors-*` sob
+  `html .bn-root[data-color-scheme]`. Como quem troca de valor no escuro é o
+  token, **um bloco só atende os dois temas** — não duplique o mapeamento em
+  `html.dark`.
 - Critério de aceite por feature: capturar tela em ambos os temas antes do PR.
 
 ### 2.8 Composição de classes — `cn()` não resolve conflito
@@ -405,7 +421,7 @@ Todos compartilham: `background: var(--premium-white); border: 1px solid var(--p
 
 Tipos:
 - **Stat card** (`.stat`): ícone (34×34 com bg colorido), número 30px, label 12px. Variante **feat** = fundo preto, ícone amarelo, label translúcido.
-- **Painel** (`.panel`): header `panel-h` (15px/700) + body `panel-b`. Usado para listas de "Demandas para hoje", "Atividades", "Notificações".
+- **Painel** (`.panel`): header `panel-h` (15px/700) + body `panel-b`. Usado para listas como "Meu dia" e "Agenda do dia".
 - **Card de favorito** (`.fav`): título 14/700 + cliente 11.5/gray + barra de progresso (gradient amarelo→âmbar) + CTA inline.
 - **Card de projeto** (`.proj-card`): topo com status pill, título 16/700, cliente com ícone, barra de progresso, rodapé com responsável.
 - **Kcard (kanban)** (`.kcard`): tag de departamento no topo, título 14/500, cliente, stagebar (mini barra de etapas), rodapé com avatar stack + meta (data, msgs, prioridade). Variante **locked** = listrada + opacity .62 + ícone cadeado.
@@ -483,6 +499,20 @@ Tipos:
   — montada **dentro** do corpo rolável da coluna; o DnD segue operando sobre o
   array completo do pai e o estado vazio continua sendo da tela.
 - Cards: `.kcard` (§4.4).
+- **Chip de tempo da etapa (capability `demandas-tempo-sla-no-card`):** linha
+  própria no card, entre o cliente e a stagebar, com "gasto / previsto"
+  ("2h15 / 8h"; til quando o previsto é o padrão de um dia útil). As faixas
+  reusam os pares do `Badge` (§4.3): abaixo de 80% `default`
+  (`--premium-bone`/`--premium-steel`), de 80% a 100% `warning`, acima de 100%
+  `danger`. Cronômetro rodando acrescenta o ícone `timer` com `.timer-pulse`
+  na cor da própria faixa (`currentColor`) — o `--timer-idle` é calibrado para
+  o chip escuro do detalhe (§4.5 do `timesheet-demanda`) e não alcança AA
+  sobre estes fundos claros. O chip é focável (`tabIndex`) e traz `Tooltip`
+  com os totais da demanda. Sob a janela da etapa, o **SLA restante** em horas
+  úteis, 11px `--premium-gray` (ou `--danger` quando estourado), que
+  complementa o realce de atraso sem substituí-lo. Na Tabela os mesmos
+  elementos viram a coluna ordenável "Tempo (etapa)" e a segunda linha da
+  célula "Fim da etapa".
 
 ### 4.7 Workflow timeline e builder
 
@@ -539,6 +569,16 @@ Tipos:
   o editor (não com `<textarea>`). Campos curtos (nome, título, e-mail, valor)
   seguem `Input`. Em formulários por `FormData`, espelhe o valor controlado em um
   `<input type="hidden" name=...>`.
+- **Uma experiência, dois motores** (regra): o sistema tem **dois** editores ricos
+  — o `RichEditor` (Tiptap, campos Markdown) e o `BlocoEditor` (BlockNote, páginas
+  da base de conhecimento, que gravam blocos com `id` estável porque a API v1 e o
+  MCP editam bloco a bloco). Os dois usam a **mesma barra, os mesmos atalhos, a
+  mesma moldura, a mesma colagem limpa, a mesma menção `@` e o mesmo trecho de
+  Drive**, providos por `components/ui/editor/` (detalhes em `componentes.md` →
+  "Editor rico: uma experiência, dois motores"). Comando ou atalho novo entra na
+  lista compartilhada e nos **dois** adaptadores, nunca em um lado só. A moldura
+  (rótulo, borda, foco com halo, erro) vem do `MolduraEditor`, que é a anatomia
+  deste §4.8 — não recrie a casca no componente do editor.
 - **Label**: padrão eyebrow (11px / 700 / uppercase / `letter-spacing: .05em` / `--premium-gray`).
 - **Escolher pessoas** (regra): campos que selecionam **colaboradores** (uma ou
   várias pessoas) usam o `PessoasPicker` [`pessoas-picker.tsx`](https://github.com/agenciapremium/tasks/blob/main/src/components/ui/pessoas-picker.tsx) —
@@ -644,6 +684,25 @@ Tipos:
   dropdown filtrável de colaboradores elegíveis (equipe do projeto + responsáveis
   das etapas) — [`comentario-input.tsx`](https://github.com/agenciapremium/tasks/blob/main/src/components/demandas/comentario-input.tsx).
   Item ≥ 40px, foco visível, navegação ↑/↓/Enter/Esc/Tab.
+- **Resolvido** (change `demandas-comentarios-novidades-resolucao`): selo pill
+  `--success-bg` / `--success` com "Resolvido por Fulano" no header da linha, e
+  ação Resolver/Reabrir de 40×40 sempre visível (não escondida no hover, ao
+  contrário de editar/excluir): é a ação principal da aba e precisa alcançar
+  teclado e toque. Sem diálogo de confirmação — toast com "Desfazer" (§4.19);
+  a falha vai para `FormErrorBanner` no próprio comentário, nunca para toast
+  (§5.8). Ambas em
+  [`comentario-body.tsx`](https://github.com/agenciapremium/tasks/blob/main/src/components/demandas/comentario-body.tsx).
+- **Seção de resolvidos**: os em aberto vêm em ordem cronológica; abaixo, um
+  botão "N resolvidos" (≥40px, `aria-expanded` + `aria-controls`) abre um
+  `Expansivel` fechado por padrão. O rótulo da aba conta o que está em aberto
+  ("Comentários · 3 em aberto"), nunca o total.
+- **Badge de comentários não vistos** no card do kanban e na célula "Demanda" da
+  tabela: pílula `--danger-bg` / `--danger`, 18px de altura, "9+" acima de nove,
+  `aria-label` descritivo, sem animação. Ao lado dele, o contador cinza de
+  comentários em aberto (ícone `MessageSquare` + número). Ambos em
+  [`demandas-kanban.tsx`](https://github.com/agenciapremium/tasks/blob/main/src/components/demandas/demandas-kanban.tsx)
+  (`BadgeNovidades`). Fica no rodapé do card, e não no canto superior direito
+  como em Quadros, porque ali as datas da etapa já ocupam o espaço.
 
 ### 4.14 Histórico (timeline vertical)
 
@@ -1080,9 +1139,31 @@ Tipos:
 - Após reprovar, sempre exigir comentário (etapa AJUSTE).
 
 ### 5.6 Atalhos de teclado
-- `⌘K` / `Ctrl+K` abre busca global.
+- Registro único em [`lib/atalhos.ts`](https://github.com/agenciapremium/tasks/blob/main/src/lib/atalhos.ts), resolvido por um
+  `keydown` só no `window` (`AtalhosProvider`). Atalho novo entra no registro,
+  nunca num efeito próprio.
+- `⌘K` / `Ctrl+K` abre busca global; `?` abre o painel "Atalhos de teclado".
 - `Esc` fecha slide-over e dialogs.
 - `Enter` confirma diálogos onde a ação primária está em foco.
+- Sequências de duas teclas (800ms de janela): `c` + letra cria, `g` + letra
+  navega, `t` + letra abre a gaveta de ferramentas (`t` `f` alterna a gaveta;
+  `t` + a letra da ferramenta a expande e foca o primeiro campo dela). Criar
+  respeita a permissão da ação no FAB; navegar respeita a visibilidade do item no
+  menu; a gaveta é preferência do próprio colaborador, então vale para todos.
+- Nada dispara com o foco em campo, seleção ou editor rico, nem com diálogo modal
+  aberto. A tabela completa está em
+  [`padroes-de-interacao.md`](padroes-de-interacao.md).
+- Atalho sem dica visível não existe: o `kbd` aparece no rótulo do FAB e no
+  tooltip do menu, com o mesmo estilo da dica de busca da topbar
+  (`CLASSE_KBD`).
+
+### 5.6.1 Ajuda contextual da tela
+- `PageHeader` aceita `ajuda={ajudaDe("/rota")}`; a topbar desenha o "?" ao lado
+  do título (`ContextIconButton`, alvo 40px) e abre um popover não modal com o
+  texto, o link da documentação quando houver e o painel de atalhos.
+- O texto vive só em [`lib/ajuda-telas.ts`](https://github.com/agenciapremium/tasks/blob/main/src/lib/ajuda-telas.ts), por
+  rota, com uma a três frases: o que a tela é e qual é o próximo passo. Um teste
+  cobra que toda rota do menu tenha o seu.
 
 ### 5.7 Estado de loading
 - Skeletons (cinza `--premium-bone`) para listas e cards, com os blocos de
@@ -1355,4 +1436,17 @@ inversão):
 9. Filtros (se houver) em searchParams + esquerda; tabs à direita.
 10. Slide-over flutuante (Spec 8) onde aplicável.
 11. Screenshots claro + escuro anexados.
-12. Campo de busca: um controle de limpar só, o do sistema (`CampoBusca` ou o chip do `FilterBar`).
+12. Suíte de fumaça verde, no sistema que a tem (no Tasks, `npm run test:e2e`);
+    baseline atualizada e no diff quando a mudança visual foi proposital
+    (`npm run test:e2e:update`).
+13. Campo de busca: um controle de limpar só, o do sistema (`CampoBusca` ou o
+    chip do `FilterBar`). Premium-design v0.9.0.
+
+Sobre os itens 6, 7 e 11, no Tasks: a suíte ponta a ponta (change
+`testes-e2e-smoke-visual`) é a fonte dos screenshots das telas que ela cobre
+(login, Dashboard, Minhas Demandas, detalhe da demanda, board de Quadros, Gestão
+de Projetos e Notificações). Ela fotografa as duas variantes de tema no mesmo
+comando e roda axe nas regras WCAG 2 A e AA, então nessas telas o dark mode e o
+contraste deixam de depender de conferência manual. Tela fora dessa lista segue
+com screenshot anexado à mão, até a suíte alcançá-la. Como rodar: README, seção
+"Testes ponta a ponta".

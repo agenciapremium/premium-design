@@ -7,7 +7,7 @@ Como o sistema coleta dados: campos, validação, erro e — central no produto 
 | Necessidade | Componente | Observação |
 |---|---|---|
 | Texto curto (nome, título, e-mail, valor) | `Input` | Com máscara quando aplicável (monetária, telefone, CEP); trecho fixo não editável via `prefixo` (ex.: DDI `+55` no Celular) |
-| Data | `Input type="date"` → `DatePicker` | Calendário custom do DS em **todo** lugar (inclusive FilterBar e popover de prazos do workflow) — o nativo não é usado. Digitação por segmentos dd/mm/aaaa com auto-avanço + ícone que abre o calendário (atalhos Hoje/Limpar) |
+| Data | `DatePicker` | **Único** controle de data do produto (inclusive FilterBar e popover de prazos do workflow): o nativo `type="date"` não é usado e o `eslint` barra quem o reintroduzir (ver abaixo). Digitação por segmentos dd/mm/aaaa com auto-avanço + ícone que abre o calendário (atalhos Hoje/Limpar). Valor sempre em `aaaa-mm-dd`, espelhado em hidden input quando há `name`. Variante `inline` para chips e células |
 | Texto curto multilinha (motivo, justificativa) | `Textarea` | `min-height: 76px` |
 | **Texto longo** (briefing, descrição, copy/legenda) | `RichEditor` | **Regra**: nasce com o editor, nunca `<textarea>`. Salva Markdown |
 | Escolha única | `Select` | Combobox custom do DS (popover em portal) — substitui o `<select>` nativo. Busca automática a partir de 8 opções, navegação por teclado, `name` espelhado em hidden input para FormData; variante `inline` para células/pílulas |
@@ -18,6 +18,14 @@ Como o sistema coleta dados: campos, validação, erro e — central no produto 
 | Comentário | `comentario-input` | Tratamento próprio (menções `@`) |
 | Estado binário aplicado na hora (ativo/inativo, ligado/desligado) | `Switch` | Trilho + polegar do DS, nunca checkbox nativo com `accent-color`. É auto-save: sem botão Salvar. Quando a mudança precisa ser entendida antes, o consumidor confirma e só então o switch vira |
 | Cor de um cadastro (departamento, motivo de ausência) | **Amostras da paleta fechada** | Dez opções da lista canônica, nunca `<input type="color">`; selecionada com `outline: 3px solid var(--premium-ink)`, demais `2px solid var(--premium-mist)`; `aria-pressed` + `aria-label` com o nome da cor. Ver [`tokens.md`](tokens.md#cor-de-dado--paleta-fechada-de-cadastro) |
+
+> [!IMPORTANT]
+> **Data é sempre o `DatePicker`.** `<input type="date">` está barrado por lint
+> (`no-restricted-syntax` em `eslint.config.mjs`) em todo `.tsx` da aplicação; o
+> único arquivo liberado é o próprio `src/components/ui/date-picker.tsx`. A troca
+> é um-para-um: as mesmas props (`id`, `name`, `label`, `error`, `value` /
+> `defaultValue`, `onChange`, `min`, `max`, `disabled`) e o mesmo valor
+> `aaaa-mm-dd`, então `FormData` e os schemas Zod das actions não mudam.
 
 ## Anatomia padrão
 

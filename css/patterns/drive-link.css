@@ -4,11 +4,14 @@
    remontado para o SO do usuário. Não é um link comum (sem azul/sublinhado),
    sinalizando "clique para copiar". Feedback discreto "Copiado" sem toast
    (atributo data-copied estampado pelo app por ~1.5s).
-   Depende dos escopos .rich-editor-content / .md-view (editor-rico.css).
+   Depende dos escopos .rich-editor-content / .md-view (editor-rico.css) e,
+   desde a v0.12.0, também vale dentro do editor de blocos (.bn-editor,
+   blocknote.css).
    ═══════════════════════════════════════════════════════════════════════════ */
 
 .rich-editor-content :where(a[href^="drive://"]),
-.md-view :where(a[href^="drive://"]) {
+.md-view :where(a[href^="drive://"]),
+.bn-editor :where(a[href^="drive://"]) {
   display: inline-flex;
   align-items: center;
   gap: 5px;
@@ -27,17 +30,20 @@
   word-break: break-word;
 }
 .rich-editor-content :where(a[href^="drive://"]):hover,
-.md-view :where(a[href^="drive://"]):hover {
+.md-view :where(a[href^="drive://"]):hover,
+.bn-editor :where(a[href^="drive://"]):hover {
   border-color: var(--premium-ink);
 }
 .rich-editor-content :where(a[href^="drive://"]):focus-visible,
-.md-view :where(a[href^="drive://"]):focus-visible {
+.md-view :where(a[href^="drive://"]):focus-visible,
+.bn-editor :where(a[href^="drive://"]):focus-visible {
   outline: none;
   box-shadow: 0 0 0 2px var(--yellow-50);
 }
 /* Ícone de pasta (lucide:folder) via mask para herdar a cor do token. */
 .rich-editor-content :where(a[href^="drive://"])::before,
-.md-view :where(a[href^="drive://"])::before {
+.md-view :where(a[href^="drive://"])::before,
+.bn-editor :where(a[href^="drive://"])::before {
   content: "";
   width: 13px;
   height: 13px;
@@ -48,7 +54,8 @@
 }
 /* Feedback discreto "Copiado" (docs/ui-guidelines.md §5), sem toast. */
 .rich-editor-content :where(a[href^="drive://"][data-copied])::after,
-.md-view :where(a[href^="drive://"][data-copied])::after {
+.md-view :where(a[href^="drive://"][data-copied])::after,
+.bn-editor :where(a[href^="drive://"][data-copied])::after {
   content: "Copiado";
   position: absolute;
   bottom: 100%;
