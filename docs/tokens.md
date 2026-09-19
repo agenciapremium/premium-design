@@ -226,7 +226,8 @@ Grid base de **4px**. Medidas estruturais observadas:
 | Medida | Valor |
 |---|---|
 | Padding de página | `26px 30px 60px` |
-| Topbar | 68px (88px com page-head embutido — `min-h-[88px]`) |
+| Topbar | `min-h-[88px]`; 64px abaixo de 768px |
+| Faixa da logo (topo da sidebar) | A mesma altura da topbar: 88px; 64px abaixo de 768px |
 | Sidebar | 248px expandida · **64px colapsada** |
 | Padding de card | 16–18px |
 | Gap entre cards em grade | 14–16px |

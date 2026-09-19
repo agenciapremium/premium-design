@@ -733,8 +733,9 @@ Provider único de animação do DS: `LazyMotion features={domAnimation} strict`
 
 | Componente | Papel |
 |---|---|
-| `sidebar.tsx` | Sidebar 248px `--c-sidebar` (sempre escura); item ativo = fundo elevado + texto amarelo + **borda esquerda 3px amarela**; seções 9px/`.22em`; cadeado em itens admin; colapsável a 64px via `data-sidebar-collapsed` em `<html>` (aplicado pré-hidratação); toggle aparece no hover/foco; tooltips só colapsada |
-| `topbar.tsx` | `min-h-[88px]` translúcida (`/80` + blur 12px + saturate 140%); conteúdo: [eyebrow + título + sub] ← → [busca pill ⌘K 280px] [tema] [sino] [avatar] |
+| `sidebar.tsx` | Sidebar 248px `--c-sidebar` (sempre escura) em três partes: faixa da logo com a altura da topbar (88px; 64px abaixo de 768px), lista que rola e rodapé com o menu de conta; item ativo = fundo elevado + texto amarelo + **borda esquerda 3px amarela**; seções 9px/`.22em`; cadeado em itens admin; colapsável a 64px via `data-sidebar-collapsed` em `<html>` (aplicado pré-hidratação); toggle aparece no hover/foco; tooltips só colapsada |
+| `topbar.tsx` | `min-h-[88px]` (64px abaixo de 768px, a mesma altura da faixa da logo) translúcida (`/80` + blur 12px + saturate 140%); conteúdo: [menu, só abaixo de 768px] [eyebrow + título + sub] ← → [busca pill ⌘K 280px] [tema] [ferramentas] [sino]. O usuário não fica aqui: mora no rodapé da sidebar (`account-menu.tsx`) |
+| `account-menu.tsx` | Rodapé fixo da sidebar: avatar + nome + papel; o clique abre, para cima, o menu de conta (Minha conta, Trocar de senha, Atalhos de teclado, Sair), escuro nos dois temas (`--c-sidebar`). Popover não modal: `Esc` e clique fora fecham e o foco volta ao gatilho |
 | `theme-toggle.tsx` | `moon`/`sun`; alterna `.dark` + grava `premium-theme` (ver [`dark-mode.md`](dark-mode.md)) |
 | `notificacoes-bell.tsx` | Icon-btn com `.dot` 8px vermelho quando há não-lidas; abre slide-over |
 | `search-dialog.tsx` | Busca global `⌘K` |

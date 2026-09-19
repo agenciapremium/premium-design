@@ -6,22 +6,24 @@ Comportamentos transversais do produto — como as telas se organizam, navegam e
 
 ```
 ┌──────────────┬────────────────────────────────────────────────┐
-│              │ Topbar 88px (eyebrow + título + sub | busca ⌘K │
-│   Sidebar    │           | tema | sino | avatar)               │
-│   248px      ├────────────────────────────────────────────────┤
-│ (colapsável  │ [Breadcrumb — só detalhe com hierarquia]       │
-│  a 64px)     │ PageHeader.actions (quando houver)             │
-│              │ FilterBar: filtros ◄──► contexto · views · ★   │
+│ Logo · 88px  │ Topbar 88px (eyebrow + título + sub | busca ⌘K │
+│┄┄┄┄┄┄┄┄┄┄┄┄┄┄│           | tema | ferramentas | sino)         │
+│   Sidebar    ├────────────────────────────────────────────────┤
+│   248px      │ [Breadcrumb · só detalhe com hierarquia]       │
+│ (colapsável  │ PageHeader.actions (quando houver)             │
+│  a 64px)     │ FilterBar: filtros ◄──► contexto · views · ★   │
 │              │ Conteúdo (cards, kanban, tabela, detalhe)      │
+│   Usuário    │                                                │
 └──────────────┴────────────────────────────────────────────────┘
                                                       FAB (canto inferior direito)
 ```
 
 - O título da tela vive na **topbar** (via `PageHeader` + contexto), não no corpo.
+- A faixa da logo, no topo da sidebar, tem a **mesma altura da topbar** (88px; 64px abaixo de 768px): logo e título na mesma linha. O usuário fica no rodapé da sidebar, não na topbar.
 - A **criação não vive na topbar nem na FilterBar** — entrada única é o FAB.
 - O FAB é um **speed-dial**: no desktop, o botão amarelo cria direto e as ações secundárias se revelam no hover/foco; no toque, tocar abre o dial (a principal entra como primeiro item). É arrastável — a posição persiste por usuário.
 - Detalhe complexo: grid `1fr 320px` (conteúdo + meta-cards), 1 coluna < 1100px.
-- Tudo o que é **da pessoa** vive na tela **Minha conta** (`/conta`): foto, dados pessoais, senha, notificações e preferências (tema, menu lateral recolhido, Caminhos do Drive), em seções ancoráveis (`#perfil`, `#dados-pessoais`, `#seguranca`, `#notificacoes`, `#preferencias`, `#sessao`). O identificador do usuário na sidebar abre um popover de três itens ("Minha conta", "Trocar de senha", que aponta para `/conta#seguranca`, e "Sair"), nunca um formulário. **Configurações** (`/configuracoes`) é do **sistema**, agrupada em seções (Cadastros, Produção, Pessoas, Financeiro, Acessos e integrações) com busca por título e descrição.
+- Tudo o que é **da pessoa** vive na tela **Minha conta** (`/conta`): foto, dados pessoais, senha, notificações e preferências (tema, menu lateral recolhido, Caminhos do Drive), em seções ancoráveis (`#perfil`, `#dados-pessoais`, `#seguranca`, `#notificacoes`, `#preferencias`, `#sessao`). O identificador do usuário na sidebar abre um popover de quatro itens ("Minha conta", "Trocar de senha", que aponta para `/conta#seguranca`, "Atalhos de teclado", que abre o painel de atalhos, e "Sair"), nunca um formulário. **Configurações** (`/configuracoes`) é do **sistema**, agrupada em seções (Cadastros, Produção, Pessoas, Financeiro, Acessos e integrações) com busca por título e descrição.
 
 ## Barra de ações da tela (FilterBar)
 
