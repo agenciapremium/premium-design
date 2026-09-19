@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.10.1 — 2026-09-19
+
+Só documentação — nenhum valor de token mudou.
+
+- **`docs/padroes-de-interacao.md` §"Alerta fixo" e §"Painel de cards flutuantes"** — a cópia dos docs no Tasks tinha detalhado os dois padrões em outro lugar (`ui-guidelines.md` §4.35 a §4.37, que não existem aqui). Os detalhes voltam para as seções canônicas, e a cópia do Tasks passa a seguir esta estrutura. Alerta fixo: 320px de largura, a 16px da sidebar e a 20px da base; ícone de 18px num quadrado de 36px; `--sh-md`; ciclo do piscar de 1,1s; anel de foco `0 0 0 3px var(--yellow)` no card e no contador; estado vazio sem desenho, com a região `aria-live` montada. Painel: folga de 20px em volta da lista (clicar nela não fecha), rótulo de dia em 10px/700 caixa alta, pesos do título do card (700 não lido, 500 lido), mensagem e data em `--premium-gray` (o `--premium-silver` não passa AA no escuro), foco pintado por `:has(a:focus-visible)`, 900ms de verde antes de recolher e 55ms entre os botões no "Marcar todas".
+- **Correção**: o quadrado do ícone do alerta fixo é `--on-alert-solid` a **15%**, como na implementação de referência (o texto dizia 16%).
+- **Painel de cards: esqueleto só quando não há nada em memória** — trocar de recorte mostra na hora a última lista daquele recorte (ou, na primeira vez, os itens já em memória que caem nele, que o servidor só completa) e remonta a lista em cascata, em vez de piscar esqueleto. Ajuste pedido no Tasks depois da v0.10.0.
+- **`docs/componentes.md`** — seção `NotificacaoCard` (o card das três superfícies de notificação, com variantes `flutuante` e `pagina` e os estados em card) e as props que faltavam em `PainelCards`, `BotaoLido` (`dica`, `rotuloLido`, `icone`) e `PilulaSelect` (`rotulo` como prefixo do nome do gatilho, `Esc` que não fecha o overlay hospedeiro).
+- **README** — a lista de padrões opt-in ganha `pilha-rolagem.css` e `pilula.css`, publicados na v0.10.0 sem entrar nela.
+
+Implementado primeiro no Tasks (change `central-notificacoes-cards`).
+
 ## v0.10.0 — 2026-09-18
 
 Padrões novos e duas curvas de movimento. Nenhum token existente mudou de valor.

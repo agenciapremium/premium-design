@@ -149,11 +149,11 @@ Grid de 4px. Padrões observados:
 ### 2.6 Easing & motion
 
 - Curva padrão: `--ease: cubic-bezier(.22,.61,.36,1)`.
-- **Exceção documentada** (v0.10.0): o painel de cards flutuantes e o botão de
-  lido (`padroes-de-interacao.md` §"Painel de cards flutuantes") usam
-  `--ease-mola: cubic-bezier(.3,1.35,.5,1)` nas **entradas** (rebote curto) e
-  `--ease-sai: cubic-bezier(.4,0,1,1)` nas **saídas**. Não usar fora desses
-  padrões.
+- **Exceção documentada** (premium-design v0.10.0): o painel de cards flutuantes e o
+  botão de lido (`padroes-de-interacao.md` §"Painel de cards flutuantes") usam `--ease-mola: cubic-bezier(.3,1.35,.5,1)`
+  nas **entradas** (rebote curto) e `--ease-sai: cubic-bezier(.4,0,1,1)` nas
+  **saídas**. No React: `EASE_MOLA` / `EASE_SAI` de `src/lib/motion.ts`. Não usar
+  fora desses padrões.
 - Hover/transition de elementos clicáveis: **140ms** (`transition: all .14s var(--ease)`).
 - Fade-in de tela: **300ms** + leve `translateY(8px)`.
 - Hover de card sobe **2px** (`transform: translateY(-2px)`) + `--sh-md`.
@@ -330,17 +330,20 @@ possível do design system, não como algo a fazer no meio de um fix.
   Demandas/Pedidos/Config como views via `?tab`, e a estrela de favorito).
 - Estado dos filtros sempre serializado em `searchParams` (URL compartilhável).
 - Chip de filtro: `border-radius: var(--r-pill); border: 1px solid var(--premium-mist); padding: 8px 14px; font-size:13px; font-weight:500;` — ícone à esquerda.
-- **Pílula de ação e de seleção** (v0.10.0): o mesmo desenho do chip, fora da
-  barra, com uma fonte única de classes para os dois usos (no Tasks,
-  [`pilula.tsx`](https://github.com/agenciapremium/tasks/blob/main/src/components/ui/pilula.tsx), que a `FilterBar` importa).
-  Pílula de ação (botão ou link) e de seleção única (ícone, rótulo, contagem em
-  selo `--premium-ink`, chevron que gira; menu com seções, contagem por opção e
-  setas). Pílula de seleção que convive com outras numa linha tem **largura
-  fixa** e **rótulo curto** por opção (o menu mantém o nome completo): escolher
-  uma opção não pode alargar a pílula e empurrar as vizinhas. Sobre scrim: alvo de 40px e `--sh-md`. Pílula de ação que
-  deixa de se aplicar some com fade e sai do `Tab` sem deslocar os vizinhos
-  (`css/patterns/pilula.css`). Dentro de diálogo modal, o menu abre **dentro**
-  do diálogo: fora, o `aria-modal` o tiraria da árvore de acessibilidade.
+- **Pílula de ação e de seleção** (premium-design v0.10.0,
+  [`pilula.tsx`](https://github.com/agenciapremium/tasks/blob/main/src/components/ui/pilula.tsx)): o mesmo desenho do chip,
+  fora da barra. As classes de chip (`chipBase`, `chipIdle`, `chipActive`,
+  `chipOn`) moram em `pilula.tsx` e a `FilterBar` as importa de lá: fonte única.
+  `Pilula` é a pílula de ação (botão ou `PilulaLink`); `PilulaSelect` é a de
+  seleção única (ícone, rótulo, contagem em selo `--premium-ink`, chevron que
+  gira; menu da `FilterBar` com seções, contagem por opção e setas). Pílula de
+  seleção que convive com outras numa linha tem **largura fixa** (`largura`) e
+  **rótulo curto** por opção (`rotuloCurto`; o menu mantém o nome completo):
+  escolher uma opção não pode alargar a pílula e empurrar as vizinhas. Variante `flutuante` (sobre scrim): alvo de 40px e `--sh-md`.
+  Variante `oculta`: some com fade e sai do `Tab` sem deslocar os vizinhos
+  (`css/patterns/pilula.css`).
+  Dentro de diálogo modal, o menu abre **dentro** do diálogo (fora, o
+  `aria-modal` o tiraria da árvore de acessibilidade).
 - "Ordenar automático" usa variante **invertida** (fundo `--brand-ink` fixo, ícone amarelo).
 
 ---
@@ -564,9 +567,8 @@ Tipos:
   formulários em slide-over usam esse rodapé — sem botões soltos no corpo. A
   prop é opcional/retrocompatível; com `loading`, a primária reflete o estado.
 - Toda criação/edição não-trivial (cliente, colaborador, departamento, projeto, atividade, contrato, lançamento, modelo) usa este padrão.
-- **A central de notificações não é slide-over**: é o painel de cards
-  flutuantes (`padroes-de-interacao.md`), porque é leitura e triagem rápida, sem
-  formulário.
+- **A central de notificações do sino não é slide-over**: é o painel de cards
+  flutuantes (`padroes-de-interacao.md`), porque é leitura e triagem rápida, sem formulário.
 - **Formulário com vários campos não mora em popover.** O slide-over é o padrão;
   o popover é para **escolha atômica** — um valor, uma data, um emoji, uma
   entrada rápida de um campo (§4.24). A linha divisória é prática, não estética:

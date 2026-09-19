@@ -47,12 +47,14 @@ O `premium.css` traz só o núcleo. Os padrões de recurso são importados **ape
 
 ```css
 /* depois do import principal, conforme o sistema precisar: */
-@import "@agenciapremium/premium-design/patterns/sidebar.css";      /* sidebar colapsável 248↔64px */
-@import "@agenciapremium/premium-design/patterns/editor-rico.css";  /* editor rico + leitura de Markdown */
-@import "@agenciapremium/premium-design/patterns/drive-link.css";   /* chip drive:// "clique para copiar" */
-@import "@agenciapremium/premium-design/patterns/kanban.css";       /* scrollbar fina da coluna do kanban */
-@import "@agenciapremium/premium-design/patterns/code-block.css";   /* realce de sintaxe (.tok-*) + rolagem */
-@import "@agenciapremium/premium-design/patterns/autosave.css";     /* barra indeterminada do auto-save */
+@import "@agenciapremium/premium-design/patterns/sidebar.css";        /* sidebar colapsável 248↔64px */
+@import "@agenciapremium/premium-design/patterns/editor-rico.css";    /* editor rico + leitura de Markdown */
+@import "@agenciapremium/premium-design/patterns/drive-link.css";     /* chip drive:// "clique para copiar" */
+@import "@agenciapremium/premium-design/patterns/kanban.css";         /* scrollbar fina da coluna do kanban */
+@import "@agenciapremium/premium-design/patterns/code-block.css";     /* realce de sintaxe (.tok-*) + rolagem */
+@import "@agenciapremium/premium-design/patterns/autosave.css";       /* barra indeterminada do auto-save */
+@import "@agenciapremium/premium-design/patterns/pilha-rolagem.css";  /* rolagem sem barra, com degradê (alerta fixo, painel) */
+@import "@agenciapremium/premium-design/patterns/pilula.css";         /* pílula de ação e de seleção fora da barra */
 ```
 
 Cada arquivo documenta no cabeçalho o **contrato com o app** (classes e atributos esperados na marcação — ex.: a sidebar exige `data-sidebar-collapsed` estampado pré-hidratação). O comportamento (JS/React) é implementação de cada app; o padrão garante que o **visual** seja idêntico entre sistemas.
