@@ -287,9 +287,11 @@ sozinhos); o menu da pílula de seleção abre **dentro** do diálogo; alvo mín
 
 **Estados.** Carregando, vazio e erro aparecem como cards na própria lista (quatro
 esqueletos; card de estado vazio com ação opcional; card de erro com
-`role="alert"`). **Esqueleto só quando ainda não há lista**: reabrir o painel ou
-voltar a um recorte já visto mostra na hora a última lista e atualiza em
-silêncio (o que chegou desde então entra como chegada); uma atualização que
+`role="alert"`). **Esqueleto só quando não há nada em memória**: reabrir o
+painel ou trocar de recorte mostra na hora a última lista do recorte (ou, na
+primeira vez, os itens já em memória que caem nele: os mais recentes de tudo
+que são do recorte estão entre os mais recentes dele, então o servidor só
+completa) e atualiza em silêncio; a troca de recorte remonta a lista em cascata; uma atualização que
 falha com a lista na tela mantém a lista. A busca pode começar antes do clique,
 com o ponteiro ou o foco no gatilho.
 
