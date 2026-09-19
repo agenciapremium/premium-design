@@ -108,7 +108,7 @@ Visual: borda `--premium-mist`, `--r-md`, `px-[14px] py-[11px]`, 13px. **Foco**:
 
 ## Campo de busca — `campo-busca.tsx`
 
-Primitivo `CampoBusca`: campo de busca solto na tela, fora da barra de filtros (ex.: árvore de Docs, Base de conhecimento, Configurações). A busca **da** barra é o chip colapsável do [FilterBar](#filterbar--filter-bartsx); a busca **dentro** de picker ou dropdown segue o padrão compacto próprio (ver "Padrões próprios reconhecidos").
+Primitivo `CampoBusca`: campo de busca solto na tela, fora da barra de filtros (ex.: árvore de Docs, Base de conhecimento, Configurações). A busca **da** barra é o chip colapsável do [FilterBar](#filterbar--filter-bartsx); a busca **dentro** de picker ou dropdown segue o padrão compacto próprio (ver "Padrões próprios reconhecidos"). Padrão do premium-design **v0.9.0**.
 
 | Prop | Tipo | Descrição |
 |---|---|---|
@@ -288,11 +288,13 @@ Subexport **`ViewTabsPill`**: o grupo de tabs de visão com pílula deslizante (
 
 **Boas práticas**: nenhuma tela dispõe filtros/views/favorito fora da barra; criação **não** entra na barra (é do FAB); zonas ausentes não renderizam, mas a ordem das presentes nunca muda.
 
-Desde a v0.10.0 as classes de chip, o menu e o item de seleção moram no módulo de pílulas ([`pilula.tsx`](https://github.com/agenciapremium/tasks/blob/main/src/components/ui/pilula.tsx) no Tasks), fonte única para a barra e para as pílulas soltas.
+As classes de chip, o menu (`dropdownPanelClass`, `useDropdownPortal`) e o item de seleção (`SingleSelectItem`) moram em [`pilula.tsx`](#pilula-e-pilulaselect--pilulatsx) desde a v0.10.0: fonte única para a barra e para as pílulas soltas.
 
 ## Pilula e PilulaSelect — `pilula.tsx`
 
-Pílula de ação e de seleção fora da barra (v0.10.0; `ui-guidelines.md` §3.4). `Pilula` (botão) e `PilulaLink` aceitam `ativa`, `ligada`, `flutuante` (alvo de 40px + `--sh-md`, para flutuar sobre scrim) e `oculta` (fade e saída do `Tab` sem deslocar vizinhos; `css/patterns/pilula.css`). `PilulaSelect`: `rotulo`, `valor`, `opcoes: { valor, rotulo, rotuloCurto?, contagem?, secao? }[]`, `onEscolher`, `icone?`, `contagem?` (acima de 99, "99+"), `ativa?`, `flutuante?`, `largura?` (px fixos; a pílula mostra `rotuloCurto` e não muda de tamanho entre opções, o menu mostra `rotulo`); menu com seção, contagem por opção, setas/Home/End, `Enter` escolhe, `Esc` fecha só o menu. Dentro de diálogo modal, o menu abre **dentro** do diálogo.
+Pílula de ação e de seleção fora da barra (premium-design v0.10.0; ui-guidelines §3.4), com o desenho do chip de filtro. `Pilula` (botão) e `PilulaLink` aceitam `ativa`, `ligada`, `flutuante` (alvo de 40px + `--sh-md`, para flutuar sobre scrim) e `oculta` (fade e saída do `Tab` sem deslocar vizinhos, via `.pilula-oculta` de `css/patterns/pilula.css`).
+
+`PilulaSelect<V>`: `rotulo` (nome do menu e prefixo do nome do gatilho), `valor`, `opcoes: { valor, rotulo, rotuloCurto?, contagem?, secao? }[]`, `onEscolher`, `icone?`, `contagem?` (selo `--premium-ink` na pílula; acima de 99, "99+"), `ativa?`, `flutuante?`, `largura?` (px fixos: a pílula não muda de tamanho entre opções; use com `rotuloCurto`, que é o que a pílula mostra, enquanto o menu mostra `rotulo`). Menu da `FilterBar` com seção (eyebrow + divisória), contagem por opção, foco na opção escolhida ao abrir, setas/Home/End, `Enter` escolhe e `Esc` fecha só o menu (sai com `preventDefault`, e o overlay hospedeiro ignora a tecla). Dentro de diálogo modal, o menu abre **dentro** do diálogo: fora, o `aria-modal` o tiraria da árvore de acessibilidade.
 
 ## SegmentedTabs — `segmented-tabs.tsx`
 
@@ -392,35 +394,41 @@ Diálogo central de confirmação (`--r-xl` + `--sh-lg`, máx. 420px, preset `mo
 
 Foco gerenciado (foca primária ao abrir, devolve ao gatilho), `Esc` cancela, `Enter` confirma. Uso imperativo via hook **`useConfirm`** (`const ok = await confirm({ title, message })` — requer `ConfirmProvider`).
 
-Renderiza em **portal no `document.body`**, montado só ao abrir: entra depois de qualquer overlay já aberto (slide-over, painel de cards) e por isso fica por cima dele na mesma camada `z-50`, fora do `inert` que o overlay aplicou ao resto da página.
+Renderiza em **portal no `document.body`**, montado só ao abrir: entra depois de qualquer overlay já aberto (slide-over, painel de cards) e por isso fica por cima dele na mesma camada `z-50`, fora do `inert` que o overlay aplicou ao resto da página (antes, dentro da árvore da app, herdava esse `inert` e ficava sob o scrim).
 
 ## PainelCards — `painel-cards.tsx`
 
-Diálogo modal **sem moldura** (v0.10.0; ver `padroes-de-interacao.md` §"Painel de cards flutuantes"). Implementação de referência: [`painel-cards.tsx`](https://github.com/agenciapremium/tasks/blob/main/src/components/ui/painel-cards.tsx) no Tasks.
+Diálogo modal **sem moldura** (padrão "Painel de cards flutuantes" de `padroes-de-interacao.md`, premium-design v0.10.0). Primeiro uso: central de notificações do sino, interna e do portal. Implementação de referência: [`painel-cards.tsx`](https://github.com/agenciapremium/tasks/blob/main/src/components/ui/painel-cards.tsx) no Tasks.
 
 | Prop | Tipo | Descrição |
 |---|---|---|
 | `open` / `onClose` | — | Controlado pelo pai |
 | `titulo` | `string` | Nome do diálogo (`h2` visualmente oculto, alvo do foco ao abrir) |
-| `ancoraRef` | `RefObject<HTMLElement>` | Gatilho: o X fica centralizado sobre ele a partir de 768px |
+| `ancoraRef` | `RefObject<HTMLElement>` | Gatilho: o X fica centralizado sobre ele a partir de 768px ([`painel-cards-pos.ts`](https://github.com/agenciapremium/tasks/blob/main/src/lib/painel-cards-pos.ts)) |
 | `topo` | `ReactNode` | Pílulas à esquerda do X; cada filho vira uma peça animada |
 | `base` | `ReactNode` | Pílulas da base (direita; a primeira de duas vai para a esquerda). Sem filhos, a base não existe |
-| `rotuloFechar` | `string` | Nome acessível do X |
+| `rotuloFechar` | `string` | Nome acessível do X (default `"Fechar"`) |
 | `totalItens` | `number` | Quantos itens a cascata mostra (a base entra depois) |
-| `rolarAoTopo` | `number` | Mude o valor para a lista voltar ao topo (item novo em tempo real) |
+| `rolarAoTopo` | `number` | Mude o valor para a lista voltar ao topo (ex.: item novo em tempo real) |
 
 Filhos da lista: `PainelCardsItem` (`indice`, `total`, `chega?`, `itemId?`) e `PainelCardsRotulo` (rótulo de dia em pílula). Mesma pilha de overlays do `SlideOver` (o `Esc` fecha só o topo), foco gerenciado (título ao abrir, `Tab` preso, volta ao gatilho), trava de rolagem do corpo.
 
 ## BotaoLido — `botao-lido.tsx`
 
-Botão só com ícone para marcar como lido (v0.10.0). **Não lido**: `<button>` amarelo (`bg-brand text-on-brand`, igual nos dois temas), 36px com alvo de 40px, hover `--brand-amber` + `--sh-gold`, dica pelo `Tooltip`, foco em anel duplo `--c-surface` + `--premium-ink`. **Lido**: indicador verde tonal (`--success-bg`/`--success`, `role="img"`, `aria-label="Lida"`), sem foco e sem clique. A troca anima com `.lido-vira` (`css/motion.css`: pulso, onda verde e traço do ícone; nada sob movimento reduzido). Ícone padrão `CheckCheck` (os "dois V"): o olho já é ícone de tipo. Referência: [`botao-lido.tsx`](https://github.com/agenciapremium/tasks/blob/main/src/components/ui/botao-lido.tsx).
+Botão só com ícone para marcar como lido (premium-design v0.10.0; ver `padroes-de-interacao.md` §"Painel de cards flutuantes"). **Não lido**: `<button>` amarelo (`bg-brand text-on-brand`, igual nos dois temas), 36px com alvo de 40px, hover `--brand-amber` + `--sh-gold`, dica pelo `Tooltip`, foco em anel duplo `--c-surface` + `--premium-ink` (um anel amarelo sumiria sobre o amarelo). **Lido**: indicador verde tonal (`--success-bg`/`--success`, `role="img"`, `aria-label="Lida"`), sem foco e sem clique. A troca anima com `.lido-vira` (`css/motion.css`: pulso, onda verde e traço do ícone; nada sob movimento reduzido). Referência: [`botao-lido.tsx`](https://github.com/agenciapremium/tasks/blob/main/src/components/ui/botao-lido.tsx).
 
 | Prop | Tipo | Descrição |
 |---|---|---|
 | `lido` | `boolean` | Estado atual |
-| `onMarcar` | `() => void` | Ação do botão amarelo (não navega) |
+| `onMarcar` | `() => void` | Ação do botão amarelo (não navega: interrompe o clique) |
 | `rotulo` | `string` | Nome acessível com o assunto (`Marcar “Título” como lida`) |
+| `dica` / `rotuloLido` | `string` | Default `"Marcar como lida"` / `"Lida"` |
+| `icone` | `LucideIcon` | Default `CheckCheck` (os "dois V"; o olho é ícone de tipo) |
 | `onVirou` | `() => void` | Chamado quando o botão focado vira indicador, para o hospedeiro mover o foco |
+
+## NotificacaoCard — `notificacao-card.tsx` (layout)
+
+Card de notificação das três superfícies (painel do sino, central `/notificacoes`, sino do portal): ícone e cor do tipo (`TIPO_ICONS`/`TIPO_COLORS`, exportados daqui), título e mensagem em até 2 linhas, data já formatada pelo hospedeiro (`quando`) e `BotaoLido`. Com `href`, o card inteiro é o link (`onAbrir`); sem, não é clicável. Variantes `flutuante` (`--sh-md`) e `pagina` (`--sh-sm`); `chega` liga a borda amarela de chegada (`.flash-borda`). Estados em card: `NotificacaoCardEsqueleto`, `NotificacaoCardVazio`, `NotificacaoCardErro`. Anatomia e medidas do card em `padroes-de-interacao.md` §"Painel de cards flutuantes". Referência: [`notificacao-card.tsx`](https://github.com/agenciapremium/tasks/blob/main/src/components/layout/notificacao-card.tsx).
 
 ## Lightbox — `lightbox.tsx`
 

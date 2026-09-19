@@ -8,7 +8,7 @@ Movimento no sistema é **funcional e discreto**: orienta a atenção, confirma 
 --ease: cubic-bezier(.22, .61, .36, 1);
 ```
 
-Saída rápida, assentamento suave (ease-out pronunciado). É a curva de **todas** as transições e animações do sistema — não introduzir curvas novas. No lado React ela é espelhada pela constante `EASE` de `src/lib/motion.ts` (`[0.22, 0.61, 0.36, 1]`). Exceções documentadas: o pulso do cronômetro parado (`timerPulse`) usa `ease-in-out`, por ser um ciclo simétrico e contínuo; e o **painel de cards flutuantes** (v0.10.0) usa `--ease-mola` (`cubic-bezier(.3,1.35,.5,1)`, rebote curto) nas entradas e `--ease-sai` (`cubic-bezier(.4,0,1,1)`) nas saídas, espelhadas por `EASE_MOLA`/`EASE_SAI` em `src/lib/motion.ts` no Tasks.
+Saída rápida, assentamento suave (ease-out pronunciado). É a curva de **todas** as transições e animações do sistema — não introduzir curvas novas. No lado React ela é espelhada pela constante `EASE` de `src/lib/motion.ts` (`[0.22, 0.61, 0.36, 1]`). Exceções documentadas: o pulso do cronômetro parado (`timerPulse`) usa `ease-in-out`, por ser um ciclo simétrico e contínuo; e o **painel de cards flutuantes** (premium-design v0.10.0) usa `--ease-mola` (`cubic-bezier(.3,1.35,.5,1)`, rebote curto) nas entradas e `--ease-sai` (`cubic-bezier(.4,0,1,1)`) nas saídas, espelhadas por `EASE_MOLA`/`EASE_SAI` em `src/lib/motion.ts` no Tasks.
 
 ## Provider de animação (`MotionProvider`)
 
@@ -40,7 +40,7 @@ Para expansão de altura (accordion, raias do Kanban, árvore de docs) use o com
 
 ## Painel de cards flutuantes (`painelVariantes`)
 
-Variantes dirigidas por `custom` (`{ reduzido, i, j, chega }`), porque a cascata tem teto e a saída corre de baixo para cima (`staggerChildren` não tem teto). O primitivo lê `useReducedMotion()` e troca tudo por opacidade pura sem atraso: o `MotionConfig` corta transforms, mas não os atrasos da cascata. Referência: [`src/lib/motion.ts`](https://github.com/agenciapremium/tasks/blob/main/src/lib/motion.ts) no Tasks.
+Variantes dirigidas por `custom` (`{ reduzido, i, j, chega }`), porque a cascata tem teto e a saída corre de baixo para cima (`staggerChildren` não tem teto). O primitivo `PainelCards` lê `useReducedMotion()` e troca tudo por opacidade pura sem atraso: o `MotionConfig` corta transforms, mas não os atrasos da cascata. Referência: [`src/lib/motion.ts`](https://github.com/agenciapremium/tasks/blob/main/src/lib/motion.ts) no Tasks.
 
 | Peça | Entrada | Saída |
 |---|---|---|

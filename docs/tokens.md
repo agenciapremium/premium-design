@@ -80,7 +80,7 @@ No claro, valores literais originais; no escuro, **recalibrados** (texto e super
 > [!NOTE]
 > Os pares `*-bg` do escuro são **tons escuros próprios**, nunca o claro com opacidade — opacidade sobre fundo preto mataria o contraste.
 
-### Alerta sólido (fixo nos dois temas)
+### Alerta sólido (fixo nos dois temas) · premium-design v0.8.0
 
 | Token | Claro | Escuro | Uso |
 |---|---|---|---|
@@ -88,7 +88,7 @@ No claro, valores literais originais; no escuro, **recalibrados** (texto e super
 | `--alert-solid-hover` | `#A82A24` | `#A82A24` | Hover do alerta fixo |
 | `--on-alert-solid` | `#FFFFFF` | `#FFFFFF` | Texto e ícone sobre `--alert-solid` (5,6:1) |
 
-É o único vermelho que **não muda com o tema**, e existe por isso. O `--danger` do escuro (`#E87A72`) é um tom claro calibrado para ser lido como texto sobre fundo escuro; como fundo de um aviso que precisa gritar, ele vira salmão e o texto em cima teria de ser preto. Regra de uso: `--alert-solid` é **fundo**; vermelho como **texto** sobre superfície continua sendo `--danger`. Só o padrão "Alerta fixo" (ver `padroes-de-interacao.md`) usa este trio.
+É o único vermelho que **não muda com o tema**, e existe por isso. O `--danger` do escuro (`#E87A72`) é um tom claro calibrado para ser lido como texto sobre fundo escuro; como fundo de um aviso que precisa gritar, ele vira salmão e o texto em cima teria de ser preto. Regra de uso: `--alert-solid` é **fundo**; vermelho como **texto** sobre superfície continua sendo `--danger`. Utilitários: `bg-alert-solid`, `hover:bg-alert-solid-hover`, `text-on-alert-solid`. Só o padrão "Alerta fixo" (ver `padroes-de-interacao.md`) usa este trio.
 
 ### Auxiliares (departamentos / categorias)
 
@@ -246,8 +246,8 @@ Grid base de **4px**. Medidas estruturais observadas:
 | Token / padrão | Valor |
 |---|---|
 | `--ease` | `cubic-bezier(.22, .61, .36, 1)` |
-| `--ease-mola` · v0.10.0 | `cubic-bezier(.3, 1.35, .5, 1)`: só nas **entradas** do painel de cards flutuantes e no pulso do botão de lido |
-| `--ease-sai` · v0.10.0 | `cubic-bezier(.4, 0, 1, 1)`: só nas **saídas** do painel de cards flutuantes |
+| `--ease-mola` · premium-design v0.10.0 | `cubic-bezier(.3, 1.35, .5, 1)`: só nas **entradas** do painel de cards flutuantes e no pulso do botão de lido |
+| `--ease-sai` · premium-design v0.10.0 | `cubic-bezier(.4, 0, 1, 1)`: só nas **saídas** do painel de cards flutuantes |
 | Hover/transição de clicáveis | 140–150ms |
 | Fade-in de tela | 300ms + `translateY(8px)` |
 | Hover de card | `translateY(-2px)` + `--sh-md` |

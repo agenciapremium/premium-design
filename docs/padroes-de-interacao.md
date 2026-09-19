@@ -186,45 +186,57 @@ estático no conteúdo e o sino é passivo; nenhum dos três cobre esse caso.
 **Onde fica.** Canto inferior esquerdo da área de conteúdo, ao lado da sidebar
 (acompanha a largura dela, completa ou recolhida), em `z-40`: abaixo do
 slide-over e de diálogos, acima da topbar. O canto direito é do FAB e o topo é
-dos toasts. Nunca sobe além da topbar. Abaixo de 768px ocupa a largura da tela
-com 12px de margem, acima do FAB, com no máximo metade da altura. Some com o
-drawer de navegação aberto, como o FAB.
+dos toasts. Nunca sobe além da topbar. A partir de 768px: 320px de largura, a
+16px da sidebar e a 20px da base, com altura máxima de `100dvh` menos 124px.
+Abaixo de 768px ocupa a largura da tela com 12px de margem, acima do FAB, com no
+máximo metade da altura. Some com o drawer de navegação aberto, como o FAB.
 
 **O card tem o mínimo de texto.** Fundo `--alert-solid`, texto
-`--on-alert-solid`, raio `--r-lg`, altura mínima de 64px. Conteúdo: ícone que
-identifica o tipo (num quadrado branco a 16%, piscando), o título do item em até
-duas linhas e uma etiqueta curta dizendo por que **esta** pessoa foi avisada. Sem
-rótulo de categoria, sem tempo relativo, sem "clique aqui" e **sem botão de
-fechar**: o card inteiro é um `<button>` que abre o item. O nome acessível
-carrega o que o texto visível omite (categoria, título, contexto, papel e a ação).
+`--on-alert-solid`, raio `--r-lg`, sombra `--sh-md`, altura mínima de 64px.
+Conteúdo: ícone que identifica o tipo (18px, num quadrado de 36px em
+`--on-alert-solid` a 15%, piscando), o título do item em até duas linhas e uma
+etiqueta curta, em pílula no mesmo branco a 15%, dizendo por que **esta** pessoa
+foi avisada. Sem rótulo de categoria, sem tempo relativo, sem "clique aqui" e
+**sem botão de fechar**: o card inteiro é um `<button>` que abre o item. O nome
+acessível carrega o que o texto visível omite (categoria, título, contexto,
+papel e a ação).
 
 **Pilha e contador.** Vários alertas empilham com o mais novo em cima, todos no
 mesmo formato. Abaixo deles fica um **contador fixo** ("7 ajustes") enquanto
 houver alerta pendente, inclusive com um só: clicar minimiza os cards e deixa só
 o contador (fundo `--alert-solid`); clicar de novo mostra. Aberto, o contador
 usa `--c-surface` com borda e texto `--danger`. Alerta novo reabre a pilha
-minimizada. Com muitos, a lista rola **sem barra aparente**, com degradê (máscara)
-na borda que tem mais conteúdo e `overscroll-behavior: contain` (desde a v0.10.0,
-o padrão compartilhado `css/patterns/pilha-rolagem.css`); a folga em volta
-da lista, que evita cortar a sombra dos cards, não bloqueia cliques.
+minimizada. Com muitos, a lista rola **sem barra aparente**, com degradê
+(máscara) na borda que tem mais conteúdo e `overscroll-behavior: contain` (desde
+a v0.10.0, o padrão compartilhado `css/patterns/pilha-rolagem.css`); a folga de
+20px em volta da lista, que evita cortar a sombra dos cards, não bloqueia
+cliques.
 
 **Movimento.** Entrada deslizando da esquerda só no card que acabou de chegar; o
-ícone dos cards **e o do contador** piscam em `steps(2)` abaixo de 3 vezes por
-segundo, enquanto houver alerta pendente, inclusive com a pilha minimizada: o
-contador é a última marca na tela e continua chamando atenção. Sob
-`prefers-reduced-motion`, nada anima, e esse é o único jeito de parar o piscar.
-Por isso o padrão fica restrito a avisos que exigem ação e que somem quando a
-pessoa age; o WCAG 2.2.2 pede pausa para o que pisca por mais de 5 segundos,
-e aqui a "pausa" é resolver o aviso.
+ícone dos cards **e o do contador** piscam em `steps(2)`, num ciclo de 1,1s
+(abaixo de 3 vezes por segundo), enquanto houver alerta pendente, inclusive com
+a pilha minimizada: o contador é a última marca na tela e continua chamando
+atenção. Sob `prefers-reduced-motion`, nada anima, e esse é o único jeito de
+parar o piscar. Por isso o padrão fica restrito a avisos que exigem ação e que
+somem quando a pessoa age; o WCAG 2.2.2 pede pausa para o que pisca por mais de
+5 segundos, e aqui a "pausa" é resolver o aviso.
 
-**Acessibilidade.** Foco visível em amarelo (`--yellow`) sobre o vermelho; o
-contador tem `aria-expanded` e `aria-controls`; a chegada de alerta novo é
-anunciada numa região `aria-live="polite"`, sem roubar o foco.
+**Acessibilidade.** Foco visível em amarelo (`0 0 0 3px var(--yellow)`) sobre o
+vermelho, no card e no contador; o contador tem `aria-expanded` e
+`aria-controls`; a chegada de alerta novo é anunciada numa região
+`aria-live="polite"`, sem roubar o foco.
+
+**Estados.** Sem alerta pendente, nada é desenhado, mas a região `aria-live`
+continua montada para anunciar a próxima chegada. Não há estado de carregamento:
+o clique é otimista.
 
 **Persistência e controle.** O alerta é registro no servidor por pessoa (não
 estado de tela): sobrevive a navegação e recarga, e fechar em uma aba fecha nas
 outras. Por ser agressivo, nasce com um interruptor geral em Configurações.
-Implementação de referência: `src/components/layout/alertas-ajuste.tsx` no Tasks.
+Implementação de referência:
+[`alertas-ajuste.tsx`](https://github.com/agenciapremium/tasks/blob/main/src/components/layout/alertas-ajuste.tsx)
+no Tasks, com as animações `.alerta-ajuste-entra` e `.alerta-ajuste-pisca` no
+`globals.css` dele.
 
 ## Painel de cards flutuantes
 
@@ -235,20 +247,30 @@ fixo, com cada peça solta sobre o scrim. O slide-over é caixa (fundo, cabeçal
 rodapé); aqui nada envolve as peças.
 
 **Anatomia.** Três faixas sobre o scrim (`bg-black/40` com desfoque de 4px):
-**topo** com pílulas à esquerda e um X de 40px à direita; **lista** de cards soltos
-(8px entre eles), agrupados por dia com rótulo em **pílula** de 24px (texto cinza
-solto sobre o scrim não passaria AA); **base** com pílulas alinhadas à direita (a
-primeira de duas vai para a esquerda, como ação secundária). Cada peça tem
-superfície própria: `--c-surface`, borda `--c-border` (no escuro é ela que separa
-a peça do scrim), `--sh-md`. Título do diálogo visualmente oculto.
+**topo** com pílulas à esquerda e um X de 40px à direita; **lista** de cards
+soltos (8px entre eles), agrupados por dia com rótulo em **pílula** de 24px
+(texto cinza solto sobre o scrim não passaria AA); **base** com pílulas
+alinhadas à direita (a primeira de duas vai para a esquerda, como ação
+secundária). Cada peça tem superfície própria: `--c-surface`, borda `--c-border`
+(no escuro é ela que separa a peça do scrim), `--sh-md`. Título do diálogo
+visualmente oculto (`h2` ligado por `aria-labelledby`), que recebe o foco ao
+abrir.
 
-**Posição.** Ancorado ao gatilho a partir de 768px: o X fica **exatamente sobre o
-gatilho** (o sino "vira" o X), a lista alinha pela borda direita dele, 420px,
-altura até a janela menos o respiro do topo nas duas pontas. Abaixo de 768px, ou
-sem gatilho visível, largura da tela com 16px nas laterais e 12px em cima e
-embaixo. Camada dos overlays modais (`z-50`), na mesma pilha do slide-over:
-acima da topbar, da gaveta de ferramentas e do alerta fixo; confirmação e toasts
-por cima.
+**Posição.** Ancorado ao gatilho a partir de 768px: o X fica **exatamente sobre
+o gatilho** (o sino "vira" o X), a lista alinha pela borda direita dele, 420px,
+altura até a janela menos o respiro do topo nas duas pontas (conta pura em
+[`painel-cards-pos.ts`](https://github.com/agenciapremium/tasks/blob/main/src/lib/painel-cards-pos.ts)
+no Tasks). Abaixo de 768px, ou sem gatilho visível, largura da tela com 16px nas
+laterais e 12px em cima e embaixo. Camada dos overlays modais (`z-50`), na mesma
+pilha do slide-over: acima da topbar, da gaveta de ferramentas e do alerta fixo;
+confirmação e toasts por cima.
+
+**Lista.** Rolagem sem barra (`.pilha-rolagem`, de
+`css/patterns/pilha-rolagem.css`: degradê de 44px na borda com mais conteúdo e
+`overscroll-behavior: contain`), com folga de 20px nas laterais e 12px em cima e
+embaixo, para a sombra e o hover dos cards não serem cortados. Clicar na folga
+não fecha: só o scrim fecha. O rótulo de dia tem superfície própria, `--sh-sm`,
+10px/700, `.2em` e caixa alta.
 
 **Pílulas.** Desenho do chip de filtro (§3.4 do `ui-guidelines.md`), com alvo de
 40px e sombra. No topo: uma **pílula de seleção** de largura fixa, com rótulo curto,
@@ -257,19 +279,25 @@ Todas, Não lidas e as categorias com não lidas, cada uma com a contagem; na
 pílula, "Menções", "Aprovações" etc.) e **pílulas de ação** ("Marcar todas como lidas", que some com fade
 quando não há o que marcar). Na base: "Ver todas" para a tela completa.
 
-**Card.** Conteúdo do item (ícone e cor do tipo num quadrado de 36px, título e
-mensagem em até duas linhas, data), raio `--r-lg`, hover sobe 2px com `--sh-lg`.
-O card inteiro é o link para o destino (e fecha o painel); o anel de foco amarelo
-(`0 0 0 3px var(--yellow)`) é pintado no card. Lido não usa opacidade reduzida
-(derruba o contraste): perde o negrito do título e ganha o indicador verde.
+**Card.** Conteúdo do item: ícone e cor do tipo num quadrado de 36px, título em
+até duas linhas (700 quando não lido; 500 em `--premium-steel` quando lido),
+mensagem em até duas linhas e data em 11px, as duas em `--premium-gray` (o
+`--premium-silver` não passa AA no escuro). `--c-surface`, borda `--c-border`,
+raio `--r-lg`, `--sh-md` no painel e `--sh-sm` na tela completa; hover sobe 2px
+com `--sh-lg`. O card inteiro é o link para o destino (e fecha o painel); o anel
+de foco amarelo (`0 0 0 3px var(--yellow)`) é pintado no card, por
+`:has(a:focus-visible)` (o link cobre o card com um `::after` absoluto). Lido
+não usa opacidade reduzida (derruba o contraste): perde o negrito do título e
+ganha o indicador verde.
 
 **Botão de lido.** Só ícone (`CheckCheck`, os "dois V"). **Amarelo** (a marca,
-igual nos dois temas, ícone preto) enquanto não lido: é convite, sólido. **Verde**
-tonal (`--success-bg`/`--success`) depois: é estado resolvido, pesa menos, não
-recebe foco nem clique. Marcar não fecha o painel e atualiza a contagem na hora.
-A troca pulsa, solta uma onda verde e desenha o ícone (`.lido-vira`). No recorte
-"Não lidas", o card lido fica verde por um instante e depois recolhe. Marcar
-todas vira os botões em onda, de cima para baixo.
+igual nos dois temas, ícone preto) enquanto não lido: é convite, sólido.
+**Verde** tonal (`--success-bg`/`--success`) depois: é estado resolvido, pesa
+menos, não recebe foco nem clique. Marcar não fecha o painel e atualiza a
+contagem na hora. A troca pulsa, solta uma onda verde e desenha o ícone
+(`.lido-vira`); quem tinha o foco no botão passa para o link do card. No recorte
+"Não lidas", o card lido fica verde por 900ms e depois recolhe. Marcar todas
+vira os botões em onda, de cima para baixo, com 55ms entre eles.
 
 **Movimento.** Abrir: o scrim aparece, o X gira no lugar do gatilho, as pílulas
 deslizam a partir dele e os cards descem em cascata (teto de 7), com `--ease-mola`.
@@ -285,13 +313,15 @@ pilha e a tecla nasceu nele (a confirmação e o menu de uma pílula fecham
 sozinhos); o menu da pílula de seleção abre **dentro** do diálogo; alvo mínimo de
 40px; chegada anunciada em região `aria-live="polite"`.
 
-**Estados.** Carregando, vazio e erro aparecem como cards na própria lista (quatro
-esqueletos; card de estado vazio com ação opcional; card de erro com
-`role="alert"`). **Esqueleto só quando ainda não há lista**: reabrir o painel ou
-voltar a um recorte já visto mostra na hora a última lista e atualiza em
-silêncio (o que chegou desde então entra como chegada); uma atualização que
-falha com a lista na tela mantém a lista. A busca pode começar antes do clique,
-com o ponteiro ou o foco no gatilho.
+**Estados.** Carregando, vazio e erro aparecem como cards na própria lista
+(quatro esqueletos; card de estado vazio com ação opcional; card de erro com
+`role="alert"`). **Esqueleto só quando não há nada em memória**: reabrir o
+painel ou trocar de recorte mostra na hora a última lista daquele recorte (ou,
+na primeira vez, os itens já em memória que caem nele, que o servidor só
+completa) e atualiza em silêncio (o que chegou desde então entra como chegada);
+a troca de recorte remonta a lista em cascata; uma atualização que falha com a
+lista na tela mantém a lista. A busca pode começar antes do clique, com o
+ponteiro ou o foco no gatilho.
 
 Implementação de referência: [`painel-cards.tsx`](https://github.com/agenciapremium/tasks/blob/main/src/components/ui/painel-cards.tsx)
 e a central de notificações ([`notificacoes-bell.tsx`](https://github.com/agenciapremium/tasks/blob/main/src/components/layout/notificacoes-bell.tsx))
