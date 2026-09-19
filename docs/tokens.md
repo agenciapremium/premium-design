@@ -246,6 +246,8 @@ Grid base de **4px**. Medidas estruturais observadas:
 | Token / padrão | Valor |
 |---|---|
 | `--ease` | `cubic-bezier(.22, .61, .36, 1)` |
+| `--ease-mola` · v0.10.0 | `cubic-bezier(.3, 1.35, .5, 1)`: só nas **entradas** do painel de cards flutuantes e no pulso do botão de lido |
+| `--ease-sai` · v0.10.0 | `cubic-bezier(.4, 0, 1, 1)`: só nas **saídas** do painel de cards flutuantes |
 | Hover/transição de clicáveis | 140–150ms |
 | Fade-in de tela | 300ms + `translateY(8px)` |
 | Hover de card | `translateY(-2px)` + `--sh-md` |
@@ -253,6 +255,9 @@ Grid base de **4px**. Medidas estruturais observadas:
 | Barra de auto-save | loop 1.1s |
 | Flash de comentário novo (`.flash-novo`) | 600ms, `--gold-bg` → transparente, `--ease` |
 | Pulso do cronômetro parado (`.timer-pulse`) | 1.6s ease-in-out infinito, opacidade 1 → 0.55 |
+| Botão de lido virando verde (`.lido-vira`) | pulso 400ms (`--ease-mola`) + onda verde 700ms + traço do ícone 380ms |
+| Card que chegou com o painel aberto (`.flash-borda`) | 1.8s, borda `--brand-yellow` com anel a 50% no início |
+| Rolagem sem barra (`.pilha-rolagem`, `css/patterns/pilha-rolagem.css`) | degradê por máscara de 44px na borda com mais conteúdo (`data-mais`) |
 | Crossfade de troca de aba (View Transitions) | 200ms em `::view-transition-old/new(root)` |
 
 Detalhes e regras de `prefers-reduced-motion` em [`motion.md`](motion.md).

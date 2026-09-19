@@ -288,6 +288,12 @@ Subexport **`ViewTabsPill`**: o grupo de tabs de visão com pílula deslizante (
 
 **Boas práticas**: nenhuma tela dispõe filtros/views/favorito fora da barra; criação **não** entra na barra (é do FAB); zonas ausentes não renderizam, mas a ordem das presentes nunca muda.
 
+Desde a v0.10.0 as classes de chip, o menu e o item de seleção moram no módulo de pílulas ([`pilula.tsx`](https://github.com/agenciapremium/tasks/blob/main/src/components/ui/pilula.tsx) no Tasks), fonte única para a barra e para as pílulas soltas.
+
+## Pilula e PilulaSelect — `pilula.tsx`
+
+Pílula de ação e de seleção fora da barra (v0.10.0; `ui-guidelines.md` §3.4). `Pilula` (botão) e `PilulaLink` aceitam `ativa`, `ligada`, `flutuante` (alvo de 40px + `--sh-md`, para flutuar sobre scrim) e `oculta` (fade e saída do `Tab` sem deslocar vizinhos; `css/patterns/pilula.css`). `PilulaSelect`: `rotulo`, `valor`, `opcoes: { valor, rotulo, rotuloCurto?, contagem?, secao? }[]`, `onEscolher`, `icone?`, `contagem?` (acima de 99, "99+"), `ativa?`, `flutuante?`, `largura?` (px fixos; a pílula mostra `rotuloCurto` e não muda de tamanho entre opções, o menu mostra `rotulo`); menu com seção, contagem por opção, setas/Home/End, `Enter` escolhe, `Esc` fecha só o menu. Dentro de diálogo modal, o menu abre **dentro** do diálogo.
+
 ## SegmentedTabs — `segmented-tabs.tsx`
 
 Tabs segmentadas standalone, mesmo visual das views do FilterBar, sincronizadas a um parâmetro de URL. Para quando as abas vivem fora da barra (ex.: ao lado da busca em Lançamentos). A pílula ativa **desliza** (indicador CSS medido por ref, recalculado por `ResizeObserver`) e a troca usa View Transitions quando disponíveis.
@@ -385,6 +391,36 @@ Diálogo central de confirmação (`--r-xl` + `--sh-lg`, máx. 420px, preset `mo
 | `children` | `ReactNode` | — | Conteúdo extra (ex.: campo de horas — padrão "entrada rápida") |
 
 Foco gerenciado (foca primária ao abrir, devolve ao gatilho), `Esc` cancela, `Enter` confirma. Uso imperativo via hook **`useConfirm`** (`const ok = await confirm({ title, message })` — requer `ConfirmProvider`).
+
+Renderiza em **portal no `document.body`**, montado só ao abrir: entra depois de qualquer overlay já aberto (slide-over, painel de cards) e por isso fica por cima dele na mesma camada `z-50`, fora do `inert` que o overlay aplicou ao resto da página.
+
+## PainelCards — `painel-cards.tsx`
+
+Diálogo modal **sem moldura** (v0.10.0; ver `padroes-de-interacao.md` §"Painel de cards flutuantes"). Implementação de referência: [`painel-cards.tsx`](https://github.com/agenciapremium/tasks/blob/main/src/components/ui/painel-cards.tsx) no Tasks.
+
+| Prop | Tipo | Descrição |
+|---|---|---|
+| `open` / `onClose` | — | Controlado pelo pai |
+| `titulo` | `string` | Nome do diálogo (`h2` visualmente oculto, alvo do foco ao abrir) |
+| `ancoraRef` | `RefObject<HTMLElement>` | Gatilho: o X fica centralizado sobre ele a partir de 768px |
+| `topo` | `ReactNode` | Pílulas à esquerda do X; cada filho vira uma peça animada |
+| `base` | `ReactNode` | Pílulas da base (direita; a primeira de duas vai para a esquerda). Sem filhos, a base não existe |
+| `rotuloFechar` | `string` | Nome acessível do X |
+| `totalItens` | `number` | Quantos itens a cascata mostra (a base entra depois) |
+| `rolarAoTopo` | `number` | Mude o valor para a lista voltar ao topo (item novo em tempo real) |
+
+Filhos da lista: `PainelCardsItem` (`indice`, `total`, `chega?`, `itemId?`) e `PainelCardsRotulo` (rótulo de dia em pílula). Mesma pilha de overlays do `SlideOver` (o `Esc` fecha só o topo), foco gerenciado (título ao abrir, `Tab` preso, volta ao gatilho), trava de rolagem do corpo.
+
+## BotaoLido — `botao-lido.tsx`
+
+Botão só com ícone para marcar como lido (v0.10.0). **Não lido**: `<button>` amarelo (`bg-brand text-on-brand`, igual nos dois temas), 36px com alvo de 40px, hover `--brand-amber` + `--sh-gold`, dica pelo `Tooltip`, foco em anel duplo `--c-surface` + `--premium-ink`. **Lido**: indicador verde tonal (`--success-bg`/`--success`, `role="img"`, `aria-label="Lida"`), sem foco e sem clique. A troca anima com `.lido-vira` (`css/motion.css`: pulso, onda verde e traço do ícone; nada sob movimento reduzido). Ícone padrão `CheckCheck` (os "dois V"): o olho já é ícone de tipo. Referência: [`botao-lido.tsx`](https://github.com/agenciapremium/tasks/blob/main/src/components/ui/botao-lido.tsx).
+
+| Prop | Tipo | Descrição |
+|---|---|---|
+| `lido` | `boolean` | Estado atual |
+| `onMarcar` | `() => void` | Ação do botão amarelo (não navega) |
+| `rotulo` | `string` | Nome acessível com o assunto (`Marcar “Título” como lida`) |
+| `onVirou` | `() => void` | Chamado quando o botão focado vira indicador, para o hospedeiro mover o foco |
 
 ## Lightbox — `lightbox.tsx`
 

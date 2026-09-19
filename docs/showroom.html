@@ -57,6 +57,8 @@
   --sh-gold:0 12px 28px rgba(251,218,37,.40),0 4px 8px rgba(247,186,48,.22);
 
   --ease:cubic-bezier(.22,.61,.36,1);
+  /* Painel de cards flutuantes (v0.10.0): mola nas entradas, aceleração nas saídas */
+  --ease-mola:cubic-bezier(.3,1.35,.5,1);--ease-sai:cubic-bezier(.4,0,1,1);
 
   /* Code theme (doc-code-block) */
   --code-bg:#f6f6f4;--code-fg:#1a1a1a;--code-border:#e5e5e5;
@@ -799,6 +801,36 @@ th.sortable.on svg.lucide{color:var(--premium-ink)}
   .ds-nav{display:none}
   .ds-content{padding:20px 16px}
 }
+/* ── Painel de cards flutuantes e botão de lido (v0.10.0) ── */
+.pc-stage{position:relative;border-radius:var(--r-lg);padding:22px;background:rgba(0,0,0,.4);display:flex;justify-content:center}
+.pc{width:min(420px,100%);display:flex;flex-direction:column;gap:12px}
+.pc-topo,.pc-base{display:flex;align-items:center;gap:8px}
+.pc-base{justify-content:flex-end}
+.pc .chip{min-height:40px;box-shadow:var(--sh-md)}
+.pc .chip .count{background:var(--premium-ink);color:var(--premium-paper)}
+.pc-x{margin-left:auto;width:40px;height:40px;border-radius:999px;display:grid;place-items:center;border:1px solid var(--premium-mist);background:var(--premium-white);color:var(--premium-steel);box-shadow:var(--sh-md);cursor:pointer}
+.pc-x:hover{border-color:var(--premium-ink);color:var(--premium-ink)}
+.pc-dia{align-self:flex-start;display:inline-flex;align-items:center;height:24px;padding:0 10px;border-radius:999px;background:var(--c-surface);border:1px solid var(--c-border);box-shadow:var(--sh-sm);font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--premium-gray)}
+.nc{display:flex;align-items:flex-start;gap:12px;padding:12px;background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-lg);box-shadow:var(--sh-md);transition:transform .14s var(--ease),box-shadow .14s var(--ease)}
+.nc:hover{transform:translateY(-2px);box-shadow:var(--sh-lg)}
+.nc-ic{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;flex:none}
+.nc-ic svg.lucide{width:18px;height:18px}
+.nc-tx{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.nc-tx b{font-size:13.5px;line-height:1.35}
+.nc.lida .nc-tx b{font-weight:500;color:var(--premium-steel)}
+.nc-tx span{font-size:12px;color:var(--premium-gray)}
+.nc-tx small{font-size:11px;color:var(--premium-gray);margin-top:3px}
+.lido{position:relative;width:36px;height:36px;border-radius:999px;display:grid;place-items:center;flex:none;border:0;background:var(--brand-yellow);color:#000;cursor:pointer;transition:background .2s var(--ease),color .2s var(--ease),box-shadow .14s var(--ease)}
+.lido:hover{background:var(--brand-amber);box-shadow:var(--sh-gold)}
+.lido.ok{background:var(--success-bg);color:var(--success);cursor:default;box-shadow:none}
+.lido svg.lucide{width:17px;height:17px}
+@media (prefers-reduced-motion:no-preference){
+  @keyframes lidoPop{0%{transform:scale(1)}35%{transform:scale(.8)}70%{transform:scale(1.14)}100%{transform:scale(1)}}
+  @keyframes lidoOnda{from{box-shadow:0 0 0 0 color-mix(in srgb,var(--success) 45%,transparent)}to{box-shadow:0 0 0 12px transparent}}
+  @keyframes lidoTraco{from{stroke-dashoffset:28}to{stroke-dashoffset:0}}
+  .lido-vira{animation:lidoPop .4s var(--ease-mola),lidoOnda .7s var(--ease)}
+  .lido-vira svg{stroke-dasharray:28;animation:lidoTraco .38s var(--ease) .06s both}
+}
 </style>
 </head>
 <body>
@@ -829,6 +861,7 @@ th.sortable.on svg.lucide{color:var(--premium-ink)}
   <a href="#pessoas-picker">Seletor de pessoas</a>
   <a href="#navegacao">Navegação</a>
   <a href="#overlays">Slide-over &amp; diálogo</a>
+  <a href="#painel-cards">Painel de cards &amp; botão de lido</a>
   <a href="#lightbox">Lightbox</a>
   <a href="#toast">Toast</a>
   <a href="#fab">FAB</a>
@@ -1020,7 +1053,7 @@ th.sortable.on svg.lucide{color:var(--premium-ink)}
     </div>
     <p class="spec-note">
       Padrões: padding de página <code>26px 30px 60px</code> · topbar <code>68px</code> (88px com page-head embutido) · sidebar <code>248px</code> (colapsada 64px) · padding de card <code>16–18px</code> · gap de grade <code>14–16px</code> · detalhe <code>grid 1fr 320px</code> gap 22px.<br><br>
-      Motion: hover/transição de clicáveis <strong>140ms</strong> · fade-in de tela <strong>300ms</strong> + translateY(8px) · hover de card sobe <strong>2px</strong> + <code>--sh-md</code> · sempre respeitar <code>prefers-reduced-motion</code>.
+      Motion: hover/transição de clicáveis <strong>140ms</strong> · fade-in de tela <strong>300ms</strong> + translateY(8px) · hover de card sobe <strong>2px</strong> + <code>--sh-md</code> · sempre respeitar <code>prefers-reduced-motion</code> · exceção documentada: o painel de cards flutuantes usa <code>--ease-mola</code> <code>cubic-bezier(.3,1.35,.5,1)</code> nas entradas e <code>--ease-sai</code> <code>cubic-bezier(.4,0,1,1)</code> nas saídas.
     </p>
   </section>
 
@@ -1588,6 +1621,36 @@ th.sortable.on svg.lucide{color:var(--premium-ink)}
       <button class="btn btn-ghost" id="open-dlg-neutral"><i data-lucide="clock"></i> Diálogo neutro</button>
     </div>
     <p class="spec-note">Proibido modal central novo para formulários (use slide-over) e proibido <code>window.alert/confirm/prompt</code> — sempre a camada Premium.</p>
+  </section>
+
+  <!-- ════════ PAINEL DE CARDS FLUTUANTES ════════ -->
+  <section class="ds-sec" id="painel-cards">
+    <h2>Painel de cards flutuantes &amp; botão de lido</h2>
+    <p class="sub"><code>painel-cards.tsx</code> — diálogo modal <strong>sem moldura</strong> sobre o scrim: topo com pílulas e o X (sobre o gatilho), cards soltos agrupados por dia, base com pílulas. Primeiro uso: central de notificações do sino. <code>botao-lido.tsx</code> — só ícone: <strong>amarelo</strong> para marcar, <strong>verde</strong> quando lida (clique no amarelo para ver a troca).</p>
+    <div class="pc-stage">
+      <div class="pc">
+        <div class="pc-topo">
+          <button class="chip" type="button"><i data-lucide="list-filter"></i>Todas <span class="count">2</span><i data-lucide="chevron-down"></i></button>
+          <button class="chip" type="button"><i data-lucide="check-check"></i>Marcar todas como lidas</button>
+          <button class="pc-x" type="button" aria-label="Fechar notificações"><i data-lucide="x"></i></button>
+        </div>
+        <span class="pc-dia">Hoje</span>
+        <div class="nc">
+          <span class="nc-ic" style="background:var(--violet-bg);color:var(--violet)"><i data-lucide="message-square"></i></span>
+          <span class="nc-tx"><b>Ana Souza mencionou você</b><span>“@Cleberson consegue revisar o texto antes das 16h?”</span><small>18 de set., 14:32</small></span>
+          <button class="lido" type="button" data-lido aria-label="Marcar “Ana Souza mencionou você” como lida"><i data-lucide="check-check"></i></button>
+        </div>
+        <div class="nc lida">
+          <span class="nc-ic" style="background:var(--success-bg);color:var(--success)"><i data-lucide="eye"></i></span>
+          <span class="nc-tx"><b>Material aprovado pelo cliente</b><span>Banner Semana do Cliente · aprovado sem ajustes.</span><small>18 de set., 10:20</small></span>
+          <span class="lido ok" role="img" aria-label="Lida"><i data-lucide="check-check"></i></span>
+        </div>
+        <div class="pc-base">
+          <a class="chip" href="#painel-cards" style="min-height:40px;box-shadow:var(--sh-md);text-decoration:none">Ver todas <i data-lucide="arrow-right"></i></a>
+        </div>
+      </div>
+    </div>
+    <p class="spec-note">Pílulas: desenho do chip de filtro com alvo de 40px e <code>--sh-md</code>. Abrir: X gira no lugar do gatilho, pílulas deslizam dele, cards descem em cascata (<code>--ease-mola</code>, teto de 7). Fechar: cards sobem de baixo para cima, tudo em até 260ms (<code>--ease-sai</code>). Movimento reduzido: só opacidade. Lista rola sem barra, com degradê na borda (<code>.pilha-rolagem</code>).</p>
   </section>
 
   <!-- ════════ LIGHTBOX ════════ -->
@@ -2314,6 +2377,19 @@ document.querySelectorAll("[data-texp]").forEach(function(wrap){
     fade.style.display = aberto ? "" : "none";
     btn.querySelector("svg") && (btn.querySelector("svg").style.transform = aberto ? "" : "rotate(180deg)");
     btn.querySelector("span").textContent = aberto ? "ver mais" : "ver menos";
+  });
+});
+
+/* ── Botão de lido: amarelo → verde com pulso, onda e traço ── */
+document.querySelectorAll("[data-lido]").forEach(function(btn){
+  btn.addEventListener("click", function(){
+    var ok = document.createElement("span");
+    ok.className = "lido ok lido-vira";
+    ok.setAttribute("role", "img");
+    ok.setAttribute("aria-label", "Lida");
+    ok.innerHTML = btn.innerHTML;
+    btn.closest(".nc").classList.add("lida");
+    btn.replaceWith(ok);
   });
 });
 
