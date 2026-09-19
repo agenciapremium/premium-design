@@ -19,6 +19,7 @@ Comportamentos transversais do produto — como as telas se organizam, navegam e
 ```
 
 - O título da tela vive na **topbar** (via `PageHeader` + contexto), não no corpo.
+- O conteúdo ocupa **100% da largura** ao lado da sidebar: sem `max-width` nem contêiner centralizado, e grades que dividem a sobra entre os itens em vez de deixar faixa vazia. Só a medida de leitura do texto corrido e o teto de 360px da coluna do kanban limitam largura ([`ui-guidelines.md`](ui-guidelines.md) §3.5).
 - A faixa da logo, no topo da sidebar, tem a **mesma altura da topbar** (88px; 64px abaixo de 768px): logo e título na mesma linha. O usuário fica no rodapé da sidebar, não na topbar.
 - A **criação não vive na topbar nem na FilterBar** — entrada única é o FAB.
 - O FAB é um **speed-dial**: no desktop, o botão amarelo cria direto e as ações secundárias se revelam no hover/foco; no toque, tocar abre o dial (a principal entra como primeiro item). É arrastável — a posição persiste por usuário.

@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.14.0 · 2026-09-19
+
+Uma regra de layout nova. Nenhum token nem CSS do pacote mudou.
+
+- **Conteúdo com 100% da largura (`docs/ui-guidelines.md` §3.5, nova).** O conteúdo do shell ocupa a largura toda ao lado da sidebar: o `main` não tem `max-width` nem contêiner centralizado, e grade de cards e de widgets divide a sobra entre os itens (`auto-fill` com `minmax` ou `flex: 1 1 <base>`) em vez de deixar faixa vazia à direita. Largura fixa só em overlay e em controle de tamanho próprio. Ficam as duas exceções que já existiam, ambas de leitura: a medida do texto corrido (no Tasks, `max-w-[66ch]`) e o teto de 360px da coluna do kanban (§4.6). Fora do shell (login, portal do cliente, e-mail) a página pode centralizar. A regra entra também no Do/Don't (§11), no checklist de PR (§12, item 14), em `docs/padroes-de-interacao.md` §Layout global e na tabela de layout de `docs/tokens.md`.
+- **`docs/showroom.html` segue a regra.** Sai o `max-width:1180px` do conteúdo (em 1920px sobravam 490px vazios à direita); stat cards e cards de painel crescem para dividir a linha; as colunas do kanban passam a ser elásticas entre 280 e 360px, como na §4.6; os gráficos de barras e de linha são redesenhados na largura do contêiner, com altura fixa e rolagem abaixo do mínimo legível, como o `ResizeObserver` da implementação React.
+
 ## v0.13.0 · 2026-09-19
 
 Uma regra de shell nova, a logo oficial dentro do pacote e o showroom alinhado ao shell do Tasks. Nenhum token nem CSS do pacote mudou.
