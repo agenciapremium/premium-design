@@ -55,6 +55,7 @@ O `premium.css` traz só o núcleo. Os padrões de recurso são importados **ape
 @import "@agenciapremium/premium-design/patterns/autosave.css";       /* barra indeterminada do auto-save */
 @import "@agenciapremium/premium-design/patterns/pilha-rolagem.css";  /* rolagem sem barra, com degradê (alerta fixo, painel) */
 @import "@agenciapremium/premium-design/patterns/pilula.css";         /* pílula de ação e de seleção fora da barra */
+@import "@agenciapremium/premium-design/patterns/tooltip.css";        /* atraso da dica (--tt-delay, data-tooltip-group) */
 ```
 
 Cada arquivo documenta no cabeçalho o **contrato com o app** (classes e atributos esperados na marcação — ex.: a sidebar exige `data-sidebar-collapsed` estampado pré-hidratação). O comportamento (JS/React) é implementação de cada app; o padrão garante que o **visual** seja idêntico entre sistemas.

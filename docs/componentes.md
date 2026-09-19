@@ -45,12 +45,12 @@ Botão de ação. Tipografia própria: **uppercase, 700, `tracking-wider`**, fon
 
 ## ContextIconButton — `context-icon-button.tsx`
 
-Botão de contexto **só-ícone** da barra de ações (zona `contextActions` da FilterBar): alvo ≥ 40×40, `title` (tooltip nativo) + `aria-label` obrigatórios via `label`, foco visível.
+Botão de contexto **só-ícone** da barra de ações (zona `contextActions` da FilterBar): alvo ≥ 40×40, dica (`Tooltip` embutido) + `aria-label` obrigatórios via `label`, foco visível. Como a dica já vem por dentro, **não** envolver o componente num `Tooltip` externo: sairiam dois balões.
 
 | Prop | Tipo | Default | Descrição |
 |---|---|---|---|
 | `icon` | `LucideIcon` | — | Ícone 16px |
-| `label` | `string` | — | Rótulo da ação — vira `title` e `aria-label` |
+| `label` | `string` | — | Rótulo da ação — vira a dica (`Tooltip`) e o `aria-label` |
 | `variant` | `"neutro" \| "destaque"` | `neutro` | `neutro` = ícone cinza, hover bone; `destaque` = par `--c-emphasis` (espelho só-ícone do `Button variant="dark"`), reservado à criação principal da tela — repouso sem amarelo; **no hover o ícone fica amarelo sobre tinta** (assinatura da marca) nos dois temas: no claro só o ícone muda, no escuro o chip inverte para `--brand-ink` |
 | `loading` | `boolean` | `false` | Spinner + `disabled` + `aria-busy` |
 | `ref` / …rest | — | — | `ButtonHTMLAttributes` (sem `children`) |
@@ -128,7 +128,7 @@ Anatomia: lupa (`search`, `--premium-gray`) à esquerda; `input type="search"` c
 
 ## Textarea — `textarea.tsx`
 
-Mesmo visual do Input + `min-h-[76px]`, `resize-vertical`. **Reservado a texto curto multilinha** (motivo/justificativa) e comentários. Texto longo (briefing, descrição, copy) usa o **RichEditor** — regra de produto.
+Mesmo visual do Input + `min-h-[76px]`, `resize-vertical`. **Reservado a texto curto multilinha** (motivo/justificativa) e comentários. Texto longo (briefing, descrição, copy) usa o **RichEditor** — regra de produto. Aceita `ref`, como o `Input`: quem monta o campo às vezes precisa levar o foco até ele (é o caso dos atalhos da gaveta de ferramentas).
 
 ## Switch — `switch.tsx`
 
@@ -139,7 +139,8 @@ Interruptor liga/desliga: `button role="switch"` com trilho 20×36 e polegar bra
 | `checked` | `boolean` | Estado atual (controlado) |
 | `onCheckedChange` | `(proximo: boolean) => void` | Recebe o estado desejado, não um "inverta" |
 | `label` | `string` | Vira o `aria-label` — **obrigatório**, o switch não tem texto próprio |
-| `disabled` / `title` / `className` | — | Desabilitado usa `opacity-50` + `cursor-not-allowed` |
+| `dica` | `string` | Texto do balão (`Tooltip`) sobre o trilho — opcional, para explicar o estado |
+| `disabled` / `className` | — | Desabilitado usa `opacity-50` + `cursor-not-allowed` |
 
 **Quando usar**: estado binário que vale por si e é aplicado na hora (ativo/inativo, ligado/desligado) — é auto-save, não tem botão Salvar. Escolher entre várias opções é `Select` ou chips; disparar uma ação é `Button`.
 
@@ -236,12 +237,14 @@ Círculo com iniciais **pretas em bold** sobre a cor do colaborador, ou foto (`s
 
 | Prop | Tipo | Default | Descrição |
 |---|---|---|---|
-| `name` | `string` | — | Gera iniciais (`getInitials`) + `title` |
+| `name` | `string` | — | Gera as iniciais (`getInitials`) e o nome acessível (`alt` na foto, `role="img"` + `aria-label` nas iniciais) |
 | `color` | `string` | `var(--yellow)` | Cor de fundo (vinda de `Colaborador.cor`) |
 | `size` | `"sm" \| "md" \| "lg"` | `md` | 26px / 36px / 44px (20px existe em timelines, via classe) |
 | `src` | `string \| null` | — | Foto (Blob); com ela as iniciais não aparecem |
 
 Foto que falha ao carregar (ex.: blob de store excluída) **cai para as iniciais** em vez do ícone de imagem quebrada; a URL com erro fica memorizada e uma nova `src` tenta de novo.
+
+**Sem dica própria**: o avatar aparece empilhado (a sobreposição negativa depende de ele ser o próprio item do flex) e muitas vezes já vive dentro de um `Tooltip` do chamador, que sairia duplicado. Quem precisa do nome no hover põe a dica no gatilho ao redor (ver `presenca-avatares.tsx` e o editor de workflow).
 
 **Stack**: a partir do segundo avatar, `margin-left: -7px` + anel de 2px na cor da superfície. Excedente vira chip "+N" — para presença em tempo real, use o `PresencaAvatares` pronto.
 
@@ -259,7 +262,27 @@ Reusa o `Avatar` (`size="sm"`, sobreposição `-7px`, anel `ring-2` em `--c-surf
 
 ## Tooltip — `tooltip.tsx`
 
-Tooltip 100% CSS (sem lib): balão escuro fixo nos dois temas (`--brand-ink` + texto `--brand-on-ink`, 12px/500) que aparece no **hover e no foco por teclado** (`group-focus-within`). Props: `label`, `side` (`right` default, `top/bottom/left`), `className` (wrapper), `bubbleClassName` (balão). Para textos longos ou conteúdo rico, não usar tooltip — preferir slide-over/popover.
+**Único mecanismo de dica da interface**: o `title` nativo está barrado por lint em elemento do DOM (só `iframe`, `abbr`, `svg`/`<title>` e os e-mails seguem usando, onde ele é nome acessível de conteúdo embutido, não dica). Motivo: o nativo não aparece no foco por teclado nem no toque, ignora o tema e cada navegador o desenha de um jeito.
+
+Tooltip 100% CSS (sem lib, sem portal): balão escuro fixo nos dois temas (`--brand-ink` + texto `--brand-on-ink`, 12px/500) que aparece no **hover, com 300 ms de atraso**, e no **foco por teclado, sem atraso** (`group-focus-within`) — quem navega por Tab quer a dica na hora. O balão recebe `id` e o gatilho passa a apontar para ele por `aria-describedby` (ids existentes são somados), então o leitor de tela lê a dica como descrição do controle. Dica **não** é nome: botão só-ícone continua exigindo `aria-label`.
+
+| Prop | Tipo | Default | Descrição |
+|---|---|---|---|
+| `label` | `string` | — | Texto do balão |
+| `side` | `"right" \| "top" \| "bottom" \| "left"` | `right` | Lado do balão |
+| `className` | `string` | — | Classe do wrapper (largura, posição, `min-w-0` em texto que trunca) |
+| `bubbleClassName` | `string` | — | Classe do balão (gating por estado) |
+| `delay` | `number` | 300 (herdado) | Atraso do hover em ms; com valor explícito a instância ignora o grupo |
+| `disabled` | `boolean` | `false` | Desliga o balão sem mexer no layout |
+| `bloco` | `boolean` | `false` | Wrapper vira `div`, para gatilho que não é conteúdo de frase (um `h2`) |
+
+**Barra de ícones**: marque o contêiner com `data-tooltip-group`. Depois de 300 ms com o ponteiro dentro do grupo, mudar de um ícone para o vizinho mostra a dica na hora; sair do grupo devolve o atraso. O atraso vive numa custom property registrada (`--tt-delay`, em `globals.css`).
+
+**Texto cortado**: dica só quando o texto realmente não cabe. `useTruncado` (`src/lib/hooks/use-truncado.ts`) mede `scrollWidth > clientWidth` por `ResizeObserver` e o consumidor passa `disabled={!truncado}`. Desestruture o retorno (`const { ref, truncado } = useTruncado()`): o `react-hooks/refs` acusa leitura de ref durante o render se o objeto inteiro ficar numa variável só.
+
+**Balão dentro de `overflow: hidden`**: o contêiner recorta o balão. A saída conhecida é tornar o **wrapper `position: static`** — o bloco-contêiner do balão passa a ser um ancestral fora do scroller, que por spec não recorta nem entra na largura rolável. É o que a sidebar recolhida faz (`.sidebar-tt-wrap` + `.sidebar-tooltip` em `globals.css`). Quando o wrapper já é posicionado pelo chamador (`absolute`, `fixed`, `sticky`), o componente não impõe `relative` — esse wrapper já serve de âncora. Onde não há saída (miniatura arredondada, barra empilhada), a informação vai para o nome acessível ou para um rótulo visível ao lado, e a dica não entra.
+
+Para textos longos ou conteúdo rico, não usar tooltip — preferir slide-over/popover.
 
 ---
 
@@ -358,6 +381,25 @@ Registra `eyebrow` / `title` / `subtitle` / `titleAction` no **contexto da topba
 
 ---
 
+## useDialogoFoco — `use-dialogo-foco.ts`
+
+Foco de overlay em um lugar só ([`src/lib/hooks/use-dialogo-foco.ts`](https://github.com/agenciapremium/tasks/blob/main/src/lib/hooks/use-dialogo-foco.ts), sobre as funções puras de [`src/lib/foco.ts`](https://github.com/agenciapremium/tasks/blob/main/src/lib/foco.ts)). **Todo overlay com `aria-modal="true"` usa este hook** — reimplementar foco no componente é defeito de revisão.
+
+| Opção | Tipo | Default | Descrição |
+|---|---|---|---|
+| `aberto` | `boolean` | — | Vira `false` no **início** do fechamento, não ao fim da animação |
+| `ref` | ref do elemento | — | O nó que carrega `role="dialog"` |
+| `inicial` | ref \| seletor \| `"primeiro"` \| `"nenhum"` | `"primeiro"` | Alvo do foco ao abrir; `"nenhum"` para quem já tem campo com `autoFocus` |
+| `escopoInicial` | ref do elemento | o painel | Onde procurar o "primeiro" focável (ex.: o corpo do slide-over, sem o cabeçalho) |
+| `alternativo` | ref \| seletor | — | Reserva: painel de leitura (título) e viewport estreita (evita o teclado virtual) |
+| `evitarTecladoVirtual` | `boolean` | `true` | Desligue quando digitar é a razão do overlay (busca global) |
+| `prender` | `boolean` | `true` | `false` em popover não modal: só devolve o foco, sem trap |
+| `estaNoTopo` | `() => boolean` | sempre topo | Consulta a pilha (`estaNoTopo(id)` do `slide-over.tsx`) |
+| `reforcoInert` | `boolean` | `true` | Marca o resto da página como `inert` enquanto o overlay está aberto |
+| `aoFechar` | `() => void` | — | Roda depois que o foco volta ao gatilho |
+
+Scrim ou irmão que precise continuar clicável com o overlay aberto leva `data-foco-livre` para ficar fora do `inert`; regiões `aria-live` (toast) também são preservadas.
+
 ## SlideOver — `slide-over.tsx`
 
 Painel flutuante de criação/edição — o overlay padrão do sistema (modal central novo é proibido).
@@ -365,14 +407,16 @@ Painel flutuante de criação/edição — o overlay padrão do sistema (modal c
 | Prop | Tipo | Descrição |
 |---|---|---|
 | `open` / `onClose` | — | Controlado pelo pai |
-| `title` | `string` | Header + `aria-label` |
+| `title` | `string` | Header + nome acessível do painel (`aria-labelledby` no `h2`) |
 | `loading` | `boolean` | Barra indeterminada sob o cabeçalho (auto-save/submit) |
 | `footer` | `ReactNode` | Rodapé **fixo** de ações: Cancelar (ghost) à esquerda, primária à direita |
-| `headerActions` | `ReactNode` | Ações no cabeçalho, à direita do título (ex.: toggle de status) — o `aria-label` continua sendo o `title` |
+| `headerActions` | `ReactNode` | Ações no cabeçalho, à direita do título (ex.: toggle de status) — o nome acessível continua vindo do `title` |
 
 Anatomia: portal em `document.body` (z-50, acima do FAB z-40); scrim `bg-black/40 backdrop-blur-sm`; painel `fixed right-4 top-4 bottom-4 w-[480px] max-w-[calc(100vw-2rem)]`, `--r-xl`, `--sh-lg`; entrada e saída animadas via `AnimatePresence` + presets `scrim`/`slideOver`. Corpo rolável; header e footer fixos.
 
 **Empilhamento (aninhado)**: renderize o segundo `<SlideOver>` como **descendente** do conteúdo do primeiro. Pilha global garante: `Esc` fecha só o painel do topo (o scrim fecha o próprio painel); scroll do body restaura quando o último fecha. Prefira aninhamento ao wizard quando o sub-fluxo é opcional/independente.
+
+**Foco**: gerenciado pelo [`useDialogoFoco`](#usedialogofoco--use-dialogo-focots) — entra no primeiro campo do conteúdo (ou no título, em painel de leitura e em viewport estreita), `Tab` cicla dentro do painel do topo e o foco volta ao gatilho ao fechar. Botão de fechar com `aria-label="Fechar"`.
 
 ## ConfirmDialog — `confirm-dialog.tsx`
 
@@ -392,7 +436,7 @@ Diálogo central de confirmação (`--r-xl` + `--sh-lg`, máx. 420px, preset `mo
 | `secondaryAction` | `{ label, onClick, icon? }` | — | Ação secundária **destrutiva** entre Cancelar e a primária (ex.: "Excluir definitivamente" no diálogo de arquivar) — para gestos com duas saídas; a confirmação da irreversível vive num segundo diálogo |
 | `children` | `ReactNode` | — | Conteúdo extra (ex.: campo de horas — padrão "entrada rápida") |
 
-Foco gerenciado (foca primária ao abrir, devolve ao gatilho), `Esc` cancela, `Enter` confirma. Uso imperativo via hook **`useConfirm`** (`const ok = await confirm({ title, message })` — requer `ConfirmProvider`).
+Foco pelo [`useDialogoFoco`](#usedialogofoco--use-dialogo-focots) (foca a primária ao abrir, prende o `Tab` na caixa, devolve ao gatilho), `Esc` cancela, `Enter` confirma. Uso imperativo via hook **`useConfirm`** (`const ok = await confirm({ title, message })` — requer `ConfirmProvider`).
 
 Renderiza em **portal no `document.body`**, montado só ao abrir: entra depois de qualquer overlay já aberto (slide-over, painel de cards) e por isso fica por cima dele na mesma camada `z-50`, fora do `inert` que o overlay aplicou ao resto da página (antes, dentro da árvore da app, herdava esse `inert` e ficava sob o scrim).
 
@@ -411,7 +455,7 @@ Diálogo modal **sem moldura** (padrão "Painel de cards flutuantes" de `padroes
 | `totalItens` | `number` | Quantos itens a cascata mostra (a base entra depois) |
 | `rolarAoTopo` | `number` | Mude o valor para a lista voltar ao topo (ex.: item novo em tempo real) |
 
-Filhos da lista: `PainelCardsItem` (`indice`, `total`, `chega?`, `itemId?`) e `PainelCardsRotulo` (rótulo de dia em pílula). Mesma pilha de overlays do `SlideOver` (o `Esc` fecha só o topo), foco gerenciado (título ao abrir, `Tab` preso, volta ao gatilho), trava de rolagem do corpo.
+Filhos da lista: `PainelCardsItem` (`indice`, `total`, `chega?`, `itemId?` para `data-item-id`) e `PainelCardsRotulo` (rótulo de dia em pílula). Pilha de overlays compartilhada com o `SlideOver` ([`overlay-pilha.ts`](https://github.com/agenciapremium/tasks/blob/main/src/lib/overlay-pilha.ts)), foco por [`useDialogoFoco`](#usedialogofoco--use-dialogo-focots), animação por `painelVariantes` (ver [motion.md](motion.md)).
 
 ## BotaoLido — `botao-lido.tsx`
 
@@ -434,7 +478,7 @@ Card de notificação das três superfícies (painel do sino, central `/notifica
 
 Visualizador full-viewport de materiais (`role="dialog"` + `aria-modal`, z-[60]). Fundo escuro **fixo** `bg-black/90` nos dois temas (exceção documentada: mídia em tela cheia). Props: `files: DriveFile[]`, `index`, `onIndexChange`, `onClose`, `context: DriveContext`.
 
-Imagem com zoom (botões +/−/reset, 1×–4× em passos de 0,5) e arrastar quando ampliada, com fallback em cascata original → rendição do Drive → erro; vídeo/áudio/demais tipos via `DriveMediaViewer`; navegação ←/→ restrita ao conjunto passado (botões desabilitados nos extremos); contador `i / n`; fecha por Esc/botão com **saída animada** (o `onClose` corre ao fim do fade) e foco devolvido ao gatilho; trava o scroll do body.
+Imagem com zoom (botões +/−/reset, 1×–4× em passos de 0,5) e arrastar quando ampliada, com fallback em cascata original → rendição do Drive → erro; vídeo/áudio/demais tipos via `DriveMediaViewer`; navegação ←/→ restrita ao conjunto passado (botões desabilitados nos extremos); contador `i / n`; fecha por Esc/botão com **saída animada** (o `onClose` corre ao fim do fade); foco pelo [`useDialogoFoco`](#usedialogofoco--use-dialogo-focots) (entra no botão de fechar, cicla nos controles e volta ao gatilho); trava o scroll do body.
 
 **Contrato de dimensionamento**: o wrapper direto da mídia leva `flex h-full w-full items-center justify-center overflow-hidden` e **nenhuma classe de tamanho vai ao `DriveMediaViewer`**. O `h-full` dá altura definida ao pai — sem ela, o `max-h-full` interno do leitor computa como `none` e o vídeo vertical renderiza no tamanho natural, cortado pelo `overflow-hidden` do palco. Vale igual no fallback do `ZoomableImage` em `stage === "failed"`.
 
@@ -538,6 +582,36 @@ Transição de altura via Motion (~200ms; instantânea sob `prefers-reduced-moti
 ## EmptyState — `empty-state.tsx`
 
 Estado vazio centralizado: `icon` (38px `--premium-silver`), `title` (15/700 steel), `description` (12.5 gray, máx. 300px), `action` (ghost sm opcional). Microcopy: ação positiva + próximo passo ("Nenhuma demanda hoje. Que tal revisar a fila de aprovações?"). Para drop areas: borda `2px dashed var(--premium-mist)`.
+
+As telas de rota "não encontrada" (`app/(app)/not-found.tsx` e `app/not-found.tsx`) repetem esta **anatomia** (ícone, título, descrição, ações) com o título em `h1`, porque ali ele é o título da tela e não o de um bloco.
+
+## ErroRota — `erro-rota.tsx`
+
+Tela de erro de rota. Um único componente alimenta todos os `error.tsx`, que ficam com três linhas e só escolhem a variante.
+
+| Prop | Tipo | Default | Descrição |
+|---|---|---|---|
+| `error` | `Error & { digest?: string }` | — | O erro que o boundary capturou |
+| `aoTentarDeNovo` | `() => void` | — | Reexecuta o segmento. No Next 16 é o `unstable_retry` do `error.tsx` (refaz o fetch e re-renderiza); `reset` só limpa o estado do boundary e serve de alternativa |
+| `variante` | `"app" \| "publico"` | `app` | `app` = dentro do layout autenticado, só tokens (segue o tema); `publico` = fundo `--brand-ink` com a logo, para os shells fora do app |
+| `inicio` | `string` | `/` | Destino do caminho de volta (raiz do shell público quando houver) |
+
+- Anatomia: ícone `AlertTriangle` em disco (`--danger-bg` no app, `--c-sidebar-elevated` no público), `h1` "Algo deu errado", texto de orientação, `Referência: <digest>` e duas ações: `Button primary` "Tentar de novo" e link "Voltar para o início".
+- **Nunca** mostra a mensagem da exceção em produção; em desenvolvimento ela aparece dobrada em `<details>`. `console.error(error)` no `useEffect` é o único registro (monitoramento externo é decisão de infraestrutura à parte).
+- Usado também por `app/global-error.tsx`, que renderiza o próprio `<html>`/`<body>`, importa o `globals.css` e aplica o tema salvo com o trecho anti-FOUC do layout raiz (§9). Lá não há provider algum: o componente depende só de tokens e de `next/link`.
+
+## Skeleton — `skeleton.tsx`
+
+Blocos de carregamento usados pelos `loading.tsx` das rotas. Todos são `aria-hidden` (forma, não conteúdo), pintados em `--premium-bone` e pulsam apenas sob `motion-safe`.
+
+| Bloco | Props | Uso |
+|---|---|---|
+| `SkeletonLinha` | `largura`, `altura`, `raio` (`"sm" \| "md" \| "pilula"`), `className` | Linha de texto, campo, chip de filtro |
+| `SkeletonCard` | `altura`, `className` | Stat card, painel, card de cadastro |
+| `SkeletonTabela` | `linhas`, `colunas`, `className` | Tabela com faixa de cabeçalho |
+| `SkeletonKanban` | `colunas`, `cards`, `className` | Board com trilhas e cartões |
+
+O raio vem do prop `raio`, não do `className`: `cn()` não resolve conflito de utilitário (§2.8). Um lint barra `animate-spin` em `**/loading.tsx` (ver Estados de carregamento em `padroes-de-interacao.md`).
 
 ## CodeBlock — `code-block.tsx`
 
