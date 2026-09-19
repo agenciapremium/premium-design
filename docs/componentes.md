@@ -292,7 +292,7 @@ Desde a v0.10.0 as classes de chip, o menu e o item de seleção moram no módul
 
 ## Pilula e PilulaSelect — `pilula.tsx`
 
-Pílula de ação e de seleção fora da barra (v0.10.0; `ui-guidelines.md` §3.4). `Pilula` (botão) e `PilulaLink` aceitam `ativa`, `ligada`, `flutuante` (alvo de 40px + `--sh-md`, para flutuar sobre scrim) e `oculta` (fade e saída do `Tab` sem deslocar vizinhos; `css/patterns/pilula.css`). `PilulaSelect`: `rotulo`, `valor`, `opcoes: { valor, rotulo, contagem?, secao? }[]`, `onEscolher`, `icone?`, `contagem?`, `ativa?`, `flutuante?`; menu com seção, contagem por opção, setas/Home/End, `Enter` escolhe, `Esc` fecha só o menu. Dentro de diálogo modal, o menu abre **dentro** do diálogo.
+Pílula de ação e de seleção fora da barra (v0.10.0; `ui-guidelines.md` §3.4). `Pilula` (botão) e `PilulaLink` aceitam `ativa`, `ligada`, `flutuante` (alvo de 40px + `--sh-md`, para flutuar sobre scrim) e `oculta` (fade e saída do `Tab` sem deslocar vizinhos; `css/patterns/pilula.css`). `PilulaSelect`: `rotulo`, `valor`, `opcoes: { valor, rotulo, rotuloCurto?, contagem?, secao? }[]`, `onEscolher`, `icone?`, `contagem?` (acima de 99, "99+"), `ativa?`, `flutuante?`, `largura?` (px fixos; a pílula mostra `rotuloCurto` e não muda de tamanho entre opções, o menu mostra `rotulo`); menu com seção, contagem por opção, setas/Home/End, `Enter` escolhe, `Esc` fecha só o menu. Dentro de diálogo modal, o menu abre **dentro** do diálogo.
 
 ## SegmentedTabs — `segmented-tabs.tsx`
 

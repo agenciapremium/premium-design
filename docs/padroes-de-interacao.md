@@ -251,9 +251,10 @@ acima da topbar, da gaveta de ferramentas e do alerta fixo; confirmação e toas
 por cima.
 
 **Pílulas.** Desenho do chip de filtro (§3.4 do `ui-guidelines.md`), com alvo de
-40px e sombra. No topo: uma **pílula de seleção** com os filtros padrão (na central
-de notificações: Todas, Não lidas e as categorias com não lidas, cada uma com a
-contagem) e **pílulas de ação** ("Marcar todas como lidas", que some com fade
+40px e sombra. No topo: uma **pílula de seleção** de largura fixa, com rótulo curto,
+para escolher um filtro não empurrar as vizinhas (na central de notificações:
+Todas, Não lidas e as categorias com não lidas, cada uma com a contagem; na
+pílula, "Menções", "Aprovações" etc.) e **pílulas de ação** ("Marcar todas como lidas", que some com fade
 quando não há o que marcar). Na base: "Ver todas" para a tela completa.
 
 **Card.** Conteúdo do item (ícone e cor do tipo num quadrado de 36px, título e
@@ -286,7 +287,11 @@ sozinhos); o menu da pílula de seleção abre **dentro** do diálogo; alvo mín
 
 **Estados.** Carregando, vazio e erro aparecem como cards na própria lista (quatro
 esqueletos; card de estado vazio com ação opcional; card de erro com
-`role="alert"`).
+`role="alert"`). **Esqueleto só quando ainda não há lista**: reabrir o painel ou
+voltar a um recorte já visto mostra na hora a última lista e atualiza em
+silêncio (o que chegou desde então entra como chegada); uma atualização que
+falha com a lista na tela mantém a lista. A busca pode começar antes do clique,
+com o ponteiro ou o foco no gatilho.
 
 Implementação de referência: [`painel-cards.tsx`](https://github.com/agenciapremium/tasks/blob/main/src/components/ui/painel-cards.tsx)
 e a central de notificações ([`notificacoes-bell.tsx`](https://github.com/agenciapremium/tasks/blob/main/src/components/layout/notificacoes-bell.tsx))

@@ -333,9 +333,11 @@ possível do design system, não como algo a fazer no meio de um fix.
 - **Pílula de ação e de seleção** (v0.10.0): o mesmo desenho do chip, fora da
   barra, com uma fonte única de classes para os dois usos (no Tasks,
   [`pilula.tsx`](https://github.com/agenciapremium/tasks/blob/main/src/components/ui/pilula.tsx), que a `FilterBar` importa).
-  Pílula de ação (botão ou link) e de seleção única (ícone, rótulo truncado,
-  contagem em selo `--premium-ink`, chevron que gira; menu com seções, contagem
-  por opção e setas). Sobre scrim: alvo de 40px e `--sh-md`. Pílula de ação que
+  Pílula de ação (botão ou link) e de seleção única (ícone, rótulo, contagem em
+  selo `--premium-ink`, chevron que gira; menu com seções, contagem por opção e
+  setas). Pílula de seleção que convive com outras numa linha tem **largura
+  fixa** e **rótulo curto** por opção (o menu mantém o nome completo): escolher
+  uma opção não pode alargar a pílula e empurrar as vizinhas. Sobre scrim: alvo de 40px e `--sh-md`. Pílula de ação que
   deixa de se aplicar some com fade e sai do `Tab` sem deslocar os vizinhos
   (`css/patterns/pilula.css`). Dentro de diálogo modal, o menu abre **dentro**
   do diálogo: fora, o `aria-modal` o tiraria da árvore de acessibilidade.
