@@ -226,6 +226,7 @@ Grid base de **4px**. Medidas estruturais observadas:
 | Medida | Valor |
 |---|---|
 | Padding de página | `26px 30px 60px` |
+| Largura do conteúdo | 100% da área ao lado da sidebar, sem `max-width` (`ui-guidelines.md` §3.5) |
 | Topbar | `min-h-[88px]`; 64px abaixo de 768px |
 | Faixa da logo (topo da sidebar) | A mesma altura da topbar: 88px; 64px abaixo de 768px |
 | Sidebar | 248px expandida · **64px colapsada** |

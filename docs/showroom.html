@@ -185,9 +185,11 @@ svg.lucide{width:16px;height:16px;flex:none}
 }
 .ds-topbar h1{font-size:16px;font-weight:700;letter-spacing:-.01em}
 .ds-topbar .sub{font-size:11.5px;color:var(--c-muted)}
-.ds-content{padding:26px 30px;max-width:1180px}
+/* 100% da largura ao lado da sidebar: sem max-width nem contêiner centralizado (ui-guidelines.md §3.5) */
+.ds-content{padding:26px 30px}
 section.ds-sec{margin-bottom:56px;scroll-margin-top:calc(var(--ds-topo) + 16px)}
 .ds-sec>h2{font-size:22px;font-weight:700;letter-spacing:-.02em;margin-bottom:4px}
+/* Os max-width de texto abaixo são medida de leitura, a exceção de texto corrido da §3.5: o bloco em volta segue com 100% */
 .ds-sec>.sub{font-size:13px;color:var(--c-muted);margin-bottom:20px;max-width:720px}
 .ds-sub{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--c-muted);margin:26px 0 12px}
 .spec-row{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-start}
@@ -391,7 +393,7 @@ section.ds-sec{margin-bottom:56px;scroll-margin-top:calc(var(--ds-topo) + 16px)}
 .card-h{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid var(--premium-mist)}
 .card-h h3{font-size:15px;font-weight:700}
 .card-b{padding:16px 18px}
-.stat{padding:16px 18px;display:flex;flex-direction:column;gap:10px;min-width:190px}
+.stat{padding:16px 18px;display:flex;flex-direction:column;gap:10px;min-width:190px;flex:1 1 190px}
 .stat .ic{width:34px;height:34px;border-radius:var(--r-md);display:flex;align-items:center;justify-content:center}
 .stat .num{font-size:30px;font-weight:700;letter-spacing:-.02em;line-height:1}
 .stat .lbl{font-size:12px;color:var(--premium-gray);font-weight:500}
@@ -450,7 +452,7 @@ table.ds tbody tr.click:hover{background:var(--premium-paper)}
 
 /* ── Kanban (§4.6) ── */
 .board{display:flex;gap:16px;overflow-x:auto;align-items:stretch}
-.kcol{flex:0 0 290px;background:var(--premium-bone);border-radius:var(--r-lg);display:flex;flex-direction:column;max-height:480px}
+.kcol{flex:1 1 280px;min-width:280px;max-width:360px;background:var(--premium-bone);border-radius:var(--r-lg);display:flex;flex-direction:column;max-height:480px}
 .kcol-h{display:flex;align-items:center;gap:8px;padding:13px 14px;flex:none}
 .kcol-h .dot{width:9px;height:9px;border-radius:50%}
 .kcol-h b{font-size:11px;text-transform:uppercase;letter-spacing:.06em;font-weight:700;color:var(--premium-steel)}
@@ -688,6 +690,10 @@ table.ds tbody tr.click:hover{background:var(--premium-paper)}
 .tok-comment{color:var(--code-comment);font-style:italic}
 .tok-property{color:var(--code-property)}
 .tok-punct{color:var(--code-punct)}
+
+/* ── Gráficos (bar-chart.tsx / line-chart.tsx): largura do contêiner, altura fixa ── */
+.grafico{width:100%;overflow-x:auto;scrollbar-width:thin}
+.grafico svg{display:block}
 
 /* ── Skeleton (§5.7) ── */
 .skel{background:var(--premium-bone);border-radius:var(--r-sm);position:relative;overflow:hidden}
@@ -1417,14 +1423,14 @@ th.sortable.on svg.lucide{color:var(--premium-ink)}
     </div>
     <div class="ds-sub">Painel com header + card de projeto + meta-card</div>
     <div class="specimen on-paper" style="border:0;box-shadow:none;padding:0;align-items:stretch">
-      <div class="card" style="width:300px">
+      <div class="card" style="flex:1 1 300px">
         <div class="card-h"><h3>Demandas para hoje</h3><span class="badge badge-default">4</span></div>
         <div class="card-b" style="display:flex;flex-direction:column;gap:10px">
           <div style="font-size:13px">Post carrossel · lançamento <span class="badge badge-warning" style="margin-left:6px">Fazendo</span></div>
           <div style="font-size:13px">Roteiro reels institucional <span class="badge badge-info" style="margin-left:6px">Novas</span></div>
         </div>
       </div>
-      <div class="card hoverable" style="width:280px;padding:16px;display:flex;flex-direction:column;gap:10px">
+      <div class="card hoverable" style="flex:1 1 280px;padding:16px;display:flex;flex-direction:column;gap:10px">
         <div style="display:flex;justify-content:space-between;align-items:center">
           <span class="badge badge-success">No prazo</span>
           <i data-lucide="star" style="width:15px;height:15px;color:var(--amber)"></i>
@@ -1437,7 +1443,7 @@ th.sortable.on svg.lucide{color:var(--premium-ink)}
           <span class="avatar sm" style="background:var(--teal)">RM</span>
         </div>
       </div>
-      <div class="card meta-card" style="width:260px;padding:16px">
+      <div class="card meta-card" style="flex:1 1 260px;padding:16px">
         <div style="display:flex;align-items:center;gap:9px;margin-bottom:8px">
           <span class="ic" style="width:28px;height:28px;border-radius:var(--r-md);background:var(--yellow);color:#000;display:flex;align-items:center;justify-content:center"><i data-lucide="info" style="width:14px;height:14px"></i></span>
           <b style="font-size:14px">Detalhes</b>
@@ -1523,7 +1529,7 @@ th.sortable.on svg.lucide{color:var(--premium-ink)}
   <!-- ════════ KANBAN ════════ -->
   <section class="ds-sec" id="kanban">
     <h2>Kanban</h2>
-    <p class="sub">Colunas <code>--premium-bone</code> de 290px com cabeçalho fixo + corpo rolável (<code>.kanban-col-scroll</code>). Kcard com tag de departamento, stagebar e rodapé com avatares + meta. Variante <code>locked</code> listrada.</p>
+    <p class="sub">Colunas <code>--premium-bone</code> elásticas entre 280 e 360px (a sobra fica à direita, de propósito) com cabeçalho fixo + corpo rolável (<code>.kanban-col-scroll</code>). Kcard com tag de departamento, stagebar e rodapé com avatares + meta. Variante <code>locked</code> listrada.</p>
     <div class="board">
       <div class="kcol">
         <div class="kcol-h"><span class="dot" style="background:var(--info)"></span><b>Novas</b><span class="n">2</span></div>
@@ -2056,34 +2062,8 @@ th.sortable.on svg.lucide{color:var(--premium-ink)}
     <h2>Gráficos</h2>
     <p class="sub"><code>bar-chart.tsx</code>, <code>pie-chart.tsx</code> e <code>line-chart.tsx</code> · SVG próprio, sem lib; cores só por token (claro/escuro automáticos); <code>role="img"</code> + <code>&lt;title&gt;</code> por elemento; a tabela adjacente é a fonte completa dos dados.</p>
     <div class="spec-row">
-      <div class="specimen" style="flex:1.4;min-width:340px">
-        <svg role="img" aria-label="Fluxo de caixa: entradas e saídas por mês" viewBox="0 0 480 220" width="100%" style="max-width:520px">
-          <title>Fluxo de caixa: entradas e saídas por mês</title>
-          <g font-size="9" fill="var(--premium-gray)">
-            <line x1="64" x2="472" y1="184" y2="184" stroke="var(--premium-mist)"/><text x="58" y="187" text-anchor="end">0</text>
-            <line x1="64" x2="472" y1="141" y2="141" stroke="var(--premium-mist)"/><text x="58" y="144" text-anchor="end">15k</text>
-            <line x1="64" x2="472" y1="98" y2="98" stroke="var(--premium-mist)"/><text x="58" y="101" text-anchor="end">30k</text>
-            <line x1="64" x2="472" y1="55" y2="55" stroke="var(--premium-mist)"/><text x="58" y="58" text-anchor="end">45k</text>
-            <line x1="64" x2="472" y1="12" y2="12" stroke="var(--premium-mist)"/><text x="58" y="15" text-anchor="end">60k</text>
-          </g>
-          <g>
-            <rect x="92" y="64" width="34" height="120" rx="3" fill="var(--success)"><title>Mar · Entradas: R$ 42.000</title></rect>
-            <rect x="130" y="110" width="34" height="74" rx="3" fill="var(--danger)"><title>Mar · Saídas: R$ 26.000</title></rect>
-            <rect x="228" y="41" width="34" height="143" rx="3" fill="var(--success)"><title>Abr · Entradas: R$ 50.000</title></rect>
-            <rect x="266" y="98" width="34" height="86" rx="3" fill="var(--danger)"><title>Abr · Saídas: R$ 30.000</title></rect>
-            <rect x="364" y="55" width="34" height="129" rx="3" fill="var(--success)"><title>Mai · Entradas: R$ 45.000</title></rect>
-            <rect x="402" y="121" width="34" height="63" rx="3" fill="var(--danger)"><title>Mai · Saídas: R$ 22.000</title></rect>
-          </g>
-          <g font-size="9.5" fill="var(--premium-gray)" text-anchor="middle">
-            <text x="128" y="208">Mar</text><text x="264" y="208">Abr</text><text x="400" y="208">Mai</text>
-          </g>
-          <polyline points="128,127 264,113 400,98" fill="none" stroke="var(--info)" stroke-width="2" stroke-linejoin="round"/>
-          <g>
-            <circle cx="128" cy="127" r="3.5" fill="var(--info)" stroke="var(--premium-white)" stroke-width="1.5"><title>Mar · Saldo: R$ 16.000</title></circle>
-            <circle cx="264" cy="113" r="3.5" fill="var(--info)" stroke="var(--premium-white)" stroke-width="1.5"><title>Abr · Saldo: R$ 20.000</title></circle>
-            <circle cx="400" cy="98" r="3.5" fill="var(--info)" stroke="var(--premium-white)" stroke-width="1.5"><title>Mai · Saldo: R$ 23.000</title></circle>
-          </g>
-        </svg>
+      <div class="specimen" style="flex:1.4;min-width:min(526px,100%)"> <!-- 480px do mínimo legível + respiro: quebra de linha antes de rolar -->
+        <div class="grafico" data-grafico="barras"></div>
       </div>
       <div class="specimen" style="flex:1;min-width:300px">
         <svg role="img" aria-label="Despesas por categoria" viewBox="0 0 168 168" width="168" height="168" style="flex:none">
@@ -2105,29 +2085,9 @@ th.sortable.on svg.lucide{color:var(--premium-ink)}
     </div>
     <div class="ds-sub">LineChart (line-chart.tsx) · série temporal, linha em <code>--premium-ink</code></div>
     <div class="specimen">
-      <svg role="img" aria-label="Cards concluídos por semana" viewBox="0 0 480 200" width="100%" style="max-width:560px">
-        <title>Cards concluídos por semana</title>
-        <g font-size="9" fill="var(--premium-gray)">
-          <line x1="44" x2="468" y1="160" y2="160" stroke="var(--premium-mist)"/><text x="38" y="163" text-anchor="end">0</text>
-          <line x1="44" x2="468" y1="123" y2="123" stroke="var(--premium-mist)"/><text x="38" y="126" text-anchor="end">6</text>
-          <line x1="44" x2="468" y1="86" y2="86" stroke="var(--premium-mist)"/><text x="38" y="89" text-anchor="end">12</text>
-          <line x1="44" x2="468" y1="49" y2="49" stroke="var(--premium-mist)"/><text x="38" y="52" text-anchor="end">18</text>
-          <line x1="44" x2="468" y1="12" y2="12" stroke="var(--premium-mist)"/><text x="38" y="15" text-anchor="end">24</text>
-        </g>
-        <polyline points="80,111 174,86 268,98 362,49 456,61" fill="none" stroke="var(--premium-ink)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-        <g>
-          <circle cx="80" cy="111" r="3.5" fill="var(--premium-ink)" stroke="var(--premium-white)" stroke-width="1.5"><title>Sem 27: 8</title></circle>
-          <circle cx="174" cy="86" r="3.5" fill="var(--premium-ink)" stroke="var(--premium-white)" stroke-width="1.5"><title>Sem 28: 12</title></circle>
-          <circle cx="268" cy="98" r="3.5" fill="var(--premium-ink)" stroke="var(--premium-white)" stroke-width="1.5"><title>Sem 29: 10</title></circle>
-          <circle cx="362" cy="49" r="3.5" fill="var(--premium-ink)" stroke="var(--premium-white)" stroke-width="1.5"><title>Sem 30: 18</title></circle>
-          <circle cx="456" cy="61" r="3.5" fill="var(--premium-ink)" stroke="var(--premium-white)" stroke-width="1.5"><title>Sem 31: 16</title></circle>
-        </g>
-        <g font-size="9.5" fill="var(--premium-gray)" text-anchor="middle">
-          <text x="80" y="190">Sem 27</text><text x="174" y="190">Sem 28</text><text x="268" y="190">Sem 29</text><text x="362" y="190">Sem 30</text><text x="456" y="190">Sem 31</text>
-        </g>
-      </svg>
+      <div class="grafico" data-grafico="linha"></div>
     </div>
-    <p class="spec-note">Na implementação React a linha se "traça" na entrada (<code>pathLength</code> 0→1, 600ms) e os pontos surgem em sequência; largura via <code>ResizeObserver</code> com rolagem horizontal abaixo do mínimo legível (480px). Usado no throughput de Quadros (WIP/aging).</p>
+    <p class="spec-note">Largura acompanha o contêiner e a altura é fixa (220px nas barras, 200px na linha): redimensione a janela e os dois gráficos se redesenham, como o <code>ResizeObserver</code> da implementação React; abaixo do mínimo legível (<code>max(480, categorias × 72)</code>) entra rolagem horizontal. Na implementação React a linha se "traça" na entrada (<code>pathLength</code> 0→1, 600ms) e os pontos surgem em sequência. Usado no throughput de Quadros (WIP/aging).</p>
   </section>
 
   <!-- ════════ OUTROS PRIMITIVOS ════════ -->
@@ -2483,6 +2443,70 @@ document.querySelectorAll("[data-lido]").forEach(function(btn){
     btn.closest(".nc").classList.add("lida");
     btn.replaceWith(ok);
   });
+});
+
+/* ── Gráficos (bar-chart.tsx / line-chart.tsx): a largura acompanha o contêiner e a
+      altura é fixa; abaixo do mínimo legível, max(480, categorias × 72), o contêiner
+      rola na horizontal. O ResizeObserver redesenha, como na implementação React. ── */
+var GRAFICOS = {
+  barras: {
+    descricao: "Fluxo de caixa: entradas e saídas por mês", altura: 220, esq: 64, dir: 8, max: 60000,
+    eixo: [0, 15000, 30000, 45000, 60000],
+    rotuloEixo: function(v){ return v ? (v / 1000) + "k" : "0"; },
+    formatar: function(v){ return "R$ " + v.toLocaleString("pt-BR"); },
+    categorias: ["Mar", "Abr", "Mai"],
+    series: [
+      { label: "Entradas", cor: "var(--success)", valores: [42000, 50000, 45000] },
+      { label: "Saídas", cor: "var(--danger)", valores: [26000, 30000, 22000] }
+    ],
+    linha: { label: "Saldo", cor: "var(--info)", valores: [16000, 20000, 23000] }
+  },
+  linha: {
+    descricao: "Cards concluídos por semana", altura: 200, esq: 44, dir: 12, max: 24,
+    eixo: [0, 6, 12, 18, 24],
+    rotuloEixo: String,
+    formatar: String,
+    categorias: ["Sem 27", "Sem 28", "Sem 29", "Sem 30", "Sem 31"],
+    series: [],
+    linha: { label: "", cor: "var(--premium-ink)", valores: [8, 12, 10, 18, 16] }
+  }
+};
+function desenhaGrafico(box){
+  var g = GRAFICOS[box.dataset.grafico];
+  var W = Math.max(480, g.categorias.length * 72, box.clientWidth), H = g.altura;
+  if(+box.dataset.largura === W) return;
+  box.dataset.largura = W;
+  var topo = 12, base = H - 36, plotW = W - g.esq - g.dir, larg = 34, vao = 4, n = g.series.length;
+  function y(v){ return +(base - v / g.max * (base - topo)).toFixed(1); }
+  function cx(i){ return +(g.esq + plotW * (i + .5) / g.categorias.length).toFixed(1); }
+  var h = '<svg role="img" aria-label="' + g.descricao + '" width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '">' +
+    '<title>' + g.descricao + '</title><g font-size="9" fill="var(--premium-gray)">';
+  g.eixo.forEach(function(v){
+    h += '<line x1="' + g.esq + '" x2="' + (W - g.dir) + '" y1="' + y(v) + '" y2="' + y(v) + '" stroke="var(--premium-mist)"/>' +
+      '<text x="' + (g.esq - 6) + '" y="' + (y(v) + 3) + '" text-anchor="end">' + g.rotuloEixo(v) + '</text>';
+  });
+  h += '</g>';
+  g.series.forEach(function(serie, k){
+    serie.valores.forEach(function(v, i){
+      var x = cx(i) - (n * larg + (n - 1) * vao) / 2 + k * (larg + vao);
+      h += '<rect x="' + x + '" y="' + y(v) + '" width="' + larg + '" height="' + (base - y(v)).toFixed(1) + '" rx="3" fill="' + serie.cor + '">' +
+        '<title>' + g.categorias[i] + ' · ' + serie.label + ': ' + g.formatar(v) + '</title></rect>';
+    });
+  });
+  var l = g.linha;
+  h += '<polyline points="' + l.valores.map(function(v, i){ return cx(i) + ',' + y(v); }).join(' ') +
+    '" fill="none" stroke="' + l.cor + '" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>';
+  l.valores.forEach(function(v, i){
+    h += '<circle cx="' + cx(i) + '" cy="' + y(v) + '" r="3.5" fill="' + l.cor + '" stroke="var(--premium-white)" stroke-width="1.5">' +
+      '<title>' + g.categorias[i] + (l.label ? ' · ' + l.label : '') + ': ' + g.formatar(v) + '</title></circle>';
+  });
+  h += '<g font-size="9.5" fill="var(--premium-gray)" text-anchor="middle">';
+  g.categorias.forEach(function(c, i){ h += '<text x="' + cx(i) + '" y="' + (base + 24) + '">' + c + '</text>'; });
+  box.innerHTML = h + '</g></svg>';
+}
+document.querySelectorAll("[data-grafico]").forEach(function(box){
+  desenhaGrafico(box);
+  if(window.ResizeObserver) new ResizeObserver(function(){ desenhaGrafico(box); }).observe(box);
 });
 
 /* ── Menu lateral fixo: o clique rola o conteúdo até a seção e o scrollspy

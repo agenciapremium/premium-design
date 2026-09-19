@@ -382,6 +382,27 @@ da topbar. A linha pontilhada não é desenhada: a sidebar não tem divisória a
   `aria-modal` o tiraria da árvore de acessibilidade).
 - "Ordenar automático" usa variante **invertida** (fundo `--brand-ink` fixo, ícone amarelo).
 
+### 3.5 Largura do conteúdo: 100% da área útil
+
+- **O conteúdo ocupa 100% da largura disponível** ao lado da sidebar, em qualquer
+  tela. O `main` não tem `max-width` nem contêiner centralizado (`mx-auto`); o
+  único recuo é o respiro de página (§2.5). Faixa vazia à direita em monitor
+  largo é espaço útil jogado fora.
+- **O que sobra, cresce.** Grade de cards e de widgets divide a sobra entre os
+  itens (`grid-template-columns: repeat(auto-fill, minmax(<mínimo>, 1fr))` ou
+  `flex: 1 1 <base>`), em vez de fixar a largura de cada um e deixar o resto
+  vazio. Card, tabela, gráfico (§4.29) e barra de ações acompanham a largura do
+  contêiner.
+- **Largura fixa só fora do fluxo da página**: overlays (slide-over 480px,
+  diálogo 420px, popover, toast) e controles de tamanho próprio (botão, chip,
+  avatar, calendário).
+- **Duas exceções, as duas de leitura**, e nenhuma encolhe o bloco em volta:
+  a linha de texto corrido pode parar numa medida de leitura (no Tasks,
+  `max-w-[66ch]` nos textos de apoio do Minha conta), e a coluna do kanban para
+  em 360px (§4.6), porque coluna larga demais atrapalha a leitura do quadro.
+- Fora do shell (login, portal do cliente, e-mail) a página pode centralizar o
+  conteúdo: ali não há área de trabalho a preencher.
+
 ---
 
 ## 4. Componentes (catálogo)
@@ -1437,6 +1458,7 @@ inversão):
 ❌ Não use shadow arbitrária — somente `--sh-sm/md/lg/gold`.
 ❌ Não duplique lógica do `workflow-engine` para mudar etapa.
 ❌ Não use `window.alert`/`confirm`/`prompt` — use `useToast`/`useConfirm`/banner inline (§5.8).
+❌ Não limite a largura do conteúdo do shell (`max-width` no `main`, contêiner centralizado): ele ocupa 100% da área útil (§3.5).
 
 ---
 
@@ -1458,6 +1480,8 @@ inversão):
     (`npm run test:e2e:update`).
 13. Campo de busca: um controle de limpar só, o do sistema (`CampoBusca` ou o
     chip do `FilterBar`). Premium-design v0.9.0.
+14. Largura: numa tela de 1920px o conteúdo ocupa a área toda ao lado da
+    sidebar, sem faixa vazia à direita (§3.5). Premium-design v0.14.0.
 
 Sobre os itens 6, 7 e 11, no Tasks: a suíte ponta a ponta (change
 `testes-e2e-smoke-visual`) é a fonte dos screenshots das telas que ela cobre
