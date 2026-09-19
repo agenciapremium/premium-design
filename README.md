@@ -4,7 +4,7 @@ Identidade visual da **Agência Premium** (PREMIUM · MARKETING 360°): tokens d
 
 - Acento de marca: **amarelo Premium** (`--brand-yellow #FBDA25`) sobre **preto Premium** (`--brand-ink #0A0A0A`). Símbolo: troféu.
 - Dois temas, uma implementação: só a camada semântica `--c-*` muda em `html.dark`.
-- Tipografia: **Ubuntu** (300/400/500/700) — a fonte não é embutida; cada app a carrega (next/font, `@font-face` ou `<link>`).
+- Tipografia: **Ubuntu** (300/400/500/700) — a fonte não é embutida; cada app a carrega (next/font, `@font-face` ou `<link>`) e o pacote a usa por `var(--font-ubuntu, "Ubuntu")`: com `next/font`, declare a variável `--font-ubuntu`.
 
 ## Estrutura
 
@@ -56,6 +56,7 @@ O `premium.css` traz só o núcleo. Os padrões de recurso são importados **ape
 @import "@agenciapremium/premium-design/patterns/pilha-rolagem.css";  /* rolagem sem barra, com degradê (alerta fixo, painel) */
 @import "@agenciapremium/premium-design/patterns/pilula.css";         /* pílula de ação e de seleção fora da barra */
 @import "@agenciapremium/premium-design/patterns/tooltip.css";        /* atraso da dica (--tt-delay, data-tooltip-group) */
+@import "@agenciapremium/premium-design/patterns/blocknote.css";      /* editor de blocos BlockNote nos tokens */
 ```
 
 Cada arquivo documenta no cabeçalho o **contrato com o app** (classes e atributos esperados na marcação — ex.: a sidebar exige `data-sidebar-collapsed` estampado pré-hidratação). O comportamento (JS/React) é implementação de cada app; o padrão garante que o **visual** seja idêntico entre sistemas.

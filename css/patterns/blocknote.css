@@ -1,0 +1,108 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   PADRÃO · Editor de blocos (BlockNote) (opt-in, v0.12.0)
+   Para o sistema que tem, além do editor Markdown, um editor de blocos
+   BlockNote (no Tasks: as páginas da base de conhecimento). O motor de blocos
+   herda a tipografia e as cores do sistema, sem cor própria da biblioteca, e o
+   texto lido fica com a mesma cara do modo de leitura de Markdown (.md-view,
+   editor-rico.css). Regra da experiência comum aos dois editores em
+   docs/componentes.md §"Editor rico: uma experiência, dois motores".
+   As variáveis --bn-colors-* são a API pública de tema do BlockNote e a
+   exceção controlada à regra "cor só por token" (docs/ui-guidelines.md §2.7):
+   o valor é sempre um var(--token), nunca um hex. Um bloco só atende os dois
+   temas porque quem troca de valor no escuro é o token.
+   Especificidade: as regras da biblioteca moram em .bn-root e
+   .bn-root[data-color-scheme=dark]; o prefixo html garante a vitória sem
+   depender da ordem em que o CSS da biblioteca é importado.
+   Contrato com o app: .bn-moldura na moldura do editor (anatomia do Textarea,
+   docs/ui-guidelines.md §4.8). Para o trecho de link de Drive dentro do
+   editor, importe também drive-link.css.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+html .bn-root[data-color-scheme] {
+  --bn-colors-editor-text: var(--premium-steel);
+  /* Quem pinta o fundo é a moldura do editor. */
+  --bn-colors-editor-background: transparent;
+  --bn-colors-menu-text: var(--c-ink);
+  --bn-colors-menu-background: var(--c-surface);
+  --bn-colors-tooltip-text: var(--brand-on-ink);
+  --bn-colors-tooltip-background: var(--brand-ink);
+  --bn-colors-hovered-text: var(--premium-ink);
+  --bn-colors-hovered-background: var(--premium-bone);
+  --bn-colors-selected-text: var(--premium-ink);
+  --bn-colors-selected-background: var(--gold-bg);
+  --bn-colors-disabled-text: var(--premium-silver);
+  --bn-colors-disabled-background: var(--premium-bone);
+  --bn-colors-shadow: var(--premium-mist);
+  --bn-colors-border: var(--premium-mist);
+  --bn-colors-side-menu: var(--premium-silver);
+  --bn-border-radius: var(--r-md);
+  --bn-font-family: var(--font-ubuntu, "Ubuntu"), system-ui, sans-serif;
+}
+
+/* Tipografia: mesma escala do editor Markdown e do modo de leitura. */
+.bn-container .bn-default-styles {
+  font-family: var(--bn-font-family);
+  font-size: 13.5px;
+}
+.bn-container .bn-editor {
+  line-height: 1.65;
+  color: var(--premium-steel);
+}
+.bn-moldura .bn-editor {
+  padding-block: 8px;
+}
+@media (max-width: 640px) {
+  .bn-container .bn-editor {
+    padding-inline: 24px;
+  }
+}
+.bn-container [data-content-type="heading"] {
+  padding-top: 12px;
+  color: var(--premium-ink);
+}
+.bn-container [data-content-type="heading"][data-level="1"],
+.bn-container [data-prev-level="1"] {
+  --level: 1.34em;
+  --prev-level: 1.34em;
+}
+.bn-container [data-content-type="heading"][data-level="2"],
+.bn-container [data-prev-level="2"] {
+  --level: 1.19em;
+  --prev-level: 1.19em;
+}
+.bn-container [data-content-type="heading"][data-level="3"],
+.bn-container [data-prev-level="3"] {
+  --level: 1.04em;
+  --prev-level: 1.04em;
+}
+
+/* Citação, divisória, código e tabela: tokens no lugar das cores da lib. */
+.bn-container [data-content-type="quote"] blockquote {
+  color: var(--premium-gray);
+  border-left-color: var(--premium-mist);
+}
+.bn-container [data-content-type="divider"] hr {
+  border-top-color: var(--premium-mist);
+}
+.bn-container .bn-block-content[data-content-type="codeBlock"] {
+  background-color: var(--code-bg);
+  color: var(--code-fg);
+  border: 1px solid var(--code-border);
+  border-radius: var(--r-md);
+}
+.bn-container .bn-block-content[data-content-type="codeBlock"] > pre {
+  padding: 12px;
+  font-size: 12.5px;
+}
+.bn-container [data-content-type="table"] th,
+.bn-container [data-content-type="table"] td {
+  border-color: var(--premium-mist);
+  font-size: 13px;
+}
+.bn-container [data-content-type="table"] th {
+  background: var(--premium-bone);
+}
+.bn-container [data-file-block] .bn-add-file-button {
+  color: var(--premium-gray);
+  background-color: var(--premium-bone);
+}

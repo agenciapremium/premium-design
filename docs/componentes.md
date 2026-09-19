@@ -629,9 +629,34 @@ Realce por tokenizador leve próprio (`code-highlight.ts`, sem dependência) emi
 
 Utilitário de suporte do CodeBlock: `tokenize(code, lang)` devolve `CodeToken[]` (`{ cls: "tok-*" | null, text }`) por regras de regex sticky para `bash`, `json` e `javascript` (`text` = sem realce). Retorna **dados, nunca HTML** — o componente renderiza cada token como texto, o que elimina risco de injeção. As cores dos `.tok-*` vêm dos tokens de code theme em `globals.css` (sem hex no componente).
 
+## Editor rico: uma experiência, dois motores
+
+O sistema tem **dois motores** de texto rico, por causa do formato que cada lado grava, e **uma só experiência**:
+
+| Onde | Componente | Motor | Formato gravado |
+|---|---|---|---|
+| Briefing, copy/legenda, descrição de atividade, ajuste, comentário | [`RichEditor`](https://github.com/agenciapremium/tasks/blob/main/src/components/ui/rich-editor.tsx) | Tiptap | string **Markdown** (GFM) |
+| Página da base de conhecimento | [`BlocoEditor`](https://github.com/agenciapremium/tasks/blob/main/src/components/conhecimento/bloco-editor.tsx) | BlockNote | lista de **blocos JSON** com `id` estável (a API v1 e o MCP editam bloco a bloco) |
+
+Trocar o motor de qualquer dos dois lados quebraria um contrato de dados, então a convergência acontece na camada de experiência, em `components/ui/editor/`:
+
+- [`adaptador.ts`](https://github.com/agenciapremium/tasks/blob/main/src/components/ui/editor/adaptador.ts) — a lista de comandos (`COMANDOS_EDITOR`), os atalhos canônicos (`ATALHOS_CANONICOS`), o contrato `ComandosEditor` e o despachante de atalhos. **Fonte da verdade**: comando ou atalho novo nasce aqui.
+- [`tiptap.ts`](https://github.com/agenciapremium/tasks/blob/main/src/components/ui/editor/tiptap.ts) e [`blocknote.ts`](https://github.com/agenciapremium/tasks/blob/main/src/components/ui/editor/blocknote.ts) — um adaptador por motor, cobertos por teste de contrato (`adaptadores.test.ts`: mesma lista de membros, mesmos atalhos).
+- [`toolbar.tsx`](https://github.com/agenciapremium/tasks/blob/main/src/components/ui/editor/toolbar.tsx) — a barra, declarativa sobre a lista. Ordem fixa: `[negrito, itálico, riscado] [título, subtítulo] [lista, numerada] [citação, código] [link, tabela, imagem] [mencionar]`. Botão de ícone com alvo ≥ 40×40, dica pelo `Tooltip` (nunca `title`), `aria-pressed` pelo estado e `disabled` quando o comando não se aplica ao campo (ex.: "Imagem" sem provedor de upload, "Mencionar" sem lista de colaboradores). É dona do diálogo de URL do link e do seletor de arquivo da imagem.
+- [`moldura-editor.tsx`](https://github.com/agenciapremium/tasks/blob/main/src/components/ui/editor/moldura-editor.tsx) — a moldura dos dois: anatomia do `Textarea` (§4.8), com `bare` para o editor se fundir a um contêiner que já é a caixa.
+- [`mencao-lista.tsx`](https://github.com/agenciapremium/tasks/blob/main/src/components/ui/editor/mencao-lista.tsx) — o popover de menção `@`, o mesmo no comentário e na página de docs.
+- [`drive-colagem.ts`](https://github.com/agenciapremium/tasks/blob/main/src/components/ui/editor/drive-colagem.ts) — a regra única de reconhecimento do Google Drive ao colar.
+- [`lib/editor/limpar-html-colado.ts`](https://github.com/agenciapremium/tasks/blob/main/src/lib/editor/limpar-html-colado.ts) — a limpeza única da colagem de Word, Google Docs e páginas web (com testes).
+
+Atalhos (Ctrl no Windows/Linux, Cmd no Mac): `B` negrito · `I` itálico · `Shift+X` riscado · `Alt+2` título · `Alt+3` subtítulo · `Shift+8` lista · `Shift+7` lista numerada · `Shift+9` citação · `Alt+C` bloco de código · `K` link. Valem igualmente nos dois motores, porque quem os aplica é o despachante compartilhado, não o que cada biblioteca traz de fábrica.
+
+O que **não** converge, e por quê: o editor de blocos mantém o menu de barra `/` (é parte do modelo de blocos) e o arrastar de bloco; o editor Markdown mantém as regras de entrada de Markdown. A barra flutuante do Mantine fica desligada.
+
+**Regra**: comando novo entra na lista compartilhada e nos dois adaptadores, nunca só em um lado.
+
 ## RichEditor — `rich-editor.tsx`
 
-Editor rico único do sistema (Tiptap + Markdown GFM, client-only/SSR-safe via `immediatelyRender: false`).
+Editor rico dos **campos Markdown** do sistema (Tiptap + Markdown GFM, client-only/SSR-safe via `immediatelyRender: false`). Barra, atalhos, moldura e colagem vêm da camada comum acima.
 
 | Prop | Tipo | Descrição |
 |---|---|---|
@@ -643,7 +668,7 @@ Editor rico único do sistema (Tiptap + Markdown GFM, client-only/SSR-safe via `
 | `onImageFiles` | `(files: File[]) => void` | Colar/soltar imagem **delegada** ao consumidor (ex.: comentário → lista de anexos), sem inserir no corpo |
 | `uploadImage` | `(file: File) => Promise<string \| null>` | Sobe cada imagem e a **incorpora inline** como `![](url)` (ex.: briefing), com indicador "Enviando imagem…" — só a URL final entra no documento (nunca blob temporário). Sem nenhuma das duas, a imagem colada é ignorada |
 
-Toolbar: bold, italic, h2/h3, listas, citação, código, tabela, link — o link abre um **dialog próprio** (substitui `window.prompt`; Esc cancela, Enter aplica, botão "Remover link"). Sublinhado desabilitado (não existe em Markdown puro).
+Toolbar: a comum dos dois editores (ver "Editor rico: uma experiência, dois motores"). O link abre um **dialog próprio** (substitui `window.prompt`; Esc cancela, Enter aplica, botão "Remover link"). Sublinhado desabilitado (não existe em Markdown puro); "Mencionar" fica desabilitado nos campos que não recebem a extensão de menção, e "Imagem" nos que não recebem `uploadImage`.
 
 Comportamento de links dentro do editor: caminho do Google Drive colado vira link `drive://` (clique único **copia** o caminho remontado para o SO do usuário; duplo clique entra em edição); link externo (`http/https/mailto/tel`) — clique único **abre em nova aba**, duplo clique edita; link **online** do Drive exibe a barra fixa de ações (`DriveLinkActions`) no hover/foco/clique, que persiste até clique fora/Esc/outro link. Links programáticos são inseridos com um espaço sem marca depois (o mark é inclusivo na borda — sem isso o próximo texto seria absorvido). **Nunca escrever atributos no DOM do editor** (o `title` do mark link é absorvido pelo documento e corrompe a digitação) — rótulos de hover ficam no modo leitura.
 

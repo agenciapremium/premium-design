@@ -3,11 +3,13 @@
    Tipografia, seleção e scrollbar padrão dos sistemas Premium.
    A fonte Ubuntu (300/400/500/700) NÃO é embutida no pacote: cada app a
    carrega do seu jeito (next/font, @font-face ou <link>), com fallback
-   system-ui garantido aqui.
+   system-ui garantido aqui. A família vem de var(--font-ubuntu), que o
+   next/font declara (o nome que ele gera não casa com "Ubuntu"); sem a
+   variável, vale o nome literal, como no @font-face ou no <link>.
    ═══════════════════════════════════════════════════════════════════════════ */
 
 body {
-  font-family: "Ubuntu", system-ui, sans-serif;
+  font-family: var(--font-ubuntu, "Ubuntu"), system-ui, sans-serif;
   background: var(--c-bg);
   color: var(--c-ink);
   -webkit-font-smoothing: antialiased;

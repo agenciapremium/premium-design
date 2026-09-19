@@ -1,5 +1,21 @@
 # Changelog
 
+## v0.12.0 — 2026-09-19
+
+Regras de shell, navegação e edição, e um padrão de CSS novo. Nenhum token de cor mudou de valor. Também vindas do Tasks (05/09 a 18/09/2026).
+
+- **Editor rico: uma experiência, dois motores (`docs/componentes.md`, `docs/ui-guidelines.md` §4.8) e `css/patterns/blocknote.css` (novo)** — quando o sistema tem dois editores (Markdown e blocos), barra, atalhos, moldura, colagem limpa, menção `@` e trecho de Drive são os mesmos, e comando novo entra nos dois. O padrão novo liga o tema do BlockNote (`--bn-colors-*`) aos tokens, com um bloco só para os dois temas, e alinha a tipografia dos blocos à do modo de leitura. `drive-link.css` passa a valer também dentro de `.bn-editor`. Regra geral nova em `docs/ui-guidelines.md` §2.7: biblioteca de terceiro com tema próprio é mapeada **uma vez** para os tokens, com `var(--token)`, nunca hex.
+- **Atalhos de teclado (`docs/padroes-de-interacao.md`, `docs/ui-guidelines.md` §5.6)** — registro único resolvido por um só `keydown`; sequências de duas teclas com até 800ms entre elas (`c` cria, `g` navega, `t` abre a gaveta de ferramentas); painel `?`; nada dispara com o foco onde se digita nem com diálogo aberto; a permissão é a mesma da interface; atalho sem dica visível não existe.
+- **Ajuda contextual da tela (`docs/ui-guidelines.md` §5.6.1, novo)** — "?" ao lado do título abre um texto de uma a três frases por rota, com link para a documentação e o painel de atalhos; e o card "Primeiros passos" para quem entrou há menos de 14 dias, sem balão algum sobre a interface.
+- **Shell responsivo (`docs/padroes-de-interacao.md` §Responsividade, `docs/ui-guidelines.md` §2.5)** — abaixo de 768px o menu lateral vira gaveta por cima do conteúdo (sempre com os 248px), o respiro do `main` cai para 16px e a topbar para 64px; abaixo de 640px o breadcrumb da topbar some.
+- **Minha conta** — tudo o que é da pessoa (foto, dados, senha, notificações, preferências) vive numa tela só, em seções ancoráveis.
+- **`DatePicker` é o único controle de data (`docs/formularios.md`)** — o `<input type="date">` nativo não é usado; no Tasks, lint o barra. A troca é um para um, com o mesmo valor `aaaa-mm-dd`.
+- **Fonte servida pelo próprio app (`docs/tokens.md`, `docs/ui-guidelines.md` §2.1)** — nenhuma requisição ao Google em tempo de execução. `css/base.css` e `css/theme.css` passam a usar `var(--font-ubuntu, "Ubuntu")`: o sistema que carrega a fonte por `next/font` declara a variável (o nome de família que ele gera não casa com o literal `"Ubuntu"`); o que carrega por `@font-face` ou `<link>` não muda nada. Componente usa `font-sans` ou `var(--font-ubuntu)`, nunca o literal sozinho.
+- **Demandas (`docs/ui-guidelines.md` §4.6 e §4.13)** — chip de tempo da etapa ("gasto / previsto") com as faixas do `Badge`, SLA restante em horas úteis com vocabulário fechado, comentários resolvidos (selo, seção recolhida, contagem do que está em aberto) e badge de comentários não vistos no card.
+- **Checklist de PR de UI (`docs/ui-guidelines.md` §12)** — suíte de fumaça verde, no sistema que tem uma.
+
+Implementado primeiro no Tasks (changes `editor-rico-convergencia`, `atalhos-teclado-e-ajuda`, `app-shell-responsivo`, `shell-tipografia-e-navegacao`, `minha-conta-e-configuracoes-secoes`, `demandas-tempo-sla-no-card`, `demandas-comentarios-novidades-resolucao` e `testes-e2e-smoke-visual`).
+
 ## v0.11.0 — 2026-09-19
 
 Componentes novos e um padrão de CSS novo. Nenhum token mudou de valor. Tudo já vivia no Tasks desde a onda de 05/09/2026 e ainda não tinha subido para cá.

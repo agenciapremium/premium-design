@@ -21,6 +21,7 @@ Comportamentos transversais do produto — como as telas se organizam, navegam e
 - A **criação não vive na topbar nem na FilterBar** — entrada única é o FAB.
 - O FAB é um **speed-dial**: no desktop, o botão amarelo cria direto e as ações secundárias se revelam no hover/foco; no toque, tocar abre o dial (a principal entra como primeiro item). É arrastável — a posição persiste por usuário.
 - Detalhe complexo: grid `1fr 320px` (conteúdo + meta-cards), 1 coluna < 1100px.
+- Tudo o que é **da pessoa** vive na tela **Minha conta** (`/conta`): foto, dados pessoais, senha, notificações e preferências (tema, menu lateral recolhido, Caminhos do Drive), em seções ancoráveis (`#perfil`, `#dados-pessoais`, `#seguranca`, `#notificacoes`, `#preferencias`, `#sessao`). O identificador do usuário na sidebar abre um popover de três itens ("Minha conta", "Trocar de senha", que aponta para `/conta#seguranca`, e "Sair"), nunca um formulário. **Configurações** (`/configuracoes`) é do **sistema**, agrupada em seções (Cadastros, Produção, Pessoas, Financeiro, Acessos e integrações) com busca por título e descrição.
 
 ## Barra de ações da tela (FilterBar)
 
@@ -134,15 +135,40 @@ Nenhuma tela do produto cai na página padrão do framework, em nenhum estado.
 
 ## Atalhos de teclado
 
+Todo atalho global mora em [`lib/atalhos.ts`](https://github.com/agenciapremium/tasks/blob/main/src/lib/atalhos.ts) e é
+resolvido por um único `keydown` no `window`, instalado pelo `AtalhosProvider`
+(capability `atalhos-teclado`). Atalho novo entra no registro, nunca num efeito
+próprio: é o registro que alimenta o painel `?` e as dicas em `kbd` do FAB e do
+menu, e um atalho fora dele seria um atalho que ninguém descobre.
+
 | Atalho | Ação |
 |---|---|
 | `⌘K` / `Ctrl+K` | Busca global |
+| `?` | Painel "Atalhos de teclado" (lista só o que o usuário pode executar) |
 | `Esc` | Fecha overlay do topo da pilha |
+| `c` `d` / `c` `a` / `c` `p` / `c` `e` | Criar demanda / atividade / projeto / evento |
+| `g` `d` / `g` `m` / `g` `a` | Ir para Dashboard / Minhas Demandas / Minhas Atividades |
+| `g` `q` / `g` `p` / `g` `n` | Ir para Quadros / Gestão de Projetos / Notificações |
+| `g` `e` / `g` `c` | Ir para Entregas / Configurações |
+| `t` `f` | Abrir ou fechar a gaveta de ferramentas |
+| `t` `c` / `t` `r` / `t` `l` / `t` `u` | Abrir a gaveta em Caminho do Drive / Tempo de roteiro / Contador de caracteres / Dias úteis |
 | `Enter` | Confirma diálogo com primária em foco; ativa linha de tabela |
-| `↑` / `↓` | Navega opções em select/dropdown aberto (`Enter` escolhe) |
+| `↑` / `↓` | Navega opções em select/dropdown aberto e resultados da busca global, atravessando os grupos (`Enter` escolhe) |
 | `←` / `→` | Material anterior/próximo no lightbox |
-| `t` `f` | Abre ou fecha a gaveta de ferramentas |
-| `t` + letra | Abre a gaveta já numa ferramenta (`t` `c` Caminho do Drive, `t` `r` Tempo de roteiro, `t` `l` Contador de caracteres, `t` `u` Dias úteis) |
+
+Regras que valem para todas as sequências:
+
+- **Sequência, não combinação.** Duas teclas em ordem, com até 800ms entre elas.
+  Não colidem com o navegador e são o vocabulário de Gmail, GitHub e Linear.
+- **Permissão é a mesma da interface.** Criar respeita o predicado da ação no
+  FAB; navegar respeita a visibilidade do item no menu lateral
+  ([`lib/nav/itens.ts`](https://github.com/agenciapremium/tasks/blob/main/src/lib/nav/itens.ts)). Sem permissão, a tecla não
+  faz nada e o atalho não aparece no painel.
+- **Silêncio onde se digita.** Nada dispara com o foco em `input`, `textarea`,
+  `select`, `[contenteditable]` ou dentro do Tiptap (`.ProseMirror`) e do
+  BlockNote (`.bn-editor`), nem com um diálogo modal aberto.
+- **O caractere manda, não a tecla física.** `?` é reconhecido pelo caractere
+  produzido, então funciona igual em ABNT e em ANSI.
 
 ## Gaveta de ferramentas e cartão de ferramenta
 
@@ -336,6 +362,20 @@ Implementação de referência: [`painel-cards.tsx`](https://github.com/agenciap
 e a central de notificações ([`notificacoes-bell.tsx`](https://github.com/agenciapremium/tasks/blob/main/src/components/layout/notificacoes-bell.tsx))
 no Tasks.
 
+## Ajuda contextual
+
+Toda tela do menu registra, pelo `PageHeader`, um texto de ajuda de uma a três
+frases (o que a tela é e qual é o próximo passo). A topbar desenha um "?" ao lado
+do título que abre esse texto num popover, com link para a documentação quando
+houver e um atalho para o painel de teclas. Os textos vivem só em
+[`lib/ajuda-telas.ts`](https://github.com/agenciapremium/tasks/blob/main/src/lib/ajuda-telas.ts), por rota, e um teste cobra
+que nenhuma rota do menu fique sem o seu.
+
+Para quem entrou há menos de 14 dias, o Dashboard mostra o card "Primeiros
+passos" acima do "Meu dia": quatro passos que se marcam sozinhos (abrir Minhas
+Demandas, ativar notificações, configurar os Caminhos do Drive, criar a primeira
+atividade), dispensável num clique e sem nenhum balão sobre a interface.
+
 ## Voz e microcopy
 
 - **Títulos** descrevem a tela ("Minhas Demandas"); pessoa do verbo é "você".
@@ -345,16 +385,24 @@ no Tasks.
 - **Erros**: o que aconteceu + o que fazer.
 - **Datas**: relativas até 7 dias ("Hoje 14h", "Atrasada há 2 dias"); absolutas depois ("12 jun 2026").
 - **Pluralização** correta; sem "(s)".
+- **SLA restante** (chip de tempo da etapa, capability `demandas-tempo-sla-no-card`): sempre em **horas úteis** da jornada, no plural correto e sem número quando o número não ajuda. Vocabulário fechado: "faltam 6h úteis", "falta 1h útil", "termina hoje" (abaixo de uma hora), "estourou há 3h úteis", "estourou há 1h útil", "acabou de estourar". O tempo da etapa é "gasto / previsto" ("2h15 / 8h"), com **til** quando o previsto é o padrão de um dia útil ("2h15 / ~8h").
 - Sem emoji em UI de produção; pt-BR sempre acentuado.
 
 ## Responsividade
 
+Comportamento do shell autenticado (capability `app-shell-responsivo`). Acima de
+768px nada muda em relação ao desktop de sempre.
+
 | Breakpoint | Comportamento |
 |---|---|
-| 1100px | Grids de detalhe → 1 coluna |
-| 768px | Sidebar → drawer; tabelas → cards empilhados; kanban volta à altura natural (página rola) |
-| 640px | Busca da topbar → ícone |
+| 1100px | Grids de detalhe (`1fr 320px`) → 1 coluna, conteúdo antes dos meta-cards |
+| 768px | Sidebar → drawer sobre o conteúdo (botão de menu na topbar, scrim, `Esc`); topbar `min-h` 64px; respiro do `main` 16px; busca da topbar → ícone; kanban volta à altura natural (a página rola) |
+| 640px | Breadcrumb da topbar oculto (o título continua, truncado) |
 | sempre | Kanban mantém scroll horizontal |
+
+O drawer abre sempre completo (248px, ícone + rótulo): a preferência de colapso
+(`premium.sidebar.collapsed`) vale só de 768px para cima. Tabela em cards
+empilhados continua pendente e é decidida por tela, não pelo shell.
 
 ## Do / Don't
 
