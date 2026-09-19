@@ -1,0 +1,37 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   PADRÃO · Atraso da dica contextual (opt-in, v0.11.0)
+   A dica (Tooltip) aparece 300 ms depois que o ponteiro para sobre o gatilho:
+   passar rápido por uma barra de ícones não faz nada cintilar. No foco por
+   teclado ela aparece na hora. O atraso mora numa custom property registrada
+   (--tt-delay), e não numa classe do componente, porque precisa ser herdado e
+   transicionável: um contêiner com `data-tooltip-group` (uma barra de ícones,
+   por exemplo) zera o atraso depois que o ponteiro já passou 300 ms dentro
+   dele, e mudar de um ícone para o vizinho mostra a dica na hora, como num
+   menu; sair do grupo devolve o atraso na mesma hora.
+   Contrato com o app:
+   - o balão usa `transition-delay: var(--tt-delay, 300ms)` no hover do
+     gatilho e `0ms` no foco (`:focus-within` do wrapper);
+   - o wrapper zera a variável sob `:focus-within`, para quem chega pelo
+     teclado nunca esperar, mesmo com o ponteiro parado em cima;
+   - uma instância com atraso próprio escreve `--tt-delay` no wrapper e deixa
+     de obedecer ao grupo.
+   Não é token de marca: é tempo de interação de um componente. Anatomia,
+   acessibilidade e props em docs/componentes.md §Tooltip e
+   docs/ui-guidelines.md §4.34.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@property --tt-delay {
+  syntax: "<time>";
+  inherits: true;
+  initial-value: 300ms;
+}
+
+[data-tooltip-group] {
+  /* Volta ao atraso cheio assim que o ponteiro sai do grupo. */
+  transition: --tt-delay 0s;
+}
+
+[data-tooltip-group]:hover {
+  --tt-delay: 0ms;
+  transition: --tt-delay 0s 300ms;
+}

@@ -60,17 +60,31 @@ focus-visible: ring 2px var(--yellow) ou shadow 0 0 0 2px var(--yellow-50)
 
 ## Foco gerenciado (overlays)
 
-- `ConfirmDialog`: `role="dialog"` + `aria-modal="true"`; ao abrir, foca a ação primária — exceto quando há campo com `autoFocus`, via `autoFocusConfirm={false}`; ao fechar, o foco **retorna ao gatilho** (no início do fechamento, não ao fim da animação de saída).
-- `Lightbox`: foca o diálogo ao abrir, devolve ao gatilho ao fechar; trava o scroll do `body` enquanto aberto.
+> [!IMPORTANT]
+> **Overlay com `aria-modal="true"` sem o hook `useDialogoFoco` é defeito.** O comportamento de foco (entrada, retenção e devolução) mora em um lugar só: [`src/lib/hooks/use-dialogo-foco.ts`](https://github.com/agenciapremium/tasks/blob/main/src/lib/hooks/use-dialogo-foco.ts), sobre as funções puras de [`src/lib/foco.ts`](https://github.com/agenciapremium/tasks/blob/main/src/lib/foco.ts). Nada de reimplementar por componente.
+
+O que o hook garante, em todo overlay modal:
+
+1. **Entra**: ao abrir, o foco vai para o alvo inicial dentro do painel (primeiro controle focável do conteúdo; o título quando não há controle **ou** quando a viewport tem menos de 768px e o alvo é campo de digitação, para não abrir o teclado virtual).
+2. **Fica**: enquanto o overlay é o topo da pilha, `Tab` e `Shift+Tab` ciclam apenas entre os focáveis do painel, recalculados a cada tecla (campos que aparecem depois entram no ciclo). Um painel aninhado ou um diálogo aberto por cima assume o ciclo; o de baixo fica quieto.
+3. **Volta**: ao fechar por qualquer caminho (`Esc`, scrim, botão, navegação), o foco retorna ao elemento que o tinha antes — se ele não existir mais, vai para o corpo do documento, sem erro.
+4. **Reforço `inert`**: enquanto o overlay do topo está aberto, o restante da página recebe `inert` (quando o navegador suporta), removido no fechamento. É reforço; a garantia é o ciclo de `Tab`. Ficam de fora os scrims (`data-foco-livre`, que precisam continuar clicáveis para fechar) e as regiões `aria-live` (o toast continua anunciando).
+
+Por componente:
+
+- `SlideOver`: nome acessível por `aria-labelledby` no `h2` do cabeçalho; botão de fechar com `aria-label="Fechar"`. `Esc` fecha apenas o painel do **topo** da pilha; o scroll do `body` só restaura quando o último painel fecha. O empilhamento visual vem da ordem no DOM.
+- `ConfirmDialog`: foca a ação primária ao abrir — exceto quando há campo com `autoFocus`, via `autoFocusConfirm={false}`; devolve o foco no início do fechamento, não ao fim da animação de saída.
+- `SearchDialog` (busca global): `role="dialog"` com título visualmente oculto ("Busca global"); o campo recebe o foco também no celular (digitar é a razão do overlay).
+- `Lightbox`: foca o botão de fechar ao abrir, devolve ao gatilho ao fechar; trava o scroll do `body` enquanto aberto.
+- `CardModal` (Quadros): foca o título do card (editável) ou, sem permissão de edição, o botão de fechar; devolve o foco ao card de origem.
+- Popovers não modais (`role="dialog"`/`role="menu"`: menu de conta, seletores): usam o hook em modo `prender: false` — só a **devolução do foco ao gatilho**, sem trap e sem `inert`.
 - `EmojiPicker`: `Esc` fecha e **devolve o foco ao gatilho**.
-- `SlideOver`: `Esc` fecha apenas o painel do **topo** da pilha; o scroll do `body` só restaura quando o último painel fecha. O empilhamento visual vem da ordem no DOM. **Pendência conhecida:** o `SlideOver` atual não posiciona o foco no painel ao abrir nem o devolve ao gatilho ao fechar.
-- Nenhum overlay implementa focus trap real — `aria-modal` está declarado, mas `Tab` ainda alcança o conteúdo ao fundo (pendência conhecida).
 
 ## ARIA — inventário usado no sistema
 
 | Componente | Atributos |
 |---|---|
-| SlideOver / ConfirmDialog / Lightbox | `role="dialog"`, `aria-modal="true"`, `aria-label` (SlideOver/Lightbox) ou `aria-labelledby`/`aria-describedby` (ConfirmDialog) |
+| SlideOver / ConfirmDialog / Lightbox / SearchDialog / CardModal | `role="dialog"`, `aria-modal="true"` e `aria-labelledby` apontando para o título visível (ou visualmente oculto, na busca global) — nunca `aria-label` junto, que duplicaria o nome; `aria-describedby` na mensagem do ConfirmDialog; botão de fechar com `aria-label="Fechar"` |
 | Toast (container) | `aria-live="polite"`, `role="status"` — anuncia sem roubar foco; dispensar com `aria-label="Dispensar aviso"`; timer pausa em hover **e** em foco (`onFocusCapture`) |
 | FormErrorBanner | `role="alert"` |
 | AutoSaveBar / barra do SlideOver | `role="progressbar"`, `aria-label="Salvando"`, `aria-hidden` quando inativa |
@@ -117,6 +131,6 @@ Toda animação respeita `prefers-reduced-motion: reduce`: os overlays via `Moti
 - [ ] Foco visível em todo interativo; ordem de Tab faz sentido.
 - [ ] Alvos ≥ 40px.
 - [ ] Labels associados; erros textuais.
-- [ ] Overlays com `role="dialog"`, foco gerenciado, `Esc` fecha (e devolve o foco ao gatilho).
+- [ ] Overlays com `role="dialog"`, `aria-labelledby` no título, foco pelo `useDialogoFoco` (entra, cicla, volta) e `Esc` fechando o topo da pilha.
 - [ ] `prefers-reduced-motion` respeitado.
 - [ ] Sem informação só por cor.

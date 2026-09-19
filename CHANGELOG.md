@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.11.0 — 2026-09-19
+
+Componentes novos e um padrão de CSS novo. Nenhum token mudou de valor. Tudo já vivia no Tasks desde a onda de 05/09/2026 e ainda não tinha subido para cá.
+
+- **Dica contextual (`Tooltip`) e `css/patterns/tooltip.css` (novo)** — a dica passa a ser o **único** mecanismo de dica da interface. O `title` nativo não aparece no foco por teclado nem no toque, ignora o tema e cada navegador o desenha de um jeito; no Tasks ele é barrado por lint em elemento do DOM (ficam `iframe`, `abbr`, `svg`/`<title>` e os e-mails, onde é nome acessível e não dica). A dica aparece no hover com 300 ms de atraso e no foco por teclado na hora; um contêiner com `data-tooltip-group` zera o atraso entre ícones vizinhos (a custom property registrada `--tt-delay` mora no padrão novo); o balão se liga ao gatilho por `aria-describedby`; texto cortado só ganha dica quando não cabe (`useTruncado`). `docs/ui-guidelines.md` §4.34 (novo) e `docs/componentes.md` §Tooltip. `ContextIconButton`, `Switch` e `Avatar` deixam o `title`; o checklist de acessibilidade (`docs/ui-guidelines.md` §7) ganha a linha correspondente.
+- **Gestão de foco em overlays (`useDialogoFoco`)** — fecha as duas pendências conhecidas de `docs/acessibilidade.md` (o `SlideOver` não levava o foco ao painel nem o devolvia, e nenhum overlay prendia o `Tab`). Todo overlay modal faz o foco **entrar** (primeiro campo, ou o título em painel de leitura e em viewport estreita, para não abrir o teclado virtual), **ficar** (`Tab` cicla no overlay do topo da pilha) e **voltar** ao gatilho, com `inert` no resto da página como reforço. Overlay com `aria-modal` sem o hook passa a ser defeito de revisão; nome acessível por `aria-labelledby` no título, nunca `aria-label` junto.
+- **Skeleton e ErroRota (novos)** — blocos de carregamento `SkeletonLinha`, `SkeletonCard`, `SkeletonTabela` e `SkeletonKanban` (`aria-hidden`, pulso só sob `motion-safe`) e uma tela única de erro de rota: "Algo deu errado", "Tentar de novo", "Voltar para o início" e a referência do erro, **nunca** a mensagem da exceção em produção. Spinner de página inteira passa a ser proibido; "página não encontrada" segue a anatomia do estado vazio com o título em `h1`. `docs/padroes-de-interacao.md` §"Estados de carregamento" e §"Erros de rota".
+- **Views salvas (`docs/ui-guidelines.md` §4.32, novo)** — o recorte da tela (filtros, visão e ordenação) vira uma view nomeada no menu da zona de contexto da `FilterBar`: aplicar, definir como padrão, renomear, copiar link e excluir com "Desfazer". Até 10 por tela; a view padrão abre a tela quando a URL não traz filtros.
+- **Grupo por prazo (`docs/ui-guidelines.md` §4.33, novo)** — cabeçalho de seção agrupada por urgência (Em atraso, Hoje, Esta semana...), com os tons `neutro`, `atencao` e `critico` por token; a cor acompanha o rótulo, nunca o substitui.
+
+Implementado primeiro no Tasks (changes `overlays-gestao-de-foco`, `tooltip-no-lugar-de-title`, `rotas-erro-e-carregamento`, `views-salvas-nomeadas` e `dashboard-meu-dia`).
+
 ## v0.10.1 — 2026-09-19
 
 Só documentação — nenhum valor de token mudou.

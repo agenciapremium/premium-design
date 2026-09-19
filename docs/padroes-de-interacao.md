@@ -31,6 +31,8 @@ Ordem fixa, válida para **toda** tela: **FILTROS (esquerda) ► CONTEXTO · VIE
 - Listas longas de opções (≥ 8) ganham **busca** automática no dropdown e mostram só as 6 primeiras sem termo — ao digitar, a busca cobre a lista inteira.
 - Com algum filtro ativo além da busca, aparece o botão amarelo **Limpar filtros** ao fim da zona de filtros, com o ícone de funil (`FunnelX`). Só com a busca ativa ele não aparece: o `X` da própria busca já limpa.
 - Com `telaKey`, os filtros **persistem por usuário**: a tela restaura o último filtro salvo quando a URL não traz filtros; "Limpar filtros" apaga também o persistido.
+- Com `telaKey`, a zona de contexto ganha o menu **Views** (`views-salvas-menu.tsx`): o recorte atual (filtros, visão e ordenação, sem a página) vira uma **view nomeada**, aplicável com um clique, renomeável, compartilhável por link e excluível com "Desfazer". Máximo de 10 por tela, nomes únicos, tudo privado do usuário (`preferencias.views[telaKey]`).
+- **Precedência na abertura** (sem filtros na URL): view **padrão** da tela ► último filtro persistido ► estado padrão da tela. "Limpar filtros" apaga o persistido e **não** desmarca a padrão (a pessoa tira o padrão pelo menu).
 - Qualquer mudança de filtro ou visão **reseta a paginação** (`?pagina=` sai da URL).
 
 ## Toggle de visualização
@@ -111,9 +113,11 @@ Com seleção múltipla ativa em tabela (checkbox na primeira coluna), **toolbar
 
 ## Estados de carregamento
 
-- **Skeletons** (`--premium-bone`, shimmer) para listas e cards — estrutura da tela no `loading.tsx` da rota.
-- Spinner **só** dentro de botão durante submit.
-- Evitar spinner full-page.
+- **Skeletons** (`--premium-bone`, pulso sob `motion-safe`) para listas e cards — estrutura da tela no `loading.tsx` da rota.
+- Os blocos vêm de [`skeleton.tsx`](https://github.com/agenciapremium/tasks/blob/main/src/components/ui/skeleton.tsx): `SkeletonLinha`, `SkeletonCard`, `SkeletonTabela` e `SkeletonKanban`, todos `aria-hidden`.
+- O grupo `(app)` tem um skeleton genérico (cabeçalho, três blocos, tabela de oito linhas) que cobre toda rota sem `loading.tsx` próprio; as telas de uso diário têm o seu, com a estrutura de cada uma.
+- Spinner **só** dentro de botão durante submit (prop `loading` do `Button`).
+- **Nenhum `loading.tsx` usa spinner de página inteira.** Um lint (`no-restricted-syntax` sobre `**/loading.tsx`) barra `animate-spin` nesses arquivos.
 
 ## Estados vazios
 
@@ -121,7 +125,12 @@ Com seleção múltipla ativa em tabela (checkbox na primeira coluna), **toolbar
 
 ## Erros de rota
 
-`error.tsx` global com CTA "Recarregar" + link "Voltar para o início".
+Nenhuma tela do produto cai na página padrão do framework, em nenhum estado.
+
+- **Erro** — `error.tsx` em cada shell, todos finos sobre [`ErroRota`](https://github.com/agenciapremium/tasks/blob/main/src/components/ui/erro-rota.tsx): ícone, `h1` "Algo deu errado", texto de orientação, `Referência: <digest>` e as ações "Tentar de novo" (reexecuta o segmento) e "Voltar para o início". A mensagem da exceção **nunca** aparece em produção. Variante `app` dentro do layout autenticado (sidebar e topbar de pé, tema resolvido por token); variante `publico` nos shells externos (portal de aprovação, link do cliente, Portal Quadros, autenticação): fundo da marca com a logo, sem menu e sem dado interno.
+- **Falha do layout raiz** — `app/global-error.tsx`, autocontido: renderiza o próprio `<html>`/`<body>`, importa o `globals.css` e aplica o tema salvo com o trecho anti-FOUC do layout raiz. Sem provider algum, porque tem de funcionar quando o layout que os monta falhou.
+- **Não encontrada** — `app/(app)/not-found.tsx` (dentro do layout, com "Voltar para o início" e "Buscar", que abre a busca global) e `app/not-found.tsx` (pública, com a logo). Tela de detalhe que não acha o registro chama `notFound()` em vez de renderizar vazio.
+- Monitoramento externo não entra aqui: o registro é o `console.error` mais o `digest`, que casa com o log do servidor.
 
 ## Atalhos de teclado
 

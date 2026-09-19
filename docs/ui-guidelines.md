@@ -329,6 +329,9 @@ possível do design system, não como algo a fazer no meio de um fix.
   "Novo grupo" e "Link de aprovação" como contexto só-ícone, abas
   Demandas/Pedidos/Config como views via `?tab`, e a estrela de favorito).
 - Estado dos filtros sempre serializado em `searchParams` (URL compartilhável).
+- Com `telaKey`, a zona de contexto **abre** com o menu **Views salvas** (§4.32), antes
+  dos botões da tela: o recorte atual vira uma view nomeada, e a view padrão passa a
+  abrir a tela quando a URL não traz filtros.
 - Chip de filtro: `border-radius: var(--r-pill); border: 1px solid var(--premium-mist); padding: 8px 14px; font-size:13px; font-weight:500;` — ícone à esquerda.
 - **Pílula de ação e de seleção** (premium-design v0.10.0,
   [`pilula.tsx`](https://github.com/agenciapremium/tasks/blob/main/src/components/ui/pilula.tsx)): o mesmo desenho do chip,
@@ -865,9 +868,12 @@ Tipos:
 - **Padrão único** dos botões de contexto da barra de ações (§3.4, capability
   `filter-bar`). Nenhuma tela hand-rolla o estilo nem usa `Button` textual na
   zona de contexto.
-- API: `icon` (LucideIcon), `label` (obrigatório — vira `title` **e**
+- API: `icon` (LucideIcon), `label` (obrigatório — vira a **dica** e o
   `aria-label`), `variant?: "neutro" | "destaque"`, `loading?`, `disabled?`,
-  passthrough de `aria-haspopup`/`aria-expanded` para gatilhos de popover/menu.
+  `tooltipSide?` (default `bottom`), `tooltipClassName?` (classe do wrapper da
+  dica, para quando o layout depende dela), passthrough de
+  `aria-haspopup`/`aria-expanded` para gatilhos de popover/menu. A dica vem
+  embutida (§4.34): não envolver num `Tooltip` externo.
 - **Variantes**:
 
 | Variante | Estilo | Uso |
@@ -963,6 +969,80 @@ Tipos:
 - **Não há presença no portal do cliente** (exceção explícita à paridade
   interno↔cliente dos Quadros — decisão de produto/privacidade).
 
+### 4.32 Views salvas — [`views-salvas-menu.tsx`](https://github.com/agenciapremium/tasks/blob/main/src/components/ui/views-salvas-menu.tsx)
+
+- **Menu "Views" da zona de contexto** da barra (capability `views-salvas`), presente
+  em toda tela que declara `telaKey`. Uma view é o **snapshot nomeado da query
+  string** da tela (filtros, visão e ordenação, sem a página); aplicar é navegar
+  para ela, e o link compartilhável é a própria URL. Nenhuma tela configura nada:
+  quem tem `telaKey` tem views.
+- Gatilho `ContextIconButton` (§4.27) com `Bookmark` (ou `BookmarkCheck` quando há
+  view ativa) e **contador** de views; painel `role="menu"` com `role="menuitem"`,
+  `Esc` fecha e o foco volta ao gatilho (`useDialogoFoco` não modal). A **view ativa**
+  (query igual à da tela) fica com a assinatura **amarelo sobre tinta**; a **padrão**
+  leva uma estrela.
+- Ações de cada view abrem na própria linha, com **rótulo escrito** (definir padrão,
+  renomear, copiar link, excluir), em vez de uma fileira de ícones que dependeria de
+  tooltip. Nomear e renomear usam o `ConfirmDialog` (§4.10) com campo, primária
+  desabilitada enquanto o nome é vazio ou duplicado e erro do servidor em banner
+  inline (§5.8). Excluir é **reversível**: executa e oferece "Desfazer" no toast
+  (§4.19), sem confirmação prévia.
+- **Limite de 10 views por tela**, nomes únicos (comparados sem caixa nem acento) e
+  gravação validada no servidor, sempre para o próprio colaborador. Uma view que
+  aponta para opção inexistente (projeto excluído) continua aplicável e ganha o aviso
+  discreto "Filtro indisponível".
+- Só tokens semânticos, claro/escuro automáticos (§9); alvos ≥ 40px.
+
+### 4.33 Grupo por prazo — [`grupo-prazo.tsx`](https://github.com/agenciapremium/tasks/blob/main/src/components/ui/grupo-prazo.tsx)
+
+- Cabeçalho de uma **seção agrupada por urgência** com a lista logo abaixo:
+  título em caixa alta 12/700, contagem em pílula discreta e os itens numa `<ul>`.
+  Usado em "Meus cards" (buckets Em atraso → 1 dia → 1 semana → 1 mês → Sem data)
+  e no bloco "Meu dia" do Dashboard (Atrasado → Hoje → Esta semana).
+- **Não sabe o que é um item**: recebe os `<li>` prontos. Cada tela mantém a sua
+  linha (botão que abre o modal em Meus cards, linha clicável com ação rápida no
+  Dashboard) sem duplicar o markup do grupo.
+- `tom` define o par título/contagem por token: `neutro` (bone + steel),
+  `atencao` (`--warning-bg` + `--warning`) e `critico` (`--danger-bg` +
+  `--danger`). A cor **acompanha** o rótulo textual, nunca o substitui (§7).
+- `nivel` escolhe entre `h2` e `h3`, para o grupo não quebrar a hierarquia de
+  cabeçalhos da página onde entra. `rodape` recebe o que vem depois da lista
+  (os links "ver tudo", por exemplo).
+
+### 4.34 Dica contextual — [`tooltip.tsx`](https://github.com/agenciapremium/tasks/blob/main/src/components/ui/tooltip.tsx)
+
+- **A dica é o `Tooltip`; o `title` nativo não existe mais no app.** O nativo
+  não aparece no foco por teclado nem no toque, ignora o tema, tem atraso que o
+  desenvolvedor não controla e cada navegador o desenha de um jeito — e era
+  justamente onde morava o rótulo de que a pessoa precisa (botão só-ícone, texto
+  cortado). Um lint (`no-restricted-syntax`) barra `title` em elemento do DOM,
+  liberando só `iframe`, `abbr`, `svg`/`<title>` do SVG e os e-mails, onde
+  `title` é nome acessível de conteúdo embutido e não dica.
+- 100% CSS, sem lib e sem portal: aparece no hover com **300 ms de atraso**
+  (passar rápido por uma barra de ícones não faz nada cintilar) e no **foco por
+  teclado na hora** — quem navega por Tab quer a dica agora. Um contêiner com
+  `data-tooltip-group` zera o atraso entre ícones vizinhos depois que o ponteiro
+  já passou 300 ms dentro dele, como num menu.
+- O balão tem `id` e o gatilho aponta para ele por `aria-describedby` (ids já
+  existentes são somados, nunca sobrescritos): o leitor de tela lê a dica como
+  descrição do controle. **Dica não é nome**: botão só-ícone continua exigindo
+  `aria-label`.
+- Props: `label`, `side` (`right` default, `top/bottom/left`), `className`
+  (wrapper), `bubbleClassName` (balão), `delay` (ms), `disabled` (desliga o
+  balão sem mexer no layout) e `bloco` (wrapper vira `div`, para gatilho que não
+  é conteúdo de frase, como um `h2`).
+- **Texto cortado** ganha dica só quando realmente não cabe: `useTruncado`
+  (`src/lib/hooks/use-truncado.ts`) mede `scrollWidth > clientWidth` e o
+  consumidor passa `disabled={!truncado}`. Em texto que cabe, a dica repetiria o
+  que já está na tela.
+- **Balão dentro de contêiner com `overflow: hidden`** é recortado. A saída é
+  tornar o wrapper `position: static`, para o bloco-contêiner do balão passar a
+  ser um ancestral fora do scroller (padrão da sidebar recolhida, ver
+  `componentes.md`). Onde não há saída — miniatura arredondada, barra empilhada
+  — a informação vai para o nome acessível ou para um rótulo visível ao lado, e
+  a dica não entra.
+- Para texto longo ou conteúdo rico, não é tooltip: é slide-over ou popover.
+
 ## 5. Padrões de interação
 
 ### 5.1 Toggle de visualização (Kanban / Lista / Tabela / Calendário)
@@ -1005,9 +1085,14 @@ Tipos:
 - `Enter` confirma diálogos onde a ação primária está em foco.
 
 ### 5.7 Estado de loading
-- Skeletons (cinza `--premium-bone`) para listas e cards.
+- Skeletons (cinza `--premium-bone`) para listas e cards, com os blocos de
+  [`skeleton.tsx`](https://github.com/agenciapremium/tasks/blob/main/src/components/ui/skeleton.tsx) (`SkeletonLinha`,
+  `SkeletonCard`, `SkeletonTabela`, `SkeletonKanban`) — todos `aria-hidden` e com
+  pulso sob `motion-safe`.
 - Spinner amarelo apenas em ações de botão (`btn-primary` durante submit).
-- Evitar spinner full-page; usar `loading.tsx` da rota com skeleton da estrutura.
+- Spinner full-page **proibido**: o `loading.tsx` da rota traz o skeleton da
+  estrutura. O grupo `(app)` tem um genérico; as telas de uso diário têm o seu.
+  Um lint barra `animate-spin` em `**/loading.tsx`.
 - Para salvamento automático (edição em detalhe), o feedback é a barra de
   progresso do painel — ver §5.9 Auto-save (não usar spinner de botão).
 
@@ -1015,7 +1100,11 @@ Tipos:
 - Banner de erro inline (não toast) para erros de submit/ação. Use o primitivo
   [`FormErrorBanner`](https://github.com/agenciapremium/tasks/blob/main/src/components/ui/form-error-banner.tsx); erro de **campo**
   fica associado ao campo (`Input error=`).
-- `error.tsx` global com CTA "Recarregar" + link "Voltar para o início".
+- Erro de **rota** (a tela inteira falhou) é outra camada:
+  [`ErroRota`](https://github.com/agenciapremium/tasks/blob/main/src/components/ui/erro-rota.tsx) com "Tentar de novo" e
+  "Voltar para o início", alimentando os `error.tsx` de cada shell, o
+  `global-error.tsx` e as telas de "Página não encontrada". Ver
+  `padroes-de-interacao.md` → Erros de rota.
 
 > **Proibido falar com o usuário pelas janelas nativas do navegador**
 > (`window.alert`/`confirm`/`prompt`) — destoam da marca, ignoram o tema e
@@ -1159,6 +1248,9 @@ action para aceitar payload parcial.
 - Componentes que abrem/fecham usam `role="dialog"` e foco gerenciado.
 - Suporte `prefers-reduced-motion` em todas as animações.
 - Texto alternativo em avatares (`aria-label="Avatar de João Silva"`).
+- **Dica é `Tooltip`, nunca `title` nativo** (§4.34): o nativo não aparece no
+  foco por teclado nem no toque. E dica não substitui nome: botão só-ícone leva
+  `aria-label` além do balão.
 
 ---
 
