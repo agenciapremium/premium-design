@@ -34,12 +34,12 @@ Fontes da verdade:
 ### 2.1 Tipografia
 
 - Família: **Ubuntu** (300, 400, 500, 700). Fallback: `system-ui, sans-serif`.
-  Já carregada globalmente, **servida pelo próprio app** via `next/font/google`
-  no layout raiz: nenhuma requisição sai para o Google e não há troca de fonte no
-  primeiro carregamento. Componente que precise declarar a família usa
-  `var(--font-ubuntu)` (ou a utility `font-sans`), **nunca** o nome literal
-  `"Ubuntu"`. E-mails transacionais são a exceção: não resolvem `var()`
-  (`email.md`).
+  Já carregada globalmente e **servida pelo próprio app** (no Tasks,
+  `next/font/google` no layout raiz): nenhuma requisição sai para o Google e não
+  há troca de fonte no primeiro carregamento. Componente que precise declarar a
+  família usa a utility `font-sans` ou `var(--font-ubuntu)`, **nunca** o nome
+  literal `"Ubuntu"` sozinho (ver `tokens.md`). E-mails transacionais são a
+  exceção: não resolvem `var()` (`email.md`).
 - Escala observada no protótipo:
   - Título de página: vive na **topbar** (registrado via `PageHeader`, §3.3) em
     **16px / 600** (`text-base font-semibold tracking-tight`) — o `h1` de 32px
