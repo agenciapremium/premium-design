@@ -314,8 +314,14 @@ não fecha: só o scrim fecha. O rótulo de dia tem superfície própria, `--sh-
 40px e sombra. No topo: uma **pílula de seleção** de largura fixa, com rótulo curto,
 para escolher um filtro não empurrar as vizinhas (na central de notificações:
 Todas, Não lidas e as categorias com não lidas, cada uma com a contagem; na
-pílula, "Menções", "Aprovações" etc.) e **pílulas de ação** ("Marcar todas como lidas", que some com fade
-quando não há o que marcar). Na base: "Ver todas" para a tela completa.
+pílula, "Menções", "Aprovações" etc.) e as **ações do topo, sempre só com
+ícone**: pílula redonda de 40px com o desenho do chip, nome pelo `aria-label` e
+dica pelo `Tooltip`, com o mesmo texto (na central de notificações, "Marcar todas
+como lidas", com o `CheckCheck`, que some com fade quando não há o que marcar).
+A ação do topo **nunca leva rótulo escrito**: com texto, a linha quebrava no
+celular e a ação caía para baixo da pílula de seleção, longe do X; só com ícone,
+ela fica na mesma linha e ao lado do X em qualquer largura. Na base: "Ver todas"
+para a tela completa.
 
 **Card.** Conteúdo do item: ícone e cor do tipo num quadrado de 36px, título em
 até duas linhas (700 quando não lido; 500 em `--premium-steel` quando lido),

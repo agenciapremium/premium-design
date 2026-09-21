@@ -315,7 +315,7 @@ As classes de chip, o menu (`dropdownPanelClass`, `useDropdownPortal`) e o item 
 
 ## Pilula e PilulaSelect — `pilula.tsx`
 
-Pílula de ação e de seleção fora da barra (premium-design v0.10.0; ui-guidelines §3.4), com o desenho do chip de filtro. `Pilula` (botão) e `PilulaLink` aceitam `ativa`, `ligada`, `flutuante` (alvo de 40px + `--sh-md`, para flutuar sobre scrim) e `oculta` (fade e saída do `Tab` sem deslocar vizinhos, via `.pilula-oculta` de `css/patterns/pilula.css`).
+Pílula de ação e de seleção fora da barra (premium-design v0.10.0; ui-guidelines §3.4), com o desenho do chip de filtro. `Pilula` (botão) e `PilulaLink` aceitam `ativa`, `ligada`, `flutuante` (alvo de 40px + `--sh-md`, para flutuar sobre scrim) e `oculta` (fade e saída do `Tab` sem deslocar vizinhos, via `.pilula-oculta` de `css/patterns/pilula.css`). `soIcone` (premium-design v0.15.0): pílula redonda de 40×40px sem rótulo visível, com o desenho do chip; exige `rotulo`, que vira o `aria-label` e a dica (`Tooltip`). É a forma obrigatória das ações no topo do painel de cards flutuantes.
 
 `PilulaSelect<V>`: `rotulo` (nome do menu e prefixo do nome do gatilho), `valor`, `opcoes: { valor, rotulo, rotuloCurto?, contagem?, secao? }[]`, `onEscolher`, `icone?`, `contagem?` (selo `--premium-ink` na pílula; acima de 99, "99+"), `ativa?`, `flutuante?`, `largura?` (px fixos: a pílula não muda de tamanho entre opções; use com `rotuloCurto`, que é o que a pílula mostra, enquanto o menu mostra `rotulo`). Menu da `FilterBar` com seção (eyebrow + divisória), contagem por opção, foco na opção escolhida ao abrir, setas/Home/End, `Enter` escolhe e `Esc` fecha só o menu (sai com `preventDefault`, e o overlay hospedeiro ignora a tecla). Dentro de diálogo modal, o menu abre **dentro** do diálogo: fora, o `aria-modal` o tiraria da árvore de acessibilidade.
 
@@ -449,7 +449,7 @@ Diálogo modal **sem moldura** (padrão "Painel de cards flutuantes" de `padroes
 | `open` / `onClose` | — | Controlado pelo pai |
 | `titulo` | `string` | Nome do diálogo (`h2` visualmente oculto, alvo do foco ao abrir) |
 | `ancoraRef` | `RefObject<HTMLElement>` | Gatilho: o X fica centralizado sobre ele a partir de 768px ([`painel-cards-pos.ts`](https://github.com/agenciapremium/tasks/blob/main/src/lib/painel-cards-pos.ts)) |
-| `topo` | `ReactNode` | Pílulas à esquerda do X; cada filho vira uma peça animada |
+| `topo` | `ReactNode` | Pílulas à esquerda do X; cada filho vira uma peça animada. Ações vão como `Pilula soIcone` (nunca com rótulo escrito), para a linha não quebrar no celular e a ação ficar ao lado do X |
 | `base` | `ReactNode` | Pílulas da base (direita; a primeira de duas vai para a esquerda). Sem filhos, a base não existe |
 | `rotuloFechar` | `string` | Nome acessível do X (default `"Fechar"`) |
 | `totalItens` | `number` | Quantos itens a cascata mostra (a base entra depois) |
@@ -460,6 +460,8 @@ Filhos da lista: `PainelCardsItem` (`indice`, `total`, `chega?`, `itemId?` para 
 ## BotaoLido — `botao-lido.tsx`
 
 Botão só com ícone para marcar como lido (premium-design v0.10.0; ver `padroes-de-interacao.md` §"Painel de cards flutuantes"). **Não lido**: `<button>` amarelo (`bg-brand text-on-brand`, igual nos dois temas), 36px com alvo de 40px, hover `--brand-amber` + `--sh-gold`, dica pelo `Tooltip`, foco em anel duplo `--c-surface` + `--premium-ink` (um anel amarelo sumiria sobre o amarelo). **Lido**: indicador verde tonal (`--success-bg`/`--success`, `role="img"`, `aria-label="Lida"`), sem foco e sem clique. A troca anima com `.lido-vira` (`css/motion.css`: pulso, onda verde e traço do ícone; nada sob movimento reduzido). Referência: [`botao-lido.tsx`](https://github.com/agenciapremium/tasks/blob/main/src/components/ui/botao-lido.tsx).
+
+**Portal white-label** (premium-design v0.15.0): no portal do cliente, o amarelo da marca dá lugar ao acento do cliente (`--portal-accent` no fundo, `--portal-on-accent` no ícone; paleta fechada calibrada para AA nos dois temas), e a borda de chegada (`.flash-borda`) usa o mesmo acento, sobrescrito no escopo do portal. O verde de "lida" não muda. Nenhum token novo.
 
 | Prop | Tipo | Descrição |
 |---|---|---|
@@ -593,10 +595,11 @@ Tela de erro de rota. Um único componente alimenta todos os `error.tsx`, que fi
 |---|---|---|---|
 | `error` | `Error & { digest?: string }` | — | O erro que o boundary capturou |
 | `aoTentarDeNovo` | `() => void` | — | Reexecuta o segmento. No Next 16 é o `unstable_retry` do `error.tsx` (refaz o fetch e re-renderiza); `reset` só limpa o estado do boundary e serve de alternativa |
-| `variante` | `"app" \| "publico"` | `app` | `app` = dentro do layout autenticado, só tokens (segue o tema); `publico` = fundo `--brand-ink` com a logo, para os shells fora do app |
+| `variante` | `"app" \| "publico" \| "portal" \| "neutra"` | `app` | `app` = dentro do layout autenticado, só tokens (segue o tema); `publico` = fundo `--brand-ink` com a logo, para os shells fora do app; `portal` e `neutra` = sistemas com portal white-label (ver abaixo) |
 | `inicio` | `string` | `/` | Destino do caminho de volta (raiz do shell público quando houver) |
 
 - Anatomia: ícone `AlertTriangle` em disco (`--danger-bg` no app, `--c-sidebar-elevated` no público), `h1` "Algo deu errado", texto de orientação, `Referência: <digest>` e duas ações: `Button primary` "Tentar de novo" e link "Voltar para o início".
+- **Portal white-label** (premium-design v0.15.0; primeiro uso: portal da marca do Premium Assets). `portal`: dentro do layout do portal do cliente, com a identidade do cliente pela camada de tokens do portal (`--portal-accent` e derivados), **sem a marca da agência**, e com o contato de atendimento da agência no texto de orientação. `neutra`: sem marca alguma (nem do cliente, nem da agência), para o link público de compartilhamento e para a falha do layout raiz em endereço de portal, quando a identidade do cliente ainda não está disponível. Nenhuma das duas cria token.
 - **Nunca** mostra a mensagem da exceção em produção; em desenvolvimento ela aparece dobrada em `<details>`. `console.error(error)` no `useEffect` é o único registro (monitoramento externo é decisão de infraestrutura à parte).
 - Usado também por `app/global-error.tsx`, que renderiza o próprio `<html>`/`<body>`, importa o `globals.css` e aplica o tema salvo com o trecho anti-FOUC do layout raiz (§9). Lá não há provider algum: o componente depende só de tokens e de `next/link`.
 
@@ -755,6 +758,7 @@ Casos que **não** devem ser migrados para os primitivos — são bespoke por de
 | CTAs grandes do portal (gate de e-mail e aprovação: 52px, sentence-case) | Identidade do portal cliente mobile-first; usam **tokens** corretamente, mas não a tipografia uppercase do `Button` |
 | Paletas hex `STAGE_COLORS` / `COLORS` de departamento | São **dados persistidos** (cor gravada no banco), não estilo de componente |
 | Campos de busca com lupa dentro de pickers/dropdowns | Padrão próprio compacto (ColaboradorPicker, Select, MultiSelect, dropdowns do FilterBar); busca solta na tela usa o `CampoBusca` |
+| Busca em pílula do cabeçalho do portal white-label (Premium Assets) | Pílula de 40px com campo real e `⌘K`, aprovada no portal do cliente; segue a regra de um só controle de limpar (o `X` do sistema, igual ao do `CampoBusca`). Premium-design v0.15.0 |
 | Botões redondos minimalistas do workflow (concluir/apagar/mover) | §4.7 — identidade da timeline |
 | "Novo lançamento" como ação de contexto do financeiro | O conjunto do FAB é **estático** (demanda/atividade/projeto); criação de lançamento vive na zona de contexto da tela |
 | Superfícies **sempre escuras** (gate do portal, header de aprovação, login, toast, tooltip) | Usam `--brand-ink`/`--c-sidebar-*` — **nunca** `--premium-ink` como fundo (ele vira claro no escuro) |
