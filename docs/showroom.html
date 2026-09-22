@@ -875,7 +875,6 @@ th.sortable.on svg.lucide{color:var(--premium-ink)}
   .tabs{max-width:100%;overflow-x:auto;scrollbar-width:none}
   .tabs::-webkit-scrollbar{display:none}
   .tt{left:0;top:100%;margin:8px 0 0;transform:none}
-  .pc-topo{flex-wrap:wrap}
 }
 @media (max-width:767px) and (prefers-reduced-motion:reduce){
   .ds-nav,html.nav-open .ds-nav{transition:none}
@@ -887,6 +886,10 @@ th.sortable.on svg.lucide{color:var(--premium-ink)}
 .pc-base{justify-content:flex-end}
 .pc .chip{min-height:40px;box-shadow:var(--sh-md)}
 .pc .chip .count{background:var(--premium-ink);color:var(--premium-paper)}
+/* Ação do topo só com ícone (v0.15.0): fica ao lado do X em qualquer largura. */
+.pc .chip.so-icone{width:40px;padding:0;justify-content:center}
+.pc .chip.so-icone svg.lucide{width:16px;height:16px}
+.pc-topo .tt{left:50%;top:100%;margin:8px 0 0;transform:translateX(-50%)}
 .pc-x{margin-left:auto;width:40px;height:40px;border-radius:999px;display:grid;place-items:center;border:1px solid var(--premium-mist);background:var(--premium-white);color:var(--premium-steel);box-shadow:var(--sh-md);cursor:pointer}
 .pc-x:hover{border-color:var(--premium-ink);color:var(--premium-ink)}
 .pc-dia{align-self:flex-start;display:inline-flex;align-items:center;height:24px;padding:0 10px;border-radius:999px;background:var(--c-surface);border:1px solid var(--c-border);box-shadow:var(--sh-sm);font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--premium-gray)}
@@ -1729,7 +1732,7 @@ th.sortable.on svg.lucide{color:var(--premium-ink)}
       <div class="pc">
         <div class="pc-topo">
           <button class="chip" type="button"><i data-lucide="list-filter"></i>Todas <span class="count">2</span><i data-lucide="chevron-down"></i></button>
-          <button class="chip" type="button"><i data-lucide="check-check"></i>Marcar todas como lidas</button>
+          <span class="tt-wrap"><button class="chip so-icone" type="button" aria-label="Marcar todas como lidas"><i data-lucide="check-check"></i></button><span class="tt" role="tooltip">Marcar todas como lidas</span></span>
           <button class="pc-x" type="button" aria-label="Fechar notificações"><i data-lucide="x"></i></button>
         </div>
         <span class="pc-dia">Hoje</span>

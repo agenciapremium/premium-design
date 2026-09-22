@@ -1,6 +1,6 @@
 # Design System Premium
 
-Documentação oficial do Design System do **Premium Demands System** (PREMIUM · MARKETING 360°). Este conjunto de documentos mapeia, especifica e demonstra todos os tokens, componentes e padrões visuais/comportamentais do produto.
+Documentação oficial do Design System da **Agência Premium** (PREMIUM · MARKETING 360°), usado pelo Premium Tasks e pelo Premium Assets. Este conjunto de documentos mapeia, especifica e demonstra todos os tokens, componentes e padrões visuais/comportamentais do produto.
 
 > Última sincronização completa com o código: **2026-08-22** (base: auditoria de 2026-08-04 doc ↔ `globals.css` + `src/components/ui/`; incremento de 22/08: e-mail transacional, cor de dado e regras de overlay).
 >

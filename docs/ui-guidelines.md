@@ -377,7 +377,10 @@ da topbar. A linha pontilhada não é desenhada: a sidebar não tem divisória a
   **rótulo curto** por opção (`rotuloCurto`; o menu mantém o nome completo):
   escolher uma opção não pode alargar a pílula e empurrar as vizinhas. Variante `flutuante` (sobre scrim): alvo de 40px e `--sh-md`.
   Variante `oculta`: some com fade e sai do `Tab` sem deslocar os vizinhos
-  (`css/patterns/pilula.css`).
+  (`css/patterns/pilula.css`). Variante `soIcone` (premium-design v0.15.0):
+  pílula redonda de 40px sem rótulo visível, com dica e `aria-label`; é a forma
+  **obrigatória** das ações no topo do painel de cards flutuantes, que precisam
+  caber na mesma linha do X em qualquer largura.
   Dentro de diálogo modal, o menu abre **dentro** do diálogo (fora, o
   `aria-modal` o tiraria da árvore de acessibilidade).
 - "Ordenar automático" usa variante **invertida** (fundo `--brand-ink` fixo, ícone amarelo).

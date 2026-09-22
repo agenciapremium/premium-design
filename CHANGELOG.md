@@ -1,5 +1,15 @@
 # Changelog
 
+## v0.15.0 · 2026-09-21
+
+Uma regra nova no painel de cards flutuantes e a documentação das variantes white-label do Premium Assets. Nenhum token nem CSS do pacote mudou.
+
+- **Ação do topo do painel só com ícone (`docs/padroes-de-interacao.md` §"Painel de cards flutuantes", `docs/componentes.md` §Pilula e §PainelCards, `docs/ui-guidelines.md` §3.4).** As ações no topo do painel (na central de notificações, "Marcar todas como lidas") passam a ser pílulas redondas de 40px **só com ícone** (`Pilula soIcone`), com o nome no `aria-label` e na dica. Com rótulo escrito, a linha quebrava no celular e a ação caía para baixo da pílula de seleção, longe do X; só com ícone ela fica ao lado do X em qualquer largura. O showroom segue a regra e deixa de quebrar a linha do topo abaixo de 768px. Pedido na validação do Pacote O do Premium Assets (21/09/2026); no Tasks, a pílula "Marcar todas como lidas" da central do sino passa a usar a variante.
+- **Variantes white-label (`docs/componentes.md` §ErroRota e §BotaoLido).** `ErroRota` ganha `portal` (identidade do cliente pela camada de tokens do portal, sem a marca da agência, com o contato de atendimento) e `neutra` (sem marca alguma, para link público e falha do layout raiz em endereço de portal). No portal, o `BotaoLido` e a borda de chegada usam o acento do cliente (`--portal-accent`/`--portal-on-accent`) no lugar do amarelo. Sem token novo.
+- **Busca em pílula do cabeçalho do portal** entra na tabela "Padrões próprios reconhecidos" de `docs/componentes.md`, com um só controle de limpar.
+- **`docs/index.md`** deixa de chamar o DS de "Premium Demands System": ele serve o Premium Tasks e o Premium Assets.
+- **`package.json`**: o `version` passa a acompanhar a tag (estava em `0.4.0` desde a v0.4.0).
+
 ## v0.14.0 · 2026-09-19
 
 Uma regra de layout nova. Nenhum token nem CSS do pacote mudou.
