@@ -10,7 +10,7 @@ Convenções comuns a todos:
 - Composição de classe via `cn()` (`src/lib/utils`), com `className` opcional para ajustes do chamador.
 - pt-BR acentuado em todo texto e `aria-label`.
 - Animações via Motion (`m.*` + presets de `src/lib/motion`), habilitadas pelo [`MotionProvider`](#motionprovider--motion-providertsx); `prefers-reduced-motion` é respeitado por construção.
-- Popovers em portal usam `popoverPos()` (`src/lib/popover-pos`) para flip/clamp na viewport e reposicionam em scroll/resize.
+- Popovers em portal usam `popoverPos()` (`src/lib/popover-pos`): colados ao gatilho (acima, ancorados por `bottom`), com flip vertical, altura limitada ao espaço disponível com rolagem interna e clamp horizontal; reposicionam em scroll/resize.
 
 ---
 
