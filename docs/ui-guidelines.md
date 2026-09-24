@@ -651,6 +651,38 @@ Tipos:
   formulários em slide-over usam esse rodapé — sem botões soltos no corpo. A
   prop é opcional/retrocompatível; com `loading`, a primária reflete o estado.
 - Toda criação/edição não-trivial (cliente, colaborador, departamento, projeto, atividade, contrato, lançamento, modelo) usa este padrão.
+- **Rótulos do rodapé, pelo tipo de salvamento.** O mesmo caso tem sempre a
+  mesma cara em todo o sistema:
+  - **Salvamento explícito** (criar, ou editar com botão de salvar):
+    **Cancelar** (ghost) à esquerda e a ação (**Criar**, **Salvar**,
+    **Enviar**) à direita, com o submit pelo `form={id}`.
+  - **Edição com auto-save** (sem submit): **Fechar** (ghost) à esquerda e
+    **Concluir** (primária) à direita, os dois fechando o painel. O painel de
+    edição nunca abre sem rodapé, e nenhum "Fechar" fica solto no corpo. É o
+    erro que mais se copia de um cadastro para o outro: no Tasks, um teste
+    (`slide-over-padrao.test.ts`) barra `footer={editando ? undefined : …}` e
+    `useAutoSave` com `SlideOver` sem `footer`.
+  - **Sucesso sem nada a descartar** (ex.: segredo recém-gerado, mostrado uma
+    vez só): só **Concluir** à direita.
+  - "Fechar" à esquerda só onde não há o que descartar. Onde parte do painel
+    já gravou (itens que salvam na hora), "Cancelar" enganaria: use "Fechar".
+- **Ação de seção pode ficar no corpo.** É o botão que age na hora sobre um
+  bloco independente do painel, e não sobre o formulário principal: "Enviar
+  foto", "Alterar senha", "Emitir agora", "Adicionar item", "Cancelar
+  contrato". O rodapé é das ações do formulário principal. Ação de negócio
+  não ocupa o lugar do "Fechar": no detalhe do contrato, "Cancelar contrato"
+  à esquerda do rodapé se lia como "fechar o painel" e saiu para um bloco
+  "Ações do contrato" no corpo. Quando o rodapé inteiro é de operações de
+  domínio (concluir a atividade, recusar o pedido), o "Fechar" pode faltar:
+  o X do cabeçalho fecha.
+- **Formulário não mora em modal ou painel feito à mão.** Criar ou editar
+  com vários campos usa o `SlideOver`, inclusive wizard (passos no corpo,
+  Cancelar/Voltar e a ação do passo no rodapé). O componente já traz pilha de
+  overlays, `Esc`, foco preso e tema; o modal próprio reimplementa cada um
+  mal. Um overlay próprio de onde um `SlideOver` abre (ex.: o modal do card
+  do kanban) se registra na mesma pilha e só trata `Esc` e foco quando é o
+  topo: sem isso, o `Esc` do painel sobe pela árvore do React através do
+  portal e fecha os dois.
 - **A central de notificações do sino não é slide-over**: é o painel de cards
   flutuantes (`padroes-de-interacao.md`), porque é leitura e triagem rápida, sem formulário.
 - **Formulário com vários campos não mora em popover.** O slide-over é o padrão;

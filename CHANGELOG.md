@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.15.1 · 2026-09-24
+
+Regra de uso do slide-over explicitada. Nenhum token nem CSS do pacote mudou.
+
+- **Rodapé do slide-over pelo tipo de salvamento (`docs/ui-guidelines.md` §4.9).** Salvamento explícito: Cancelar + a ação. Edição com auto-save: Fechar + Concluir, os dois fechando, e o painel de edição nunca abre sem rodapé nem com "Fechar" solto no corpo. Sucesso sem nada a descartar: só Concluir. A regra já existia em linhas gerais; uma auditoria do Tasks (24/09/2026) achou 12 painéis fora dela, a maioria copiada do mesmo cadastro antigo (grupos de clientes, categorias, portadores, fornecedores, QA), corrigidos no Tasks no mesmo dia, com um teste que barra o erro.
+- **Ação de seção no corpo (§4.9).** Botão que age na hora sobre um bloco independente ("Enviar foto", "Alterar senha", "Emitir agora", "Adicionar item", "Cancelar contrato") fica no corpo; o rodapé é do formulário principal. Ação de negócio não ocupa o lugar do "Fechar".
+- **Formulário não mora em modal feito à mão (§4.9).** Criar ou editar com vários campos, wizard incluído, usa o `SlideOver`. Overlay próprio de onde um slide-over abre entra na pilha de overlays e só trata `Esc` e foco no topo.
+- **`package.json`**: `version` 0.15.1.
+
 ## v0.15.0 · 2026-09-21
 
 Uma regra nova no painel de cards flutuantes e a documentação das variantes white-label do Premium Assets. Nenhum token nem CSS do pacote mudou.
