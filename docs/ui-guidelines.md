@@ -426,6 +426,10 @@ da topbar. A linha pontilhada não é desenhada: a sidebar não tem divisória a
 
 - Variantes do primitivo: `variant: "primary" | "dark" | "ghost" | "danger"`,
   `size: "default" | "sm"`, `loading` (spinner `Loader2`).
+- **Link com cara de botão**: `buttonVariantClasses(variant, size)`, exportada
+  de `button.tsx`, devolve as mesmas classes do `Button` para um `<a>` (Abrir e
+  Baixar do cartão de documento, §4.35). Não copie as classes à mão. O link
+  soma o foco do padrão (borda `--premium-ink` + halo `--yellow-50`).
 
 - Tipografia do botão: **uppercase**, `font-weight: 700`, `letter-spacing: .03em`,
   `font-size: 13px` (11px no `sm`).
@@ -904,6 +908,10 @@ Tipos:
 - Overlay full-viewport (`role="dialog"`, `aria-modal`) para ver um material em
   tela cheia. Fundo escuro **fixo** (`bg-black/90` — exceção §2.7: mídia em tela
   cheia pede fundo escuro nos dois temas); moldura/controles em `--c-surface`.
+- **Documento** (PDF, Office e Google nativos) no contexto da demanda abre no
+  cartão de documento (§4.35), com Abrir, Baixar e Abrir no Drive, no lugar de
+  "Tipo de arquivo não suportado para preview."; formato fora da lista segue
+  não suportado.
 - **Imagem** com zoom (botões `zoom-in`/`zoom-out`/reset) e arrastar para deslocar
   quando ampliada; **vídeo/áudio** pelo leitor próprio
   ([`drive-media-viewer.tsx`](https://github.com/agenciapremium/tasks/blob/main/src/components/ui/drive-media-viewer.tsx));
@@ -1180,6 +1188,36 @@ Tipos:
   — a informação vai para o nome acessível ou para um rótulo visível ao lado, e
   a dica não entra.
 - Para texto longo ou conteúdo rico, não é tooltip: é slide-over ou popover.
+
+### 4.35 Cartão de documento — [`cartao-documento.tsx`](https://github.com/agenciapremium/tasks/blob/main/src/components/ui/cartao-documento.tsx)
+
+- **O que é**: o documento de um layout (PDF, Word, PowerPoint, Excel e Google
+  Slides, Docs e Sheets) como peça visível, no palco do portal do cliente e no
+  lightbox da equipe (§4.22). Capa do Drive, nome, selo do tipo (`Badge`, §4.3)
+  com o tamanho, e as ações em links. Catálogo completo em
+  [`componentes.md`](componentes.md#cartaodocumento--cartao-documentotsx).
+- **Capa**: miniatura do Drive sobre `--c-sunken`, `object-contain`; enquanto
+  carrega e na falha, o ícone grande do tipo, sem mensagem de erro.
+- **Ícone e cor por tipo**, só tokens semânticos existentes: PDF `FileText` em
+  `--danger`; Word `FileText` em `--info`; PowerPoint `Presentation` em
+  `--warning`; Excel `FileSpreadsheet` em `--success`. O Google nativo usa a cor
+  do tipo equivalente e o rótulo "Google Docs", "Google Slides" ou "Google
+  Sheets". Sem token novo.
+- **Ações são links** com o visual do botão (`buttonVariantClasses`, §4.1):
+  Abrir (PDF e Google nativo, nova aba) e Baixar (todos); "Abrir no Drive" só
+  na equipe. A principal é `primary` (Abrir quando existe), a outra `ghost`.
+  Word, PowerPoint e Excel só baixam. Alvo de pelo menos 44px; rótulos
+  acessíveis "Abrir {nome} em nova aba" e "Baixar {nome}".
+- **Estados**: foco com borda `--premium-ink` + halo `--yellow-50`; "Abrindo..."
+  ou "Preparando..." com `aria-busy` enquanto confere a resposta, sem spinner;
+  sem ações antes da aprovação do cliente, com a nota "Disponível quando a peça
+  chegar para a sua aprovação."; exportação grande do Google nativo (413) com
+  aviso inline em `--warning-bg`; erro genérico em toast (§4.19).
+- **Quando as ações valem é do servidor**: o cartão mostra o que o payload
+  manda (`acoes`) e a rota de documento reaplica a mesma regra pura.
+- **Na faixa de materiais** do portal, o documento entra depois das mídias, com
+  a capa, o número contínuo e um selo pequeno do tipo no canto; na aba Layouts,
+  a miniatura ganha a capa e o selo do tipo no lugar do ícone genérico.
 
 ## 5. Padrões de interação
 
