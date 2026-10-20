@@ -935,6 +935,11 @@ Tipos:
   substitui nada — `cn()` é join puro (§2.8) e as duas ficam, com o desempate
   na ordem do CSS gerado. Com o wrapper definido, o default interno já é o
   comportamento desejado. Vale igual no fallback de imagem que falhou.
+- **Origem por URL** ([`midia-origem.ts`](https://github.com/agenciapremium/tasks/blob/main/src/lib/midia-origem.ts)). Além do contexto do proxy do Drive, o visualizador aceita URLs prontas por arquivo (`{ urls }`: original, miniatura, abrir e baixar), para arquivos fora do proxy do Drive, como os materiais de apoio da demanda, no Vercel Blob ou num proxy próprio. Os usos com contexto do Drive não mudam. Só na origem por URL:
+  - **PDF no palco**: o leitor de PDF do navegador num `<iframe title="PDF: {nome}">`, no wrapper de altura definida, com largura máxima de 1100px. O PDF precisa vir do **mesmo domínio**, porque o Vercel Blob serve tudo com `x-frame-options: DENY`. Abaixo de 768px, onde o PDF embutido não funciona (Android) ou mostra só a primeira página (iOS), o palco mostra o cartão sem preview, com "Abra o PDF em nova guia para ler neste aparelho.";
+  - **ações no cabeçalho**: "Abrir em nova guia" (`external-link`) e "Baixar" (`download`) antes do contador, como links de 40×40 no estilo dos controles, com `Tooltip` (§4.34) e nome acessível com o nome do arquivo;
+  - **cartão sem preview**: o formato sem preview mostra, em vez do aviso, um cartão em `--c-surface` com o ícone (`file-text` no PDF, `file-question` nos demais), o nome, "Este formato não tem preview." e os botões "Abrir em nova guia" (`ghost`) e "Baixar" (`dark`), em `<a>` com `buttonVariantClasses` (§4.1), alvo de 40px e o foco do link-botão;
+  - **imagem sem miniatura**: quando o original falha, vai direto ao estado de erro.
 
 ### 4.23 Breadcrumb — navegação hierárquica — [`breadcrumb.tsx`](https://github.com/agenciapremium/tasks/blob/main/src/components/ui/breadcrumb.tsx)
 
