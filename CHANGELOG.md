@@ -1,5 +1,18 @@
 # Changelog
 
+## v0.20.0 · 2026-10-20
+
+Um padrão novo de impressão. Nenhum token nem CSS do pacote mudou.
+
+- **Cabeçalho e rodapé corridos de PDF gerado no servidor (`docs/ui-guidelines.md` §4.28).** O documento impresso pelo Chromium no servidor pagina por margin boxes de `@page`:
+  - a capa fica na primeira página, sem cabeçalho corrido;
+  - da segunda página em diante, uma faixa preta com o eyebrow dourado, o título truncado e a logo branca;
+  - em todas as páginas, um rodapé com a marca, o contexto e "Página X de N".
+  
+  A seção documenta a geometria (21mm/0/16mm, caixa da esquerda de largura fixa e sem `@top-center`), as cores em hex, o escape do texto em `content`, a fonte embutida e as regras de quebra.
+- No Tasks, o padrão vem da change `ata-pdf-cabecalho-rodape-abrir` (PDF da ata de reunião).
+- **`package.json`**: `version` 0.20.0.
+
 ## v0.19.0 · 2026-10-20
 
 Duas props novas num componente. Nenhum token nem CSS do pacote mudou.
