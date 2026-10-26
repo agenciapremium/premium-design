@@ -1204,10 +1204,15 @@ Tipos:
   do tipo equivalente e o rótulo "Google Docs", "Google Slides" ou "Google
   Sheets". Sem token novo.
 - **Ações são links** com o visual do botão (`buttonVariantClasses`, §4.1):
-  Abrir (PDF e Google nativo, nova aba) e Baixar (todos); "Abrir no Drive" só
-  na equipe. A principal é `primary` (Abrir quando existe), a outra `ghost`.
-  Word, PowerPoint e Excel só baixam. Alvo de pelo menos 44px; rótulos
-  acessíveis "Abrir {nome} em nova aba" e "Baixar {nome}".
+  Abrir (PDF e Google nativo, nova aba), Baixar (todos) e "Abrir no Drive"
+  (todos, no portal e na equipe). A principal é `primary` (Abrir quando existe),
+  as outras `ghost`. Word, PowerPoint e Excel não têm Abrir. Alvo de pelo menos
+  44px; rótulos acessíveis "Abrir {nome} em nova aba", "Baixar {nome}" e "Abrir
+  {nome} no Drive, em nova aba".
+- **Abrir no Drive é só um link**: não muda permissão no Drive. No portal, uma
+  segunda linha na nota avisa que o arquivo só abre para quem tem acesso e que,
+  sem acesso, o Google pede para solicitar; o aviso de exportação grande sugere
+  o Drive antes de pedir à equipe.
 - **Estados**: foco com borda `--premium-ink` + halo `--yellow-50`; "Abrindo..."
   ou "Preparando..." com `aria-busy` enquanto confere a resposta, sem spinner;
   sem ações antes da aprovação do cliente, com a nota "Disponível quando a peça
