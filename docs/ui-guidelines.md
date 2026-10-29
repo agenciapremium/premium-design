@@ -358,6 +358,8 @@ da topbar. A linha pontilhada não é desenhada: a sidebar não tem divisória a
   cobertas pelo FAB: novo quadro, novo lançamento, novo contrato, novo grupo)
   entram na zona de contexto na variante **destaque**, por último na zona
   (encostadas nas views).
+  Em sistema com **FAB contextual por tela** (§4.18.1), essa criação local já é
+  o FAB da tela, e a variante **destaque** não aparece na barra.
 - Telas de detalhe sem filtros usam a barra só com o cluster direito (ex.: projeto:
   "Novo grupo" e "Link de aprovação" como contexto só-ícone, abas
   Demandas/Pedidos/Config como views via `?tab`, e a estrela de favorito).
@@ -839,6 +841,39 @@ Tipos:
   (`py-[26px]`), e o board do Kanban desconta só `topbar+pt+pb` (§4.6).
 - Acessível: alvo ≥44px, foco visível, `aria-label`/`title` em cada botão e
   navegação por `Tab`/`Enter` na ordem do DOM.
+
+#### 4.18.1 Variação: FAB contextual por tela (padrão próprio reconhecido)
+
+O FAB acima é **global**: o mesmo conjunto em todas as telas, montado pelo
+shell. Num sistema **sem criação global**, em que toda criação pertence ao módulo
+da tela (cadastros de um painel administrativo), o FAB é **contextual**: cada
+tela monta o seu. Uso de referência: o painel do **Biolink Premium**
+(`agenciapremium/biolink-premium`, change `saas-08-panel-screen-patterns`), com
+"Nova farmácia", "Novo serviço", "Nova oferta", "Novo banner" etc.
+
+- **O que não muda**: anatomia, cores, revelação do dial, toque, teclado
+  (`aria-haspopup="menu"`, ↑/↓, `Esc` devolvendo o foco), arraste com posição em
+  `localStorage` (uma posição para todas as telas), some com o drawer aberto,
+  `prefers-reduced-motion`. A entrada de criação continua **única**: a tela não
+  repete "Novo X" na topbar, no `PageHeader.actions`, na `FilterBar` nem no
+  estado vazio (que aponta para o botão +).
+- **Montagem**: o componente cliente da tela renderiza **um** `<Fab principal
+  secundarias />`, e os slide-overs de criação vivem na própria tela, ao lado da
+  lista que eles atualizam. O `PageHeader` (que pode ser server) não carrega o
+  FAB.
+- **Conjunto**: a principal é a criação mais comum do módulo; as secundárias são
+  as outras criações **da mesma tela** (ex.: na página da oferta, "Novo produto"
+  com "Nova ocorrência" e "Importar planilha"; no biolink, "Novo botão" com "Nova
+  rede social"). A principal pode depender do estado da tela (sem ocorrência
+  selecionada, "Nova ocorrência" vira a principal), mas nunca muda de lugar.
+- **RBAC**: o FAB segue a permissão de escrita do módulo da tela; sem escrita, ou
+  sem nenhuma criação na tela, não renderiza. Telas sem criação (métricas,
+  auditoria, configuração do sistema) não têm FAB.
+- **Consequência na barra (§3.4)**: como o FAB já é a criação local da tela, a
+  zona de contexto **não** usa o `ContextIconButton` `destaque`; ela fica só com
+  utilidades `neutro` (exportar, ver no site, copiar link).
+- **Não misture** os dois modos no mesmo sistema: ou o shell monta um FAB global
+  em todas as telas, ou cada tela monta o seu.
 
 ### 4.19 Toast — feedback transitório — [`toast.tsx`](https://github.com/agenciapremium/tasks/blob/main/src/components/ui/toast.tsx)
 

@@ -102,7 +102,7 @@ Os tokens `--premium-*` (escala neutra literal) continuam válidos como **fachad
 ## Como começar (nova feature)
 
 1. Abra o [showroom](showroom.html) e o [`componentes.md`](componentes.md): o que você precisa provavelmente já existe.
-2. Monte a tela com o shell padrão: topbar (título via `PageHeader`) → `FilterBar` (filtros à esquerda; contexto → views → favorito à direita) → conteúdo. Criação entra pelo FAB, não por botão na tela.
+2. Monte a tela com o shell padrão: topbar (título via `PageHeader`) → `FilterBar` (filtros à esquerda; contexto → views → favorito à direita) → conteúdo. Criação entra pelo FAB, não por botão na tela (FAB global no shell ou, em sistema sem criação global, FAB contextual por tela: [`ui-guidelines.md`](ui-guidelines.md) §4.18.1).
 3. Cores **só por token**; tipografia conforme a [escala](tokens.md#tipografia); espaçamento múltiplo de 4px.
 4. Estados obrigatórios: hover, focus visível, disabled, loading (skeleton), empty, error.
 5. Valide nos dois temas e rode o checklist de PR do [`ui-guidelines.md` §12](ui-guidelines.md).

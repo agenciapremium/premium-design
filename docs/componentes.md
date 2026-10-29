@@ -543,6 +543,8 @@ Entrada **única** de criação do shell autenticado (telas não repetem botões
 
 `FabItem = { key, label, icon, onClick }`. Conjunto estático (ordem em `fab-actions.ts`): Criar demanda → Criar atividade → Criar projeto, filtrado por RBAC (sem permissão alguma, não renderiza). Desktop: clique no principal cria direto, dial no hover (o rótulo do principal aparece ao expandir); mobile (`hover: none`): toque abre o dial com a principal como primeiro item. **Arrastável** (posição em `localStorage`, limitada à viewport, respeita `safe-area-inset`; arraste fecha o dial e suprime o clique). Acessível: alvo ≥ 44px, `aria-haspopup`/`aria-expanded`, setas ↑/↓, Esc, animação suprimida sob `prefers-reduced-motion`.
 
+**Variação contextual (padrão próprio reconhecido, [`ui-guidelines.md`](ui-guidelines.md) §4.18.1).** Em sistema sem criação global, cada tela monta o seu `<Fab principal secundarias />` com as criações do próprio módulo, e os slide-overs de criação vivem na tela. Mesma anatomia, comportamento, teclado e arraste; RBAC pela escrita do módulo da tela (sem escrita ou sem criação, não renderiza); a zona de contexto da `FilterBar` não leva o `ContextIconButton` `destaque`. Uso: painel do Biolink Premium (`saas-08-panel-screen-patterns`).
+
 ## DigitandoIndicador — `digitando-indicador.tsx`
 
 Linha "<nome> está digitando…" da presença efêmera, junto à thread de comentários. Props: `nomes: string[]`, `className`. Renderiza `null` com a lista vazia — **some sozinha** quando o chamador expira os sinais (~5s após o último). Vários nomes são unidos com `Intl.ListFormat` pt-BR ("A e B estão digitando…"). Três pontos pulsam em `--premium-silver` (`motion-safe:animate-pulse`); `aria-live="polite"` anuncia sem roubar o foco.
@@ -761,5 +763,6 @@ Casos que **não** devem ser migrados para os primitivos — são bespoke por de
 | Busca em pílula do cabeçalho do portal white-label (Premium Assets) | Pílula de 40px com campo real e `⌘K`, aprovada no portal do cliente; segue a regra de um só controle de limpar (o `X` do sistema, igual ao do `CampoBusca`). Premium-design v0.15.0 |
 | Botões redondos minimalistas do workflow (concluir/apagar/mover) | §4.7 — identidade da timeline |
 | "Novo lançamento" como ação de contexto do financeiro | O conjunto do FAB é **estático** (demanda/atividade/projeto); criação de lançamento vive na zona de contexto da tela |
+| FAB contextual por tela (Biolink Premium) | O sistema não tem criação global: cada tela monta o seu FAB com as criações do módulo, e a barra não usa o `destaque` (`ui-guidelines.md` §4.18.1). Mesma anatomia e comportamento do `Fab`; não misturar com o FAB global no mesmo sistema. Premium-design v0.22.0 |
 | Superfícies **sempre escuras** (gate do portal, header de aprovação, login, toast, tooltip) | Usam `--brand-ink`/`--c-sidebar-*` — **nunca** `--premium-ink` como fundo (ele vira claro no escuro) |
 | Toggle-chips com estado ativo invertido | Usam `--c-emphasis`/`--c-on-emphasis` (invertem certo no escuro); o chip toggle da FilterBar e o `ColumnSortToggle` usam `--brand-ink` fixo para o ícone amarelo ler |
