@@ -734,6 +734,22 @@ Provider único de animação do DS: `LazyMotion features={domAnimation} strict`
 
 ---
 
+## Cartão de mídia com selos — padrão de domínio
+
+Item de mídia (foto, vídeo, arte) numa grade de miniaturas, com selos sobre a imagem. Não é primitivo de `ui/`: cada sistema monta o seu cartão no domínio (no Tasks, `components/acervo/acervo-cartao.tsx`, tela do Acervo) seguindo este desenho. Regras completas em [`ui-guidelines.md`](ui-guidelines.md) §4.36. Premium-design **v0.23.0**.
+
+| Parte | Desenho |
+|---|---|
+| Cartão | `<button>` inteiro, `aria-label` "{tipo}: {descrição}"; `--c-surface`, borda `--c-border`, `--r-lg`; hover `--sh-md` + borda `--c-border-strong`; foco borda `--premium-ink` + halo `--yellow-50` |
+| Miniatura | 4:3, `object-fit: cover` sobre `--c-sunken`; `loading="lazy"`, `decoding="async"`, `src` versionado; sem miniatura, ícone do tipo 28px `--c-subtle` + extensão 11px `--c-muted` |
+| Selo de mídia | `bg-black/75` fixo nos dois temas, branco 11px/700, `--r-sm`, 20px de altura: `Play` + `m:ss` (vídeo) ou `Image` (arte) no canto inferior esquerdo; `+N` com `Tooltip` "N fotos parecidas" no superior direito |
+| Selo de estado | Par de status opaco do `Badge` (`--danger-bg`/`--danger`: "Oculto", "Vetado"; `--success-bg`/`--success`: "Aprovado"), com ícone, no canto superior esquerdo; um só, com o motivo no `Tooltip`; só para quem pode ver a decisão |
+| Texto | Descrição em até 2 linhas (13px/500, `--c-ink`); metadados em 12px `--c-muted` |
+| Carregando | `Skeleton` 4:3 + duas linhas |
+| Grade | `role="list"`/`listitem`; `repeat(auto-fill, minmax(176px, 1fr))`, gap 12px; duas colunas abaixo de 640px; "Carregar mais" no fim |
+
+Por que dois desenhos de selo: o de mídia é texto branco sobre a foto, e só o escuro a 75% garante AA sobre qualquer imagem (a mesma exceção do `Lightbox`); o de estado é texto colorido, que só passa AA sobre o fundo opaco do par de status. Nenhum token novo.
+
 ## Padrões compostos do shell (`components/layout/`)
 
 | Componente | Papel |

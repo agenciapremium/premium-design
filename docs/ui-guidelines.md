@@ -1216,6 +1216,59 @@ tela monta o seu. Uso de referência: o painel do **Biolink Premium**
   a dica não entra.
 - Para texto longo ou conteúdo rico, não é tooltip: é slide-over ou popover.
 
+### 4.36 Cartão de mídia com selos — padrão de domínio (no Tasks, [`acervo-cartao.tsx`](https://github.com/agenciapremium/tasks/blob/main/src/components/acervo/acervo-cartao.tsx))
+
+- **O que é**: um item de mídia (foto, vídeo, arte) numa **grade de
+  miniaturas**, com selos sobrepostos à imagem. Nenhum primitivo cobria "imagem
+  + selos sobre ela + texto curto embaixo": o `Card` (§4.4) não tem área de
+  mídia, e o cartão de documento (§4.35) é uma peça só, não uma grade. Nasce como
+  **componente de domínio** (fora de `ui/`), com o padrão visual fixado aqui.
+  Uso de referência: a tela do Acervo do Tasks (change `acervo-tela-curadoria`).
+  Catálogo em [`componentes.md`](componentes.md#cartão-de-mídia-com-selos--padrão-de-domínio).
+- **Anatomia**: o cartão inteiro é um `<button>` (abre o detalhe), com
+  `aria-label` "{tipo}: {descrição}" (sem descrição, o nome do arquivo).
+  Superfície `--c-surface`, borda `--c-border`, `--r-lg`, `overflow: hidden`.
+  Em cima, a miniatura em **4:3** sobre `--c-sunken`, `object-fit: cover`
+  (o retrato fica centralizado); embaixo, a descrição em até **2 linhas**
+  (13px/500, `--c-ink`) e uma linha de metadados em 12px `--c-muted`
+  (por exemplo, cliente · cenário · data).
+- **Miniatura**: `<img loading="lazy" decoding="async">` com `src`
+  **versionado** pela data de modificação do arquivo (cacheável como
+  imutável). Sem miniatura (erro do `<img>`), o ícone do tipo (lucide, 28px,
+  `--c-subtle`) e a extensão em 11px `--c-muted`, centralizados sobre
+  `--c-sunken`, sem mensagem de erro.
+- **Dois tipos de selo, dois desenhos**:
+  - **Selo de mídia** (informação do arquivo): fundo escuro translúcido **fixo
+    nos dois temas**, `bg-black/75` (ao menos 70% de opacidade), texto branco
+    11px/700, `--r-sm`, altura 20px, padding 0 6px, ícone de 12px. É a mesma
+    exceção do `Lightbox` (§2.7, §4.22): sobre foto, o fundo do selo é
+    decidido pela foto, não pelo tema, e só o escuro opaco o bastante garante
+    AA sobre qualquer imagem. Canto **inferior esquerdo**: `Play` + duração
+    `m:ss` no vídeo (`h:mm:ss` a partir de uma hora); `Image` na arte. Canto
+    **superior direito**: `+N` quando o item representa um grupo de parecidas,
+    com `Tooltip` "N fotos parecidas".
+  - **Selo de estado** (decisão sobre o item, só para quem pode vê-la): o par
+    de status **opaco**, como o `Badge` (§4.3): `--danger-bg`/`--danger`
+    ("Oculto", "Vetado") e `--success-bg`/`--success` ("Aprovado"), 11px/700,
+    `--r-sm`, com ícone (`EyeOff`, `Ban`, `Check`). Opaco porque é texto
+    colorido: translúcido, perderia o contraste sobre a foto. Canto **superior
+    esquerdo**, um selo só por cartão (o motivo vai no `Tooltip`). O vermelho
+    nunca é o único portador do sentido: o selo tem rótulo e ícone.
+- **Estados**: hover com `--sh-md` e borda `--c-border-strong`; foco visível
+  com borda `--premium-ink` + halo `--yellow-50` (`0 0 0 2px`), o mesmo do
+  sistema; carregando, `Skeleton` com a mesma proporção (4:3 + duas linhas).
+  O cartão inteiro é o alvo (bem acima de 40px). Selos não são clicáveis.
+- **Grade**: `role="list"`, com cada cartão em `role="listitem"`;
+  `grid-template-columns: repeat(auto-fill, minmax(176px, 1fr))`, gap 12px;
+  abaixo de 640px, duas colunas. Mais itens por "Carregar mais" (botão no fim
+  da grade, com o carregamento no próprio botão), não por paginação numerada.
+  As setas não navegam a grade: o `Tab` basta. Ao fechar o detalhe, o foco
+  volta ao cartão que o abriu.
+- **Tema escuro**: superfície, borda, textos e o fundo da miniatura por token
+  (`--c-*`); o selo de mídia é o mesmo nos dois temas (fixo, sobre a foto); o
+  selo de estado usa os pares de status, que têm tom escuro próprio. Nenhum
+  token novo.
+
 ## 5. Padrões de interação
 
 ### 5.1 Toggle de visualização (Kanban / Lista / Tabela / Calendário)

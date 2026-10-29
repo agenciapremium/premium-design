@@ -394,6 +394,28 @@ section.ds-sec{margin-bottom:56px;scroll-margin-top:calc(var(--ds-topo) + 16px)}
 .card-h h3{font-size:15px;font-weight:700}
 .card-b{padding:16px 18px}
 .stat{padding:16px 18px;display:flex;flex-direction:column;gap:10px;min-width:190px;flex:1 1 190px}
+
+/* ── Cartão de mídia com selos (padrão de domínio, ui-guidelines §4.36) ── */
+.midia-grade{display:grid;grid-template-columns:repeat(auto-fill,minmax(176px,1fr));gap:12px;width:100%;list-style:none;padding:0;margin:0}
+@media (max-width:639px){.midia-grade{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.midia-cartao{
+  display:flex;flex-direction:column;width:100%;text-align:left;cursor:pointer;font:inherit;color:inherit;padding:0;
+  background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-lg);overflow:hidden;
+  transition:box-shadow .15s var(--ease),border-color .15s var(--ease);
+}
+.midia-cartao:hover{box-shadow:var(--sh-md);border-color:var(--c-border-strong)}
+.midia-cartao:focus-visible{outline:none;border-color:var(--premium-ink);box-shadow:0 0 0 2px var(--yellow-50)}
+.midia-img{position:relative;aspect-ratio:4/3;background:var(--c-sunken);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px;color:var(--c-subtle)}
+.midia-img .ext{font-size:11px;color:var(--c-muted);text-transform:uppercase}
+.midia-selo{position:absolute;display:inline-flex;align-items:center;gap:4px;height:20px;padding:0 6px;border-radius:var(--r-sm);font-size:11px;font-weight:700;line-height:1}
+.midia-selo svg{width:12px;height:12px}
+.midia-selo.de-midia{background:rgba(0,0,0,.75);color:#fff} /* fixo nos dois temas: exceção de mídia, como o lightbox */
+.midia-selo.oculto{background:var(--danger-bg);color:var(--danger)}
+.midia-selo.aprovado{background:var(--success-bg);color:var(--success)}
+.midia-selo.se{top:8px;left:8px}.midia-selo.sd{top:8px;right:8px}.midia-selo.ie{bottom:8px;left:8px}
+.midia-txt{padding:10px 12px 12px;display:flex;flex-direction:column;gap:4px}
+.midia-txt b{font-size:13px;font-weight:500;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.midia-txt span{font-size:12px;color:var(--c-muted)}
 .stat .ic{width:34px;height:34px;border-radius:var(--r-md);display:flex;align-items:center;justify-content:center}
 .stat .num{font-size:30px;font-weight:700;letter-spacing:-.02em;line-height:1}
 .stat .lbl{font-size:12px;color:var(--premium-gray);font-weight:500}
@@ -1456,6 +1478,50 @@ th.sortable.on svg.lucide{color:var(--premium-ink)}
         <div class="meta-row"><span>Prioridade</span><b style="display:inline-flex;align-items:center;gap:6px"><i class="pri-dot" style="background:var(--danger)"></i> Alta</b></div>
       </div>
     </div>
+    <div class="ds-sub">Cartão de mídia com selos · padrão de domínio (§4.36, v0.23.0)</div>
+    <div class="specimen on-paper" style="border:0;box-shadow:none;padding:0">
+      <ul class="midia-grade" role="list" aria-label="Exemplo de grade de mídia">
+        <li role="listitem">
+          <button class="midia-cartao" type="button" aria-label="Foto: Nelore branco no pasto na seca">
+            <span class="midia-img" style="background:linear-gradient(160deg,#8fae6b,#5d7a3e 55%,#c9b98a)">
+              <span class="midia-selo de-midia sd">+6</span>
+            </span>
+            <span class="midia-txt"><b>Nelore branco no pasto na seca, rebanho ao fundo</b><span>Nossa Lavoura · Pasto · 10/08/2025</span></span>
+          </button>
+        </li>
+        <li role="listitem">
+          <button class="midia-cartao" type="button" aria-label="Vídeo: Colheita de soja vista de cima">
+            <span class="midia-img" style="background:linear-gradient(200deg,#d8c27a,#a88a3a 60%,#6b5a2a)">
+              <span class="midia-selo de-midia ie"><i data-lucide="play"></i>0:42</span>
+            </span>
+            <span class="midia-txt"><b>Colheita de soja vista de cima</b><span>Nossa Lavoura · Lavoura · 02/03/2026</span></span>
+          </button>
+        </li>
+        <li role="listitem">
+          <button class="midia-cartao" type="button" aria-label="Foto: Curral com marca d'água">
+            <span class="midia-img" style="background:linear-gradient(140deg,#7d6a58,#4a3d33)">
+              <span class="midia-selo oculto se"><i data-lucide="eye-off"></i>Oculto</span>
+            </span>
+            <span class="midia-txt"><b>Curral com marca d'água no canto</b><span>Supremax · Curral · 21/05/2025</span></span>
+          </button>
+        </li>
+        <li role="listitem">
+          <button class="midia-cartao" type="button" aria-label="Foto: Boi magro no confinamento">
+            <span class="midia-img" style="background:linear-gradient(170deg,#b4a58f,#776b5a)">
+              <span class="midia-selo aprovado se"><i data-lucide="check"></i>Aprovado</span>
+            </span>
+            <span class="midia-txt"><b>Boi no cocho do confinamento</b><span>Supremax · Confinamento · 14/07/2025</span></span>
+          </button>
+        </li>
+        <li role="listitem">
+          <button class="midia-cartao" type="button" aria-label="Arte: Post de lançamento">
+            <span class="midia-img"><i data-lucide="image" style="width:28px;height:28px"></i><span class="ext">PSD</span></span>
+            <span class="midia-txt"><b>Post de lançamento sem miniatura no Drive</b><span>Nossa Lavoura · 03/09/2026</span></span>
+          </button>
+        </li>
+      </ul>
+    </div>
+    <p class="spec-note">Selo de mídia (<code>+N</code>, duração) em escuro translúcido fixo a 75%, o mesmo nos dois temas; selo de estado (Oculto, Vetado, Aprovado) no par de status opaco, só para quem pode ver a decisão. Os gradientes acima fazem o papel das fotos: no sistema, a miniatura vem do Drive com <code>loading="lazy"</code> e URL versionada. O último cartão mostra o estado sem miniatura.</p>
   </section>
 
   <!-- ════════ TABELA ════════ -->
