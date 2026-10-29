@@ -359,7 +359,8 @@ da topbar. A linha pontilhada não é desenhada: a sidebar não tem divisória a
   entram na zona de contexto na variante **destaque**, por último na zona
   (encostadas nas views).
   Em sistema com **FAB contextual por tela** (§4.18.1), essa criação local já é
-  o FAB da tela, e a variante **destaque** não aparece na barra.
+  o FAB da tela, e a variante **destaque** marca a ação principal da tela
+  (Salvar, Abrir painel), só-ícone e por último na zona.
 - Telas de detalhe sem filtros usam a barra só com o cluster direito (ex.: projeto:
   "Novo grupo" e "Link de aprovação" como contexto só-ícone, abas
   Demandas/Pedidos/Config como views via `?tab`, e a estrela de favorito).
@@ -870,8 +871,13 @@ tela monta o seu. Uso de referência: o painel do **Biolink Premium**
   sem nenhuma criação na tela, não renderiza. Telas sem criação (métricas,
   auditoria, configuração do sistema) não têm FAB.
 - **Consequência na barra (§3.4)**: como o FAB já é a criação local da tela, a
-  zona de contexto **não** usa o `ContextIconButton` `destaque`; ela fica só com
-  utilidades `neutro` (exportar, ver no site, copiar link).
+  zona de contexto nunca tem criação. Ela guarda todas as ações da tela,
+  só-ícone e lado a lado: utilidades e secundárias em `neutro` (exportar, ver no
+  site, copiar link, liberar) e a ação principal da tela em `destaque` (Salvar,
+  Abrir painel), por último. Não há linha de ações com botões de texto abaixo
+  da topbar: tela sem filtro nem aba tem a barra só com os ícones à direita, e
+  abas de seção por rota entram em pílula na zona de views, como as abas do
+  detalhe de projeto.
 - **Não misture** os dois modos no mesmo sistema: ou o shell monta um FAB global
   em todas as telas, ou cada tela monta o seu.
 
