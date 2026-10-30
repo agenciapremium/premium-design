@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.19.0 · 2026-10-20
+
+Duas props novas num componente. Nenhum token nem CSS do pacote mudou.
+
+- **`recorteLocal` na `FilterBar` (`docs/componentes.md` §FilterBar).** Para a tela que recorta no navegador o que já carregou, e cujo servidor não lê os filtros: a barra escreve a URL pela History API nativa (`history.replaceState`, e `pushState` ao aplicar uma view), que o Next sincroniza com `useSearchParams` sem refazer a página. Vale para a mudança de filtro, a restauração do filtro salvo e a aplicação de view. `useSetParams` aceita `{ local: true }`. Sem a prop, nada muda: `router.replace`, como nas telas que filtram no servidor.
+- **`paramsDeNavegacao` na `FilterBar` (`docs/componentes.md` §FilterBar; `docs/padroes-de-interacao.md`, Views salvas).** Parâmetros que dizem onde a tela está, e não o recorte, como o mês exibido: ficam fora da query da view salva e da detecção da view ativa, e seguem na URL ao aplicar uma view (aplicar em dezembro continua em dezembro). O link copiado leva só a query da view.
+- No Tasks, as duas vêm da change `calendario-time-filtros` (filtros Tipo, Pessoa, Departamento, Agenda e Cliente no calendário do time, com `paramsDeNavegacao={["ano", "mes", "dia"]}`).
+- **`package.json`**: `version` 0.19.0.
+
 ## v0.18.0 · 2026-10-17
 
 Um componente novo e um helper exportado. Nenhum token nem CSS do pacote mudou.
