@@ -1,5 +1,18 @@
 # Changelog
 
+## v0.21.0 · 2026-10-20
+
+Um padrão novo num componente. Nenhum token nem CSS do pacote mudou.
+
+- **Origem por URL no visualizador em tela cheia (`docs/ui-guidelines.md` §4.22).** O `Lightbox` aceita URLs prontas por arquivo, além do contexto do proxy do Drive. Os usos com o contexto do Drive não mudam. Só nessa origem aparecem:
+  - o PDF no palco, num `iframe` do mesmo domínio, e no celular o cartão;
+  - as ações "Abrir em nova guia" e "Baixar" no cabeçalho;
+  - o cartão sem preview, com ícone, nome, motivo e os dois botões.
+  
+  A seção registra por que o PDF precisa vir do mesmo domínio: o Vercel Blob serve tudo com `x-frame-options: DENY`.
+- No Tasks, o padrão vem da change `materiais-apoio-preview` (preview dos arquivos da aba Materiais de apoio).
+- **`package.json`**: `version` 0.21.0.
+
 ## v0.20.0 · 2026-10-20
 
 Um padrão novo de impressão. Nenhum token nem CSS do pacote mudou.
