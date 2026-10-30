@@ -704,6 +704,7 @@ Barras agrupadas em SVG próprio (sem lib), com linha sobreposta opcional de esc
 | `categorias` | `string[]` | Eixo X |
 | `series` | `{ label, cor, valores }[]` | `cor` = **token** (`"var(--success)"`), nunca hex |
 | `linha` | `{ label, cor, valores }` | Linha sobreposta opcional |
+| `marco` | `{ antesDe, rotulo }` | Marco vertical tracejado em `--premium-steel` antes da categoria `antesDe`, com rótulo (ex.: "preferências adotadas" no gráfico de ajustes do QG). Mencione o marco na `descricao` |
 | `formatarValor` | `(v) => string` | Eixo/tooltips — default `moedaCompacta`; gráficos de contagem passam um formatador de inteiros |
 | `descricao` | `string` | `aria-label` + `<title>` |
 | `altura` | `number` | default 220 |

@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.16.0 · 2026-10-17
+
+Uma prop nova num componente. Nenhum token nem CSS do pacote mudou.
+
+- **Marco vertical no `BarChart` (`docs/componentes.md` §BarChart).** Prop opcional `marco: { antesDe, rotulo }`: linha tracejada em `--premium-steel` entre a categoria `antesDe - 1` e a `antesDe`, com o rótulo no topo, para marcar um acontecimento na série (no Tasks, "preferências adotadas" no gráfico de ajustes por mês do QG do Cliente, change `ajustes-analise-cliente`). O marco é decorativo (`aria-hidden`); quem chama menciona o marco na `descricao`, que é o texto alternativo do gráfico. Sem token novo: reaproveita a cor de texto secundário.
+- **`package.json`**: `version` 0.16.0.
+
 ## v0.15.2 · 2026-09-24
 
 Correção de uma regra de posicionamento. Nenhum token nem CSS do pacote mudou.
