@@ -731,11 +731,17 @@ Tipos:
 - `has` (tem item): dot 4px âmbar abaixo do número (amarelo se também `today`).
 - `muted`: dias de outro mês, cor `--premium-silver`.
 - **Posicionamento (popover/portal)**: o calendário e demais popovers ancorados
-  (seletor de pessoas, prazos do workflow) usam o helper único
-  [`popoverPos`](https://github.com/agenciapremium/tasks/blob/main/src/lib/popover-pos.ts) — abrem abaixo do gatilho por padrão,
-  fazem **flip** para cima quando falta espaço abaixo e há mais espaço acima, e
-  aplicam **clamp** (margem mín. 8px) nas duas bordas para nunca renderizar fora
-  da viewport (ex.: campo de data perto da base de um SlideOver).
+  (seletor de pessoas, multi-select, dropdowns da FilterBar, prazos do workflow)
+  usam o helper único
+  [`popoverPos`](https://github.com/agenciapremium/tasks/blob/main/src/lib/popover-pos.ts). O painel fica **colado ao gatilho**, a 6px: abrindo
+  abaixo, o topo encosta na base do gatilho; abrindo acima, a base encosta no
+  topo do gatilho (ancorado por `bottom`, nunca por um topo calculado com a
+  altura estimada, que deixava lista curta solta longe do campo). Abre abaixo por
+  padrão e faz **flip** para cima quando falta espaço abaixo para a altura
+  estimada e há mais espaço acima. Sem espaço para a altura estimada, o painel
+  **não é deslocado**: ganha `maxHeight` com o espaço disponível (mín. 120px) e
+  rola por dentro; com espaço de sobra vale o `max-h-*` do próprio painel.
+  **Clamp** horizontal com margem mín. de 8px nas duas bordas.
 - **Entrada por teclado (`variant="field"`)**: o campo de formulário tem **três
   segmentos `dd` / `mm` / `aaaa`** com **auto-avanço** (digitou o dia, o foco
   pula para o mês) — o usuário pode **digitar** a data em vez de navegar o

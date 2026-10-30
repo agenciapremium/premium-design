@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.15.2 · 2026-09-24
+
+Correção de uma regra de posicionamento. Nenhum token nem CSS do pacote mudou.
+
+- **Popover colado ao gatilho (`docs/ui-guidelines.md`, posicionamento do DatePicker; `docs/componentes.md`, convenções).** O `popoverPos` posicionava o painel pelo topo calculado com a altura **estimada**: aberto acima, uma lista curta (3 opções num multi-select com estimativa de 360px) ficava cerca de 200px acima do campo; aberto abaixo perto da base da janela, o clamp final empurrava o painel para cima. A regra passa a ser: o painel encosta no gatilho a 6px (abrindo acima, ancorado por `bottom`); o flip continua decidido pela estimativa; sem espaço, o painel ganha `maxHeight` com o espaço disponível (mín. 120px) e rola por dentro em vez de ser deslocado; com espaço de sobra vale o `max-h-*` do próprio painel. Corrigido no Tasks no mesmo dia (change `popover-colado-ao-gatilho`), com teste do helper.
+- **`package.json`**: `version` 0.15.2.
+
 ## v0.15.1 · 2026-09-24
 
 Regra de uso do slide-over explicitada. Nenhum token nem CSS do pacote mudou.
