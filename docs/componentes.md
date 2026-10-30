@@ -43,6 +43,8 @@ Botão de ação. Tipografia própria: **uppercase, 700, `tracking-wider`**, fon
 - Verbo no infinitivo curto: "Nova demanda", "Solicitar ajuste". Evitar "OK"/"Sim".
 - Ação de contexto só-ícone na barra de ações usa o **`ContextIconButton`** (abaixo); o icon button 40×40 da topbar (sino/tema) segue como padrão do shell, sem primitivo dedicado.
 
+**`buttonVariantClasses(variant, size)`** (exportada do mesmo arquivo): devolve exatamente as classes do `Button` (base + variante + tamanho), para um **link** (`<a>`) com o mesmo visual, como Abrir e Baixar do [`CartaoDocumento`](#cartaodocumento--cartao-documentotsx). O `Button` usa a mesma função, então os dois não divergem. Não traz anel de foco: o link soma o foco do padrão (borda `--premium-ink` + halo `--yellow-50`) e, se precisar, `min-h-[44px]`. Copiar as classes à mão não vale.
+
 ## ContextIconButton — `context-icon-button.tsx`
 
 Botão de contexto **só-ícone** da barra de ações (zona `contextActions` da FilterBar): alvo ≥ 40×40, dica (`Tooltip` embutido) + `aria-label` obrigatórios via `label`, foco visível. Como a dica já vem por dentro, **não** envolver o componente num `Tooltip` externo: sairiam dois balões.
@@ -480,7 +482,7 @@ Card de notificação das três superfícies (painel do sino, central `/notifica
 
 Visualizador full-viewport de materiais (`role="dialog"` + `aria-modal`, z-[60]). Fundo escuro **fixo** `bg-black/90` nos dois temas (exceção documentada: mídia em tela cheia). Props: `files: DriveFile[]`, `index`, `onIndexChange`, `onClose`, `context: DriveContext`.
 
-Imagem com zoom (botões +/−/reset, 1×–4× em passos de 0,5) e arrastar quando ampliada, com fallback em cascata original → rendição do Drive → erro; vídeo/áudio/demais tipos via `DriveMediaViewer`; navegação ←/→ restrita ao conjunto passado (botões desabilitados nos extremos); contador `i / n`; fecha por Esc/botão com **saída animada** (o `onClose` corre ao fim do fade); foco pelo [`useDialogoFoco`](#usedialogofoco--use-dialogo-focots) (entra no botão de fechar, cicla nos controles e volta ao gatilho); trava o scroll do body.
+Imagem com zoom (botões +/−/reset, 1×–4× em passos de 0,5) e arrastar quando ampliada, com fallback em cascata original → rendição do Drive → erro; documento (PDF, Office e Google nativos) no contexto da demanda (`{ demandaId }`) abre no [`CartaoDocumento`](#cartaodocumento--cartao-documentotsx), com Abrir, Baixar e Abrir no Drive (em Quadros e na biblioteca do cliente segue "não suportado"); vídeo/áudio/demais tipos via `DriveMediaViewer`; navegação ←/→ restrita ao conjunto passado (botões desabilitados nos extremos); contador `i / n`; fecha por Esc/botão com **saída animada** (o `onClose` corre ao fim do fade); foco pelo [`useDialogoFoco`](#usedialogofoco--use-dialogo-focots) (entra no botão de fechar, cicla nos controles e volta ao gatilho); trava o scroll do body.
 
 **Contrato de dimensionamento**: o wrapper direto da mídia leva `flex h-full w-full items-center justify-center overflow-hidden` e **nenhuma classe de tamanho vai ao `DriveMediaViewer`**. O `h-full` dá altura definida ao pai — sem ela, o `max-h-full` interno do leitor computa como `none` e o vídeo vertical renderiza no tamanho natural, cortado pelo `overflow-hidden` do palco. Vale igual no fallback do `ZoomableImage` em `stage === "failed"`.
 
@@ -491,6 +493,42 @@ Leitor próprio de mídia do Drive — reproduz **imagem, vídeo e áudio** serv
 Imagem começa pelo original em alta e, se o formato não renderizar no navegador (PSD, TIFF), cai para a rendição "preview" do Drive; só então o estado de erro. `kind: "outro"` e falhas de mídia mostram o cartão de indisponível (ícone `file-question` + nome + motivo, `role="img"` com `aria-label`). Reusado na aba Layouts, no portal do cliente e dentro do Lightbox.
 
 **Já define `max-h-full max-w-full`** e concatena o `className` recebido. Não mande outra restrição de tamanho por cima: `cn()` é join puro (ver [`ui-guidelines.md`](ui-guidelines.md) §2.8), as duas classes convivem e quem vence depende da ordem do CSS gerado. Quem precisa mudar o tamanho ajusta o **wrapper**.
+
+## CartaoDocumento — `cartao-documento.tsx`
+
+Cartão de um documento de layout (PDF, Word, PowerPoint, Excel e Google Slides, Docs e Sheets), no palco do portal do cliente e no `Lightbox` da equipe. Nenhum primitivo cobria "capa + tipo + ações de arquivo", por isso é componente próprio, compartilhado pelas duas superfícies. Props: `documento` (`PortalDocumento`: `driveId`, `nome`, `tipo`, `tamanho`, `modificadoEm`, `nativoGoogle`), `contexto` (a credencial do proxy de mídia: `{ demandaId }`, `{ token, demandaId? }` ou `{ portalDemandaId }`), `acoes` (Abrir e Baixar liberados), `superficie` (`"portal" | "equipe"`, muda só os textos de orientação), `linkDrive?` ("Abrir no Drive", o link do helper `linkDrive`; o portal e a equipe passam, e sem ele o botão não aparece), `onErro` (o toast de quem monta) e `className`. Quem monta passa `key={documento.driveId}`, para a capa recomeçar a cada documento.
+
+**Anatomia**: `<article>` com `aria-label` "Documento {tipo}: {nome}", superfície `--c-surface`, borda `--premium-mist`, `--r-lg`, `--sh-lg`, largura até 600px. Em linha a partir de `sm` (capa 160×200 à esquerda); empilhado no celular (capa com a largura toda, 132px de altura). Ao lado da capa: nome (15px/700, `--c-ink`, quebra em qualquer ponto), linha com o selo do tipo (`Badge` no tom do tipo, com o ícone) e o tamanho (`--c-muted`, "12,1 MB"; o Google nativo não tem tamanho), as ações e a nota de orientação.
+
+**Capa**: a miniatura do Drive pela rota de miniatura com `capa=1` (sem miniatura, a rota responde 404 em vez de servir o arquivo original), sobre `--c-sunken`, `object-contain`. Enquanto carrega e na falha fica o ícone grande do tipo (48px), sem mensagem de erro; com a capa carregada, um selo redondo com o ícone do tipo no canto inferior direito. O `ref` da imagem confere `img.complete` na montagem: capa que carrega antes da hidratação não dispara `onLoad` no React.
+
+**Ícone e cor por tipo** (lucide, só tokens semânticos existentes; cada um tem valor próprio no tema escuro):
+
+| Tipo | Ícone | Cor | Rótulo |
+|---|---|---|---|
+| PDF | `FileText` | `--danger` | "PDF" |
+| Word / Google Docs | `FileText` | `--info` | "Word" / "Google Docs" |
+| PowerPoint / Google Slides | `Presentation` | `--warning` | "PowerPoint" / "Google Slides" |
+| Excel / Google Sheets | `FileSpreadsheet` | `--success` | "Excel" / "Google Sheets" |
+
+A regra mora pura em `portal-midias.ts` (`tipoDocumentoCliente`, `rotuloDocumento`, `VISUAL_DOCUMENTO`); o componente só traduz o nome do ícone e do tom. `IconeDocumento` (exportado) desenha o ícone do tipo na cor do tipo, ou na cor do pai com `semCor` (dentro do `Badge`); é o mesmo ícone das miniaturas da faixa do portal e da aba Layouts.
+
+**Ações**: links (`<a>`), nunca `<button>`, com o visual do `Button` por `buttonVariantClasses`:
+- **Abrir** (PDF e Google nativo): `target="_blank"`, `rel="noopener"`, ícone `ExternalLink`, `aria-label` "Abrir {nome} em nova aba". O PDF abre no visualizador do navegador; o Google nativo abre exportado em PDF.
+- **Baixar** (todos): atributo `download` com o nome do arquivo, ícone `Download`, `aria-label` "Baixar {nome}". O Google nativo baixa exportado em PPTX, DOCX ou XLSX.
+- **Abrir no Drive** (quando há `linkDrive`, no portal e na equipe): `ghost`, ícone `ExternalLink`, `target="_blank"`, `rel="noopener noreferrer"`, `aria-label` "Abrir {nome} no Drive, em nova aba". É só um link (`https://drive.google.com/open?id=<id>`): não muda permissão no Drive, e quem não tem acesso ao arquivo vê o pedido de acesso do Google.
+- A principal é `primary` (Abrir quando existe, senão Baixar) e as outras `ghost`; Word, PowerPoint e Excel não têm Abrir. Alvo de pelo menos 44px (`min-h-[44px]`) nas duas superfícies. Nota abaixo dos botões: "Abre em outra aba." (PDF), "Abre em outra aba, em PDF. Baixar entrega o arquivo editável." (Google nativo) ou, no Office, "O navegador não exibe este formato: baixe para ver." na equipe e "O navegador não exibe este formato: baixe ou abra no Drive." no portal. No portal, com Abrir no Drive, a nota ganha uma segunda linha: "No Drive, o arquivo só abre se você tiver acesso. Se o Google pedir, toque em Solicitar acesso."
+- Os links funcionam sozinhos (clique do meio, Ctrl/⌘ + clique, abrir em nova aba). No clique comum o cartão confere a resposta antes de entregar, para mostrar o erro no lugar certo: PDF e Office passam por um `HEAD` na rota (a mesma decisão de acesso, sem ler o conteúdo) e então abrem ou baixam pelo link; o Google nativo é lido por `fetch` (a exportação só se confere lendo, e é limitada a cerca de 10 MB pelo Drive) e entregue por URL de blob. Abrir cria a aba ainda no clique, para o navegador não bloquear; bloqueada, segue o link.
+
+**Estados**
+- **Hover**: o do `Button` (`primary` vai a `--gold`; `ghost` troca a borda para `--premium-ink`).
+- **Foco visível**: borda `--premium-ink` + halo `--yellow-50` (`0 0 0 2px`). O `primary` reserva uma borda transparente para o foco caber sem mudar o tamanho. Só o halo não basta no tema claro: some sobre o branco.
+- **Preparando**: durante a conferência, o rótulo vira "Abrindo..." ou "Preparando...", com `aria-busy`, sem spinner, e os links não aceitam novo clique.
+- **Sem ações** (`acoes` falso, peça antes da aprovação do cliente): no lugar dos botões, a nota "Disponível quando a peça chegar para a sua aprovação." em `--c-sunken` com borda `--premium-mist`.
+- **Exportação grande** (a rota responde 413 com `codigo: "exportacao_grande"`): aviso inline com `AlertTriangle` em `--warning-bg`, borda e texto `--warning`, numa região `aria-live="polite"`. Texto no portal: "Este arquivo é grande demais para abrir pelo portal. Use Abrir no Drive ou peça à equipe."; na equipe: "Este arquivo é grande demais para exportar pelo Tasks. Abra no Drive."
+- **Erro genérico**: `onErro` com "Não foi possível abrir o documento. Tente de novo." ou "Não foi possível baixar o documento. Tente de novo."; 403 vira "Este documento ainda não está disponível.". O portal passa o próprio toast; o `Lightbox` passa `useToast().warning`.
+
+**Tema escuro**: superfície, borda e texto por `--c-surface`, `--premium-mist`, `--c-ink` e `--c-muted`; capa sobre `--c-sunken`; cores de tipo pelos tokens semânticos, que já têm valor no escuro. Contraste AA nos dois temas (ui-guidelines §9).
 
 ## EmojiPicker — `emoji-picker.tsx` (+ `emoji-picker-panel.tsx`)
 

@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.18.0 · 2026-10-17
+
+Um componente novo e um helper exportado. Nenhum token nem CSS do pacote mudou.
+
+- **Cartão de documento (`docs/ui-guidelines.md` §4.35, nova; `docs/componentes.md` §CartaoDocumento).** O documento de um layout (PDF, Word, PowerPoint, Excel e Google Slides, Docs e Sheets) vira peça visível no palco do portal do cliente e no lightbox da equipe: capa do Drive com o ícone do tipo como reserva, nome, selo do tipo (`Badge`) e tamanho, e as ações em links (Abrir, Baixar e Abrir no Drive; Abrir no Drive é só um link, sem mudar permissão, e no portal vem com a nota de que o arquivo só abre para quem tem acesso no Drive). Ícone e cor por tipo só com tokens semânticos existentes (PDF `--danger`, Word e Docs `--info`, PowerPoint e Slides `--warning`, Excel e Sheets `--success`). Estados: foco com borda `--premium-ink` + halo `--yellow-50`, "Abrindo..." e "Preparando..." com `aria-busy` (sem spinner), sem ações antes da aprovação do cliente, aviso inline de exportação grande e erro em toast. Vem das changes `portal-documentos-pdf-office` e `portal-documento-abrir-no-drive` do Tasks.
+- **Link com cara de botão (`docs/ui-guidelines.md` §4.1; `docs/componentes.md` §Button).** `buttonVariantClasses(variant, size)`, exportada de `button.tsx`, devolve as classes do `Button` para um `<a>`, sem copiar à mão.
+- **Lightbox (`docs/ui-guidelines.md` §4.22; `docs/componentes.md` §Lightbox).** O documento no contexto da demanda abre no cartão de documento, no lugar de "Tipo de arquivo não suportado para preview.".
+- **`package.json`**: `version` 0.18.0.
+
 ## v0.17.0 · 2026-10-17
 
 Uma prop nova num componente. Nenhum token nem CSS do pacote mudou.
