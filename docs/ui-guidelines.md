@@ -429,6 +429,10 @@ da topbar. A linha pontilhada não é desenhada: a sidebar não tem divisória a
 
 - Variantes do primitivo: `variant: "primary" | "dark" | "ghost" | "danger"`,
   `size: "default" | "sm"`, `loading` (spinner `Loader2`).
+- **Link com cara de botão**: `buttonVariantClasses(variant, size)`, exportada
+  de `button.tsx`, devolve as mesmas classes do `Button` para um `<a>` (Abrir e
+  Baixar do cartão de documento, §4.35). Não copie as classes à mão. O link
+  soma o foco do padrão (borda `--premium-ink` + halo `--yellow-50`).
 
 - Tipografia do botão: **uppercase**, `font-weight: 700`, `letter-spacing: .03em`,
   `font-size: 13px` (11px no `sm`).
@@ -734,11 +738,17 @@ Tipos:
 - `has` (tem item): dot 4px âmbar abaixo do número (amarelo se também `today`).
 - `muted`: dias de outro mês, cor `--premium-silver`.
 - **Posicionamento (popover/portal)**: o calendário e demais popovers ancorados
-  (seletor de pessoas, prazos do workflow) usam o helper único
-  [`popoverPos`](https://github.com/agenciapremium/tasks/blob/main/src/lib/popover-pos.ts) — abrem abaixo do gatilho por padrão,
-  fazem **flip** para cima quando falta espaço abaixo e há mais espaço acima, e
-  aplicam **clamp** (margem mín. 8px) nas duas bordas para nunca renderizar fora
-  da viewport (ex.: campo de data perto da base de um SlideOver).
+  (seletor de pessoas, multi-select, dropdowns da FilterBar, prazos do workflow)
+  usam o helper único
+  [`popoverPos`](https://github.com/agenciapremium/tasks/blob/main/src/lib/popover-pos.ts). O painel fica **colado ao gatilho**, a 6px: abrindo
+  abaixo, o topo encosta na base do gatilho; abrindo acima, a base encosta no
+  topo do gatilho (ancorado por `bottom`, nunca por um topo calculado com a
+  altura estimada, que deixava lista curta solta longe do campo). Abre abaixo por
+  padrão e faz **flip** para cima quando falta espaço abaixo para a altura
+  estimada e há mais espaço acima. Sem espaço para a altura estimada, o painel
+  **não é deslocado**: ganha `maxHeight` com o espaço disponível (mín. 120px) e
+  rola por dentro; com espaço de sobra vale o `max-h-*` do próprio painel.
+  **Clamp** horizontal com margem mín. de 8px nas duas bordas.
 - **Entrada por teclado (`variant="field"`)**: o campo de formulário tem **três
   segmentos `dd` / `mm` / `aaaa`** com **auto-avanço** (digitou o dia, o foco
   pula para o mês) — o usuário pode **digitar** a data em vez de navegar o
@@ -939,6 +949,10 @@ tela monta o seu. Uso de referência: o painel do **Biolink Premium**
 - Overlay full-viewport (`role="dialog"`, `aria-modal`) para ver um material em
   tela cheia. Fundo escuro **fixo** (`bg-black/90` — exceção §2.7: mídia em tela
   cheia pede fundo escuro nos dois temas); moldura/controles em `--c-surface`.
+- **Documento** (PDF, Office e Google nativos) no contexto da demanda abre no
+  cartão de documento (§4.35), com Abrir, Baixar e Abrir no Drive, no lugar de
+  "Tipo de arquivo não suportado para preview."; formato fora da lista segue
+  não suportado.
 - **Imagem** com zoom (botões `zoom-in`/`zoom-out`/reset) e arrastar para deslocar
   quando ampliada; **vídeo/áudio** pelo leitor próprio
   ([`drive-media-viewer.tsx`](https://github.com/agenciapremium/tasks/blob/main/src/components/ui/drive-media-viewer.tsx));
@@ -949,6 +963,10 @@ tela monta o seu. Uso de referência: o painel do **Biolink Premium**
   `i / n`. Fecha por `Esc`, scrim e botão; foco gerenciado (foca o diálogo ao
   abrir, devolve ao gatilho ao fechar; alvos ≥ 40px, §7). Carregamento da grade
   com skeleton (§5.7). Respeita `prefers-reduced-motion`.
+- **Fechar pelo fundo (scrim)** ([`use-fechar-pelo-fundo.ts`](https://github.com/agenciapremium/tasks/blob/main/src/lib/hooks/use-fechar-pelo-fundo.ts)).
+  - **O que é fundo.** O wrapper da mídia ocupa o palco inteiro, então o fundo é **marcado** (`{...FUNDO}`): a raiz, a faixa do cabeçalho, o palco e o wrapper de cada palco. A mídia, os cartões e os controles nunca recebem a marca. O que não foi marcado não fecha, então um palco novo sem a marca só deixa de fechar ali, nunca fecha por engano.
+  - **Quando fecha.** O clique fecha só quando **começa e termina** no fundo. O navegador entrega o clique ao ancestral comum quando o `pointerdown` e o `pointerup` caem em elementos diferentes. Sem essa regra, selecionar o nome arrastando até o cabeçalho, ou apertar no cartão e soltar fora dele, fecharia o visualizador.
+  - **O que não fecha:** o clique no arquivo (imagem, vídeo e seus controles, PDF) e nos controles. Vale também na tela cheia do portal.
 - **A mídia cabe inteira no palco — a altura mora no wrapper.** O palco é
   `flex-1` numa coluna `fixed inset-0`, e o wrapper direto da mídia leva
   `flex h-full w-full items-center justify-center overflow-hidden`. O `h-full`
@@ -962,6 +980,11 @@ tela monta o seu. Uso de referência: o painel do **Biolink Premium**
   substitui nada — `cn()` é join puro (§2.8) e as duas ficam, com o desempate
   na ordem do CSS gerado. Com o wrapper definido, o default interno já é o
   comportamento desejado. Vale igual no fallback de imagem que falhou.
+- **Origem por URL** ([`midia-origem.ts`](https://github.com/agenciapremium/tasks/blob/main/src/lib/midia-origem.ts)). Além do contexto do proxy do Drive, o visualizador aceita URLs prontas por arquivo (`{ urls }`: original, miniatura, abrir e baixar), para arquivos fora do proxy do Drive, como os materiais de apoio da demanda, no Vercel Blob ou num proxy próprio. Os usos com contexto do Drive não mudam. Só na origem por URL:
+  - **PDF no palco**: o leitor de PDF do navegador num `<iframe title="PDF: {nome}">`, no wrapper de altura definida, com largura máxima de 1100px. O PDF precisa vir do **mesmo domínio**, porque o Vercel Blob serve tudo com `x-frame-options: DENY`. Abaixo de 768px, onde o PDF embutido não funciona (Android) ou mostra só a primeira página (iOS), o palco mostra o cartão sem preview, com "Abra o PDF em nova guia para ler neste aparelho.";
+  - **ações no cabeçalho**: "Abrir em nova guia" (`external-link`) e "Baixar" (`download`) antes do contador, como links de 40×40 no estilo dos controles, com `Tooltip` (§4.34) e nome acessível com o nome do arquivo;
+  - **cartão sem preview**: o formato sem preview mostra, em vez do aviso, um cartão em `--c-surface` com o ícone (`file-text` no PDF, `file-question` nos demais), o nome, "Este formato não tem preview." e os botões "Abrir em nova guia" (`ghost`) e "Baixar" (`dark`), em `<a>` com `buttonVariantClasses` (§4.1), alvo de 40px e o foco do link-botão;
+  - **imagem sem miniatura**: quando o original falha, vai direto ao estado de erro.
 
 ### 4.23 Breadcrumb — navegação hierárquica — [`breadcrumb.tsx`](https://github.com/agenciapremium/tasks/blob/main/src/components/ui/breadcrumb.tsx)
 
@@ -1079,6 +1102,54 @@ tela monta o seu. Uso de referência: o painel do **Biolink Premium**
   (classe `relatorio-print-avoid-break`) em cards e tabelas.
 - Ícones do gatilho na FilterBar: `download` (CSV) e `printer` (PDF), via
   `ContextIconButton` (§4.27).
+
+#### Cabeçalho e rodapé corridos de PDF gerado no servidor — [`ata-reuniao-template.ts`](https://github.com/agenciapremium/tasks/blob/main/src/lib/helpers/ata-reuniao-template.ts)
+
+Documento HTML autocontido que o Chromium imprime no servidor (`page.pdf` com
+`preferCSSPageSize`), como a ata de reunião. A paginação vem de **margin boxes
+de `@page`**, não do `headerTemplate` do Puppeteer: o template é desenhado também
+na primeira página, por cima da capa, e não imprime o fundo.
+
+- **Primeira página:** a capa do documento faz o papel de cabeçalho.
+  `@page :first` zera a margem superior e desliga as caixas de topo
+  (`content: none`). O rodapé aparece em todas as páginas, inclusive na
+  primeira.
+- **Geometria A4:** `@page { margin: 21mm 0 16mm }`. As margens laterais são
+  zero: o conteúdo tem o próprio respiro lateral (56px) e a capa sangra até a
+  borda. As caixas recebem `padding` lateral de 15mm.
+- **Cabeçalho (da segunda página em diante):** faixa `#000` com borda inferior
+  dourada (`#FBDA25`, 1,2mm) e `margin-bottom: 7mm` de respiro. São duas
+  caixas, sem `@top-center`. A caixa do centro fica sempre centrada na página e,
+  com título longo, cobre a da esquerda.
+  - `@top-left`, de largura fixa: `width: 61mm` mais `padding-left: 15mm`.
+    Margin box é content-box, mesmo com `box-sizing: border-box` no documento.
+    Leva o eyebrow dourado em caixa alta, 7,5pt bold, `letter-spacing: .2em`
+    ("Ata de Reunião · Nº 014/2026").
+  - `@top-right`: o título em branco, 8pt, alinhado à esquerda logo depois do
+    eyebrow, e a logo branca como `background` à direita
+    (`right 15mm center / auto 5mm`), reservada por `padding-right: 49mm`. O
+    título é truncado no servidor (50 caracteres, com reticências): margin box
+    não tem `text-overflow`, e o recorte de `overflow` vai até a borda do
+    padding, por baixo da logo.
+- **Rodapé (todas as páginas):** borda superior de 0,3mm `#0A0A0A` e
+  `margin-top: 5mm`. Texto de 7 a 7,5pt: a marca em caixa alta à esquerda, o
+  contexto ao centro em `#8A8A8A` ("Cliente · dd/mm/aaaa") e "Página X de N" em
+  negrito à direita (`counter(page)` e `counter(pages)`).
+- **Cores em hex**, como no resto do documento: margin boxes não herdam
+  variáveis CSS. Sem token novo.
+- **Texto dinâmico em `content: "..."`:** escape `\`, `"`, quebras de linha e
+  `<` (como `\3C `). Um `</style>` dentro da string fecharia o `<style>` no
+  parser de HTML.
+- **Fonte:** a Ubuntu entra embutida em `@font-face` base64, porque o Chromium
+  serverless não a tem. Ela vale também nas margin boxes.
+- **Quebras de página:**
+  - o título de seção fica preso ao primeiro item, num bloco
+    `break-inside: avoid`, ou por `break-after: avoid` quando o que vem depois
+    é uma tabela;
+  - o `thead` se repete (`display: table-header-group`) e as linhas têm
+    `tr { break-inside: avoid }`;
+  - no impresso saem a `min-height` de folha e o respiro final, que empurrariam
+    uma página em branco.
 
 ---
 
@@ -1215,6 +1286,36 @@ tela monta o seu. Uso de referência: o painel do **Biolink Premium**
   — a informação vai para o nome acessível ou para um rótulo visível ao lado, e
   a dica não entra.
 - Para texto longo ou conteúdo rico, não é tooltip: é slide-over ou popover.
+
+### 4.35 Cartão de documento — [`cartao-documento.tsx`](https://github.com/agenciapremium/tasks/blob/main/src/components/ui/cartao-documento.tsx)
+
+- **O que é**: o documento de um layout (PDF, Word, PowerPoint, Excel e Google
+  Slides, Docs e Sheets) como peça visível, no palco do portal do cliente e no
+  lightbox da equipe (§4.22). Capa do Drive, nome, selo do tipo (`Badge`, §4.3)
+  com o tamanho, e as ações em links. Catálogo completo em
+  [`componentes.md`](componentes.md#cartaodocumento--cartao-documentotsx).
+- **Capa**: miniatura do Drive sobre `--c-sunken`, `object-contain`; enquanto
+  carrega e na falha, o ícone grande do tipo, sem mensagem de erro.
+- **Ícone e cor por tipo**, só tokens semânticos existentes: PDF `FileText` em
+  `--danger`; Word `FileText` em `--info`; PowerPoint `Presentation` em
+  `--warning`; Excel `FileSpreadsheet` em `--success`. O Google nativo usa a cor
+  do tipo equivalente e o rótulo "Google Docs", "Google Slides" ou "Google
+  Sheets". Sem token novo.
+- **Ações são links** com o visual do botão (`buttonVariantClasses`, §4.1):
+  Abrir (PDF e Google nativo, nova aba) e Baixar (todos); "Abrir no Drive" só
+  na equipe. A principal é `primary` (Abrir quando existe), a outra `ghost`.
+  Word, PowerPoint e Excel só baixam. Alvo de pelo menos 44px; rótulos
+  acessíveis "Abrir {nome} em nova aba" e "Baixar {nome}".
+- **Estados**: foco com borda `--premium-ink` + halo `--yellow-50`; "Abrindo..."
+  ou "Preparando..." com `aria-busy` enquanto confere a resposta, sem spinner;
+  sem ações antes da aprovação do cliente, com a nota "Disponível quando a peça
+  chegar para a sua aprovação."; exportação grande do Google nativo (413) com
+  aviso inline em `--warning-bg`; erro genérico em toast (§4.19).
+- **Quando as ações valem é do servidor**: o cartão mostra o que o payload
+  manda (`acoes`) e a rota de documento reaplica a mesma regra pura.
+- **Na faixa de materiais** do portal, o documento entra depois das mídias, com
+  a capa, o número contínuo e um selo pequeno do tipo no canto; na aba Layouts,
+  a miniatura ganha a capa e o selo do tipo no lugar do ícone genérico.
 
 ### 4.36 Cartão de mídia com selos — padrão de domínio (no Tasks, [`acervo-cartao.tsx`](https://github.com/agenciapremium/tasks/blob/main/src/components/acervo/acervo-cartao.tsx))
 

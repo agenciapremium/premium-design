@@ -13,6 +13,78 @@ Um padrão próprio reconhecido. Nenhum token nem CSS do pacote mudou.
 
 - **FAB contextual por tela (`docs/ui-guidelines.md` §4.18.1, nova).** Variação do FAB para sistema sem criação global, em que toda criação pertence ao módulo da tela: cada tela monta o seu `Fab` (principal + secundárias da mesma tela) e os slide-overs de criação vivem nela. Anatomia, revelação, toque, teclado, arraste e RBAC continuam os do FAB; sem escrita no módulo ou sem criação na tela, não renderiza. Como o FAB já é a criação local, a zona de contexto da `FilterBar` nunca tem criação: ela guarda todas as ações da tela, só-ícone e lado a lado, e o `ContextIconButton` `destaque` marca a ação principal (Salvar, Abrir painel), por último; não há linha de ações com texto, e abas de seção por rota entram em pílula na zona de views (§3.4). Um sistema usa um modo só (global ou contextual). Registrado a pedido do dono do produto do Biolink Premium (change `saas-08-panel-screen-patterns`, 28/10/2026), que é o uso de referência. Também em `docs/componentes.md` (§Fab e "Padrões próprios reconhecidos"), `docs/padroes-de-interacao.md` §Layout global e `docs/index.md` §Como começar.
 - **`package.json`**: `version` 0.22.0.
+## v0.21.1 · 2026-10-20
+
+Uma regra de comportamento documentada. Nenhum token nem CSS do pacote mudou.
+
+- **Fechar pelo fundo no visualizador em tela cheia (`docs/ui-guidelines.md` §4.22).** Antes a seção dizia só "fecha por scrim". Agora explica que o fundo é marcado explicitamente (`{...FUNDO}`), porque o wrapper da mídia ocupa o palco, e que o clique só fecha quando começa e termina no fundo. O clique no arquivo, nos controles e os gestos que terminam fora (selecionar o nome, apertar no cartão) não fecham.
+- No Tasks, a regra vem da change `preview-fechar-clique-fora`: o `Lightbox` e a tela cheia do portal nunca tinham fechado pelo fundo, embora as specs pedissem.
+- **`package.json`**: `version` 0.21.1.
+
+## v0.21.0 · 2026-10-20
+
+Um padrão novo num componente. Nenhum token nem CSS do pacote mudou.
+
+- **Origem por URL no visualizador em tela cheia (`docs/ui-guidelines.md` §4.22).** O `Lightbox` aceita URLs prontas por arquivo, além do contexto do proxy do Drive. Os usos com o contexto do Drive não mudam. Só nessa origem aparecem:
+  - o PDF no palco, num `iframe` do mesmo domínio, e no celular o cartão;
+  - as ações "Abrir em nova guia" e "Baixar" no cabeçalho;
+  - o cartão sem preview, com ícone, nome, motivo e os dois botões.
+  
+  A seção registra por que o PDF precisa vir do mesmo domínio: o Vercel Blob serve tudo com `x-frame-options: DENY`.
+- No Tasks, o padrão vem da change `materiais-apoio-preview` (preview dos arquivos da aba Materiais de apoio).
+- **`package.json`**: `version` 0.21.0.
+
+## v0.20.0 · 2026-10-20
+
+Um padrão novo de impressão. Nenhum token nem CSS do pacote mudou.
+
+- **Cabeçalho e rodapé corridos de PDF gerado no servidor (`docs/ui-guidelines.md` §4.28).** O documento impresso pelo Chromium no servidor pagina por margin boxes de `@page`:
+  - a capa fica na primeira página, sem cabeçalho corrido;
+  - da segunda página em diante, uma faixa preta com o eyebrow dourado, o título truncado e a logo branca;
+  - em todas as páginas, um rodapé com a marca, o contexto e "Página X de N".
+  
+  A seção documenta a geometria (21mm/0/16mm, caixa da esquerda de largura fixa e sem `@top-center`), as cores em hex, o escape do texto em `content`, a fonte embutida e as regras de quebra.
+- No Tasks, o padrão vem da change `ata-pdf-cabecalho-rodape-abrir` (PDF da ata de reunião).
+- **`package.json`**: `version` 0.20.0.
+
+## v0.19.0 · 2026-10-20
+
+Duas props novas num componente. Nenhum token nem CSS do pacote mudou.
+
+- **`recorteLocal` na `FilterBar` (`docs/componentes.md` §FilterBar).** Para a tela que recorta no navegador o que já carregou, e cujo servidor não lê os filtros: a barra escreve a URL pela History API nativa (`history.replaceState`, e `pushState` ao aplicar uma view), que o Next sincroniza com `useSearchParams` sem refazer a página. Vale para a mudança de filtro, a restauração do filtro salvo e a aplicação de view. `useSetParams` aceita `{ local: true }`. Sem a prop, nada muda: `router.replace`, como nas telas que filtram no servidor.
+- **`paramsDeNavegacao` na `FilterBar` (`docs/componentes.md` §FilterBar; `docs/padroes-de-interacao.md`, Views salvas).** Parâmetros que dizem onde a tela está, e não o recorte, como o mês exibido: ficam fora da query da view salva e da detecção da view ativa, e seguem na URL ao aplicar uma view (aplicar em dezembro continua em dezembro). O link copiado leva só a query da view.
+- No Tasks, as duas vêm da change `calendario-time-filtros` (filtros Tipo, Pessoa, Departamento, Agenda e Cliente no calendário do time, com `paramsDeNavegacao={["ano", "mes", "dia"]}`).
+- **`package.json`**: `version` 0.19.0.
+
+## v0.18.0 · 2026-10-17
+
+Um componente novo e um helper exportado. Nenhum token nem CSS do pacote mudou.
+
+- **Cartão de documento (`docs/ui-guidelines.md` §4.35, nova; `docs/componentes.md` §CartaoDocumento).** O documento de um layout (PDF, Word, PowerPoint, Excel e Google Slides, Docs e Sheets) vira peça visível no palco do portal do cliente e no lightbox da equipe: capa do Drive com o ícone do tipo como reserva, nome, selo do tipo (`Badge`) e tamanho, e as ações em links (Abrir, Baixar e, na equipe, Abrir no Drive). Ícone e cor por tipo só com tokens semânticos existentes (PDF `--danger`, Word e Docs `--info`, PowerPoint e Slides `--warning`, Excel e Sheets `--success`). Estados: foco com borda `--premium-ink` + halo `--yellow-50`, "Abrindo..." e "Preparando..." com `aria-busy` (sem spinner), sem ações antes da aprovação do cliente, aviso inline de exportação grande e erro em toast. Vem da change `portal-documentos-pdf-office` do Tasks.
+- **Link com cara de botão (`docs/ui-guidelines.md` §4.1; `docs/componentes.md` §Button).** `buttonVariantClasses(variant, size)`, exportada de `button.tsx`, devolve as classes do `Button` para um `<a>`, sem copiar à mão.
+- **Lightbox (`docs/ui-guidelines.md` §4.22; `docs/componentes.md` §Lightbox).** O documento no contexto da demanda abre no cartão de documento, no lugar de "Tipo de arquivo não suportado para preview.".
+- **`package.json`**: `version` 0.18.0.
+
+## v0.17.0 · 2026-10-17
+
+Uma prop nova num componente. Nenhum token nem CSS do pacote mudou.
+
+- **Selo no `PessoasPicker` (`docs/componentes.md` §PessoasPicker).** `PessoaOption` ganha `selo?`, um nó opcional exibido ao lado do nome, na lista do popover e no badge da pessoa escolhida, para marcar a pessoa com um primitivo que já existe. No Tasks, o `Badge variant="violet"` "IA" identifica o Colaborador IA (change `colaborador-ia`) nos seletores de responsável e de equipe. O selo não entra na busca.
+- **`package.json`**: `version` 0.17.0.
+
+## v0.16.0 · 2026-10-17
+
+Uma prop nova num componente. Nenhum token nem CSS do pacote mudou.
+
+- **Marco vertical no `BarChart` (`docs/componentes.md` §BarChart).** Prop opcional `marco: { antesDe, rotulo }`: linha tracejada em `--premium-steel` entre a categoria `antesDe - 1` e a `antesDe`, com o rótulo no topo, para marcar um acontecimento na série (no Tasks, "preferências adotadas" no gráfico de ajustes por mês do QG do Cliente, change `ajustes-analise-cliente`). O marco é decorativo (`aria-hidden`); quem chama menciona o marco na `descricao`, que é o texto alternativo do gráfico. Sem token novo: reaproveita a cor de texto secundário.
+- **`package.json`**: `version` 0.16.0.
+
+## v0.15.2 · 2026-09-24
+
+Correção de uma regra de posicionamento. Nenhum token nem CSS do pacote mudou.
+
+- **Popover colado ao gatilho (`docs/ui-guidelines.md`, posicionamento do DatePicker; `docs/componentes.md`, convenções).** O `popoverPos` posicionava o painel pelo topo calculado com a altura **estimada**: aberto acima, uma lista curta (3 opções num multi-select com estimativa de 360px) ficava cerca de 200px acima do campo; aberto abaixo perto da base da janela, o clamp final empurrava o painel para cima. A regra passa a ser: o painel encosta no gatilho a 6px (abrindo acima, ancorado por `bottom`); o flip continua decidido pela estimativa; sem espaço, o painel ganha `maxHeight` com o espaço disponível (mín. 120px) e rola por dentro em vez de ser deslocado; com espaço de sobra vale o `max-h-*` do próprio painel. Corrigido no Tasks no mesmo dia (change `popover-colado-ao-gatilho`), com teste do helper.
+- **`package.json`**: `version` 0.15.2.
 
 ## v0.15.1 · 2026-09-24
 

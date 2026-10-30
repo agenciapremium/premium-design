@@ -36,7 +36,7 @@ Ordem fixa, válida para **toda** tela: **FILTROS (esquerda) ► CONTEXTO · VIE
 - Listas longas de opções (≥ 8) ganham **busca** automática no dropdown e mostram só as 6 primeiras sem termo — ao digitar, a busca cobre a lista inteira.
 - Com algum filtro ativo além da busca, aparece o botão amarelo **Limpar filtros** ao fim da zona de filtros, com o ícone de funil (`FunnelX`). Só com a busca ativa ele não aparece: o `X` da própria busca já limpa.
 - Com `telaKey`, os filtros **persistem por usuário**: a tela restaura o último filtro salvo quando a URL não traz filtros; "Limpar filtros" apaga também o persistido.
-- Com `telaKey`, a zona de contexto ganha o menu **Views** (`views-salvas-menu.tsx`): o recorte atual (filtros, visão e ordenação, sem a página) vira uma **view nomeada**, aplicável com um clique, renomeável, compartilhável por link e excluível com "Desfazer". Máximo de 10 por tela, nomes únicos, tudo privado do usuário (`preferencias.views[telaKey]`).
+- Com `telaKey`, a zona de contexto ganha o menu **Views** (`views-salvas-menu.tsx`): o recorte atual (filtros, visão e ordenação, sem a página e sem os parâmetros de navegação que a tela declara em `paramsDeNavegacao`, como o mês do calendário do time) vira uma **view nomeada**, aplicável com um clique, renomeável, compartilhável por link e excluível com "Desfazer". Máximo de 10 por tela, nomes únicos, tudo privado do usuário (`preferencias.views[telaKey]`).
 - **Precedência na abertura** (sem filtros na URL): view **padrão** da tela ► último filtro persistido ► estado padrão da tela. "Limpar filtros" apaga o persistido e **não** desmarca a padrão (a pessoa tira o padrão pelo menu).
 - Qualquer mudança de filtro ou visão **reseta a paginação** (`?pagina=` sai da URL).
 
