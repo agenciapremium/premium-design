@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.17.0 · 2026-10-17
+
+Uma prop nova num componente. Nenhum token nem CSS do pacote mudou.
+
+- **Selo no `PessoasPicker` (`docs/componentes.md` §PessoasPicker).** `PessoaOption` ganha `selo?`, um nó opcional exibido ao lado do nome, na lista do popover e no badge da pessoa escolhida, para marcar a pessoa com um primitivo que já existe. No Tasks, o `Badge variant="violet"` "IA" identifica o Colaborador IA (change `colaborador-ia`) nos seletores de responsável e de equipe. O selo não entra na busca.
+- **`package.json`**: `version` 0.17.0.
+
 ## v0.16.0 · 2026-10-17
 
 Uma prop nova num componente. Nenhum token nem CSS do pacote mudou.

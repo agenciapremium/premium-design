@@ -195,7 +195,7 @@ Seletor de **pessoas com busca + badges** — mesmo motor de busca dos popovers 
 | `loading` / `erro` | `boolean` / `string` | Skeleton no popover / erro inline (sem toast) |
 | `disabled`, `placeholder`, `label`, `ariaLabel` | — | Campo desabilitado / texto sem seleção / rótulo / rótulo acessível do popover |
 
-`PessoaOption`: `{ id, nome, cor?, descricao?, src? }` — sem `cor`, deriva uma cor de avatar estável do `id` (`corPorChave`, exportada); `descricao` é subtítulo (ex.: departamento); `src` é a foto.
+`PessoaOption`: `{ id, nome, cor?, descricao?, src?, selo? }` — sem `cor`, deriva uma cor de avatar estável do `id` (`corPorChave`, exportada); `descricao` é subtítulo (ex.: departamento); `src` é a foto; `selo` é um nó opcional ao lado do nome, na lista e no badge escolhido, para marcar a pessoa sem padrão novo (ex.: o `Badge variant="violet"` "IA" do Colaborador IA). O selo não entra na busca.
 
 Anatomia: gatilho com visual de input (foco/aberto = borda ink) que mostra os badges ou o placeholder + chevron; popover portal ancorado via `popoverPos` (largura do gatilho, mín. 280px), reposiciona/convive dentro do SlideOver. Painel marcado com `data-pessoas-pop`; o próprio dismiss ignora cliques dentro de painéis `data-select-pop`/`data-datepicker-pop` (convive com Select/DatePicker no mesmo formulário). Acessível: gatilho `role="button"` operável por teclado, alvos ≥ 40px, `Esc` fecha só o popover, badges com `aria-label="Remover <nome>"`. Item ativo = fundo `--gold-bg` + borda `--gold`.
 
