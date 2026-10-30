@@ -1053,6 +1053,54 @@ Tipos:
 - Ícones do gatilho na FilterBar: `download` (CSV) e `printer` (PDF), via
   `ContextIconButton` (§4.27).
 
+#### Cabeçalho e rodapé corridos de PDF gerado no servidor — [`ata-reuniao-template.ts`](https://github.com/agenciapremium/tasks/blob/main/src/lib/helpers/ata-reuniao-template.ts)
+
+Documento HTML autocontido que o Chromium imprime no servidor (`page.pdf` com
+`preferCSSPageSize`), como a ata de reunião. A paginação vem de **margin boxes
+de `@page`**, não do `headerTemplate` do Puppeteer: o template é desenhado também
+na primeira página, por cima da capa, e não imprime o fundo.
+
+- **Primeira página:** a capa do documento faz o papel de cabeçalho.
+  `@page :first` zera a margem superior e desliga as caixas de topo
+  (`content: none`). O rodapé aparece em todas as páginas, inclusive na
+  primeira.
+- **Geometria A4:** `@page { margin: 21mm 0 16mm }`. As margens laterais são
+  zero: o conteúdo tem o próprio respiro lateral (56px) e a capa sangra até a
+  borda. As caixas recebem `padding` lateral de 15mm.
+- **Cabeçalho (da segunda página em diante):** faixa `#000` com borda inferior
+  dourada (`#FBDA25`, 1,2mm) e `margin-bottom: 7mm` de respiro. São duas
+  caixas, sem `@top-center`. A caixa do centro fica sempre centrada na página e,
+  com título longo, cobre a da esquerda.
+  - `@top-left`, de largura fixa: `width: 61mm` mais `padding-left: 15mm`.
+    Margin box é content-box, mesmo com `box-sizing: border-box` no documento.
+    Leva o eyebrow dourado em caixa alta, 7,5pt bold, `letter-spacing: .2em`
+    ("Ata de Reunião · Nº 014/2026").
+  - `@top-right`: o título em branco, 8pt, alinhado à esquerda logo depois do
+    eyebrow, e a logo branca como `background` à direita
+    (`right 15mm center / auto 5mm`), reservada por `padding-right: 49mm`. O
+    título é truncado no servidor (50 caracteres, com reticências): margin box
+    não tem `text-overflow`, e o recorte de `overflow` vai até a borda do
+    padding, por baixo da logo.
+- **Rodapé (todas as páginas):** borda superior de 0,3mm `#0A0A0A` e
+  `margin-top: 5mm`. Texto de 7 a 7,5pt: a marca em caixa alta à esquerda, o
+  contexto ao centro em `#8A8A8A` ("Cliente · dd/mm/aaaa") e "Página X de N" em
+  negrito à direita (`counter(page)` e `counter(pages)`).
+- **Cores em hex**, como no resto do documento: margin boxes não herdam
+  variáveis CSS. Sem token novo.
+- **Texto dinâmico em `content: "..."`:** escape `\`, `"`, quebras de linha e
+  `<` (como `\3C `). Um `</style>` dentro da string fecharia o `<style>` no
+  parser de HTML.
+- **Fonte:** a Ubuntu entra embutida em `@font-face` base64, porque o Chromium
+  serverless não a tem. Ela vale também nas margin boxes.
+- **Quebras de página:**
+  - o título de seção fica preso ao primeiro item, num bloco
+    `break-inside: avoid`, ou por `break-after: avoid` quando o que vem depois
+    é uma tabela;
+  - o `thead` se repete (`display: table-header-group`) e as linhas têm
+    `tr { break-inside: avoid }`;
+  - no impresso saem a `min-height` de folha e o respiro final, que empurrariam
+    uma página em branco.
+
 ---
 
 ### 4.29 Gráficos — [`bar-chart.tsx`](https://github.com/agenciapremium/tasks/blob/main/src/components/ui/bar-chart.tsx) · [`line-chart.tsx`](https://github.com/agenciapremium/tasks/blob/main/src/components/ui/line-chart.tsx) · [`pie-chart.tsx`](https://github.com/agenciapremium/tasks/blob/main/src/components/ui/pie-chart.tsx)
