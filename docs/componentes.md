@@ -43,6 +43,8 @@ Botão de ação. Tipografia própria: **uppercase, 700, `tracking-wider`**, fon
 - Verbo no infinitivo curto: "Nova demanda", "Solicitar ajuste". Evitar "OK"/"Sim".
 - Ação de contexto só-ícone na barra de ações usa o **`ContextIconButton`** (abaixo); o icon button 40×40 da topbar (sino/tema) segue como padrão do shell, sem primitivo dedicado.
 
+**`buttonVariantClasses(variant, size)`** (exportada do mesmo arquivo): devolve exatamente as classes do `Button` (base + variante + tamanho), para um **link** (`<a>`) com o mesmo visual, como Abrir e Baixar do [`CartaoDocumento`](#cartaodocumento--cartao-documentotsx). O `Button` usa a mesma função, então os dois não divergem. Não traz anel de foco: o link soma o foco do padrão (borda `--premium-ink` + halo `--yellow-50`) e, se precisar, `min-h-[44px]`. Copiar as classes à mão não vale.
+
 ## ContextIconButton — `context-icon-button.tsx`
 
 Botão de contexto **só-ícone** da barra de ações (zona `contextActions` da FilterBar): alvo ≥ 40×40, dica (`Tooltip` embutido) + `aria-label` obrigatórios via `label`, foco visível. Como a dica já vem por dentro, **não** envolver o componente num `Tooltip` externo: sairiam dois balões.
@@ -195,7 +197,7 @@ Seletor de **pessoas com busca + badges** — mesmo motor de busca dos popovers 
 | `loading` / `erro` | `boolean` / `string` | Skeleton no popover / erro inline (sem toast) |
 | `disabled`, `placeholder`, `label`, `ariaLabel` | — | Campo desabilitado / texto sem seleção / rótulo / rótulo acessível do popover |
 
-`PessoaOption`: `{ id, nome, cor?, descricao?, src? }` — sem `cor`, deriva uma cor de avatar estável do `id` (`corPorChave`, exportada); `descricao` é subtítulo (ex.: departamento); `src` é a foto.
+`PessoaOption`: `{ id, nome, cor?, descricao?, src?, selo? }` — sem `cor`, deriva uma cor de avatar estável do `id` (`corPorChave`, exportada); `descricao` é subtítulo (ex.: departamento); `src` é a foto; `selo` é um nó opcional ao lado do nome, na lista e no badge escolhido, para marcar a pessoa sem padrão novo (ex.: o `Badge variant="violet"` "IA" do Colaborador IA). O selo não entra na busca.
 
 Anatomia: gatilho com visual de input (foco/aberto = borda ink) que mostra os badges ou o placeholder + chevron; popover portal ancorado via `popoverPos` (largura do gatilho, mín. 280px), reposiciona/convive dentro do SlideOver. Painel marcado com `data-pessoas-pop`; o próprio dismiss ignora cliques dentro de painéis `data-select-pop`/`data-datepicker-pop` (convive com Select/DatePicker no mesmo formulário). Acessível: gatilho `role="button"` operável por teclado, alvos ≥ 40px, `Esc` fecha só o popover, badges com `aria-label="Remover <nome>"`. Item ativo = fundo `--gold-bg` + borda `--gold`.
 
@@ -300,12 +302,14 @@ Barra de ações única da tela. **Ordem fixa**: FILTROS (esquerda) ► CONTEXTO
 | `telaKey` | `string` | Liga a **persistência por usuário** dos filtros da tela: restaura o último filtro salvo na abertura (se a URL não trouxer filtros) e salva alterações com debounce (`useFiltrosPersistidos`); "limpar tudo" também apaga o estado persistido |
 | `buscaSempreAberta` | `boolean` | Opt-out da busca colapsável — o campo do filtro `search` fica sempre aberto |
 | `permitirQuebra` | `boolean` | Opt-out da linha única — os filtros voltam a quebrar em várias linhas (`flex-wrap`) |
+| `recorteLocal` | `boolean` | A tela recorta no navegador o que já carregou, e o servidor não lê os filtros (ex.: calendário do time). A barra escreve a URL pela History API nativa (`history.replaceState`; `pushState` ao aplicar uma view), que o Next sincroniza com `useSearchParams` sem refazer a página. Vale para a mudança de filtro, a restauração do filtro salvo e a aplicação de view. Sem a prop: `router.replace` |
+| `paramsDeNavegacao` | `string[]` | Parâmetros que dizem onde a tela está, e não o recorte (ex.: `ano`, `mes` e `dia` do calendário do time). Ficam fora das views salvas e da detecção da view ativa, e seguem na URL ao aplicar uma view |
 
 `FilterConfig`: `{ key, label, type: "select" | "multiselect" | "daterange" | "toggle" | "search", options?, icon?, placeholder?, searchable?, limiteVisivel? }`. `daterange` serializa como `<key>De`/`<key>Ate`. `searchable` força/oculta a busca do dropdown (default: automático a partir de 8 opções); `limiteVisivel` corta a lista **sem termo de busca** (default global: 6 quando a busca está disponível — digitar busca na lista completa; nunca corta sem busca).
 
 Anatomia dos chips (pill 36px, 13px/500): **idle** (borda mist) → hover borda steel; **ativo** (borda ink); **toggle ligado** (fundo `--brand-ink` fixo + ícone amarelo — ex.: "Ordenar automático"); **select** com dropdown custom (item "Todos" que limpa + `check` no selecionado); **multiselect** com contador invertido e dropdown de checkboxes; **daterange** com dois `DatePicker variant="inline"` (Início – Fim, um limitando o outro via `min`/`max`); **search** = lupa colapsável que expande a um campo de 200px (foca ao abrir, debounce de 300ms para a URL, `Esc`/blur vazio recolhe; com termo, um `X` de limpar com alvo de 24×24px, o único do campo, que limpa e recolhe). Nenhum controle nativo do navegador, nem o "x" do `type="search"` (ver [Campo de busca](#campo-de-busca--campo-buscatsx)). Com algum filtro ativo além da busca, aparece o botão redondo amarelo **Limpar filtros**, com o ícone de funil (`FunnelX`); só com a busca ativa, o `X` dela basta.
 
-Comportamento estrutural: os filtros vivem em **linha única com rolagem horizontal** (scrollbar oculta) e os dropdowns renderizam em **portal `position: fixed`** (`popoverPos` + `motionPreset("menu")`) — não são cortados pela rolagem da barra. Toda mudança de filtro/visão **reseta a paginação** (remove `?pagina=`) via `useSetParams` (exportado — `router.replace` + `scroll: false`), e a troca de view passa por View Transitions quando disponíveis (`navegarComTransicao`).
+Comportamento estrutural: os filtros vivem em **linha única com rolagem horizontal** (scrollbar oculta) e os dropdowns renderizam em **portal `position: fixed`** (`popoverPos` + `motionPreset("menu")`) — não são cortados pela rolagem da barra. Toda mudança de filtro/visão **reseta a paginação** (remove `?pagina=`) via `useSetParams` (exportado — `router.replace` + `scroll: false`, ou `history.replaceState` com `{ local: true }`, que é o que `recorteLocal` usa), e a troca de view passa por View Transitions quando disponíveis (`navegarComTransicao`).
 
 Subexport **`ViewTabsPill`**: o grupo de tabs de visão com pílula deslizante (indicador CSS medido por ref), para telas que precisam de um **segundo** grupo de abas fora da barra e em outro param (ex.: abas "Todas/Para hoje/Atrasadas" da visão Tabela) — reusar com `useSetParams` mantém visual e reset de página num só lugar.
 
@@ -480,7 +484,7 @@ Card de notificação das três superfícies (painel do sino, central `/notifica
 
 Visualizador full-viewport de materiais (`role="dialog"` + `aria-modal`, z-[60]). Fundo escuro **fixo** `bg-black/90` nos dois temas (exceção documentada: mídia em tela cheia). Props: `files: DriveFile[]`, `index`, `onIndexChange`, `onClose`, `context: DriveContext`.
 
-Imagem com zoom (botões +/−/reset, 1×–4× em passos de 0,5) e arrastar quando ampliada, com fallback em cascata original → rendição do Drive → erro; vídeo/áudio/demais tipos via `DriveMediaViewer`; navegação ←/→ restrita ao conjunto passado (botões desabilitados nos extremos); contador `i / n`; fecha por Esc/botão com **saída animada** (o `onClose` corre ao fim do fade); foco pelo [`useDialogoFoco`](#usedialogofoco--use-dialogo-focots) (entra no botão de fechar, cicla nos controles e volta ao gatilho); trava o scroll do body.
+Imagem com zoom (botões +/−/reset, 1×–4× em passos de 0,5) e arrastar quando ampliada, com fallback em cascata original → rendição do Drive → erro; documento (PDF, Office e Google nativos) no contexto da demanda (`{ demandaId }`) abre no [`CartaoDocumento`](#cartaodocumento--cartao-documentotsx), com Abrir, Baixar e Abrir no Drive (em Quadros e na biblioteca do cliente segue "não suportado"); vídeo/áudio/demais tipos via `DriveMediaViewer`; navegação ←/→ restrita ao conjunto passado (botões desabilitados nos extremos); contador `i / n`; fecha por Esc/botão com **saída animada** (o `onClose` corre ao fim do fade); foco pelo [`useDialogoFoco`](#usedialogofoco--use-dialogo-focots) (entra no botão de fechar, cicla nos controles e volta ao gatilho); trava o scroll do body.
 
 **Contrato de dimensionamento**: o wrapper direto da mídia leva `flex h-full w-full items-center justify-center overflow-hidden` e **nenhuma classe de tamanho vai ao `DriveMediaViewer`**. O `h-full` dá altura definida ao pai — sem ela, o `max-h-full` interno do leitor computa como `none` e o vídeo vertical renderiza no tamanho natural, cortado pelo `overflow-hidden` do palco. Vale igual no fallback do `ZoomableImage` em `stage === "failed"`.
 
@@ -491,6 +495,42 @@ Leitor próprio de mídia do Drive — reproduz **imagem, vídeo e áudio** serv
 Imagem começa pelo original em alta e, se o formato não renderizar no navegador (PSD, TIFF), cai para a rendição "preview" do Drive; só então o estado de erro. `kind: "outro"` e falhas de mídia mostram o cartão de indisponível (ícone `file-question` + nome + motivo, `role="img"` com `aria-label`). Reusado na aba Layouts, no portal do cliente e dentro do Lightbox.
 
 **Já define `max-h-full max-w-full`** e concatena o `className` recebido. Não mande outra restrição de tamanho por cima: `cn()` é join puro (ver [`ui-guidelines.md`](ui-guidelines.md) §2.8), as duas classes convivem e quem vence depende da ordem do CSS gerado. Quem precisa mudar o tamanho ajusta o **wrapper**.
+
+## CartaoDocumento — `cartao-documento.tsx`
+
+Cartão de um documento de layout (PDF, Word, PowerPoint, Excel e Google Slides, Docs e Sheets), no palco do portal do cliente e no `Lightbox` da equipe. Nenhum primitivo cobria "capa + tipo + ações de arquivo", por isso é componente próprio, compartilhado pelas duas superfícies. Props: `documento` (`PortalDocumento`: `driveId`, `nome`, `tipo`, `tamanho`, `modificadoEm`, `nativoGoogle`), `contexto` (a credencial do proxy de mídia: `{ demandaId }`, `{ token, demandaId? }` ou `{ portalDemandaId }`), `acoes` (Abrir e Baixar liberados), `superficie` (`"portal" | "equipe"`, muda só os textos de orientação), `linkDrive?` ("Abrir no Drive", só a equipe), `onErro` (o toast de quem monta) e `className`. Quem monta passa `key={documento.driveId}`, para a capa recomeçar a cada documento.
+
+**Anatomia**: `<article>` com `aria-label` "Documento {tipo}: {nome}", superfície `--c-surface`, borda `--premium-mist`, `--r-lg`, `--sh-lg`, largura até 600px. Em linha a partir de `sm` (capa 160×200 à esquerda); empilhado no celular (capa com a largura toda, 132px de altura). Ao lado da capa: nome (15px/700, `--c-ink`, quebra em qualquer ponto), linha com o selo do tipo (`Badge` no tom do tipo, com o ícone) e o tamanho (`--c-muted`, "12,1 MB"; o Google nativo não tem tamanho), as ações e a nota de orientação.
+
+**Capa**: a miniatura do Drive pela rota de miniatura com `capa=1` (sem miniatura, a rota responde 404 em vez de servir o arquivo original), sobre `--c-sunken`, `object-contain`. Enquanto carrega e na falha fica o ícone grande do tipo (48px), sem mensagem de erro; com a capa carregada, um selo redondo com o ícone do tipo no canto inferior direito. O `ref` da imagem confere `img.complete` na montagem: capa que carrega antes da hidratação não dispara `onLoad` no React.
+
+**Ícone e cor por tipo** (lucide, só tokens semânticos existentes; cada um tem valor próprio no tema escuro):
+
+| Tipo | Ícone | Cor | Rótulo |
+|---|---|---|---|
+| PDF | `FileText` | `--danger` | "PDF" |
+| Word / Google Docs | `FileText` | `--info` | "Word" / "Google Docs" |
+| PowerPoint / Google Slides | `Presentation` | `--warning` | "PowerPoint" / "Google Slides" |
+| Excel / Google Sheets | `FileSpreadsheet` | `--success` | "Excel" / "Google Sheets" |
+
+A regra mora pura em `portal-midias.ts` (`tipoDocumentoCliente`, `rotuloDocumento`, `VISUAL_DOCUMENTO`); o componente só traduz o nome do ícone e do tom. `IconeDocumento` (exportado) desenha o ícone do tipo na cor do tipo, ou na cor do pai com `semCor` (dentro do `Badge`); é o mesmo ícone das miniaturas da faixa do portal e da aba Layouts.
+
+**Ações**: links (`<a>`), nunca `<button>`, com o visual do `Button` por `buttonVariantClasses`:
+- **Abrir** (PDF e Google nativo): `target="_blank"`, `rel="noopener"`, ícone `ExternalLink`, `aria-label` "Abrir {nome} em nova aba". O PDF abre no visualizador do navegador; o Google nativo abre exportado em PDF.
+- **Baixar** (todos): atributo `download` com o nome do arquivo, ícone `Download`, `aria-label` "Baixar {nome}". O Google nativo baixa exportado em PPTX, DOCX ou XLSX.
+- **Abrir no Drive** (só `linkDrive`, a equipe): `ghost`, ícone `ExternalLink`.
+- A principal é `primary` (Abrir quando existe, senão Baixar) e a outra `ghost`; Word, PowerPoint e Excel só têm Baixar. Alvo de pelo menos 44px (`min-h-[44px]`) nas duas superfícies. Nota abaixo dos botões: "Abre em outra aba." (PDF), "Abre em outra aba, em PDF. Baixar entrega o arquivo editável." (Google nativo) ou "O navegador não exibe este formato: baixe para ver." (Office).
+- Os links funcionam sozinhos (clique do meio, Ctrl/⌘ + clique, abrir em nova aba). No clique comum o cartão confere a resposta antes de entregar, para mostrar o erro no lugar certo: PDF e Office passam por um `HEAD` na rota (a mesma decisão de acesso, sem ler o conteúdo) e então abrem ou baixam pelo link; o Google nativo é lido por `fetch` (a exportação só se confere lendo, e é limitada a cerca de 10 MB pelo Drive) e entregue por URL de blob. Abrir cria a aba ainda no clique, para o navegador não bloquear; bloqueada, segue o link.
+
+**Estados**
+- **Hover**: o do `Button` (`primary` vai a `--gold`; `ghost` troca a borda para `--premium-ink`).
+- **Foco visível**: borda `--premium-ink` + halo `--yellow-50` (`0 0 0 2px`). O `primary` reserva uma borda transparente para o foco caber sem mudar o tamanho. Só o halo não basta no tema claro: some sobre o branco.
+- **Preparando**: durante a conferência, o rótulo vira "Abrindo..." ou "Preparando...", com `aria-busy`, sem spinner, e os links não aceitam novo clique.
+- **Sem ações** (`acoes` falso, peça antes da aprovação do cliente): no lugar dos botões, a nota "Disponível quando a peça chegar para a sua aprovação." em `--c-sunken` com borda `--premium-mist`.
+- **Exportação grande** (a rota responde 413 com `codigo: "exportacao_grande"`): aviso inline com `AlertTriangle` em `--warning-bg`, borda e texto `--warning`, numa região `aria-live="polite"`. Texto no portal: "Este arquivo é grande demais para abrir pelo portal. Peça à equipe."; na equipe: "Este arquivo é grande demais para exportar pelo Tasks. Abra no Drive."
+- **Erro genérico**: `onErro` com "Não foi possível abrir o documento. Tente de novo." ou "Não foi possível baixar o documento. Tente de novo."; 403 vira "Este documento ainda não está disponível.". O portal passa o próprio toast; o `Lightbox` passa `useToast().warning`.
+
+**Tema escuro**: superfície, borda e texto por `--c-surface`, `--premium-mist`, `--c-ink` e `--c-muted`; capa sobre `--c-sunken`; cores de tipo pelos tokens semânticos, que já têm valor no escuro. Contraste AA nos dois temas (ui-guidelines §9).
 
 ## EmojiPicker — `emoji-picker.tsx` (+ `emoji-picker-panel.tsx`)
 
@@ -542,6 +582,8 @@ Entrada **única** de criação do shell autenticado (telas não repetem botões
 | `secundarias` | `FabItem[]` | Atalhos de 44px revelados no hover/foco/toque |
 
 `FabItem = { key, label, icon, onClick }`. Conjunto estático (ordem em `fab-actions.ts`): Criar demanda → Criar atividade → Criar projeto, filtrado por RBAC (sem permissão alguma, não renderiza). Desktop: clique no principal cria direto, dial no hover (o rótulo do principal aparece ao expandir); mobile (`hover: none`): toque abre o dial com a principal como primeiro item. **Arrastável** (posição em `localStorage`, limitada à viewport, respeita `safe-area-inset`; arraste fecha o dial e suprime o clique). Acessível: alvo ≥ 44px, `aria-haspopup`/`aria-expanded`, setas ↑/↓, Esc, animação suprimida sob `prefers-reduced-motion`.
+
+**Variação contextual (padrão próprio reconhecido, [`ui-guidelines.md`](ui-guidelines.md) §4.18.1).** Em sistema sem criação global, cada tela monta o seu `<Fab principal secundarias />` com as criações do próprio módulo, e os slide-overs de criação vivem na tela. Mesma anatomia, comportamento, teclado e arraste; RBAC pela escrita do módulo da tela (sem escrita ou sem criação, não renderiza); a zona de contexto da `FilterBar` nunca leva criação, e o `ContextIconButton` `destaque` passa a marcar a ação principal da tela (Salvar, Abrir painel), só-ícone e por último. Uso: painel do Biolink Premium (`saas-08-panel-screen-patterns`).
 
 ## DigitandoIndicador — `digitando-indicador.tsx`
 
@@ -704,6 +746,7 @@ Barras agrupadas em SVG próprio (sem lib), com linha sobreposta opcional de esc
 | `categorias` | `string[]` | Eixo X |
 | `series` | `{ label, cor, valores }[]` | `cor` = **token** (`"var(--success)"`), nunca hex |
 | `linha` | `{ label, cor, valores }` | Linha sobreposta opcional |
+| `marco` | `{ antesDe, rotulo }` | Marco vertical tracejado em `--premium-steel` antes da categoria `antesDe`, com rótulo (ex.: "preferências adotadas" no gráfico de ajustes do QG). Mencione o marco na `descricao` |
 | `formatarValor` | `(v) => string` | Eixo/tooltips — default `moedaCompacta`; gráficos de contagem passam um formatador de inteiros |
 | `descricao` | `string` | `aria-label` + `<title>` |
 | `altura` | `number` | default 220 |
@@ -731,6 +774,22 @@ Número com contagem crescente animada (`useCountUp`) para stat cards. Props: `v
 Provider único de animação do DS: `LazyMotion features={domAnimation} strict` (só `m.*` — o `motion.*` completo lança erro) + `MotionConfig reducedMotion="user"` (respeita `prefers-reduced-motion` por construção) + transição default com a curva `--ease`. Montado nos três shells (app interno, portal do cliente, docs); componentes `m.*` em portal (SlideOver etc.) continuam cobertos — o contexto atravessa `createPortal`.
 
 ---
+
+## Cartão de mídia com selos — padrão de domínio
+
+Item de mídia (foto, vídeo, arte) numa grade de miniaturas, com selos sobre a imagem. Não é primitivo de `ui/`: cada sistema monta o seu cartão no domínio (no Tasks, `components/acervo/acervo-cartao.tsx`, tela do Acervo) seguindo este desenho. Regras completas em [`ui-guidelines.md`](ui-guidelines.md) §4.36. Premium-design **v0.23.0**.
+
+| Parte | Desenho |
+|---|---|
+| Cartão | `<button>` inteiro, `aria-label` "{tipo}: {descrição}"; `--c-surface`, borda `--c-border`, `--r-lg`; hover `--sh-md` + borda `--c-border-strong`; foco borda `--premium-ink` + halo `--yellow-50` |
+| Miniatura | 4:3, `object-fit: cover` sobre `--c-sunken`; `loading="lazy"`, `decoding="async"`, `src` versionado; sem miniatura, ícone do tipo 28px `--c-subtle` + extensão 11px `--c-muted` |
+| Selo de mídia | `bg-black/75` fixo nos dois temas, branco 11px/700, `--r-sm`, 20px de altura: `Play` + `m:ss` (vídeo) ou `Image` (arte) no canto inferior esquerdo; `+N` com `Tooltip` "N fotos parecidas" no superior direito |
+| Selo de estado | Par de status opaco do `Badge` (`--danger-bg`/`--danger`: "Oculto", "Vetado"; `--success-bg`/`--success`: "Aprovado"), com ícone, no canto superior esquerdo; um só, com o motivo no `Tooltip`; só para quem pode ver a decisão |
+| Texto | Descrição em até 2 linhas (13px/500, `--c-ink`); metadados em 12px `--c-muted` |
+| Carregando | `Skeleton` 4:3 + duas linhas |
+| Grade | `role="list"`/`listitem`; `repeat(auto-fill, minmax(176px, 1fr))`, gap 12px; duas colunas abaixo de 640px; "Carregar mais" no fim |
+
+Por que dois desenhos de selo: o de mídia é texto branco sobre a foto, e só o escuro a 75% garante AA sobre qualquer imagem (a mesma exceção do `Lightbox`); o de estado é texto colorido, que só passa AA sobre o fundo opaco do par de status. Nenhum token novo.
 
 ## Padrões compostos do shell (`components/layout/`)
 
@@ -761,5 +820,6 @@ Casos que **não** devem ser migrados para os primitivos — são bespoke por de
 | Busca em pílula do cabeçalho do portal white-label (Premium Assets) | Pílula de 40px com campo real e `⌘K`, aprovada no portal do cliente; segue a regra de um só controle de limpar (o `X` do sistema, igual ao do `CampoBusca`). Premium-design v0.15.0 |
 | Botões redondos minimalistas do workflow (concluir/apagar/mover) | §4.7 — identidade da timeline |
 | "Novo lançamento" como ação de contexto do financeiro | O conjunto do FAB é **estático** (demanda/atividade/projeto); criação de lançamento vive na zona de contexto da tela |
+| FAB contextual por tela (Biolink Premium) | O sistema não tem criação global: cada tela monta o seu FAB com as criações do módulo; na barra, o `destaque` marca a ação principal da tela (Salvar, Abrir painel), e não há linha de ações com texto (`ui-guidelines.md` §4.18.1). Mesma anatomia e comportamento do `Fab`; não misturar com o FAB global no mesmo sistema. Premium-design v0.22.0 |
 | Superfícies **sempre escuras** (gate do portal, header de aprovação, login, toast, tooltip) | Usam `--brand-ink`/`--c-sidebar-*` — **nunca** `--premium-ink` como fundo (ele vira claro no escuro) |
 | Toggle-chips com estado ativo invertido | Usam `--c-emphasis`/`--c-on-emphasis` (invertem certo no escuro); o chip toggle da FilterBar e o `ColumnSortToggle` usam `--brand-ink` fixo para o ícone amarelo ler |
