@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.23.0 · 2026-10-29
+
+Um padrão novo de domínio. Nenhum token nem CSS do pacote mudou.
+
+- **Cartão de mídia com selos (`docs/ui-guidelines.md` §4.36, nova; `docs/componentes.md` §"Cartão de mídia com selos").** Item de mídia (foto, vídeo, arte) numa grade de miniaturas: o cartão inteiro é um botão, miniatura 4:3 com `object-fit: cover` sobre `--c-sunken`, descrição em duas linhas e metadados em `--c-muted`. Dois desenhos de selo: o **de mídia** (`+N` parecidas, duração com `Play`, `Image` na arte) em escuro translúcido fixo a 75% (`bg-black/75`, a mesma exceção do `Lightbox`, que garante AA sobre qualquer foto); o **de estado** (Oculto, Vetado, Aprovado) no par de status opaco do `Badge`, só para quem pode ver a decisão. Hover `--sh-md` + borda `--c-border-strong`, foco borda `--premium-ink` + halo `--yellow-50`, esqueleto 4:3, sem miniatura com o ícone do tipo e a extensão. Grade `repeat(auto-fill, minmax(176px, 1fr))` com gap 12px, duas colunas abaixo de 640px e "Carregar mais". Exemplo estático no showroom (seção Cards). Vem da change `acervo-tela-curadoria` do Tasks (tela do Acervo).
+- **`package.json`**: `version` 0.23.0.
+
 ## v0.22.0 · 2026-10-28
 
 Um padrão próprio reconhecido. Nenhum token nem CSS do pacote mudou.
