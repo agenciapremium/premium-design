@@ -922,6 +922,10 @@ Tipos:
   `i / n`. Fecha por `Esc`, scrim e botão; foco gerenciado (foca o diálogo ao
   abrir, devolve ao gatilho ao fechar; alvos ≥ 40px, §7). Carregamento da grade
   com skeleton (§5.7). Respeita `prefers-reduced-motion`.
+- **Fechar pelo fundo (scrim)** ([`use-fechar-pelo-fundo.ts`](https://github.com/agenciapremium/tasks/blob/main/src/lib/hooks/use-fechar-pelo-fundo.ts)).
+  - **O que é fundo.** O wrapper da mídia ocupa o palco inteiro, então o fundo é **marcado** (`{...FUNDO}`): a raiz, a faixa do cabeçalho, o palco e o wrapper de cada palco. A mídia, os cartões e os controles nunca recebem a marca. O que não foi marcado não fecha, então um palco novo sem a marca só deixa de fechar ali, nunca fecha por engano.
+  - **Quando fecha.** O clique fecha só quando **começa e termina** no fundo. O navegador entrega o clique ao ancestral comum quando o `pointerdown` e o `pointerup` caem em elementos diferentes. Sem essa regra, selecionar o nome arrastando até o cabeçalho, ou apertar no cartão e soltar fora dele, fecharia o visualizador.
+  - **O que não fecha:** o clique no arquivo (imagem, vídeo e seus controles, PDF) e nos controles. Vale também na tela cheia do portal.
 - **A mídia cabe inteira no palco — a altura mora no wrapper.** O palco é
   `flex-1` numa coluna `fixed inset-0`, e o wrapper direto da mídia leva
   `flex h-full w-full items-center justify-center overflow-hidden`. O `h-full`

@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.21.1 · 2026-10-20
+
+Uma regra de comportamento documentada. Nenhum token nem CSS do pacote mudou.
+
+- **Fechar pelo fundo no visualizador em tela cheia (`docs/ui-guidelines.md` §4.22).** Antes a seção dizia só "fecha por scrim". Agora explica que o fundo é marcado explicitamente (`{...FUNDO}`), porque o wrapper da mídia ocupa o palco, e que o clique só fecha quando começa e termina no fundo. O clique no arquivo, nos controles e os gestos que terminam fora (selecionar o nome, apertar no cartão) não fecham.
+- No Tasks, a regra vem da change `preview-fechar-clique-fora`: o `Lightbox` e a tela cheia do portal nunca tinham fechado pelo fundo, embora as specs pedissem.
+- **`package.json`**: `version` 0.21.1.
+
 ## v0.21.0 · 2026-10-20
 
 Um padrão novo num componente. Nenhum token nem CSS do pacote mudou.
