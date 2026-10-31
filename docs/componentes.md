@@ -342,6 +342,7 @@ Controles de ordenação sincronizados ao param `sort` da URL (helpers em `lib/h
 
 - **`useViewSort()`** — hook que lê/escreve `{ field, dir }` no param `sort`.
 - **`SortableTh`** (`field`, `label`, `className?`, `title?`) — cabeçalho de coluna clicável de tabela: alterna a direção, exibe seta ↑/↓ no ativo e publica `aria-sort`; `title` serve de tooltip explicativo da métrica.
+- **`param`** (padrão reconhecido, vindo do Biolink Premium, `saas-09`): `useViewSort(param)` e `SortableTh` com `param` guardam a ordenação de **várias tabelas na mesma tela**, cada uma no seu parâmetro (`?sort-ofertas=`, `?sort-produtos=`…), como o `param` do `Pagination`. Ordenar uma tabela tira só a página dela (`pagina-<tabela>`); filtrar tira todas as páginas e mantém as ordenações. A dica do `SortableTh` diz o próximo passo do ciclo ("Ordenar em ordem crescente", "… decrescente", "Voltar à ordem original").
 - **`ColumnSortToggle`** (`paramKey`, `title`) — toggle só-ícone no header de coluna do kanban (o campo é fixo por kanban; o param próprio guarda só a direção). Cicla natural → ascendente → descendente → natural; ativo = chip `--brand-ink` com ícone amarelo (mesmo idioma do toggle ligado da FilterBar).
 
 ## Pagination — `pagination.tsx`
@@ -682,6 +683,9 @@ O sistema tem **dois motores** de texto rico, por causa do formato que cada lado
 |---|---|---|---|
 | Briefing, copy/legenda, descrição de atividade, ajuste, comentário | [`RichEditor`](https://github.com/agenciapremium/tasks/blob/main/src/components/ui/rich-editor.tsx) | Tiptap | string **Markdown** (GFM) |
 | Página da base de conhecimento | [`BlocoEditor`](https://github.com/agenciapremium/tasks/blob/main/src/components/conhecimento/bloco-editor.tsx) | BlockNote | lista de **blocos JSON** com `id` estável (a API v1 e o MCP editam bloco a bloco) |
+| Regulamento e textos legais (Biolink Premium) | [`RichEditor`](https://github.com/agenciapremium/biolink-premium/blob/master/components/ui/rich-editor.tsx) | Tiptap | string **HTML** (a API, o MCP e o site público das empresas leem HTML, sanitizado no servidor) |
+
+**Terceiro formato, mesma experiência** (padrão reconhecido, Biolink Premium `saas-09`): quando o contrato de dados já é HTML, o editor usa a mesma camada `components/ui/editor/` (lista de comandos, atalhos, barra, moldura, diálogo de link, colagem limpa) com um adaptador Tiptap que grava `getHTML()`. Regras desse formato: as extensões são as que já produziam o HTML salvo, na mesma ordem e configuração (nenhuma que crie nó ou marca sem conferir o HTML de saída contra o editor anterior); comandos sem lugar no campo ficam desabilitados com a dica "indisponível neste campo" (ex.: bloco de código e imagem em texto jurídico, tabela fora dos textos legais) e o atalho deles não faz nada; a colagem limpa roda sobre o `DOMParser` do navegador (sem `isomorphic-dompurify`), porque a sanitização de verdade está no servidor; a tipografia é o padrão `editor-rico.css` complementado com `h1`, `h4` a `h6` e tabela com cabeçalho.
 
 Trocar o motor de qualquer dos dois lados quebraria um contrato de dados, então a convergência acontece na camada de experiência, em `components/ui/editor/`:
 
@@ -757,9 +761,13 @@ Largura acompanha o container (ResizeObserver); abaixo do mínimo legível (`max
 
 Pizza/rosca em SVG próprio com furo central exibindo o total; retorna `null` com total ≤ 0. Props: `dados: { label, valor }[]`, `descricao`, `tamanho` (168), `formatarValor` (default `moedaCompacta`). Paleta categórica por tokens (`--violet`, `--teal`, `--info`, `--warning`, `--success`, `--danger`, `--slate`, `--amber`). Fatias revelam com fade escalonado. `<title>` por fatia; legenda com valor + % é a fonte completa.
 
+**`cor` por fatia** (padrão reconhecido, Biolink Premium `saas-09`): `dados: { label, valor, cor? }[]`, com `cor` = token. Use quando a categoria já tem cor semântica em outro gráfico da mesma tela (ex.: WhatsApp, Ligar e Endereço com as cores das linhas da tendência); sem `cor`, a paleta categórica. `porcentagem(valor, total)` opcional para o texto do percentual (o arredondamento que a tela já usava).
+
 ## LineChart — `line-chart.tsx`
 
 Gráfico de linha em SVG próprio para **séries temporais** (ex.: throughput) — mesmo padrão dos outros charts: largura via ResizeObserver com scroll abaixo do mínimo (`max(480, pontos × 56)`), `role="img"` + descrição, cores/grade só por token (linha em `--premium-ink`). Props: `pontos: { label, valor }[]`, `descricao`, `altura` (220), `formatarValor` (default inteiro). Entrada: a linha se **traça** (`pathLength`) e os pontos surgem depois; durações zeradas sob reduced-motion. Tooltips (`<title>`) e tabela adjacente são a fonte completa.
+
+**Multi-série com rótulos espaçados** (padrão reconhecido, Biolink Premium `saas-09`): `categorias: string[]` + `series: { label, cor, valores }[]` no lugar de `pontos` (que continua valendo para uma série), com legenda como a do `BarChart`. Para séries longas (90 dias), mínimo de **16px por ponto** (`max(480, categorias × 16)`) e rótulo do eixo de tempo **a cada N pontos**, com N calculado para os rótulos não se encostarem; `rotuloEixo` (curto, "dd/mm") e `rotuloCompleto` (do `<title>`, "dd/mm/aaaa"). Os dados por dia ficam numa tabela num `AccordionItem` ("Ver dados por dia") logo abaixo. Eixo de valor de contagem em escala "redonda" inteira (passo 1, 2, 2,5 ou 5 × 10ⁿ), para não mostrar 7,5.
 
 ## BarraProgresso — `barra-progresso.tsx`
 
