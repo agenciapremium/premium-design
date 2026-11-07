@@ -131,6 +131,9 @@ Note que os valores são os do tema **claro**, fixos: cor de dado não tem par e
 
 Implementação de referência: [`src/lib/cores-cadastro.ts`](https://github.com/agenciapremium/tasks/blob/main/src/lib/cores-cadastro.ts) no Tasks. Vale o modelo de registry — cada sistema copia a lista, não importa CSS.
 
+> [!NOTE]
+> **Cor da marca de alguém não é rótulo interno.** Para a cor de destaque de um portal white-label, a cor de categoria do cliente e a paleta de um template, use o [Campo de cor livre](componentes.md#campodecor--campo-de-corttsx): a lista acima vira o atalho "Sugestões" do seletor, e o AA vem do cálculo dos derivados, não da lista.
+
 ### Code theme (`doc-code-block`)
 
 Tokens dedicados ao realce de sintaxe da documentação pública (`/docs`). Contraste AA nos dois temas.

@@ -18,6 +18,17 @@ Como o sistema coleta dados: campos, validação, erro e — central no produto 
 | Comentário | `comentario-input` | Tratamento próprio (menções `@`) |
 | Estado binário aplicado na hora (ativo/inativo, ligado/desligado) | `Switch` | Trilho + polegar do DS, nunca checkbox nativo com `accent-color`. É auto-save: sem botão Salvar. Quando a mudança precisa ser entendida antes, o consumidor confirma e só então o switch vira |
 | Cor de um cadastro (departamento, motivo de ausência) | **Amostras da paleta fechada** | Dez opções da lista canônica, nunca `<input type="color">`; selecionada com `outline: 3px solid var(--premium-ink)`, demais `2px solid var(--premium-mist)`; `aria-pressed` + `aria-label` com o nome da cor. Ver [`tokens.md`](tokens.md#cor-de-dado--paleta-fechada-de-cadastro) |
+| Cor livre de identidade ou de marca (cor de destaque de um portal white-label, cor de categoria do cliente, paleta de marca de um template) | **Campo de cor livre** (`CampoDeCor`) | Amostra de 40px que abre o seletor + HEX editável; no seletor, Tons, Cores da marca, Sugestões (a lista fechada vira atalho) e Mais cores. Nunca `<input type="color">`. O valor é `#RRGGBB` validado no servidor, e os pares de texto que dependem da cor são **calculados** com AA, nunca escolhidos à mão. Ver [`componentes.md`](componentes.md#campodecor--campo-de-corttsx) e [`acessibilidade.md`](acessibilidade.md#cor-livre-com-aa-calculado) |
+
+> [!NOTE]
+> **Paleta fechada ou campo de cor livre?** A lista fechada continua sendo a
+> escolha quando a cor é só um **rótulo interno** do sistema (departamento,
+> motivo de ausência). Quando a cor é a **da marca de alguém** (o cliente
+> white-label, a paleta de um template), prender a pessoa a dez valores faz o
+> produto deixar de ser a cara do cliente: use o campo de cor livre. A
+> segurança que a lista fechada dava "por construção" passa a vir do
+> **cálculo**: o sistema deriva o texto sobre a cor e as versões para texto em
+> cada tema e ajusta o tom até passar no AA.
 
 > [!IMPORTANT]
 > **Data é sempre o `DatePicker`.** `<input type="date">` está barrado por lint

@@ -26,6 +26,16 @@ Verificações já calibradas nos tokens:
 >
 > `--premium-gray` (#8A8A8A) sobre branco fica no limite (~3.5:1) — reservado a texto **auxiliar** (subtítulos, timestamps, placeholders), nunca a conteúdo essencial.
 
+### Cor livre com AA calculado
+
+Quando a cor é escolhida livremente (o destaque de um portal white-label, a cor de categoria do cliente) e pinta texto ou componente, o contraste deixa de ser garantido pela lista fechada e passa a ser **calculado** (ver [`componentes.md`](componentes.md#derivados-da-cor-cor-de-destaque-white-label)):
+
+- o texto sobre a cor é preto ou branco, o que tiver mais contraste;
+- a versão para texto passa **4,5:1** sobre a superfície **e** sobre o fundo suave do tema, nos dois temas, com o tom ajustado quando a cor escolhida não passa;
+- a tela mostra os pares e o contraste de cada um, e avisa quando o tom do texto foi ajustado;
+- a razão exibida é arredondada para baixo, para nunca prometer mais do que passa;
+- **destaque muito claro** (menos de **3:1** sobre a superfície): botão e chip cheios ganham uma borda sutil de 1px em `--c-border-strong`, para o contorno do componente atender ao 3:1 de componentes de UI (WCAG 1.4.11).
+
 ## Foco visível
 
 Todo elemento interativo precisa de estado de foco visível. Padrão do sistema:
@@ -105,6 +115,7 @@ Por componente:
 
 - **Lightbox** (`src/components/ui/lightbox.tsx`): overlay full-viewport com fundo escuro fixo nos dois temas. `Esc` fecha (a saída animada roda antes do desmonte), `←`/`→` navegam entre os materiais, botões de navegação/zoom têm 40×40px e `aria-label` ("Material anterior", "Ampliar zoom" etc.); `disabled` nos extremos e nos limites de zoom (1×–4×).
 - **EmojiPicker** (`src/components/ui/emoji-picker.tsx`): gatilho ≥ 40px com `aria-label` ("Adicionar reação"); atalhos frequentes com `aria-label="Reagir com {emoji}"`; o painel completo (emoji-mart) foca a busca ao abrir (`autoFocus`); em falha de carregamento, degrada para os atalhos com **mensagem textual** ("Busca de emojis indisponível...") — reagir nunca quebra.
+- **CampoDeCor** (`src/components/ui/campo-de-cor.tsx`): amostra de 40px com `aria-haspopup="dialog"`, `aria-expanded`, `aria-controls` e `aria-label` com a cor atual; seletor `role="dialog"` com nome; amostras com `aria-pressed` e o nome no `aria-label`, uma parada de `Tab` por fileira; área de saturação e brilho como `role="slider"` com `aria-valuetext` ("Saturação 62%, brilho 48%, #2F6B2F"); barras `type="range"` com rótulo e `aria-valuetext`; colar, conta-gotas e amostras anunciam a cor nova numa região `aria-live="polite"`; erro do HEX ligado por `aria-describedby`; `Esc` fecha só o seletor e devolve o foco à amostra. Alvos de 40px (área de toque das barras de 40px com trilha de 12px). `prefers-reduced-motion` desliga a entrada do seletor e o deslize do ponto.
 - **MultiSelect** (`src/components/ui/multi-select.tsx`): abre por clique ou `Enter`/`Espaço`; a busca (exibida a partir de 8 opções) recebe `autoFocus`; seleção comunicada por `aria-pressed` + check visível (não só cor); `minSelecionados` impede remover abaixo do mínimo.
 
 ## Formulários
