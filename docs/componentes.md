@@ -223,6 +223,66 @@ Anatomia do `field`: três inputs de segmento `dd / mm / aaaa` (numéricos, `tab
 > [!NOTE]
 > O painel do calendário leva o atributo `data-datepicker-pop` (e o do Select, `data-select-pop`; o do MultiSelect, `data-multiselect-pop`): popovers hospedeiros com dismiss próprio (ex.: prazos do workflow) devem **ignorar cliques dentro desses painéis**, pois eles vivem em portal fora da árvore DOM do hospedeiro — ver `useDismiss` no `workflow-editor.tsx`.
 
+## CampoDeCor — `campo-de-cor.tsx`
+
+Campo de **cor livre**: o único seletor de cor fora de uma lista fechada pela marca (ver [`formularios.md`](formularios.md#escolha-do-campo)). Nunca `<input type="color">`, que muda a cada sistema e ignora o tema.
+
+| Prop | Tipo | Descrição |
+|---|---|---|
+| `rotulo` | `string` | Nome da cor: vira o nome acessível da amostra ("Cor de destaque do portal: #0B7A4B. Abrir tons e cores") e do seletor ("…: tons e cores") |
+| `rotuloVisivel` | `string` | Label eyebrow acima do campo; sem ele, o HEX recebe `aria-label` |
+| `valor` | `string` | `#RRGGBB` |
+| `aoMudar` | `(hex) => void` | Cada mudança, na hora: é a prévia da tela |
+| `aoConfirmar` | `(hex) => void` | Uma escolha concluída: ao **fechar** o seletor (se a cor mudou) ou ao confirmar o HEX com ele fechado. É o momento do auto-save: uma gravação e uma entrada de histórico por escolha, nunca uma por quadro de arraste |
+| `marca` | `{ nome, hex }[]` | Fileira "Cores da marca" (a paleta que a tela já conhece) |
+| `sugestoes` | `boolean` | Fileira "Sugestões" com as dez cores da [paleta fechada](tokens.md#cor-de-dado--paleta-fechada-de-cadastro) (padrão: sim) |
+| `embutido` | `boolean` | O corpo do seletor fica na própria tela (dentro de outro popover), com amostra redonda e HEX de largura cheia |
+| `desabilitado`, `erro`, `id` | — | Como no Input |
+
+Anatomia:
+
+```
+[■▾] [#0B7A4B    ]      amostra 40×40 (seta na cor que mais contrasta) + HEX de 132px
+┌ seletor 340px ─────────────────────────────┐
+│ TONS            ■ ■ ■ ■ ■ ■ ■               │  7 tons, luminosidade OKLCH × 0,55…1,45
+│ CORES DA MARCA  ■ ■ ■ ■ ■                   │  quando a tela tem
+│ SUGESTÕES       ■ ■ ■ ■ ■ ■ ■ / ■ ■ ■        │  as 10 da paleta fechada
+│ ───────────────────────────────────────── │
+│ ⚟ Mais cores                         ▾      │  fechado ao abrir
+│   área de saturação e brilho (140px)        │
+│   [conta-gotas] ● ════ matiz ════           │  conta-gotas só com window.EyeDropper
+│   [valor          ] [HEX ▾]                 │  HEX, RGB ou HSL; formato lembrado na página
+│   Matiz · Saturação · Luminosidade          │  em sincronia com a área
+└─────────────────────────────────────────────┘
+```
+
+Comportamento:
+
+- **Valor:** o HEX aceita `#RGB`, cor colada sem `#` e com espaços, e normaliza para `#RRGGBB`; com 6 dígitos a cor já vale, sem esperar o `blur`. Inválido mostra o erro no padrão de formulário ("Cor inválida. Use o formato #RRGGBB.") e a amostra fica na última cor válida. O "Mais cores" aceita também `rgb(…)`, `hsl(…)` e três números no formato escolhido.
+- **Estado em HSV com a matiz guardada:** levar a saturação a 0 (cinza) ou o brilho a 0 (preto) e voltar não devolve a cor ao vermelho.
+- **Escolher não fecha o seletor:** dá para experimentar várias cores vendo a tela mudar. Fecha com `Esc`, clique fora ou `Tab` para fora (o foco segue para o HEX, como se o seletor estivesse entre os dois).
+- **Teclado:** uma parada de `Tab` por fileira de amostras (a cor escolhida ou a primeira); setas andam, ↑ e ↓ pulam uma linha, `Home`/`End` vão às pontas, `Enter`/`Espaço` escolhem. A área de saturação e brilho é um `slider`: setas para os lados mudam a saturação e para cima e para baixo o brilho, de 1 em 1 (10 com Shift).
+- **Ao abrir**, o foco vai para a cor escolhida (ou o primeiro tom). `Esc` fecha **só o seletor** e devolve o foco à amostra; com o formato aberto, fecha primeiro o formato; com o conta-gotas aberto, cancela só ele.
+- **Popover** em portal, na pilha única de overlays (não trava a rolagem), abaixo da amostra ou, sem espaço, acima; rola por dentro na vertical e **nunca na horizontal**: as fileiras usam colunas fluidas `repeat(7, minmax(0, 40px))` e o painel `overflow-x: hidden`, para a barra de rolagem clássica (≈15px) não abrir rolagem lateral.
+- **Dica** com o nome das cores da marca e das sugestões (atraso de 300ms, na hora pelo teclado); o nome também está no `aria-label` ("Âmbar, #F7BA30").
+
+### Derivados da cor (cor de destaque white-label)
+
+Quando a cor livre pinta a interface de alguém (o destaque de um portal), os pares que dependem dela são **calculados**, nos dois temas, a partir das superfícies do DS (`--c-surface` claro e escuro):
+
+| Derivado | Regra |
+|---|---|
+| Texto sobre o destaque | Preto ou branco, o de maior contraste (o pior caso é 4,58:1) |
+| Versão para texto | A própria cor quando passa **4,5:1 sobre a superfície e sobre o fundo suave**; senão, a luminosidade OKLCH anda em passos **aditivos** de 0,01 (escurece no claro, clareia no escuro) até passar. O passo aditivo faz o preto também clarear no escuro |
+| Fundo suave | 12% da cor sobre a superfície |
+
+A razão mostrada na tela é arredondada **para baixo** ("4,53" vira "4,5:1"). A tela avisa quando a versão para texto do tema claro mudou; o ajuste do escuro aparece só na lista de derivados. A cor só entra em CSS como variável (`--portal-accent` e derivados) calculada de um `#RRGGBB` validado, nunca como CSS livre.
+
+> [!TIP]
+> **Destaque muito claro como componente.** Um botão `#FFF59D` sobre branco tem o texto legível (preto, 18,7:1), mas o **contorno** do botão fica abaixo dos 3:1 que o WCAG pede para componentes (1.4.11). Sugestão para quem consome: quando o destaque tiver menos de 3:1 sobre a superfície, o botão e o chip cheios ganham uma borda sutil de 1px em `--c-border-strong`. Ver [`acessibilidade.md`](acessibilidade.md#cor-livre-com-aa-calculado).
+
+Implementação de referência: `src/components/ui/campo-de-cor.tsx` e `src/lib/domain/cor.ts` no Premium Assets (change `seletor-de-cores`), portados do `ColorField` do Biolink Premium.
+
 ## FormErrorBanner — `form-error-banner.tsx`
 
 Banner de erro inline (`role="alert"`): borda + ícone `alert-circle` em `--danger`, fundo `--danger-bg`, 12.5px. **Padrão único de erro geral de formulário** — erro de campo fica no próprio campo (`Input error=`); erro **nunca** usa toast nem janela nativa. Renderiza `null` sem `message`.

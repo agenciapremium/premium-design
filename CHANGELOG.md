@@ -1,5 +1,11 @@
 # Changelog
 
+## Não publicado
+
+Um padrão novo: o campo de cor livre. Nenhum token nem CSS do pacote mudou.
+
+- **Campo de cor livre (`CampoDeCor`, novo).** `docs/formularios.md` ganha a linha "Cor livre de identidade ou de marca" na escolha do campo e a nota "Paleta fechada ou campo de cor livre?": a paleta fechada continua para rótulos internos (departamento, motivo de ausência) e vira o atalho "Sugestões" do seletor. `docs/componentes.md` documenta a anatomia (amostra de 40px e HEX; Tons, Cores da marca, Sugestões e Mais cores), o teclado, o popover sem rolagem horizontal e os **derivados calculados** da cor de destaque (texto sobre o destaque, versão para texto com 4,5:1 sobre a superfície e o fundo suave, fundo suave), com a sugestão da borda sutil para destaque muito claro. `docs/acessibilidade.md` ganha "Cor livre com AA calculado" e o item do `CampoDeCor` em "Componentes com requisitos próprios"; `docs/tokens.md` aponta o campo a partir da paleta fechada. Implementação de referência no Premium Assets (change `seletor-de-cores`), portada do `ColorField` do Biolink Premium.
+
 ## v0.23.0 · 2026-10-29
 
 Um padrão novo de domínio. Nenhum token nem CSS do pacote mudou.
