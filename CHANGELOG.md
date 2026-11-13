@@ -13,6 +13,7 @@ Dois recursos na `FilterBar`, quatro correções nas peças e nos tokens e a bas
 - **Catálogo: a `premium-base` saiu das `registryDependencies` (`scripts/sincronizar-catalogo.mjs`).** Copiar uma peça não traz mais a base. Quem usa o pacote importa os tokens e os padrões dele; quem não usa copia a base uma vez (`npx shadcn@latest add .../v0.25.0/public/r/premium-base.json`). O README lista os dois caminhos e os padrões de CSS de cada peça.
 - **README: `@source` do Tailwind.** Quando o CSS de entrada não está numa pasta que contém as peças, o Tailwind v4 precisa de `@source` apontando para elas (por exemplo, `@source "../components";` num `src/app/globals.css`), senão as classes das peças não são geradas.
 - **Catálogo ressincronizado do Tasks**, com as URLs das dependências fixadas na `v0.25.0`: 73 peças (72 do Tasks e a `premium-base`), com as duas peças novas.
+- **E-mail com o cinza novo (`docs/email.md`, `docs/email-modelo.html`).** O `GRAY` dos modelos de e-mail passa de `#8A8A8A` a `#6B6B6B`, junto com o token. Ele sempre fica sobre fundo claro.
 - **Migração de quem copiou peças na v0.24.0.** Cada peça trazia a `premium-base`, e quem já importava o pacote ficou com `src/styles/premium/` e os tokens duplicados. Escolha um caminho: apague `src/styles/premium/` e os imports dela, mantendo o pacote; ou mantenha a base copiada e tire o pacote e os imports dele. Não fique com os dois. Para atualizar as peças copiadas, troque a tag para `v0.25.0` e copie de novo com `--overwrite`.
 - **`package.json`**: `version` 0.25.0.
 
