@@ -64,7 +64,7 @@ Escala neutra (sempre via token, **nunca** hex direto em componente):
 | `--premium-coal` | #1A1A1A | Hover sobre superfícies escuras |
 | `--premium-graphite` | #2A2A2A | Borda em superfícies escuras |
 | `--premium-steel` | #4A4A4A | Texto secundário em superfícies claras |
-| `--premium-gray` | #8A8A8A | Texto auxiliar / placeholder |
+| `--premium-gray` | #6B6B6B | Texto auxiliar / placeholder (AA de texto: 5,33:1 sobre o branco e 4,76:1 sobre o bone; premium-design v0.25.0) |
 | `--premium-silver` | #BFBFBF | Bordas / ícones desabilitados |
 | `--premium-mist` | #E5E5E5 | Borda padrão de cards/inputs |
 | `--premium-bone` | #F2F2F2 | Fundo de "chip", thead, segmented control |
@@ -365,6 +365,15 @@ da topbar. A linha pontilhada não é desenhada: a sidebar não tem divisória a
   "Novo grupo" e "Link de aprovação" como contexto só-ícone, abas
   Demandas/Pedidos/Config como views via `?tab`, e a estrela de favorito).
 - Estado dos filtros sempre serializado em `searchParams` (URL compartilhável).
+  A exceção é a busca com `aoBuscar`, para termo com dado pessoal (nome, e-mail):
+  o termo fica no estado do componente e chega à tela pela função, com o mesmo
+  atraso, sem ir para a URL, para os filtros persistidos nem para as views salvas.
+- **Faixa numérica** (`type: "faixa"`, com `min`, `max` e `passo`): pílula com o
+  rótulo resumido ("Nota: 40 a 80", "Nota: a partir de 40", "Nota: até 80") e
+  painel com dois campos numéricos, "De" e "Até" (rótulo acessível, alvo de 40px,
+  foco visível). Grava `<key>De`/`<key>Ate` ao confirmar (Enter ou Aplicar), ao sair
+  dos campos ou ao fechar pelo clique fora, nunca a cada tecla; `Esc` descarta.
+  Valor fora de `min`..`max` vai para o limite, e "de" maior que "até" troca os dois.
 - Com `telaKey`, a zona de contexto **abre** com o menu **Views salvas** (§4.32), antes
   dos botões da tela: o recorte atual vira uma view nomeada, e a view padrão passa a
   abrir a tela quando a URL não traz filtros.
@@ -423,7 +432,7 @@ da topbar. A linha pontilhada não é desenhada: a sidebar não tem divisória a
 | Primary | `.btn .btn-primary` | Amarelo + sombra dourada. Reservado para a ação principal da tela ("Nova Demanda", "Confirmar"). |
 | Dark | `.btn .btn-dark` | Preto. Ação principal **dentro** de área onde primary não cabe. |
 | Ghost | `.btn .btn-ghost` | Borda `--premium-mist`. Ações secundárias. |
-| Danger | `Button variant="danger"` | Fundo `--danger`, texto branco. Ação destrutiva já confirmada (par do `ConfirmDialog` §4.10). |
+| Danger | `Button variant="danger"` | Fundo sólido `--alert-solid` (hover `--alert-solid-hover`) com texto `--on-alert-solid`, iguais nos dois temas (5,63:1). Nunca `--danger` como fundo: no escuro ele é tom de texto (`#e87a72`, 2,82:1 com branco). Ação destrutiva já confirmada (par do `ConfirmDialog` §4.10). |
 | Icon | `.icon-btn` | 40×40, borda, hover → borda preta. Para sino, tema, atalhos. |
 | Sm | `.btn-sm` | Padding reduzido para topbar / inline. |
 
@@ -720,7 +729,8 @@ Tipos:
 
 - Diálogo central, raio `--r-xl`, sombra `--sh-lg`.
 - Título 18/700, descrição 13.5/normal `--premium-steel`.
-- Ações: ghost à esquerda, ação destrutiva em `--danger` (não usar yellow para destrutivo).
+- Ações: ghost à esquerda, ação destrutiva no `Button variant="danger"` (`--alert-solid`; não usar yellow para destrutivo).
+- Teclado: `Esc` cancela em qualquer foco. `Enter` confirma, menos num campo de várias linhas (`Textarea` ou elemento editável do `children`): ali Enter quebra a linha, e Ctrl+Enter (Cmd+Enter no macOS) confirma. Se o diálogo mostrar dica de teclado e tiver campo de várias linhas, a dica diz "Ctrl+Enter confirma".
 
 ### 4.11 Avatar e avatar stack
 
@@ -1641,7 +1651,7 @@ inversão):
 | `--c-surface` | `#FFFFFF` | `#161616` |
 | `--c-sunken` | `#F2F2F2` | `#202020` |
 | `--c-ink` | `#0A0A0A` | `#fafafa` |
-| `--c-muted` | `#8A8A8A` | `#b8b8b8` |
+| `--c-muted` | `#6B6B6B` | `#b8b8b8` |
 | `--c-subtle` | `#BFBFBF` | `#8a8a8a` |
 | `--c-border` | `#E5E5E5` | `#2e2e2e` |
 | `--c-border-strong` | `#2A2A2A` | `#4a4a4a` |
