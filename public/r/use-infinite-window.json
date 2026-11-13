@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "use-infinite-window",
+  "title": "use-infinite-window",
+  "description": "Peça do Tasks copiada byte a byte: src/lib/hooks/use-infinite-window.ts.",
+  "files": [
+    {
+      "path": "registry/src/lib/hooks/use-infinite-window.ts",
+      "content": "\"use client\";\n\nimport { useCallback, useEffect, useRef, useState } from \"react\";\n\n/**\n * Janela de carregamento incremental por coluna de Kanban (capability\n * `kanban-scroll-infinito`). Mantém `visiveis` cartões renderizados a partir de um\n * array já carregado no client e cresce em lotes de `step` quando a sentinela entra\n * na área visível da coluna (IntersectionObserver com `root` no container rolável\n * da coluna; fallback viewport). Não faz fetch — apenas fatia o array; o total e o\n * badge continuam refletindo `total`. Transversal aos três Kanbans.\n *\n * `resetKey` reinicia a janela (volta a `inicial`) quando muda o filtro/ordenação/\n * modo — o DnD e o realtime alteram o array/total sem passar por aqui, então não\n * reiniciam a janela.\n */\nexport function useInfiniteWindow(\n  total: number,\n  step: number,\n  inicial: number,\n  resetKey?: string\n): {\n  visiveis: number;\n  sentinelaRef: React.RefObject<HTMLDivElement | null>;\n  temMais: boolean;\n  reset: () => void;\n} {\n  const [visiveis, setVisiveis] = useState(inicial);\n  const sentinelaRef = useRef<HTMLDivElement | null>(null);\n  const temMais = visiveis < total;\n\n  // Reinicia a janela ao trocar filtro/ordenação/modo (resetKey), não no DnD —\n  // ajuste de estado no render (padrão React), sem efeito nem cascata.\n  const [prevResetKey, setPrevResetKey] = useState(resetKey);\n  if (resetKey !== prevResetKey) {\n    setPrevResetKey(resetKey);\n    setVisiveis(inicial);\n  }\n\n  // Carrega o próximo lote quando a sentinela do fim da lista fica visível.\n  useEffect(() => {\n    const sentinela = sentinelaRef.current;\n    if (!sentinela || !temMais) return;\n    const root = acharScrollavel(sentinela);\n    const obs = new IntersectionObserver(\n      (entries) => {\n        if (entries.some((e) => e.isIntersecting)) {\n          setVisiveis((v) => Math.min(v + step, total));\n        }\n      },\n      { root, rootMargin: \"120px\" }\n    );\n    obs.observe(sentinela);\n    return () => obs.disconnect();\n  }, [temMais, step, total, visiveis]);\n\n  const reset = useCallback(() => setVisiveis(inicial), [inicial]);\n\n  return { visiveis, sentinelaRef, temMais, reset };\n}\n\n/** Container rolável mais próximo (overflow y auto/scroll); `null` = viewport. */\nfunction acharScrollavel(el: Element): Element | null {\n  let p = el.parentElement;\n  while (p) {\n    const oy = getComputedStyle(p).overflowY;\n    if (oy === \"auto\" || oy === \"scroll\") return p;\n    p = p.parentElement;\n  }\n  return null;\n}\n",
+      "type": "registry:file",
+      "target": "src/lib/hooks/use-infinite-window.ts"
+    }
+  ],
+  "type": "registry:hook"
+}

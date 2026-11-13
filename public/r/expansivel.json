@@ -1,0 +1,22 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "expansivel",
+  "title": "expansivel",
+  "description": "Peça do Tasks copiada byte a byte: src/components/ui/expansivel.tsx.",
+  "dependencies": [
+    "motion@^12.42.2"
+  ],
+  "registryDependencies": [
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json",
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/motion.json"
+  ],
+  "files": [
+    {
+      "path": "registry/src/components/ui/expansivel.tsx",
+      "content": "\"use client\";\n\nimport { AnimatePresence, m, useReducedMotion } from \"motion/react\";\nimport { useState, type ReactNode } from \"react\";\nimport { EASE } from \"@/lib/motion\";\n\n/**\n * Recolhe/expande a altura de uma seção com transição suave (change\n * animacoes-motion-overlays): `height: 0 ↔ auto` + `opacity` (~200 ms, curva\n * `--ease`), via `AnimatePresence` para animar também o recolhimento antes do\n * desmonte. Usado por accordion, raias do Kanban e árvore de docs.\n *\n * `height` não é `transform`, então o `MotionConfig reducedMotion` não a desliga\n * sozinho — zeramos a duração sob `prefers-reduced-motion`. O `overflow` só recorta\n * enquanto em trânsito; expandido e parado fica `visible`, para não cortar sombras\n * de card, anel de foco ou colunas com rolagem horizontal (raias).\n */\nexport function Expansivel({\n  open,\n  children,\n  id,\n  className,\n}: {\n  open: boolean;\n  children: ReactNode;\n  id?: string;\n  className?: string;\n}) {\n  const prefersReduced = useReducedMotion();\n  const [animando, setAnimando] = useState(false);\n\n  return (\n    <AnimatePresence initial={false}>\n      {open && (\n        <m.div\n          key=\"conteudo\"\n          id={id}\n          className={className}\n          initial={{ height: 0, opacity: 0 }}\n          animate={{ height: \"auto\", opacity: 1 }}\n          exit={{ height: 0, opacity: 0 }}\n          transition={{ duration: prefersReduced ? 0 : 0.2, ease: EASE }}\n          onAnimationStart={() => setAnimando(true)}\n          onAnimationComplete={() => setAnimando(false)}\n          style={{ overflow: animando ? \"hidden\" : \"visible\" }}\n        >\n          {children}\n        </m.div>\n      )}\n    </AnimatePresence>\n  );\n}\n",
+      "type": "registry:file",
+      "target": "src/components/ui/expansivel.tsx"
+    }
+  ],
+  "type": "registry:ui"
+}

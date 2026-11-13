@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "constants",
+  "title": "constants",
+  "description": "Peça do Tasks copiada byte a byte: src/lib/constants.ts.",
+  "files": [
+    {
+      "path": "registry/src/lib/constants.ts",
+      "content": "/**\n * Constantes compartilhadas do app.\n *\n * Paginação (capability `paginacao-tabelas`): fonte única do tamanho de página\n * usado por todas as tabelas, listas em linha e grids de cards de registros.\n */\n\n/** Itens por página em todas as tabelas/grids paginados server-side. */\nexport const TABELA_PAGINA_TAMANHO = 25;\n\n/**\n * Kanban (capability `kanban-scroll-infinito`): carga inicial e incremento de\n * cartões por coluna. Cada coluna dos três Kanbans (Atividades, Demandas, Quadros)\n * renderiza `KANBAN_LOTE_INICIAL` cartões na abertura e carrega mais\n * `KANBAN_LOTE_INCREMENTO` por vez ao rolar até o fim (windowing client-side).\n */\nexport const KANBAN_LOTE_INICIAL = 15;\nexport const KANBAN_LOTE_INCREMENTO = 15;\n\n/**\n * Lê o parâmetro `?pagina=` de `searchParams` (1-based). Retorna 1 quando\n * ausente, não-numérico ou inválido (< 1).\n */\nexport function parsePagina(v: string | string[] | undefined): number {\n  const n = Number(Array.isArray(v) ? v[0] : v);\n  return Number.isInteger(n) && n >= 1 ? n : 1;\n}\n\n/**\n * Total de páginas para um total de itens (mínimo 1, para nunca exibir\n * \"Página 1 de 0\").\n */\nexport function totalPaginas(total: number): number {\n  return Math.max(1, Math.ceil(total / TABELA_PAGINA_TAMANHO));\n}\n\n/**\n * `skip`/`take` do Prisma para a página 1-based, no tamanho padrão. Açúcar para\n * a forma `findMany({ ...skipTake(pagina) })` reaproveitada pelas pages simples.\n */\nexport function skipTake(pagina: number): { skip: number; take: number } {\n  return { skip: (Math.max(1, pagina) - 1) * TABELA_PAGINA_TAMANHO, take: TABELA_PAGINA_TAMANHO };\n}\n",
+      "type": "registry:file",
+      "target": "src/lib/constants.ts"
+    }
+  ],
+  "type": "registry:lib"
+}

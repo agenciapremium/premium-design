@@ -1,0 +1,18 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "use-toast",
+  "title": "use-toast",
+  "description": "Peça do Tasks copiada byte a byte: src/lib/hooks/use-toast.ts.",
+  "registryDependencies": [
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/toast.json"
+  ],
+  "files": [
+    {
+      "path": "registry/src/lib/hooks/use-toast.ts",
+      "content": "\"use client\";\n\nimport { useContext } from \"react\";\nimport { ToastContext, type ToastApi } from \"@/components/ui/toast\";\n\n/**\n * Hook/serviço central de feedback transitório (capability ui-feedback-system).\n * Única forma de disparar toasts — sem prop drilling. Requer `ToastProvider`\n * montado acima na árvore (shell autenticado). Variantes: success/info/warning;\n * erro de submit vai para banner inline, não toast (ver ui-guidelines §5.8).\n */\nexport function useToast(): ToastApi {\n  const ctx = useContext(ToastContext);\n  if (!ctx) {\n    throw new Error(\"useToast precisa estar dentro de <ToastProvider>.\");\n  }\n  return ctx;\n}\n",
+      "type": "registry:file",
+      "target": "src/lib/hooks/use-toast.ts"
+    }
+  ],
+  "type": "registry:hook"
+}

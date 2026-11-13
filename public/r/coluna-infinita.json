@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "coluna-infinita",
+  "title": "coluna-infinita",
+  "description": "Peça do Tasks copiada byte a byte: src/components/ui/coluna-infinita.tsx.",
+  "dependencies": [
+    "lucide-react@^1.17.0"
+  ],
+  "registryDependencies": [
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json",
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/constants.json",
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/use-infinite-window.json"
+  ],
+  "files": [
+    {
+      "path": "registry/src/components/ui/coluna-infinita.tsx",
+      "content": "\"use client\";\n\nimport { Fragment, type ReactNode } from \"react\";\nimport { Loader2 } from \"lucide-react\";\nimport { KANBAN_LOTE_INICIAL, KANBAN_LOTE_INCREMENTO } from \"@/lib/constants\";\nimport { useInfiniteWindow } from \"@/lib/hooks/use-infinite-window\";\n\n/**\n * Renderiza os cartões de uma coluna de Kanban com carregamento incremental\n * (capability `kanban-scroll-infinito`): mostra os primeiros `KANBAN_LOTE_INICIAL`\n * e carrega mais `KANBAN_LOTE_INCREMENTO` conforme a sentinela do fim entra na área\n * visível. Deve ser montado DENTRO do container rolável da coluna. Não renderiza o\n * estado vazio — cada tela mantém o seu (o badge de total também continua na tela,\n * refletindo `items.length`). O DnD segue operando sobre o array completo do pai.\n */\nexport function ColunaInfinita<T>({\n  items,\n  getKey,\n  renderItem,\n  resetKey,\n}: {\n  items: T[];\n  getKey: (item: T, index: number) => string;\n  renderItem: (item: T, index: number) => ReactNode;\n  /** Reinicia a janela ao mudar (filtro/ordenação/modo). */\n  resetKey?: string;\n}) {\n  const { visiveis, sentinelaRef, temMais } = useInfiniteWindow(\n    items.length,\n    KANBAN_LOTE_INCREMENTO,\n    KANBAN_LOTE_INICIAL,\n    resetKey\n  );\n\n  return (\n    <>\n      {items.slice(0, visiveis).map((item, i) => (\n        <Fragment key={getKey(item, i)}>{renderItem(item, i)}</Fragment>\n      ))}\n      {temMais && (\n        <div ref={sentinelaRef}>\n          <CarregandoMais />\n        </div>\n      )}\n    </>\n  );\n}\n\n/** Indicador leve \"Carregando mais…\" (tokens semânticos, dark mode). */\nfunction CarregandoMais() {\n  return (\n    <div\n      role=\"status\"\n      aria-live=\"polite\"\n      className=\"flex items-center justify-center gap-2 py-2 text-[13px] text-[var(--premium-gray)]\"\n    >\n      <Loader2 size={16} className=\"animate-spin motion-reduce:animate-none\" aria-hidden />\n      Carregando mais…\n    </div>\n  );\n}\n",
+      "type": "registry:file",
+      "target": "src/components/ui/coluna-infinita.tsx"
+    }
+  ],
+  "type": "registry:ui"
+}

@@ -1,0 +1,18 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "autosave-bar",
+  "title": "autosave-bar",
+  "description": "Peça do Tasks copiada byte a byte: src/components/ui/autosave-bar.tsx.",
+  "registryDependencies": [
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json"
+  ],
+  "files": [
+    {
+      "path": "registry/src/components/ui/autosave-bar.tsx",
+      "content": "// Barra de progresso indeterminada para feedback de auto-save em superficies\n// que NAO usam SlideOver (ex.: telas/cartoes full-page). O SlideOver tem o seu\n// proprio indicador via prop `loading`. Estilo em globals.css (.autosave-bar).\n\nexport function AutoSaveBar({ active }: { active: boolean }) {\n  return (\n    <div\n      className=\"h-[2px] w-full overflow-hidden bg-[var(--premium-bone)]\"\n      style={{ visibility: active ? \"visible\" : \"hidden\" }}\n      role=\"progressbar\"\n      aria-label=\"Salvando\"\n      aria-hidden={!active}\n    >\n      <div className=\"autosave-bar h-full bg-[var(--premium-ink)]\" />\n    </div>\n  );\n}\n",
+      "type": "registry:file",
+      "target": "src/components/ui/autosave-bar.tsx"
+    }
+  ],
+  "type": "registry:ui"
+}

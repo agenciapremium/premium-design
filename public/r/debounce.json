@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "debounce",
+  "title": "debounce",
+  "description": "Peça do Tasks copiada byte a byte: src/lib/debounce.ts.",
+  "files": [
+    {
+      "path": "registry/src/lib/debounce.ts",
+      "content": "// Debounce simples e tipado, sem dependencias externas.\n// `cancel()` descarta uma chamada pendente; `flush()` executa imediatamente a\n// chamada pendente (util para garantir o salvamento ao sair de um campo).\n\nexport interface DebouncedFn<A extends unknown[]> {\n  (...args: A): void;\n  cancel: () => void;\n  flush: () => void;\n}\n\nexport function debounce<A extends unknown[]>(\n  fn: (...args: A) => void,\n  wait: number\n): DebouncedFn<A> {\n  let timer: ReturnType<typeof setTimeout> | null = null;\n  let lastArgs: A | null = null;\n\n  const debounced = ((...args: A) => {\n    lastArgs = args;\n    if (timer) clearTimeout(timer);\n    timer = setTimeout(() => {\n      timer = null;\n      const a = lastArgs as A;\n      lastArgs = null;\n      fn(...a);\n    }, wait);\n  }) as DebouncedFn<A>;\n\n  debounced.cancel = () => {\n    if (timer) clearTimeout(timer);\n    timer = null;\n    lastArgs = null;\n  };\n\n  debounced.flush = () => {\n    if (timer) {\n      clearTimeout(timer);\n      timer = null;\n    }\n    if (lastArgs) {\n      const a = lastArgs;\n      lastArgs = null;\n      fn(...a);\n    }\n  };\n\n  return debounced;\n}\n",
+      "type": "registry:file",
+      "target": "src/lib/debounce.ts"
+    }
+  ],
+  "type": "registry:lib"
+}

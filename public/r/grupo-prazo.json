@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "grupo-prazo",
+  "title": "grupo-prazo",
+  "description": "Peça do Tasks copiada byte a byte: src/components/ui/grupo-prazo.tsx.",
+  "registryDependencies": [
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json",
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/utils.json"
+  ],
+  "files": [
+    {
+      "path": "registry/src/components/ui/grupo-prazo.tsx",
+      "content": "import type { ReactNode } from \"react\";\nimport { cn } from \"@/lib/utils\";\n\n/**\n * Cabeçalho de um grupo por prazo, com a lista logo abaixo (ui-guidelines §4.33).\n *\n * Nasceu dentro de \"Meus cards\" (capability quadros-minha-visao) e foi extraído\n * para cá quando o bloco \"Meu dia\" do Dashboard passou a agrupar pela mesma\n * ideia (capability dashboard-meu-dia): título em caixa alta, contagem em\n * pílula discreta e os itens numa `<ul>`. Duas telas com o mesmo desenho e duas\n * cópias do markup divergem no primeiro ajuste.\n *\n * O componente não sabe o que é um item: recebe os `<li>` prontos. Assim\n * \"Meus cards\" segue com o seu botão que abre o modal, e o Dashboard com a sua\n * linha clicável e a ação de concluir.\n */\n\n/** Tom do título; sublinha a urgência sem depender só da cor (§7). */\nexport type TomGrupoPrazo = \"neutro\" | \"atencao\" | \"critico\";\n\nconst TOM_TITULO: Record<TomGrupoPrazo, string> = {\n  neutro: \"text-[var(--premium-steel)]\",\n  atencao: \"text-[var(--warning)]\",\n  critico: \"text-[var(--danger)]\",\n};\n\nconst TOM_CONTAGEM: Record<TomGrupoPrazo, string> = {\n  neutro: \"bg-[var(--premium-bone)] text-[var(--premium-steel)]\",\n  atencao: \"bg-[var(--warning-bg)] text-[var(--warning)]\",\n  critico: \"bg-[var(--danger-bg)] text-[var(--danger)]\",\n};\n\nexport function GrupoPrazo({\n  titulo,\n  contagem,\n  tom = \"neutro\",\n  nivel = 2,\n  rodape,\n  className,\n  children,\n}: {\n  titulo: string;\n  contagem: number;\n  tom?: TomGrupoPrazo;\n  /** Nível do cabeçalho, para o grupo não quebrar a hierarquia da página (§7). */\n  nivel?: 2 | 3;\n  /** Rodapé opcional do grupo (links \"ver tudo\", por exemplo). */\n  rodape?: ReactNode;\n  className?: string;\n  /** Os itens `<li>` do grupo. */\n  children: ReactNode;\n}) {\n  const Titulo = nivel === 2 ? \"h2\" : \"h3\";\n  return (\n    <section aria-label={titulo} className={className}>\n      <Titulo className=\"mb-2 flex items-center gap-2 px-1 text-[12px] font-bold uppercase tracking-wider\">\n        <span className={TOM_TITULO[tom]}>{titulo}</span>\n        <span\n          className={cn(\n            \"rounded-full px-[7px] py-[1px] text-[11px] font-bold\",\n            TOM_CONTAGEM[tom]\n          )}\n        >\n          {contagem}\n        </span>\n      </Titulo>\n      <ul className=\"flex flex-col gap-2\">{children}</ul>\n      {rodape && <div className=\"mt-2 px-1\">{rodape}</div>}\n    </section>\n  );\n}\n",
+      "type": "registry:file",
+      "target": "src/components/ui/grupo-prazo.tsx"
+    }
+  ],
+  "type": "registry:ui"
+}

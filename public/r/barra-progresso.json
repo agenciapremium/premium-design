@@ -1,0 +1,22 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "barra-progresso",
+  "title": "barra-progresso",
+  "description": "Peça do Tasks copiada byte a byte: src/components/ui/barra-progresso.tsx.",
+  "dependencies": [
+    "motion@^12.42.2"
+  ],
+  "registryDependencies": [
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json",
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/motion.json"
+  ],
+  "files": [
+    {
+      "path": "registry/src/components/ui/barra-progresso.tsx",
+      "content": "\"use client\";\n\nimport { m } from \"motion/react\";\nimport { EASE } from \"@/lib/motion\";\n\n/**\n * Barra de progresso com preenchimento que cresce da esquerda na entrada\n * (change animacoes-graficos-abas-transicoes). `scaleX` é transform → o\n * `MotionConfig reducedMotion` já o neutraliza. Client leve, renderizável a\n * partir de server components (recebe só números/strings, sem funções).\n */\nexport function BarraProgresso({\n  pct,\n  background,\n  altura = \"h-2\",\n  trackClassName,\n  className,\n}: {\n  /** 0–100. */\n  pct: number;\n  /** `background` CSS do preenchimento (ex.: gradiente por token). */\n  background?: string;\n  altura?: string;\n  trackClassName?: string;\n  className?: string;\n}) {\n  const largura = Math.min(100, Math.max(0, pct));\n  return (\n    <div\n      className={`w-full ${altura} rounded-full bg-[var(--premium-bone)] overflow-hidden ${trackClassName ?? \"\"}`}\n      aria-hidden\n    >\n      <m.div\n        className={`h-full rounded-full ${className ?? \"\"}`}\n        style={{ width: `${largura}%`, background, transformOrigin: \"left\" }}\n        initial={{ scaleX: 0 }}\n        animate={{ scaleX: 1 }}\n        transition={{ duration: 0.5, ease: EASE }}\n      />\n    </div>\n  );\n}\n",
+      "type": "registry:file",
+      "target": "src/components/ui/barra-progresso.tsx"
+    }
+  ],
+  "type": "registry:ui"
+}

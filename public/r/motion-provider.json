@@ -1,0 +1,22 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "motion-provider",
+  "title": "motion-provider",
+  "description": "Peça do Tasks copiada byte a byte: src/components/ui/motion-provider.tsx.",
+  "dependencies": [
+    "motion@^12.42.2"
+  ],
+  "registryDependencies": [
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json",
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/motion.json"
+  ],
+  "files": [
+    {
+      "path": "registry/src/components/ui/motion-provider.tsx",
+      "content": "\"use client\";\n\nimport { LazyMotion, domAnimation, MotionConfig } from \"motion/react\";\nimport type { ReactNode } from \"react\";\nimport { EASE } from \"@/lib/motion\";\n\n/**\n * Provider único de animação do design system (change animacoes-motion-overlays).\n *\n * - `LazyMotion features={domAnimation} strict`: carrega só as features leves\n *   (~20 kb — animações, variants, exit, gestos de hover/tap). O modo `strict`\n *   faz o componente `motion.*` completo lançar erro: use sempre `m.*`.\n * - `MotionConfig reducedMotion=\"user\"`: respeita `prefers-reduced-motion` por\n *   construção, dispensando tratamento caso a caso (docs/design-system/ui-guidelines.md §2.6).\n * - Transição default com a curva `--ease` do projeto.\n *\n * Montado nos três shells (app interno, portal do cliente, docs). Componentes\n * `m.*` renderizados via portal (ex.: SlideOver) continuam cobertos: o contexto\n * React atravessa `createPortal`.\n */\nexport function MotionProvider({ children }: { children: ReactNode }) {\n  return (\n    <LazyMotion features={domAnimation} strict>\n      <MotionConfig reducedMotion=\"user\" transition={{ duration: 0.2, ease: EASE }}>\n        {children}\n      </MotionConfig>\n    </LazyMotion>\n  );\n}\n",
+      "type": "registry:file",
+      "target": "src/components/ui/motion-provider.tsx"
+    }
+  ],
+  "type": "registry:ui"
+}

@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "painel-cards-pos",
+  "title": "painel-cards-pos",
+  "description": "Peça do Tasks copiada byte a byte: src/lib/painel-cards-pos.ts.",
+  "files": [
+    {
+      "path": "registry/src/lib/painel-cards-pos.ts",
+      "content": "/**\n * Posição do painel de cards flutuantes (capability painel-cards-flutuantes,\n * design D1). Conta pura: recebe o retângulo do gatilho e a largura da janela\n * e devolve onde o painel fica, sem tocar no DOM.\n *\n * Ancorado: o X (40px) fica centralizado sobre o gatilho, e a borda direita dos\n * cards alinha com a borda direita do X. Abaixo de 768px, ou sem gatilho\n * visível (aberto pelo menu móvel do portal), o painel fica \"livre\": largura da\n * tela com margens fixas, resolvidas no CSS do primitivo.\n */\n\nexport const PAINEL_LARGURA = 420;\nexport const PAINEL_BREAKPOINT = 768;\n/** Lado do botão de fechar (e da faixa do topo). */\nexport const PAINEL_FECHAR = 40;\n/** Folga mínima entre o painel e a borda da janela. */\nconst MARGEM = 8;\n\nexport interface RetanguloGatilho {\n  top: number;\n  left: number;\n  width: number;\n  height: number;\n}\n\nexport type PosicaoPainel = { modo: \"ancorado\"; topo: number; direita: number } | { modo: \"livre\" };\n\nexport function posicaoPainel(gatilho: RetanguloGatilho | null, larguraJanela: number): PosicaoPainel {\n  if (larguraJanela < PAINEL_BREAKPOINT) return { modo: \"livre\" };\n  if (!gatilho || gatilho.width <= 0 || gatilho.height <= 0) return { modo: \"livre\" };\n\n  const centroX = gatilho.left + gatilho.width / 2;\n  const centroY = gatilho.top + gatilho.height / 2;\n  const topo = Math.max(MARGEM, Math.round(centroY - PAINEL_FECHAR / 2));\n  const direitaBruta = Math.round(larguraJanela - centroX - PAINEL_FECHAR / 2);\n  // O painel inteiro precisa caber: gatilho muito à esquerda empurra para dentro.\n  const direita = Math.min(Math.max(MARGEM, direitaBruta), larguraJanela - PAINEL_LARGURA - MARGEM);\n  return { modo: \"ancorado\", topo, direita };\n}\n",
+      "type": "registry:file",
+      "target": "src/lib/painel-cards-pos.ts"
+    }
+  ],
+  "type": "registry:lib"
+}

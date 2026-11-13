@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "format",
+  "title": "format",
+  "description": "Peça do Tasks copiada byte a byte: src/lib/format.ts.",
+  "files": [
+    {
+      "path": "registry/src/lib/format.ts",
+      "content": "/**\n * Formatação pt-BR compartilhada (change financeiro-fundacao). `formatCurrency`\n * é a única forma de exibir dinheiro no sistema — nunca formatar à mão.\n */\n\nconst brl = new Intl.NumberFormat(\"pt-BR\", { style: \"currency\", currency: \"BRL\" });\nconst brlCompacto = new Intl.NumberFormat(\"pt-BR\", { notation: \"compact\", style: \"currency\", currency: \"BRL\" });\n\n/** R$ 1.234,56 — aceita number, string decimal do Prisma ou Decimal serializado. */\nexport function formatCurrency(valor: number | string): string {\n  const n = typeof valor === \"string\" ? Number(valor) : valor;\n  return brl.format(Number.isFinite(n) ? n : 0);\n}\n\n/** R$ 1,2 mil — moeda compacta para eixos/tooltips de gráficos. */\nexport function moedaCompacta(valor: number): string {\n  return brlCompacto.format(Number.isFinite(valor) ? valor : 0);\n}\n\n/** Data date-only (vencimento/baixa) em pt-BR sem deriva de fuso. */\nexport function formatDateOnly(data: Date | string): string {\n  const d = typeof data === \"string\" ? new Date(data) : data;\n  return d.toLocaleDateString(\"pt-BR\", { timeZone: \"UTC\" });\n}\n\n/**\n * Data de um INSTANTE (timestamp) no fuso da agência — America/Porto_Velho,\n * GMT-4 fixo, o mesmo de `horaNaAgencia`. Diferente de `formatDateOnly`, que é\n * para campos date-only e por isso lê em UTC: aplicar UTC a um timestamp real\n * mostra o dia seguinte para qualquer coisa gravada depois das 20h na agência.\n */\nexport function formatDateAgencia(data: Date | string): string {\n  const d = typeof data === \"string\" ? new Date(data) : data;\n  return d.toLocaleDateString(\"pt-BR\", { timeZone: \"America/Porto_Velho\" });\n}\n\nconst diaHoraAgencia = new Intl.DateTimeFormat(\"pt-BR\", {\n  timeZone: \"America/Porto_Velho\",\n  day: \"2-digit\",\n  month: \"2-digit\",\n  hour: \"2-digit\",\n  minute: \"2-digit\",\n  hourCycle: \"h23\",\n});\n\n/**\n * `dd/mm hh:mm` de um instante, no fuso da agência. O fuso fixo também evita\n * divergência de hidratação: servidor (UTC) e navegador escrevem o mesmo texto.\n */\nexport function formatDiaHoraAgencia(data: Date | string): string {\n  const d = typeof data === \"string\" ? new Date(data) : data;\n  const p = Object.fromEntries(diaHoraAgencia.formatToParts(d).map((x) => [x.type, x.value]));\n  return `${p.day}/${p.month} ${p.hour}:${p.minute}`;\n}\n",
+      "type": "registry:file",
+      "target": "src/lib/format.ts"
+    }
+  ],
+  "type": "registry:lib"
+}

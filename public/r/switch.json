@@ -1,0 +1,20 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "switch",
+  "title": "switch",
+  "description": "Peça do Tasks copiada byte a byte: src/components/ui/switch.tsx.",
+  "registryDependencies": [
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json",
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/tooltip.json",
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/utils.json"
+  ],
+  "files": [
+    {
+      "path": "registry/src/components/ui/switch.tsx",
+      "content": "\"use client\";\n\nimport { Tooltip } from \"@/components/ui/tooltip\";\nimport { cn } from \"@/lib/utils\";\n\n/**\n * Switch liga/desliga do Design System (ui-guidelines §4.1/§7).\n *\n * `button role=\"switch\"` com trilho e polegar — **não** um `<input type=checkbox>`\n * com `accent-color`: controle nativo não é estilizável de forma consistente entre\n * navegadores e o sistema não usa nativos (ui-guidelines §4.8).\n *\n * Use para **estado binário que vale por si**, aplicado na hora (auto-save, §5.9):\n * ativo/inativo, ligado/desligado. Quando a ação é destrutiva ou tem efeito que a\n * pessoa precisa entender antes, o `onCheckedChange` do consumidor confirma primeiro\n * e só então troca o estado — o switch não muda sozinho.\n *\n * Para escolher entre várias opções, é `Select` ou chips; para disparar uma ação,\n * é `Button`.\n */\nexport function Switch({\n  checked,\n  onCheckedChange,\n  label,\n  disabled = false,\n  dica,\n  className,\n}: {\n  checked: boolean;\n  onCheckedChange: (proximo: boolean) => void;\n  /** Vira o `aria-label` — obrigatório: o switch não tem texto próprio. */\n  label: string;\n  disabled?: boolean;\n  /** Dica do estado atual (balão no hover e no foco), quando ajuda a ler o trilho. */\n  dica?: string;\n  className?: string;\n}) {\n  return (\n    <Tooltip label={dica ?? \"\"} side=\"top\" className=\"shrink-0\" disabled={!dica}>\n      <button\n        type=\"button\"\n        role=\"switch\"\n        aria-checked={checked}\n        aria-label={label}\n        onClick={() => !disabled && onCheckedChange(!checked)}\n        disabled={disabled}\n        className={cn(\n          \"relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full outline-none transition-colors\",\n          \"disabled:cursor-not-allowed disabled:opacity-50\",\n          \"focus-visible:shadow-[0_0_0_2px_var(--yellow-50)]\",\n          checked ? \"bg-[var(--success)]\" : \"bg-[var(--premium-mist)]\",\n          className\n        )}\n      >\n        <span\n          aria-hidden\n          className={cn(\n            \"absolute left-0.5 top-1/2 h-4 w-4 -translate-y-1/2 rounded-full bg-white shadow-sm transition-transform motion-reduce:transition-none\",\n            checked ? \"translate-x-4\" : \"translate-x-0\"\n          )}\n        />\n      </button>\n    </Tooltip>\n  );\n}\n",
+      "type": "registry:file",
+      "target": "src/components/ui/switch.tsx"
+    }
+  ],
+  "type": "registry:ui"
+}

@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "filtros-ativos",
+  "title": "filtros-ativos",
+  "description": "Peça do Tasks copiada byte a byte: src/lib/helpers/filtros-ativos.ts.",
+  "files": [
+    {
+      "path": "registry/src/lib/helpers/filtros-ativos.ts",
+      "content": "/**\n * Regras puras de \"filtro ativo\" da barra de filtros (`FilterBar`), change\n * `busca-um-x-por-campo` (design D3).\n *\n * Módulo puro (sem React, sem `window`): o `filter-bar.tsx` é client e tem JSX,\n * então a regra mora aqui para o runner `node --test` alcançá-la e para a barra\n * e o teste decidirem pela mesma função.\n */\n\n/** O mínimo de um `FilterConfig` de que a regra precisa. */\nexport interface FiltroMinimo {\n  key: string;\n  type: string;\n}\n\n/** Lê um parâmetro da URL (ex.: `searchParams.get`). */\nexport type LerParametro = (key: string) => string | null;\n\n/**\n * Um filtro está ativo quando tem valor na URL. O `daterange` serializa em\n * `<key>De`/`<key>Ate` e conta como ativo com qualquer um dos dois.\n */\nexport function filtroAtivo(filtro: FiltroMinimo, get: LerParametro): boolean {\n  if (filtro.type === \"daterange\") {\n    return Boolean(get(`${filtro.key}De`) || get(`${filtro.key}Ate`));\n  }\n  return Boolean(get(filtro.key));\n}\n\n/**\n * O botão \"Limpar filtros\" só aparece quando limpa mais do que a busca: com\n * algum filtro ativo que **não** é `type: \"search\"`. Só com a busca ativa, o `X`\n * da própria busca já limpa, e o botão seria o terceiro \"x\" da barra (o nativo\n * do navegador era o primeiro, escondido pela regra CSS base).\n */\nexport function mostrarLimparFiltros(filtros: readonly FiltroMinimo[], get: LerParametro): boolean {\n  return filtros.some((f) => f.type !== \"search\" && filtroAtivo(f, get));\n}\n",
+      "type": "registry:file",
+      "target": "src/lib/helpers/filtros-ativos.ts"
+    }
+  ],
+  "type": "registry:lib"
+}

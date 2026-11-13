@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "utils",
+  "title": "utils",
+  "description": "Peça do Tasks copiada byte a byte: src/lib/utils.ts.",
+  "files": [
+    {
+      "path": "registry/src/lib/utils.ts",
+      "content": "export function getInitials(name: string): string {\n  return name\n    .split(\" \")\n    .map((w) => w[0])\n    .filter(Boolean)\n    .slice(0, 2)\n    .join(\"\")\n    .toUpperCase();\n}\n\nexport function cn(...classes: (string | false | null | undefined)[]): string {\n  return classes.filter(Boolean).join(\" \");\n}\n\nexport function formatDate(date: Date | string): string {\n  const d = new Date(date);\n  return d.toLocaleDateString(\"pt-BR\", { day: \"2-digit\", month: \"short\" });\n}\n\nexport function formatDateTime(date: Date | string): string {\n  const d = new Date(date);\n  return d.toLocaleDateString(\"pt-BR\", {\n    day: \"2-digit\",\n    month: \"short\",\n    hour: \"2-digit\",\n    minute: \"2-digit\",\n  });\n}\n\nexport function isOverdue(date: Date | string | null): boolean {\n  if (!date) return false;\n  return new Date(date) < new Date(new Date().toDateString());\n}\n\nexport function isToday(date: Date | string | null): boolean {\n  if (!date) return false;\n  const d = new Date(date);\n  const today = new Date();\n  return (\n    d.getDate() === today.getDate() &&\n    d.getMonth() === today.getMonth() &&\n    d.getFullYear() === today.getFullYear()\n  );\n}\n",
+      "type": "registry:file",
+      "target": "src/lib/utils.ts"
+    }
+  ],
+  "type": "registry:lib"
+}

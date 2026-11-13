@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "card",
+  "title": "card",
+  "description": "Peça do Tasks copiada byte a byte: src/components/ui/card.tsx.",
+  "registryDependencies": [
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json",
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/utils.json"
+  ],
+  "files": [
+    {
+      "path": "registry/src/components/ui/card.tsx",
+      "content": "import { cn } from \"@/lib/utils\";\nimport type { HTMLAttributes, ReactNode } from \"react\";\n\ninterface CardProps extends HTMLAttributes<HTMLDivElement> {\n  children: ReactNode;\n  hover?: boolean;\n}\n\n/**\n * Superfície, borda, raio e sombra do cartão. Exportada para quem precisa da\n * mesma superfície em outro elemento (o `CardSecao` a aplica direto no link).\n */\nexport const CLASSE_CARD =\n  \"bg-[var(--premium-white)] border border-[var(--premium-mist)] rounded-[var(--r-lg)] shadow-[var(--sh-sm)]\";\n\nexport function Card({ children, hover, className, ...props }: CardProps) {\n  return (\n    <div\n      className={cn(\n        CLASSE_CARD,\n        hover && \"cursor-pointer transition-all duration-150 ease-[var(--ease)] hover:shadow-[var(--sh-md)] hover:-translate-y-[2px]\",\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </div>\n  );\n}\n\nexport function CardHeader({ children, className }: { children: ReactNode; className?: string }) {\n  return (\n    <div className={cn(\"flex items-center justify-between px-[18px] py-4 border-b border-[var(--premium-mist)]\", className)}>\n      {children}\n    </div>\n  );\n}\n\nexport function CardBody({ children, className }: { children: ReactNode; className?: string }) {\n  return <div className={cn(\"p-2\", className)}>{children}</div>;\n}\n",
+      "type": "registry:file",
+      "target": "src/components/ui/card.tsx"
+    }
+  ],
+  "type": "registry:ui"
+}

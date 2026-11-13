@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "context-icon-button",
+  "title": "context-icon-button",
+  "description": "Peça do Tasks copiada byte a byte: src/components/ui/context-icon-button.tsx.",
+  "dependencies": [
+    "lucide-react@^1.17.0"
+  ],
+  "registryDependencies": [
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json",
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/tooltip.json",
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/utils.json"
+  ],
+  "files": [
+    {
+      "path": "registry/src/components/ui/context-icon-button.tsx",
+      "content": "\"use client\";\n\nimport { Loader2 } from \"lucide-react\";\nimport type { LucideIcon } from \"lucide-react\";\nimport type { ButtonHTMLAttributes, Ref } from \"react\";\nimport { Tooltip } from \"@/components/ui/tooltip\";\nimport { cn } from \"@/lib/utils\";\n\ninterface ContextIconButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, \"children\" | \"aria-label\" | \"title\"> {\n  icon: LucideIcon;\n  /** Rótulo da ação — vira a dica (`Tooltip`) e o `aria-label`. */\n  label: string;\n  /** Lado da dica. `bottom` por padrão: a barra de ações vive no topo da tela. */\n  tooltipSide?: \"top\" | \"bottom\" | \"left\" | \"right\";\n  /** Classe do wrapper da dica (ex.: `shrink-0` numa linha apertada). */\n  tooltipClassName?: string;\n  /**\n   * `neutro` (padrão) = ação contextual comum; `destaque` = ação de criação\n   * principal da tela (espelho só-ícone do `Button variant=\"dark\"`).\n   */\n  variant?: \"neutro\" | \"destaque\";\n  /** Ação assíncrona em andamento: spinner + disabled + `aria-busy`. */\n  loading?: boolean;\n  ref?: Ref<HTMLButtonElement>;\n}\n\n/**\n * Botão de contexto só-ícone da barra de ações (capability filter-bar): alvo\n * ≥40×40, dica (`Tooltip`) + aria-label obrigatórios, foco visível e tokens\n * semânticos nos dois temas. Estilo neutro espelha o botão de configurações do\n * quadro (quadros-exportar-em-configuracoes); o destaque fica reservado à\n * criação principal da tela — em repouso sem amarelo; no hover assume a\n * assinatura da marca (ícone amarelo sobre tinta), nos dois temas.\n *\n * A dica é embutida: o `label` já vira balão e nome acessível, então **não**\n * envolver o componente num `Tooltip` externo (sairiam dois balões).\n */\nexport function ContextIconButton({\n  icon: Icon,\n  label,\n  variant = \"neutro\",\n  loading = false,\n  disabled,\n  className,\n  type = \"button\",\n  tooltipSide = \"bottom\",\n  tooltipClassName,\n  ...props\n}: ContextIconButtonProps) {\n  return (\n    <Tooltip label={label} side={tooltipSide} className={cn(\"shrink-0\", tooltipClassName)}>\n      <button\n        type={type}\n        aria-label={label}\n        aria-busy={loading || undefined}\n        disabled={disabled || loading}\n        className={cn(\n          \"flex min-h-[40px] min-w-[40px] shrink-0 items-center justify-center rounded-[var(--r-md)] transition-colors cursor-pointer\",\n          \"focus-visible:outline-none focus-visible:shadow-[0_0_0_2px_var(--yellow-50)]\",\n          \"disabled:opacity-50 disabled:cursor-default\",\n          variant === \"destaque\"\n            ? \"bg-[var(--c-emphasis)] text-[var(--c-on-emphasis)] hover:bg-[var(--c-emphasis-hover)] hover:text-[var(--brand-yellow)] dark:hover:bg-[var(--brand-ink)]\"\n            : \"text-[var(--premium-gray)] hover:bg-[var(--premium-bone)] hover:text-[var(--premium-ink)]\",\n          className\n        )}\n        {...props}\n      >\n        {loading ? <Loader2 size={16} className=\"animate-spin\" /> : <Icon size={16} />}\n      </button>\n    </Tooltip>\n  );\n}\n",
+      "type": "registry:file",
+      "target": "src/components/ui/context-icon-button.tsx"
+    }
+  ],
+  "type": "registry:ui"
+}

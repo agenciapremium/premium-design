@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "badge",
+  "title": "badge",
+  "description": "Peça do Tasks copiada byte a byte: src/components/ui/badge.tsx.",
+  "registryDependencies": [
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json",
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/utils.json"
+  ],
+  "files": [
+    {
+      "path": "registry/src/components/ui/badge.tsx",
+      "content": "import { cn } from \"@/lib/utils\";\nimport type { ReactNode } from \"react\";\n\ntype BadgeVariant = \"default\" | \"success\" | \"warning\" | \"danger\" | \"info\" | \"violet\" | \"teal\" | \"slate\" | \"gold\";\n\ninterface BadgeProps {\n  variant?: BadgeVariant;\n  children: ReactNode;\n  className?: string;\n}\n\nconst variantClasses: Record<BadgeVariant, string> = {\n  default: \"bg-[var(--premium-bone)] text-[var(--premium-steel)]\",\n  success: \"bg-[var(--success-bg)] text-[var(--success)]\",\n  warning: \"bg-[var(--warning-bg)] text-[var(--warning)]\",\n  danger: \"bg-[var(--danger-bg)] text-[var(--danger)]\",\n  info: \"bg-[var(--info-bg)] text-[var(--info)]\",\n  violet: \"bg-[var(--violet-bg)] text-[var(--violet)]\",\n  teal: \"bg-[var(--teal-bg)] text-[var(--teal)]\",\n  slate: \"bg-[var(--slate-bg)] text-[var(--slate)]\",\n  gold: \"bg-[var(--gold-bg)] text-[var(--amber)]\",\n};\n\nexport function Badge({ variant = \"default\", children, className }: BadgeProps) {\n  return (\n    <span\n      className={cn(\n        \"inline-block text-[10px] font-bold uppercase tracking-wider px-[10px] py-[3px] rounded-full\",\n        variantClasses[variant],\n        className\n      )}\n    >\n      {children}\n    </span>\n  );\n}\n",
+      "type": "registry:file",
+      "target": "src/components/ui/badge.tsx"
+    }
+  ],
+  "type": "registry:ui"
+}

@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "avatar",
+  "title": "avatar",
+  "description": "Peça do Tasks copiada byte a byte: src/components/ui/avatar.tsx.",
+  "registryDependencies": [
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json",
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/utils.json"
+  ],
+  "files": [
+    {
+      "path": "registry/src/components/ui/avatar.tsx",
+      "content": "\"use client\";\n\nimport { useState } from \"react\";\nimport { getInitials, cn } from \"@/lib/utils\";\n\ninterface AvatarProps {\n  name: string;\n  color?: string;\n  size?: \"sm\" | \"md\" | \"lg\";\n  className?: string;\n  /** Foto do colaborador (Colaborador.avatarUrl); com ela, as iniciais não aparecem. */\n  src?: string | null;\n}\n\nconst sizeMap = {\n  sm: \"w-[26px] h-[26px] text-[10px]\",\n  md: \"w-9 h-9 text-[13px]\",\n  lg: \"w-11 h-11 text-[15px]\",\n};\n\n/**\n * Iniciais (ou foto) de uma pessoa. O nome completo é o nome acessível — `alt`\n * na foto, `role=\"img\"` + `aria-label` nas iniciais — e **não** vira balão aqui:\n * o avatar aparece empilhado (a sobreposição negativa depende de ele ser o\n * próprio item do flex) e muitas vezes já vive dentro de um `Tooltip` do\n * chamador, que sairia duplicado. Quem precisa da dica a põe no gatilho ao\n * redor (ver presenca-avatares.tsx e o editor de workflow).\n */\nexport function Avatar({ name, color = \"var(--yellow)\", size = \"md\", className, src }: AvatarProps) {\n  // URL que falhou ao carregar (ex.: blob de store excluída/removida): cai para\n  // as iniciais em vez do ícone de imagem quebrada. Guardar a URL — e não um\n  // booleano — permite tentar de novo quando `src` muda (nova foto enviada).\n  const [srcComErro, setSrcComErro] = useState<string | null>(null);\n\n  if (src && src !== srcComErro) {\n    return (\n      // eslint-disable-next-line @next/next/no-img-element -- foto pequena servida pelo Blob; next/image não se aplica\n      <img\n        src={src}\n        alt={name}\n        onError={() => setSrcComErro(src)}\n        className={cn(\"rounded-full object-cover shrink-0\", sizeMap[size], className)}\n      />\n    );\n  }\n  return (\n    <div\n      className={cn(\n        \"rounded-full flex items-center justify-center font-bold text-black shrink-0\",\n        sizeMap[size],\n        className\n      )}\n      style={{ background: color }}\n      role=\"img\"\n      aria-label={name}\n    >\n      {getInitials(name)}\n    </div>\n  );\n}\n",
+      "type": "registry:file",
+      "target": "src/components/ui/avatar.tsx"
+    }
+  ],
+  "type": "registry:ui"
+}

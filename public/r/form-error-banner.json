@@ -1,0 +1,22 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "form-error-banner",
+  "title": "form-error-banner",
+  "description": "Peça do Tasks copiada byte a byte: src/components/ui/form-error-banner.tsx.",
+  "dependencies": [
+    "lucide-react@^1.17.0"
+  ],
+  "registryDependencies": [
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json",
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/utils.json"
+  ],
+  "files": [
+    {
+      "path": "registry/src/components/ui/form-error-banner.tsx",
+      "content": "import { AlertCircle } from \"lucide-react\";\nimport { cn } from \"@/lib/utils\";\n\n/**\n * Banner de erro inline para submit/ação (ui-guidelines §5.8). Padrão único de\n * erro geral de formulário — erros de campo ficam associados ao próprio campo\n * (`Input error=`); erro nunca usa toast nem janela nativa.\n */\nexport function FormErrorBanner({\n  message,\n  className,\n}: {\n  message?: string | null;\n  className?: string;\n}) {\n  if (!message) return null;\n  return (\n    <div\n      role=\"alert\"\n      className={cn(\n        \"flex items-start gap-2 rounded-[var(--r-md)] border border-[var(--danger)] bg-[var(--danger-bg)] px-3 py-2 text-[12.5px] text-[var(--c-ink)]\",\n        className\n      )}\n    >\n      <AlertCircle size={15} className=\"mt-[1px] shrink-0 text-[var(--danger)]\" />\n      <span className=\"min-w-0\">{message}</span>\n    </div>\n  );\n}\n",
+      "type": "registry:file",
+      "target": "src/components/ui/form-error-banner.tsx"
+    }
+  ],
+  "type": "registry:ui"
+}

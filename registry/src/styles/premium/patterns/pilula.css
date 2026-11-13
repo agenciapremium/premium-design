@@ -1,0 +1,32 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   PADRÃO · Pílula de ação e de seleção (opt-in, v0.10.0)
+   A pílula tem o desenho do chip de filtro (docs/ui-guidelines.md §3.4); aqui
+   ficam só as transições que o chip não precisa:
+   - .pilula-flutuante: pílula sobre scrim (alvo de 40px e --sh-md no
+     componente); as cores seguem o chip (150ms) e a volta de uma pílula oculta
+     também é suave.
+   - .pilula-oculta: pílula de ação que deixou de se aplicar. Some com fade e só
+     depois sai da árvore (visibility atrasado), sem deslocar os vizinhos; tire
+     também do Tab (tabindex="-1") no componente.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.pilula-flutuante {
+  transition:
+    border-color 0.15s var(--ease),
+    color 0.15s var(--ease),
+    background-color 0.15s var(--ease),
+    box-shadow 0.15s var(--ease),
+    opacity 0.18s var(--ease),
+    transform 0.18s var(--ease),
+    visibility 0s;
+}
+.pilula-oculta {
+  opacity: 0;
+  transform: scale(0.9);
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity 0.18s var(--ease),
+    transform 0.18s var(--ease),
+    visibility 0s linear 0.18s;
+}

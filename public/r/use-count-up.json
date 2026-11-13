@@ -1,0 +1,18 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "use-count-up",
+  "title": "use-count-up",
+  "description": "Peça do Tasks copiada byte a byte: src/lib/hooks/use-count-up.ts.",
+  "dependencies": [
+    "motion@^12.42.2"
+  ],
+  "files": [
+    {
+      "path": "registry/src/lib/hooks/use-count-up.ts",
+      "content": "\"use client\";\n\nimport { useEffect, useRef, useState } from \"react\";\nimport { useReducedMotion } from \"motion/react\";\n\n/**\n * Anima um número em contagem crescente até `target` (change\n * animacoes-graficos-abas-transicoes). Formata a cada frame com `format` para\n * preservar moeda/%/compacto (`formatCurrency`, `fmtPct`, `moedaCompacta`).\n *\n * `useReducedMotion` NÃO cobre isto (count-up não é transform) — a guarda é\n * manual: sob movimento reduzido retorna o valor final direto. Na primeira\n * montagem conta de 0; em mudanças de `target` (ex.: troca de filtro) conta a\n * partir do valor anterior.\n */\nexport function useCountUp(\n  target: number,\n  opts?: { duration?: number; format?: (n: number) => string }\n): string {\n  const duration = opts?.duration ?? 0.5;\n  const format = opts?.format ?? ((n: number) => String(Math.round(n)));\n  const prefersReduced = useReducedMotion();\n  const [value, setValue] = useState(prefersReduced ? target : 0);\n  const fromRef = useRef(0);\n\n  useEffect(() => {\n    if (prefersReduced || !Number.isFinite(target)) {\n      setValue(target);\n      fromRef.current = target;\n      return;\n    }\n    const from = fromRef.current;\n    if (from === target) {\n      setValue(target);\n      return;\n    }\n    let raf = 0;\n    let start = 0;\n    const dur = Math.max(1, duration * 1000);\n    const tick = (t: number) => {\n      if (!start) start = t;\n      const p = Math.min(1, (t - start) / dur);\n      const eased = 1 - Math.pow(1 - p, 3); // ease-out cúbico\n      setValue(from + (target - from) * eased);\n      if (p < 1) {\n        raf = requestAnimationFrame(tick);\n      } else {\n        fromRef.current = target;\n      }\n    };\n    raf = requestAnimationFrame(tick);\n    return () => cancelAnimationFrame(raf);\n  }, [target, duration, prefersReduced]);\n\n  return format(value);\n}\n",
+      "type": "registry:file",
+      "target": "src/lib/hooks/use-count-up.ts"
+    }
+  ],
+  "type": "registry:hook"
+}

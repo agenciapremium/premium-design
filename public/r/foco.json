@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "foco",
+  "title": "foco",
+  "description": "Peça do Tasks copiada byte a byte: src/lib/foco.ts.",
+  "files": [
+    {
+      "path": "registry/src/lib/foco.ts",
+      "content": "/**\n * Foco em overlays modais (capability overlays-gestao-de-foco) — parte PURA.\n *\n * O hook `useDialogoFoco` faz o trabalho com o DOM; aqui ficam só as decisões\n * que não dependem dele, para poderem ser testadas por `node --test` sem\n * navegador (design D5):\n *\n *   node --test --experimental-strip-types src/lib/foco.test.ts\n */\n\n/**\n * Candidatos a foco dentro de um painel. `[tabindex=\"-1\"]` fica de fora: é\n * alcançável por `.focus()` programático, mas não pela tecla `Tab` — que é o\n * ciclo que o trap precisa reproduzir.\n */\nexport const SELETOR_FOCAVEIS =\n  'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex=\"-1\"])';\n\nexport type DirecaoFoco = \"frente\" | \"tras\";\n\n/**\n * Próximo elemento do ciclo de `Tab` dentro de um painel modal.\n *\n * - `atual` no fim da lista e direção \"frente\" devolve o primeiro (e vice-versa):\n *   é isso que impede o `Tab` de sair do painel.\n * - `atual` ausente ou fora da lista (foco perdido para o `body`, elemento que\n *   sumiu) devolve a ponta de entrada: o primeiro indo para a frente, o último\n *   indo para trás.\n * - Lista vazia devolve `null`; quem chama não previne o `Tab` nesse caso.\n */\nexport function proximoFocavel<T>(\n  focaveis: readonly T[],\n  atual: T | null,\n  direcao: DirecaoFoco\n): T | null {\n  if (focaveis.length === 0) return null;\n  const primeiro = focaveis[0];\n  const ultimo = focaveis[focaveis.length - 1];\n  const i = atual === null ? -1 : focaveis.indexOf(atual);\n  if (i === -1) return direcao === \"frente\" ? primeiro : ultimo;\n  if (direcao === \"frente\") return i === focaveis.length - 1 ? primeiro : focaveis[i + 1];\n  return i === 0 ? ultimo : focaveis[i - 1];\n}\n\n/**\n * Tipos de `input` que NÃO abrem teclado virtual (são gatilhos, não digitação).\n * Tudo o que não está aqui conta como campo de texto.\n */\nconst TIPOS_SEM_DIGITACAO = new Set([\n  \"button\",\n  \"checkbox\",\n  \"color\",\n  \"file\",\n  \"image\",\n  \"radio\",\n  \"range\",\n  \"reset\",\n  \"submit\",\n]);\n\n/**\n * O elemento é um campo de digitação? Em viewport estreita o foco inicial evita\n * esses campos, senão o teclado virtual cobre metade do painel ao abrir\n * (design, \"Risks\"). Recebe os dados já extraídos do elemento para continuar\n * puro.\n */\nexport function ehCampoDeTexto(el: {\n  tag: string;\n  tipo?: string | null;\n  editavel?: boolean;\n}): boolean {\n  if (el.editavel) return true;\n  const tag = el.tag.toUpperCase();\n  if (tag === \"TEXTAREA\") return true;\n  if (tag !== \"INPUT\") return false;\n  return !TIPOS_SEM_DIGITACAO.has((el.tipo ?? \"text\").toLowerCase());\n}\n",
+      "type": "registry:file",
+      "target": "src/lib/foco.ts"
+    }
+  ],
+  "type": "registry:lib"
+}
