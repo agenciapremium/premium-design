@@ -6,6 +6,7 @@ import { AlertTriangle, Clock } from "lucide-react";
 import { AnimatePresence, m } from "motion/react";
 import { motionPreset, presets } from "@/lib/motion";
 import { useDialogoFoco } from "@/lib/hooks/use-dialogo-foco";
+import { acaoDaTecla } from "@/lib/helpers/tecla-confirmacao";
 import { Button } from "./button";
 import { FormErrorBanner } from "./form-error-banner";
 
@@ -48,7 +49,8 @@ interface ConfirmDialogProps {
  * Diálogo de confirmação central (ui-guidelines §4.10). `role="dialog"` com foco
  * gerenciado por `useDialogoFoco`: foca a ação primária ao abrir, prende o `Tab`
  * na caixa enquanto aberto e devolve o foco ao gatilho ao fechar;
- * `Esc` cancela e `Enter` confirma a ação em foco (§5.6, §7). Erros de falha são
+ * `Esc` cancela e `Enter` confirma a ação em foco (§5.6, §7); num `Textarea` do
+ * `children`, Enter quebra a linha e Ctrl/Cmd+Enter confirma. Erros de falha são
  * exibidos em banner inline (`error`), mantendo o diálogo aberto. Aceita `children`
  * (ex.: um campo) e o tom `neutral` para diálogos informativos (não destrutivos).
  */
@@ -85,12 +87,22 @@ export function ConfirmDialog({
     alternativo: confirmRef,
   });
 
+  // Regra pura em `tecla-confirmacao.ts` (change
+  // catalogo-filterbar-faixa-busca-correcoes, D4): num `Textarea` ou elemento
+  // editável, Enter quebra a linha (sem `preventDefault`) e Ctrl/Cmd+Enter
+  // confirma.
   function handleKeyDown(e: React.KeyboardEvent) {
     if (loading) return;
-    if (e.key === "Escape") {
+    const acao = acaoDaTecla({
+      key: e.key,
+      ctrlKey: e.ctrlKey,
+      metaKey: e.metaKey,
+      alvo: e.target as HTMLElement | null,
+    });
+    if (acao === "cancelar") {
       e.stopPropagation();
       onClose();
-    } else if (e.key === "Enter") {
+    } else if (acao === "confirmar") {
       e.preventDefault();
       if (!confirmDisabled) onConfirm();
     }

@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "use-busca-local",
+  "title": "use-busca-local",
+  "description": "Peça do Tasks copiada byte a byte: src/lib/hooks/use-busca-local.ts.",
+  "files": [
+    {
+      "path": "registry/src/lib/hooks/use-busca-local.ts",
+      "content": "\"use client\";\n\nimport { useCallback, useEffect, useRef, useState } from \"react\";\n\n/** Atraso da busca: o mesmo da busca que grava na URL. */\nexport const ATRASO_BUSCA_MS = 300;\n\ninterface UseBuscaLocalOptions {\n  /** Recebe o termo (sem espaços nas pontas) depois do atraso, ou `\"\"` ao limpar. */\n  aoBuscar: (termo: string) => void;\n  atrasoMs?: number;\n}\n\n/**\n * Busca da `FilterBar` fora da URL (opção `aoBuscar` do filtro `search`;\n * change catalogo-filterbar-faixa-busca-correcoes, D2).\n *\n * O termo vive só aqui, no estado do componente: não vai para a URL, para os\n * filtros persistidos nem para as views salvas, porque pode ser dado pessoal\n * (nome, e-mail) que não deve ficar no histórico, em log de acesso ou em link\n * compartilhado. Depois do mesmo atraso da busca pela URL, chama `aoBuscar`.\n *\n * O `aoBuscar` fica guardado em ref: o consumidor pode passar uma função nova\n * a cada render sem refazer o atraso. `alterar` e `limpar` têm identidade\n * estável, para a barra registrar o limpador do \"Limpar filtros\".\n */\nexport function useBuscaLocal({ aoBuscar, atrasoMs = ATRASO_BUSCA_MS }: UseBuscaLocalOptions) {\n  const [valor, setValor] = useState(\"\");\n  const aoBuscarRef = useRef(aoBuscar);\n  const atrasoRef = useRef(atrasoMs);\n  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);\n\n  useEffect(() => {\n    aoBuscarRef.current = aoBuscar;\n    atrasoRef.current = atrasoMs;\n  });\n\n  // Desmontou com o atraso correndo: a busca pendente não dispara mais.\n  useEffect(\n    () => () => {\n      if (timer.current) clearTimeout(timer.current);\n    },\n    []\n  );\n\n  const alterar = useCallback((v: string) => {\n    setValor(v);\n    if (timer.current) clearTimeout(timer.current);\n    timer.current = setTimeout(() => {\n      timer.current = null;\n      aoBuscarRef.current(v.trim());\n    }, atrasoRef.current);\n  }, []);\n\n  const limpar = useCallback(() => {\n    setValor(\"\");\n    if (timer.current) clearTimeout(timer.current);\n    timer.current = null;\n    aoBuscarRef.current(\"\");\n  }, []);\n\n  return { valor, alterar, limpar };\n}\n",
+      "type": "registry:file",
+      "target": "src/lib/hooks/use-busca-local.ts"
+    }
+  ],
+  "type": "registry:hook"
+}

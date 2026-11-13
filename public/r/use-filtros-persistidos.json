@@ -4,8 +4,8 @@
   "title": "use-filtros-persistidos",
   "description": "Peça do Tasks copiada byte a byte: src/lib/hooks/use-filtros-persistidos.ts.",
   "registryDependencies": [
-    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/debounce.json",
-    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/filtros-persistencia.json"
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/debounce.json",
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/filtros-persistencia.json"
   ],
   "files": [
     {

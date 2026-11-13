@@ -28,7 +28,7 @@ const variantClasses: Record<Variant, string> = {
   ghost:
     "bg-transparent text-[var(--premium-ink)] border border-[var(--premium-mist)] hover:border-[var(--premium-ink)]",
   danger:
-    "bg-[var(--danger)] text-white hover:bg-[var(--danger)]/90",
+    "bg-[var(--alert-solid)] text-[var(--on-alert-solid)] hover:bg-[var(--alert-solid-hover)]",
 };
 
 const sizeClasses: Record<Size, string> = {

@@ -13,8 +13,11 @@
  *    `package.json` do Tasks; `react`, `react-dom` e `next` ficam de fora, porque
  *    todo sistema Next já os tem);
  * 4. monta a peça base `premium-base` a partir de `css/` deste repo (tokens, tema,
- *    base, motion e os padrões de `css/patterns/` que as peças usam), da qual
- *    toda peça `registry:ui` depende;
+ *    base, motion e os padrões de `css/patterns/` que as peças usam). Desde a
+ *    v0.25.0, nenhuma peça a declara em `registryDependencies`: quem usa o
+ *    pacote `@agenciapremium/premium-design` importa os tokens dele, e quem não
+ *    usa copia a base uma vez. O `meta.padroes` da base diz que padrões cada
+ *    peça usa;
  * 5. gera o `registry.json`, roda `shadcn build` para `public/r/` e grava
  *    `registry/origem.json` (commit do Tasks e sha256 de cada arquivo).
  *
@@ -190,8 +193,10 @@ function derivar(peca) {
       npm.set(nome, `${nome}@${versao}`);
     }
   }
+  // A `premium-base` não entra: copiá-la junto com cada peça duplicava os
+  // tokens de quem já importa o pacote (change
+  // catalogo-filterbar-faixa-busca-correcoes do Tasks, D7).
   const deps = [...registro].sort();
-  if (peca.tipo === "registry:ui") deps.unshift(BASE_NOME);
   return { registryDependencies: deps.map((n) => `${URL_BASE}${n}.json`), dependencies: [...npm.values()].sort() };
 }
 
@@ -202,7 +207,7 @@ function montarRegistro() {
       type: "registry:style",
       title: "Premium base",
       description:
-        "Tokens, tema Tailwind v4, base e motion do premium-design, e os padrões de css/patterns/ usados pelas peças. Importe os arquivos de src/styles/premium/ no globals.css.",
+        "Tokens, tema Tailwind v4, base e motion do premium-design, e os padrões de css/patterns/ usados pelas peças. Para quem não usa o pacote @agenciapremium/premium-design: copie uma vez, antes da primeira peça, e importe os arquivos de src/styles/premium/ no globals.css. Quem usa o pacote importa os tokens e os padrões dele e não copia esta peça.",
       extends: "none",
       meta: { padroes },
       files: arquivosBase.map((f) => ({ path: `registry/${f.destino}`, type: "registry:file", target: f.destino })),

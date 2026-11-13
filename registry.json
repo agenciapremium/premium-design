@@ -7,7 +7,7 @@
       "name": "premium-base",
       "type": "registry:style",
       "title": "Premium base",
-      "description": "Tokens, tema Tailwind v4, base e motion do premium-design, e os padrões de css/patterns/ usados pelas peças. Importe os arquivos de src/styles/premium/ no globals.css.",
+      "description": "Tokens, tema Tailwind v4, base e motion do premium-design, e os padrões de css/patterns/ usados pelas peças. Para quem não usa o pacote @agenciapremium/premium-design: copie uma vez, antes da primeira peça, e importe os arquivos de src/styles/premium/ no globals.css. Quem usa o pacote importa os tokens e os padrões dele e não copia esta peça.",
       "extends": "none",
       "meta": {
         "padroes": {
@@ -271,6 +271,19 @@
       ]
     },
     {
+      "name": "tecla-confirmacao",
+      "type": "registry:lib",
+      "title": "tecla-confirmacao",
+      "description": "Peça do Tasks copiada byte a byte: src/lib/helpers/tecla-confirmacao.ts.",
+      "files": [
+        {
+          "path": "registry/src/lib/helpers/tecla-confirmacao.ts",
+          "type": "registry:file",
+          "target": "src/lib/helpers/tecla-confirmacao.ts"
+        }
+      ]
+    },
+    {
       "name": "busca-filtro-url",
       "type": "registry:lib",
       "title": "busca-filtro-url",
@@ -302,7 +315,7 @@
       "title": "use-dialogo-foco",
       "description": "Peça do Tasks copiada byte a byte: src/lib/hooks/use-dialogo-foco.ts.",
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/foco.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/foco.json"
       ],
       "files": [
         {
@@ -318,7 +331,7 @@
       "title": "use-toast",
       "description": "Peça do Tasks copiada byte a byte: src/lib/hooks/use-toast.ts.",
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/toast.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/toast.json"
       ],
       "files": [
         {
@@ -376,14 +389,27 @@
       "title": "use-filtros-persistidos",
       "description": "Peça do Tasks copiada byte a byte: src/lib/hooks/use-filtros-persistidos.ts.",
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/debounce.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/filtros-persistencia.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/debounce.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/filtros-persistencia.json"
       ],
       "files": [
         {
           "path": "registry/src/lib/hooks/use-filtros-persistidos.ts",
           "type": "registry:file",
           "target": "src/lib/hooks/use-filtros-persistidos.ts"
+        }
+      ]
+    },
+    {
+      "name": "use-busca-local",
+      "type": "registry:hook",
+      "title": "use-busca-local",
+      "description": "Peça do Tasks copiada byte a byte: src/lib/hooks/use-busca-local.ts.",
+      "files": [
+        {
+          "path": "registry/src/lib/hooks/use-busca-local.ts",
+          "type": "registry:file",
+          "target": "src/lib/hooks/use-busca-local.ts"
         }
       ]
     },
@@ -396,9 +422,8 @@
         "lucide-react@^1.17.0"
       ],
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/expansivel.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/utils.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/expansivel.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/utils.json"
       ],
       "files": [
         {
@@ -413,9 +438,6 @@
       "type": "registry:ui",
       "title": "autosave-bar",
       "description": "Peça do Tasks copiada byte a byte: src/components/ui/autosave-bar.tsx.",
-      "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json"
-      ],
       "files": [
         {
           "path": "registry/src/components/ui/autosave-bar.tsx",
@@ -430,8 +452,7 @@
       "title": "avatar",
       "description": "Peça do Tasks copiada byte a byte: src/components/ui/avatar.tsx.",
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/utils.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/utils.json"
       ],
       "files": [
         {
@@ -447,8 +468,7 @@
       "title": "badge",
       "description": "Peça do Tasks copiada byte a byte: src/components/ui/badge.tsx.",
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/utils.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/utils.json"
       ],
       "files": [
         {
@@ -467,9 +487,8 @@
         "motion@^12.42.2"
       ],
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/format.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/motion.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/format.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/motion.json"
       ],
       "files": [
         {
@@ -488,8 +507,7 @@
         "motion@^12.42.2"
       ],
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/motion.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/motion.json"
       ],
       "files": [
         {
@@ -508,9 +526,8 @@
         "lucide-react@^1.17.0"
       ],
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/tooltip.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/utils.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/tooltip.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/utils.json"
       ],
       "files": [
         {
@@ -527,9 +544,6 @@
       "description": "Peça do Tasks copiada byte a byte: src/components/ui/breadcrumb.tsx.",
       "dependencies": [
         "lucide-react@^1.17.0"
-      ],
-      "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json"
       ],
       "files": [
         {
@@ -548,8 +562,7 @@
         "lucide-react@^1.17.0"
       ],
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/utils.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/utils.json"
       ],
       "files": [
         {
@@ -568,8 +581,7 @@
         "lucide-react@^1.17.0"
       ],
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/utils.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/utils.json"
       ],
       "files": [
         {
@@ -585,8 +597,7 @@
       "title": "card",
       "description": "Peça do Tasks copiada byte a byte: src/components/ui/card.tsx.",
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/utils.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/utils.json"
       ],
       "files": [
         {
@@ -605,9 +616,8 @@
         "lucide-react@^1.17.0"
       ],
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/card.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/utils.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/card.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/utils.json"
       ],
       "files": [
         {
@@ -627,11 +637,10 @@
         "motion@^12.42.2"
       ],
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/motion.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/tooltip.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/use-toast.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/utils.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/motion.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/tooltip.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/use-toast.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/utils.json"
       ],
       "files": [
         {
@@ -655,9 +664,8 @@
         "lucide-react@^1.17.0"
       ],
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/constants.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/use-infinite-window.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/constants.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/use-infinite-window.json"
       ],
       "files": [
         {
@@ -677,11 +685,11 @@
         "motion@^12.42.2"
       ],
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/button.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/form-error-banner.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/motion.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/use-dialogo-foco.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/button.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/form-error-banner.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/motion.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/tecla-confirmacao.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/use-dialogo-foco.json"
       ],
       "files": [
         {
@@ -697,8 +705,7 @@
       "title": "contador",
       "description": "Peça do Tasks copiada byte a byte: src/components/ui/contador.tsx.",
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/use-count-up.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/use-count-up.json"
       ],
       "files": [
         {
@@ -717,9 +724,8 @@
         "lucide-react@^1.17.0"
       ],
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/tooltip.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/utils.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/tooltip.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/utils.json"
       ],
       "files": [
         {
@@ -739,11 +745,10 @@
         "motion@^12.42.2"
       ],
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/link-markdown.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/motion.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/tooltip.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/use-toast.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/link-markdown.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/motion.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/tooltip.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/use-toast.json"
       ],
       "files": [
         {
@@ -763,10 +768,9 @@
         "motion@^12.42.2"
       ],
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/motion.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/popover-pos.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/utils.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/motion.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/popover-pos.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/utils.json"
       ],
       "files": [
         {
@@ -781,9 +785,6 @@
       "type": "registry:ui",
       "title": "digitando-indicador",
       "description": "Peça do Tasks copiada byte a byte: src/components/ui/digitando-indicador.tsx.",
-      "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json"
-      ],
       "files": [
         {
           "path": "registry/src/components/ui/digitando-indicador.tsx",
@@ -804,9 +805,8 @@
         "motion@^12.42.2"
       ],
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/motion.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/popover-pos.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/motion.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/popover-pos.json"
       ],
       "files": [
         {
@@ -826,9 +826,6 @@
       "type": "registry:ui",
       "title": "empty-state",
       "description": "Peça do Tasks copiada byte a byte: src/components/ui/empty-state.tsx.",
-      "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json"
-      ],
       "files": [
         {
           "path": "registry/src/components/ui/empty-state.tsx",
@@ -846,8 +843,7 @@
         "motion@^12.42.2"
       ],
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/motion.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/motion.json"
       ],
       "files": [
         {
@@ -866,10 +862,9 @@
         "lucide-react@^1.17.0"
       ],
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/kbd.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/tooltip.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/utils.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/kbd.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/tooltip.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/utils.json"
       ],
       "files": [
         {
@@ -889,21 +884,23 @@
         "motion@^12.42.2"
       ],
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/busca-filtro-url.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/date-picker.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/filtros-ativos.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/filtros-persistencia.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/motion.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/pilula.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/popover-pos.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/tooltip.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/use-filtros-persistidos.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/use-set-params.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/utils.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/view-transition.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/views-salvas.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/views-salvas-menu.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/busca-filtro-url.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/button.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/date-picker.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/filtros-ativos.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/filtros-persistencia.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/input.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/motion.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/pilula.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/popover-pos.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/tooltip.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/use-busca-local.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/use-filtros-persistidos.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/use-set-params.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/utils.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/view-transition.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/views-salvas.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/views-salvas-menu.json"
       ],
       "files": [
         {
@@ -918,9 +915,6 @@
       "type": "registry:ui",
       "title": "filtros-persistencia",
       "description": "Peça do Tasks copiada byte a byte: src/components/ui/filtros-persistencia.tsx.",
-      "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json"
-      ],
       "files": [
         {
           "path": "registry/src/components/ui/filtros-persistencia.tsx",
@@ -938,8 +932,7 @@
         "lucide-react@^1.17.0"
       ],
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/utils.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/utils.json"
       ],
       "files": [
         {
@@ -955,8 +948,7 @@
       "title": "grupo-prazo",
       "description": "Peça do Tasks copiada byte a byte: src/components/ui/grupo-prazo.tsx.",
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/utils.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/utils.json"
       ],
       "files": [
         {
@@ -972,9 +964,8 @@
       "title": "input",
       "description": "Peça do Tasks copiada byte a byte: src/components/ui/input.tsx.",
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/date-picker.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/utils.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/date-picker.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/utils.json"
       ],
       "files": [
         {
@@ -993,8 +984,7 @@
         "motion@^12.42.2"
       ],
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/motion.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/motion.json"
       ],
       "files": [
         {
@@ -1013,8 +1003,7 @@
         "motion@^12.42.2"
       ],
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/motion.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/motion.json"
       ],
       "files": [
         {
@@ -1034,9 +1023,8 @@
         "motion@^12.42.2"
       ],
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/motion.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/popover-pos.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/motion.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/popover-pos.json"
       ],
       "files": [
         {
@@ -1053,9 +1041,6 @@
       "description": "Peça do Tasks copiada byte a byte: src/components/ui/pagination.tsx.",
       "dependencies": [
         "lucide-react@^1.17.0"
-      ],
-      "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json"
       ],
       "files": [
         {
@@ -1075,12 +1060,11 @@
         "motion@^12.42.2"
       ],
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/motion.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/overlay-pilha.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/painel-cards-pos.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/use-dialogo-foco.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/utils.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/motion.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/overlay-pilha.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/painel-cards-pos.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/use-dialogo-foco.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/utils.json"
       ],
       "files": [
         {
@@ -1100,10 +1084,9 @@
         "motion@^12.42.2"
       ],
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/avatar.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/motion.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/popover-pos.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/avatar.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/motion.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/popover-pos.json"
       ],
       "files": [
         {
@@ -1122,9 +1105,8 @@
         "motion@^12.42.2"
       ],
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/format.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/motion.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/format.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/motion.json"
       ],
       "files": [
         {
@@ -1144,10 +1126,9 @@
         "motion@^12.42.2"
       ],
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/motion.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/popover-pos.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/utils.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/motion.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/popover-pos.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/utils.json"
       ],
       "files": [
         {
@@ -1163,9 +1144,8 @@
       "title": "segmented-tabs",
       "description": "Peça do Tasks copiada byte a byte: src/components/ui/segmented-tabs.tsx.",
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/utils.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/view-transition.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/utils.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/view-transition.json"
       ],
       "files": [
         {
@@ -1185,9 +1165,8 @@
         "motion@^12.42.2"
       ],
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/motion.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/utils.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/motion.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/utils.json"
       ],
       "files": [
         {
@@ -1203,8 +1182,7 @@
       "title": "skeleton",
       "description": "Peça do Tasks copiada byte a byte: src/components/ui/skeleton.tsx.",
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/utils.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/utils.json"
       ],
       "files": [
         {
@@ -1224,10 +1202,9 @@
         "motion@^12.42.2"
       ],
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/motion.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/overlay-pilha.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/use-dialogo-foco.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/motion.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/overlay-pilha.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/use-dialogo-foco.json"
       ],
       "files": [
         {
@@ -1246,10 +1223,9 @@
         "lucide-react@^1.17.0"
       ],
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/tooltip.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/utils.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/view-sort.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/tooltip.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/utils.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/view-sort.json"
       ],
       "files": [
         {
@@ -1265,9 +1241,8 @@
       "title": "switch",
       "description": "Peça do Tasks copiada byte a byte: src/components/ui/switch.tsx.",
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/tooltip.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/utils.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/tooltip.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/utils.json"
       ],
       "files": [
         {
@@ -1283,8 +1258,7 @@
       "title": "textarea",
       "description": "Peça do Tasks copiada byte a byte: src/components/ui/textarea.tsx.",
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/utils.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/utils.json"
       ],
       "files": [
         {
@@ -1304,9 +1278,8 @@
         "motion@^12.42.2"
       ],
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/motion.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/utils.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/motion.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/utils.json"
       ],
       "files": [
         {
@@ -1326,9 +1299,8 @@
         "motion@^12.42.2"
       ],
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/motion.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/utils.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/motion.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/utils.json"
       ],
       "files": [
         {
@@ -1344,8 +1316,7 @@
       "title": "tooltip",
       "description": "Peça do Tasks copiada byte a byte: src/components/ui/tooltip.tsx.",
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/utils.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/utils.json"
       ],
       "files": [
         {
@@ -1365,16 +1336,15 @@
         "motion@^12.42.2"
       ],
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/confirm-dialog.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/context-icon-button.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/filtros-persistencia.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/input.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/motion.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/use-dialogo-foco.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/use-toast.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/utils.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/views-salvas.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/confirm-dialog.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/context-icon-button.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/filtros-persistencia.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/input.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/motion.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/use-dialogo-foco.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/use-toast.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/utils.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/views-salvas.json"
       ],
       "files": [
         {

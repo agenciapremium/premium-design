@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "tecla-confirmacao",
+  "title": "tecla-confirmacao",
+  "description": "Peça do Tasks copiada byte a byte: src/lib/helpers/tecla-confirmacao.ts.",
+  "files": [
+    {
+      "path": "registry/src/lib/helpers/tecla-confirmacao.ts",
+      "content": "/**\n * Teclado do `ConfirmDialog` (change catalogo-filterbar-faixa-busca-correcoes,\n * D4; spec primitivos-contraste-e-teclado, \"Enter do ConfirmDialog respeita\n * campo de várias linhas\").\n *\n * Módulo puro (sem React, sem DOM): o diálogo e o teste decidem pela mesma\n * função. `Esc` cancela em qualquer foco. `Enter` confirma, menos num campo de\n * várias linhas (`textarea` ou elemento editável), onde ele quebra a linha e\n * quem confirma é Ctrl+Enter (Cmd+Enter no macOS).\n */\n\n/** O mínimo do evento de teclado de que a regra precisa. */\nexport interface TeclaDoDialogo {\n  key: string;\n  ctrlKey: boolean;\n  metaKey: boolean;\n  /** Elemento com foco quando a tecla foi pressionada (`event.target`). */\n  alvo: { tagName?: string; isContentEditable?: boolean } | null;\n}\n\nexport type AcaoDaTecla = \"confirmar\" | \"cancelar\" | \"nenhuma\";\n\n/** O foco está num campo em que Enter quebra a linha? */\nexport function campoDeVariasLinhas(alvo: TeclaDoDialogo[\"alvo\"]): boolean {\n  if (!alvo) return false;\n  return alvo.tagName?.toUpperCase() === \"TEXTAREA\" || alvo.isContentEditable === true;\n}\n\n/** O que a tecla faz no diálogo de confirmação. */\nexport function acaoDaTecla({ key, ctrlKey, metaKey, alvo }: TeclaDoDialogo): AcaoDaTecla {\n  if (key === \"Escape\") return \"cancelar\";\n  if (key !== \"Enter\") return \"nenhuma\";\n  if (campoDeVariasLinhas(alvo) && !ctrlKey && !metaKey) return \"nenhuma\";\n  return \"confirmar\";\n}\n",
+      "type": "registry:file",
+      "target": "src/lib/helpers/tecla-confirmacao.ts"
+    }
+  ],
+  "type": "registry:lib"
+}
