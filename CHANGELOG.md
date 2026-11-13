@@ -1,5 +1,21 @@
 # Changelog
 
+## v0.25.0 · 2026-11-13
+
+Dois recursos na `FilterBar`, quatro correções nas peças e nos tokens e a base fora das dependências do catálogo. Um valor de token mudou: `--premium-gray` no claro. Vem da change `catalogo-filterbar-faixa-busca-correcoes` do Tasks, com o retorno do Diagnóstico Premium, o primeiro sistema montado com o catálogo.
+
+- **`--premium-gray` claro em `#6B6B6B` (`css/tokens.css`, `docs/tokens.md`, `docs/acessibilidade.md`, showroom).** O `#8A8A8A` dava 3,45:1 sobre `--premium-white` e cerca de 3,1:1 sobre `--premium-bone`. O valor novo dá 5,33:1 sobre o branco, 5,11:1 sobre o paper e 4,76:1 sobre o bone, e passa AA de texto. Continua distinto de `--premium-steel` (`#4A4A4A`). O escuro (`#b8b8b8`) não muda. Quem importa o pacote recebe o valor novo ao trocar a tag; o texto auxiliar fica um pouco mais escuro no tema claro.
+- **Botão `danger` com o vermelho sólido (`docs/componentes.md`, `docs/ui-guidelines.md` §Botões, showroom).** Fundo `--alert-solid`, hover `--alert-solid-hover` e texto `--on-alert-solid`, iguais nos dois temas (5,63:1). Antes, o texto branco sobre `--danger` do escuro (`#e87a72`) dava 2,82:1. `--danger` continua sendo a cor de texto e de ícone de erro sobre superfície. Nenhum token novo: o trio já existia desde a v0.8.0.
+- **ConfirmDialog: Enter respeita campo de várias linhas (`docs/componentes.md`, `docs/ui-guidelines.md` §4.10).** Num `Textarea` ou elemento editável, Enter quebra a linha e Ctrl+Enter (Cmd+Enter no macOS) confirma. Fora deles, Enter confirma como antes, e `Esc` cancela em qualquer foco. A regra é a peça nova `tecla-confirmacao`.
+- **FilterBar: faixa numérica (`type: "faixa"`).** Dois campos, "De" e "Até", com `min` e `max` obrigatórios e `passo` opcional, gravados na URL como `<key>De` e `<key>Ate`, no desenho de pílula da barra com rótulo resumido ("Nota: 40 a 80"). Valor fora dos limites vai para o mais próximo e os invertidos são trocados. Conta para o "Limpar filtros", os filtros persistidos e as views salvas.
+- **FilterBar: busca fora da URL (`aoBuscar` no filtro `search`).** O termo fica no estado do componente e chega à função com o mesmo atraso; não vai para a URL, para os filtros persistidos nem para as views salvas. Para busca com dado pessoal (nome, e-mail). O hook é a peça nova `use-busca-local`.
+- **Sidebar sem `transition-all` (Tasks).** Os itens e subitens animam só cor, fundo e borda. O `css/patterns/sidebar.css` e o showroom já usavam propriedades nomeadas.
+- **Catálogo: a `premium-base` saiu das `registryDependencies` (`scripts/sincronizar-catalogo.mjs`).** Copiar uma peça não traz mais a base. Quem usa o pacote importa os tokens e os padrões dele; quem não usa copia a base uma vez (`npx shadcn@latest add .../v0.25.0/public/r/premium-base.json`). O README lista os dois caminhos e os padrões de CSS de cada peça.
+- **README: `@source` do Tailwind.** Quando o CSS de entrada não está numa pasta que contém as peças, o Tailwind v4 precisa de `@source` apontando para elas (por exemplo, `@source "../components";` num `src/app/globals.css`), senão as classes das peças não são geradas.
+- **Catálogo ressincronizado do Tasks**, com as URLs das dependências fixadas na `v0.25.0`: 73 peças (72 do Tasks e a `premium-base`), com as duas peças novas.
+- **Migração de quem copiou peças na v0.24.0.** Cada peça trazia a `premium-base`, e quem já importava o pacote ficou com `src/styles/premium/` e os tokens duplicados. Escolha um caminho: apague `src/styles/premium/` e os imports dela, mantendo o pacote; ou mantenha a base copiada e tire o pacote e os imports dele. Não fique com os dois. Para atualizar as peças copiadas, troque a tag para `v0.25.0` e copie de novo com `--overwrite`.
+- **`package.json`**: `version` 0.25.0.
+
 ## v0.24.0 · 2026-11-13
 
 O catálogo de componentes copiáveis. Nenhum token nem CSS do pacote mudou.

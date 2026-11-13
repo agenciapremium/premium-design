@@ -18,7 +18,7 @@ Identidade visual da **Agência Premium** (PREMIUM · MARKETING 360°): tokens d
 | [`brand/`](brand/) | **Logo oficial** (horizontal, vertical e ícone, em branco e preto) e favicons, os mesmos arquivos de `public/brand/` do Tasks. Regras de uso em [`docs/index.md`](docs/index.md#logo). |
 | [`css/patterns/`](css/patterns/) | **Padrões de projeto (opt-in)** — CSS de recursos que nem todo sistema tem. Se o seu sistema implementar o recurso, importe o padrão em vez de recriar o visual. |
 | [`docs/`](docs/) | Documentação completa do design system — comece por [`docs/index.md`](docs/index.md). O [`docs/showroom.html`](docs/showroom.html) demonstra tudo ao vivo nos dois temas (abra no navegador). |
-| [`registry.json`](registry.json), [`registry/`](registry/) e [`public/r/`](public/r/) | **Catálogo de componentes** no formato de registry do shadcn (v0.24.0): as peças copiadas do Tasks, a peça base e o JSON de cada peça, servido pela tag. Gerados por `npm run catalogo:sincronizar`; nunca edite à mão. Ver [Catálogo de componentes](#catálogo-de-componentes). |
+| [`registry.json`](registry.json), [`registry/`](registry/) e [`public/r/`](public/r/) | **Catálogo de componentes** no formato de registry do shadcn (v0.25.0): as peças copiadas do Tasks, a peça base e o JSON de cada peça, servido pela tag. Gerados por `npm run catalogo:sincronizar`; nunca edite à mão. Ver [Catálogo de componentes](#catálogo-de-componentes). |
 | [`scripts/sincronizar-catalogo.mjs`](scripts/sincronizar-catalogo.mjs) | Sincronização do catálogo a partir do Tasks e o modo `--verificar`. |
 
 ## Como consumir
@@ -83,6 +83,8 @@ Desde a v0.24.0, os componentes do Tasks que não dependem do domínio dele (os 
 - Next.js com App Router e o código em `src/`.
 - Tailwind CSS v4.
 - Alias `@/*` apontando para `src/*` no `tsconfig.json` (o padrão do `create-next-app` com `src/`).
+- Os tokens, o tema e os padrões de CSS, pelo pacote ou pela peça base, antes da primeira peça ([abaixo](#tokens-tema-e-padrões-o-pacote-ou-a-peça-base)).
+- O `@source` do Tailwind apontando para as peças quando o CSS de entrada não está numa pasta que as contém ([abaixo](#source-do-tailwind)).
 
 As peças mantêm os imports do Tasks (`@/lib/motion`, `@/lib/hooks/use-dialogo-foco`, `@/components/ui/tooltip`) e são gravadas no mesmo caminho que têm lá (`src/components/ui/`, `src/lib/`, `src/lib/hooks/`). Por isso compilam sem nenhuma reescrita quando o alias é esse.
 
@@ -112,7 +114,7 @@ O `shadcn add` lê o `components.json` da raiz do projeto. Crie o arquivo à mã
     "hooks": "@/hooks"
   },
   "registries": {
-    "@premium": "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/{name}.json"
+    "@premium": "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/{name}.json"
   }
 }
 ```
@@ -122,7 +124,7 @@ O `shadcn add` lê o `components.json` da raiz do projeto. Crie o arquivo à mã
 Por URL fixada na tag, sem configurar nada além do `components.json`:
 
 ```bash
-npx shadcn@latest add https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/filter-bar.json
+npx shadcn@latest add https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/filter-bar.json
 ```
 
 Ou pelo namespace `@premium` do `components.json` acima:
@@ -131,27 +133,74 @@ Ou pelo namespace `@premium` do `components.json` acima:
 npx shadcn@latest add @premium/filter-bar @premium/slide-over @premium/confirm-dialog @premium/card-secao
 ```
 
-O comando copia a peça, as peças de que ela depende (cada uma declara as outras em `registryDependencies`, por URL fixada na mesma tag), a peça base e instala os pacotes npm declarados (`motion`, `lucide-react` e, no `emoji-picker`, o `emoji-mart`). `react`, `react-dom` e `next` não são instalados: o projeto já os tem. A tag fixa a versão: a peça copiada é a da v0.24.0, mesmo que a `main` avance. Atualizar é trocar a tag e copiar de novo.
+O comando copia a peça e as peças de que ela depende (cada uma declara as outras em `registryDependencies`, por URL fixada na mesma tag) e instala os pacotes npm declarados (`motion`, `lucide-react` e, no `emoji-picker`, o `emoji-mart`). `react`, `react-dom` e `next` não são instalados: o projeto já os tem. Desde a v0.25.0, a peça base não vem junto: veja [abaixo](#tokens-tema-e-padrões-o-pacote-ou-a-peça-base). A tag fixa a versão: a peça copiada é a da v0.25.0, mesmo que a `main` avance. Atualizar é trocar a tag e copiar de novo.
 
-### Peça base e CSS
+### Tokens, tema e padrões: o pacote ou a peça base
 
-Toda peça visual depende de `premium-base`, que grava em `src/styles/premium/` o núcleo do `css/` deste repo (`tokens.css`, `theme.css`, `base.css`, `motion.css`) e os padrões de `css/patterns/` que as peças usam: `autosave.css` (`autosave-bar`, `slide-over`), `code-block.css` (`code-block`), `kanban.css` (`select`), `pilha-rolagem.css` (`painel-cards`), `pilula.css` (`pilula`, e por ela a `FilterBar`) e `tooltip.css` (`tooltip`). Importe-os no `globals.css`, depois do Tailwind:
+Desde a v0.25.0, nenhuma peça traz a `premium-base` junto. Antes da primeira peça, o sistema precisa dos tokens, do tema, da base, do motion e dos padrões de CSS que as peças usam, por **um** destes dois caminhos (nunca pelos dois, para não duplicar os tokens):
+
+1. **Com o pacote** (recomendado): instale `@agenciapremium/premium-design` na mesma tag do catálogo ([Instalação](#instalação-dependência-git-pinada-em-tag)) e importe os tokens e os padrões dele no `globals.css`:
+
+   ```css
+   @import "tailwindcss";
+   @import "@agenciapremium/premium-design";
+   @import "@agenciapremium/premium-design/patterns/pilula.css";
+   @import "@agenciapremium/premium-design/patterns/tooltip.css";
+   /* e os demais padrões das peças copiadas, conforme a tabela abaixo */
+   @source "../components";
+   @source "../lib";
+   ```
+
+2. **Sem o pacote**: copie a peça base uma vez, antes da primeira peça. Ela grava em `src/styles/premium/` o núcleo do `css/` deste repo (`tokens.css`, `theme.css`, `base.css`, `motion.css`) e os padrões de `css/patterns/` que as peças usam:
+
+   ```bash
+   npx shadcn@latest add https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/premium-base.json
+   ```
+
+   ```css
+   @import "tailwindcss";
+   @import "../styles/premium/tokens.css";
+   @import "../styles/premium/theme.css";
+   @import "../styles/premium/base.css";
+   @import "../styles/premium/motion.css";
+   @import "../styles/premium/patterns/autosave.css";
+   @import "../styles/premium/patterns/code-block.css";
+   @import "../styles/premium/patterns/kanban.css";
+   @import "../styles/premium/patterns/pilha-rolagem.css";
+   @import "../styles/premium/patterns/pilula.css";
+   @import "../styles/premium/patterns/tooltip.css";
+   @source "../components";
+   @source "../lib";
+   ```
+
+Uma das duas é obrigatória: sem os tokens, as peças compilam, mas aparecem sem cor, raio e sombra. A fonte Ubuntu continua por conta do app (variável `--font-ubuntu`).
+
+**Padrões de CSS por peça** (do `meta.padroes` da `premium-base`, com as peças que chegam a eles pelas dependências). Quem usa o pacote importa só os padrões das peças que copiou:
+
+| Padrão | Peças que o usam | Peças que o recebem pelas dependências |
+|---|---|---|
+| `autosave.css` | `autosave-bar`, `slide-over` | |
+| `code-block.css` | `code-block` | |
+| `kanban.css` | `select` | |
+| `pilha-rolagem.css` | `painel-cards` | |
+| `pilula.css` | `pilula` | `filter-bar` |
+| `tooltip.css` | `tooltip` | `botao-lido`, `code-block`, `context-icon-button`, `copiar-link`, `fab`, `filter-bar`, `sort-controls`, `switch`, `views-salvas-menu` |
+
+A `FilterBar`, por exemplo, precisa de `pilula.css` e `tooltip.css`.
+
+**Migração de quem copiou peças na v0.24.0.** Na v0.24.0, cada peça trazia a `premium-base`, e quem já importava o pacote ficou com `src/styles/premium/` e os tokens duplicados. Escolha um caminho: apague `src/styles/premium/` e os imports dela, mantendo o pacote; ou mantenha a base copiada e tire o pacote e os imports dele. Não fique com os dois.
+
+### `@source` do Tailwind
+
+O Tailwind v4 só gera as classes dos arquivos que ele varre. Quando o CSS de entrada não está numa pasta que contém as peças (por exemplo, `app/` na raiz e as peças em `src/`, ou o CSS num pacote do monorepo), declare `@source` apontando para elas, com o caminho **relativo ao CSS**. Num `src/app/globals.css`:
 
 ```css
 @import "tailwindcss";
-@import "../styles/premium/tokens.css";
-@import "../styles/premium/theme.css";
-@import "../styles/premium/base.css";
-@import "../styles/premium/motion.css";
-@import "../styles/premium/patterns/autosave.css";
-@import "../styles/premium/patterns/code-block.css";
-@import "../styles/premium/patterns/kanban.css";
-@import "../styles/premium/patterns/pilha-rolagem.css";
-@import "../styles/premium/patterns/pilula.css";
-@import "../styles/premium/patterns/tooltip.css";
+@source "../components";
+@source "../lib";
 ```
 
-Quem já consome o pacote (`@import "@agenciapremium/premium-design"`, acima) pode manter esse import e importar só os padrões, desde que a tag do pacote seja a mesma do catálogo. A fonte Ubuntu continua por conta do app (variável `--font-ubuntu`).
+Sem isso, as classes usadas só nas peças (`min-h-10`, `bg-[var(--alert-solid)]`, `grid-cols-2`) não entram no CSS gerado, e as peças aparecem sem estilo. No teste da v0.25.0 (Next 16.4 com `@tailwindcss/turbopack`, CSS em `src/app/` e peças em `src/`), a detecção automática já alcançava as peças; o `@source` não custa nada e evita a surpresa quando ela não alcança.
 
 ### FilterBar: gravação dos filtros e views salvas
 
@@ -182,19 +231,33 @@ No Tasks, a ligação é `src/components/layout/filtros-persistencia-tasks.tsx`,
 
 Com o Next 16 e `cacheComponents`, a tela que usa a `FilterBar` (que lê `useSearchParams`) precisa de um `<Suspense>` acima dela.
 
+### FilterBar: faixa numérica e busca fora da URL
+
+Desde a v0.25.0, a `FilterBar` tem dois recursos novos no `FilterConfig`:
+
+- **`type: "faixa"`**, com `min` e `max` obrigatórios e `passo` opcional (padrão 1): pílula com o rótulo resumido ("Nota: 40 a 80", "Nota: a partir de 40", "Nota: até 80") e painel com os campos "De" e "Até". Grava `<key>De` e `<key>Ate` na URL, cada um só quando preenchido, ao confirmar ou ao sair dos campos. Valor fora de `min`..`max` vai para o limite, "de" maior que "até" troca os dois, e valor não numérico na URL é ignorado. Conta para o "Limpar filtros", para os filtros persistidos e para as views salvas, como o `daterange`.
+- **`aoBuscar`** no filtro `search`: a busca chama `aoBuscar(termo)` com o mesmo atraso da busca pela URL e **não grava o termo** na URL, nos filtros persistidos nem nas views salvas. Apagar o campo, o `X` e o "Limpar filtros" chamam `aoBuscar("")`. Serve para busca com dado pessoal (nome, e-mail). A função pode mudar a cada render: a barra a guarda em ref. Sem `aoBuscar`, a busca continua gravando na URL.
+
+```tsx
+const filtros: FilterConfig[] = [
+  { key: "pessoa", label: "Buscar por e-mail", type: "search", aoBuscar: setTermo },
+  { key: "nota", label: "Nota", type: "faixa", min: 0, max: 100 },
+];
+```
+
 ### Peças
 
 A lista completa, com dependências e arquivos, está em [`registry.json`](registry.json).
 
-- **Base:** `premium-base`.
+- **Base:** `premium-base`, copiada uma vez por quem não usa o pacote.
 - **Ações e formulários:** `button`, `context-icon-button`, `input`, `textarea`, `select`, `multi-select`, `switch`, `date-picker`, `pessoas-picker`, `campo-busca`, `emoji-picker`, `form-error-banner`, `autosave-bar`, `copiar-link`.
 - **Barra e navegação:** `filter-bar`, `filtros-persistencia`, `views-salvas-menu`, `pilula`, `segmented-tabs`, `sort-controls`, `pagination`, `breadcrumb`, `coluna-infinita`.
 - **Superfícies e overlays:** `card`, `card-secao`, `slide-over`, `confirm-dialog`, `painel-cards`, `tooltip`, `toast`, `fab`, `accordion`, `expansivel`, `texto-expansivel`.
 - **Estado e conteúdo:** `badge`, `avatar`, `empty-state`, `skeleton`, `code-block`, `digitando-indicador`, `botao-lido`, `grupo-prazo`, `contador`, `barra-progresso`.
 - **Gráficos:** `bar-chart`, `line-chart`, `pie-chart`.
 - **Motion:** `motion-provider`.
-- **Hooks:** `use-dialogo-foco`, `use-toast`, `use-count-up`, `use-infinite-window`, `use-set-params`, `use-filtros-persistidos`.
-- **Funções de apoio:** `utils`, `format`, `motion`, `constants`, `popover-pos`, `overlay-pilha`, `foco`, `view-transition`, `painel-cards-pos`, `kbd`, `debounce`, `link-markdown`, `view-sort`, `filtros-ativos`, `busca-filtro-url`, `views-salvas`.
+- **Hooks:** `use-dialogo-foco`, `use-toast`, `use-count-up`, `use-infinite-window`, `use-set-params`, `use-filtros-persistidos`, `use-busca-local`.
+- **Funções de apoio:** `utils`, `format`, `motion`, `constants`, `popover-pos`, `overlay-pilha`, `foco`, `view-transition`, `painel-cards-pos`, `kbd`, `debounce`, `link-markdown`, `view-sort`, `filtros-ativos`, `tecla-confirmacao`, `busca-filtro-url`, `views-salvas`.
 
 Ficam fora, porque dependem do domínio do Tasks: o shell (sidebar, topbar, menu da conta), o cartão de documento, o Drive, o `Lightbox`, o `MarkdownView`, o editor rico, a presença em tempo real, a página de erro com a logo e o `PageHeader`.
 
