@@ -152,7 +152,7 @@ Superfície base: `bg-[--premium-white]` + borda `--premium-mist` + `--r-lg` + `
 
 `CardHeader`: flex space-between, `px-[18px] py-4`, borda inferior. `CardBody`: `p-2` (ajuste com `className`).
 
-**Tipos compostos** (padrões sobre o Card, ver showroom): stat card (ícone 34px com bg de status + número 30px + label 12px; variante **feat** com fundo `--brand-ink` e ícone amarelo), painel com header, card de projeto (status pill + progresso), card de favorito, cfg card, meta-card (linhas chave/valor).
+**Tipos compostos** (padrões sobre o Card, ver showroom): stat card (ícone 34px com bg de status + número 30px + label 12px; variante **feat** com fundo `--brand-ink` e ícone amarelo), painel com header, card de projeto (status pill + progresso), card de favorito, meta-card (linhas chave/valor). O card de seção de configurações é peça própria, `CardSecao` (ver [Copiar pelo catálogo](#copiar-pelo-catálogo)).
 
 ---
 
