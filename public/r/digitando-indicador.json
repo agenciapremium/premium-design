@@ -1,0 +1,18 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "digitando-indicador",
+  "title": "digitando-indicador",
+  "description": "Peça do Tasks copiada byte a byte: src/components/ui/digitando-indicador.tsx.",
+  "registryDependencies": [
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json"
+  ],
+  "files": [
+    {
+      "path": "registry/src/components/ui/digitando-indicador.tsx",
+      "content": "\"use client\";\n\n/**\n * Linha \"<nome> está digitando…\" da presença efêmera (capability\n * realtime-presenca-digitacao / D3). Renderiza junto à thread de comentários e\n * **some sozinha** quando a lista esvazia (o chamador expira os sinais ~5s após o\n * último). Nada renderiza quando vazio. Só tokens semânticos; os três pontos\n * pulsam e respeitam `prefers-reduced-motion`. `aria-live=\"polite\"` anuncia sem\n * roubar o foco. pt-BR acentuado.\n */\n\nconst listaNomes = new Intl.ListFormat(\"pt-BR\", { style: \"long\", type: \"conjunction\" });\n\nexport function DigitandoIndicador({\n  nomes,\n  className,\n}: {\n  nomes: string[];\n  className?: string;\n}) {\n  if (nomes.length === 0) return null;\n\n  const texto =\n    nomes.length === 1\n      ? `${nomes[0]} está digitando…`\n      : `${listaNomes.format(nomes)} estão digitando…`;\n\n  return (\n    <div\n      aria-live=\"polite\"\n      className={`flex items-center gap-2 text-[12px] italic text-[var(--premium-gray)] ${className ?? \"\"}`}\n    >\n      <span className=\"flex items-end gap-0.5\" aria-hidden>\n        {[0, 150, 300].map((delay) => (\n          <span\n            key={delay}\n            className=\"h-1 w-1 rounded-full bg-[var(--premium-silver)] motion-safe:animate-pulse\"\n            style={{ animationDelay: `${delay}ms` }}\n          />\n        ))}\n      </span>\n      <span className=\"truncate\">{texto}</span>\n    </div>\n  );\n}\n",
+      "type": "registry:file",
+      "target": "src/components/ui/digitando-indicador.tsx"
+    }
+  ],
+  "type": "registry:ui"
+}

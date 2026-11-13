@@ -1,0 +1,33 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   PADRÃO · Pilha com rolagem sem barra (opt-in, v0.10.0)
+   Lista de cards soltos que rola sem barra aparente; o degradê por máscara na
+   borda que ainda tem conteúdo avisa que tem mais. Nasceu no "Alerta fixo"
+   (v0.8.0) e é compartilhado com o "Painel de cards flutuantes".
+   Aplicar .pilha-rolagem no contêiner rolável e escrever `data-mais` =
+   "acima" | "abaixo" | "ambos" (ou nenhum) medindo scrollTop/clientHeight/
+   scrollHeight na rolagem e quando a lista muda de tamanho. A máscara é canal
+   alfa, não cor: o preto só marca o que fica opaco (vale nos dois temas).
+   Dica: padding + margem negativa de mesma medida em volta da lista evita que
+   a sombra dos cards seja cortada pela rolagem.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.pilha-rolagem {
+  overflow-y: auto;
+  scrollbar-width: none;
+  overscroll-behavior: contain;
+}
+.pilha-rolagem::-webkit-scrollbar {
+  display: none;
+}
+.pilha-rolagem[data-mais="abaixo"] {
+  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 44px), transparent);
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 44px), transparent);
+}
+.pilha-rolagem[data-mais="acima"] {
+  -webkit-mask-image: linear-gradient(to top, #000 calc(100% - 44px), transparent);
+  mask-image: linear-gradient(to top, #000 calc(100% - 44px), transparent);
+}
+.pilha-rolagem[data-mais="ambos"] {
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 44px, #000 calc(100% - 44px), transparent);
+  mask-image: linear-gradient(to bottom, transparent, #000 44px, #000 calc(100% - 44px), transparent);
+}

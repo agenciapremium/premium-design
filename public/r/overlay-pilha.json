@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "overlay-pilha",
+  "title": "overlay-pilha",
+  "description": "Peça do Tasks copiada byte a byte: src/lib/overlay-pilha.ts.",
+  "files": [
+    {
+      "path": "registry/src/lib/overlay-pilha.ts",
+      "content": "/**\n * Pilha dos overlays modais que respondem ao `Esc` pela ordem de abertura\n * (capability overlays-gestao-de-foco). Nasceu privada no `SlideOver`; saiu\n * para cá quando o `PainelCards` (capability painel-cards-flutuantes) passou a\n * precisar da mesma pilha: um slide-over aberto a partir do painel, ou o painel\n * aberto sobre um slide-over, fecham só o de cima.\n *\n * Módulo de estado de página (um array por aba), sem React.\n */\n\nconst pilha: string[] = [];\n\n/**\n * Registra o overlay `id` no topo da pilha e trava a rolagem do corpo.\n * Devolve a função que o retira (e destrava a rolagem quando a pilha esvazia).\n */\nexport function registrarOverlay(id: string): () => void {\n  pilha.push(id);\n  document.body.style.overflow = \"hidden\";\n  return () => {\n    const i = pilha.lastIndexOf(id);\n    if (i !== -1) pilha.splice(i, 1);\n    if (pilha.length === 0) document.body.style.overflow = \"\";\n  };\n}\n\n/**\n * O overlay `id` é o topo da pilha? Usado pelo foco gerenciado\n * (`useDialogoFoco`) e pelo `Esc`: só o overlay do topo prende o `Tab` e fecha.\n */\nexport function estaNoTopo(id: string): boolean {\n  return pilha.length > 0 && pilha[pilha.length - 1] === id;\n}\n\n/**\n * Há algum diálogo modal na tela agora? (capability atalhos-teclado, design D1.)\n *\n * O provedor de atalhos consulta isto antes de disparar qualquer tecla: com um\n * painel aberto, a pessoa está no meio de uma tarefa, e abrir outra coisa por\n * cima é perder o que ela estava fazendo.\n *\n * Duas fontes porque há dois tipos de overlay: os que se registram na pilha\n * acima (`SlideOver`, `PainelCards`) e os modais que montam o próprio\n * `role=\"dialog\"` sem passar por ela (busca global, confirmação, lightbox,\n * modal de card, o drawer da sidebar no celular). A consulta ao DOM cobre os\n * dois casos, mas custa uma `querySelector` por tecla, por isso a pilha\n * responde primeiro.\n */\nexport function temOverlayAberto(): boolean {\n  if (pilha.length > 0) return true;\n  if (typeof document === \"undefined\") return false;\n  return !!document.querySelector('[role=\"dialog\"][aria-modal=\"true\"]');\n}\n",
+      "type": "registry:file",
+      "target": "src/lib/overlay-pilha.ts"
+    }
+  ],
+  "type": "registry:lib"
+}

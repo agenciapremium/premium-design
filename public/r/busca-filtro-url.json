@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "busca-filtro-url",
+  "title": "busca-filtro-url",
+  "description": "Peça do Tasks copiada byte a byte: src/lib/helpers/busca-filtro-url.ts.",
+  "files": [
+    {
+      "path": "registry/src/lib/helpers/busca-filtro-url.ts",
+      "content": "/**\n * Sincronização entre o campo de busca da `FilterBar` e a URL (change\n * filter-bar-busca-digitacao-estavel, D2).\n *\n * O campo grava o termo na URL com debounce, e a URL só muda quando a resposta\n * do servidor chega. Se a pessoa digita mais uma letra nesse intervalo, a\n * resposta atrasada traz o termo antigo: copiá-lo para o campo apaga o que\n * acabou de ser digitado. Por isso o campo só adota a URL quando ela mudou E\n * não há escrita do próprio campo a caminho (debounce correndo ou navegação\n * ainda sem confirmar). Mudanças externas (\"Limpar filtros\", view salva) entram\n * assim que a busca assenta.\n */\n\nexport interface SincroniaBuscaUrl {\n  /** Valor da busca na URL confirmada (`useSearchParams`). */\n  urlValue: string;\n  /** Último valor da URL que o campo já adotou. */\n  urlAnterior: string;\n  /** Debounce correndo ou navegação disparada pelo campo ainda pendente. */\n  escritaPendente: boolean;\n}\n\n/** O campo deve passar a mostrar o valor da URL? */\nexport function campoAdotaUrl({ urlValue, urlAnterior, escritaPendente }: SincroniaBuscaUrl): boolean {\n  return urlValue !== urlAnterior && !escritaPendente;\n}\n",
+      "type": "registry:file",
+      "target": "src/lib/helpers/busca-filtro-url.ts"
+    }
+  ],
+  "type": "registry:lib"
+}

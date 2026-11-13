@@ -1,0 +1,18 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "empty-state",
+  "title": "empty-state",
+  "description": "Peça do Tasks copiada byte a byte: src/components/ui/empty-state.tsx.",
+  "registryDependencies": [
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json"
+  ],
+  "files": [
+    {
+      "path": "registry/src/components/ui/empty-state.tsx",
+      "content": "import type { ReactNode } from \"react\";\n\ninterface EmptyStateProps {\n  icon: ReactNode;\n  title: string;\n  description?: string;\n  action?: ReactNode;\n}\n\nexport function EmptyState({ icon, title, description, action }: EmptyStateProps) {\n  return (\n    <div className=\"flex flex-col items-center justify-center py-16 text-center animate-[fadeIn_.18s_ease]\">\n      <div className=\"text-[var(--premium-silver)] mb-4\">{icon}</div>\n      <h3 className=\"text-[15px] font-bold text-[var(--premium-steel)] mb-1\">{title}</h3>\n      {description && (\n        <p className=\"text-[12.5px] text-[var(--premium-gray)] max-w-[300px] mb-4\">{description}</p>\n      )}\n      {action}\n    </div>\n  );\n}\n",
+      "type": "registry:file",
+      "target": "src/components/ui/empty-state.tsx"
+    }
+  ],
+  "type": "registry:ui"
+}

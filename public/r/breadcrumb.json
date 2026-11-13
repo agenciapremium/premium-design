@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "breadcrumb",
+  "title": "breadcrumb",
+  "description": "Peça do Tasks copiada byte a byte: src/components/ui/breadcrumb.tsx.",
+  "dependencies": [
+    "lucide-react@^1.17.0"
+  ],
+  "registryDependencies": [
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json"
+  ],
+  "files": [
+    {
+      "path": "registry/src/components/ui/breadcrumb.tsx",
+      "content": "import { ChevronRight } from \"lucide-react\";\nimport Link from \"next/link\";\nimport { Fragment, type ReactNode } from \"react\";\n\nexport interface BreadcrumbItem {\n  label: string;\n  /** Quando ausente, o item é tratado como o atual (texto, não navegável). */\n  href?: string;\n}\n\n/**\n * Navegação hierárquica das telas de detalhe (ui-guidelines §4.23), no lugar do\n * botão \"Voltar\". Níveis intermediários são links; o último é o item atual\n * (`aria-current=\"page\"`). Cores só por token; tema claro/escuro pelos tokens.\n *\n * `trailing` (opcional) renderiza um elemento inline logo após o último item —\n * ex.: um atalho de copiar link ao lado do nome da entidade.\n *\n * `compact` (opcional): variante reduzida para o header — fonte menor, sem\n * margem inferior e em linha única (não quebra), pensada para ficar logo abaixo\n * do subtítulo da página.\n */\nexport function Breadcrumb({\n  items,\n  trailing,\n  compact,\n}: {\n  items: BreadcrumbItem[];\n  trailing?: ReactNode;\n  compact?: boolean;\n}) {\n  return (\n    <nav aria-label=\"Trilha de navegação\" className={compact ? \"mt-[3px]\" : \"mb-2\"}>\n      <ol\n        className={\n          compact\n            ? \"flex flex-nowrap items-center gap-[3px] text-[10px] font-medium overflow-hidden\"\n            : \"flex flex-wrap items-center gap-[5px] text-[12px] font-medium\"\n        }\n      >\n        {items.map((item, i) => {\n          const isLast = i === items.length - 1;\n          return (\n            <Fragment key={`${item.label}-${i}`}>\n              <li className=\"flex items-center\">\n                {item.href && !isLast ? (\n                  <Link\n                    href={item.href}\n                    className={`inline-flex items-center ${compact ? \"py-[1px]\" : \"py-[3px]\"} text-[var(--premium-steel)] transition-colors hover:text-[var(--premium-ink)] focus-visible:outline-none focus-visible:rounded-[var(--r-sm)] focus-visible:shadow-[0_0_0_2px_var(--yellow-50)]`}\n                  >\n                    {item.label}\n                  </Link>\n                ) : (\n                  <span\n                    aria-current={isLast ? \"page\" : undefined}\n                    className={`inline-flex items-center ${compact ? \"py-[1px] truncate max-w-[260px]\" : \"py-[3px]\"} ${\n                      isLast ? \"text-[var(--premium-ink)]\" : \"text-[var(--premium-steel)]\"\n                    }`}\n                  >\n                    {item.label}\n                  </span>\n                )}\n              </li>\n              {!isLast && (\n                <li aria-hidden=\"true\" className=\"flex items-center text-[var(--premium-silver)]\">\n                  <ChevronRight size={compact ? 11 : 14} />\n                </li>\n              )}\n            </Fragment>\n          );\n        })}\n        {trailing && <li className=\"flex items-center ml-[2px]\">{trailing}</li>}\n      </ol>\n    </nav>\n  );\n}\n",
+      "type": "registry:file",
+      "target": "src/components/ui/breadcrumb.tsx"
+    }
+  ],
+  "type": "registry:ui"
+}

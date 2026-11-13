@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "view-transition",
+  "title": "view-transition",
+  "description": "Peça do Tasks copiada byte a byte: src/lib/view-transition.ts.",
+  "files": [
+    {
+      "path": "registry/src/lib/view-transition.ts",
+      "content": "/**\n * Executa `fn` (tipicamente um `router.replace`/`push`) dentro de uma View\n * Transition quando o navegador suporta, dando um crossfade de conteúdo na troca\n * de aba/visão server-nav (change animacoes-graficos-abas-transicoes, Tier 4).\n *\n * Progressive enhancement: sem a API (ou sob `prefers-reduced-motion`) apenas\n * chama `fn()` — a troca acontece instantaneamente, como hoje, sem erro. Não\n * altera a navegação (URL/filtros/paginação).\n */\ntype DocumentComViewTransition = Document & {\n  startViewTransition?: (callback: () => void) => unknown;\n};\n\nexport function navegarComTransicao(fn: () => void): void {\n  if (typeof document === \"undefined\") {\n    fn();\n    return;\n  }\n  const doc = document as DocumentComViewTransition;\n  const prefersReduced =\n    typeof window !== \"undefined\" &&\n    typeof window.matchMedia === \"function\" &&\n    window.matchMedia(\"(prefers-reduced-motion: reduce)\").matches;\n\n  if (prefersReduced || typeof doc.startViewTransition !== \"function\") {\n    fn();\n    return;\n  }\n  doc.startViewTransition(fn);\n}\n",
+      "type": "registry:file",
+      "target": "src/lib/view-transition.ts"
+    }
+  ],
+  "type": "registry:lib"
+}

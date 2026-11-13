@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "accordion",
+  "title": "accordion",
+  "description": "Peça do Tasks copiada byte a byte: src/components/ui/accordion.tsx.",
+  "dependencies": [
+    "lucide-react@^1.17.0"
+  ],
+  "registryDependencies": [
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json",
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/expansivel.json",
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/utils.json"
+  ],
+  "files": [
+    {
+      "path": "registry/src/components/ui/accordion.tsx",
+      "content": "\"use client\";\n\nimport { ChevronDown } from \"lucide-react\";\nimport { useId, type ReactNode } from \"react\";\nimport { Expansivel } from \"@/components/ui/expansivel\";\nimport { cn } from \"@/lib/utils\";\n\n/**\n * Bloco colapsável (accordion) — ui-guidelines §4 (catálogo). Controlado pelo\n * pai (`open`/`onToggle`) para suportar regras como \"só o mais recente\n * expandido\". O cabeçalho é um `<button aria-expanded>` (foco visível, alvo ≥\n * 40px, Enter/Espaço); ações secundárias (links/botões) ficam ao lado do\n * gatilho — nunca aninhadas dentro dele (HTML inválido). Cores só por token;\n * transições respeitam `prefers-reduced-motion`. Refs: ui-guidelines §2.2, §6,\n * §7, §9.\n */\nexport interface AccordionItemProps {\n  /** Título exibido no cabeçalho (dentro do gatilho de expandir). */\n  title: ReactNode;\n  /** Conteúdo informativo do cabeçalho (ex.: contagem, selo de versão). */\n  meta?: ReactNode;\n  /** Ações do cabeçalho (ex.: editar, remover) — fora do gatilho de expandir. */\n  actions?: ReactNode;\n  open: boolean;\n  onToggle: () => void;\n  children: ReactNode;\n  className?: string;\n}\n\nexport function AccordionItem({\n  title,\n  meta,\n  actions,\n  open,\n  onToggle,\n  children,\n  className,\n}: AccordionItemProps) {\n  const bodyId = useId();\n\n  return (\n    <div\n      className={cn(\n        \"border border-[var(--premium-mist)] rounded-[var(--r-lg)] overflow-hidden bg-[var(--c-surface)]\",\n        className\n      )}\n    >\n      <div className=\"flex items-center gap-2 bg-[var(--premium-paper)] border-b border-[var(--premium-mist)] pr-2\">\n        <button\n          type=\"button\"\n          onClick={onToggle}\n          aria-expanded={open}\n          aria-controls={bodyId}\n          className=\"flex min-h-[44px] flex-1 min-w-0 items-center gap-2 px-[14px] py-[10px] text-left cursor-pointer focus-visible:outline-none focus-visible:shadow-[inset_0_0_0_2px_var(--yellow-50)]\"\n        >\n          <ChevronDown\n            size={16}\n            className={cn(\n              \"shrink-0 text-[var(--premium-gray)] transition-transform duration-150 motion-reduce:transition-none\",\n              open && \"rotate-180\"\n            )}\n          />\n          <span className=\"truncate text-[13.5px] font-bold text-[var(--c-ink)]\">{title}</span>\n        </button>\n        {meta}\n        {actions}\n      </div>\n      <Expansivel open={open} id={bodyId}>\n        {children}\n      </Expansivel>\n    </div>\n  );\n}\n",
+      "type": "registry:file",
+      "target": "src/components/ui/accordion.tsx"
+    }
+  ],
+  "type": "registry:ui"
+}

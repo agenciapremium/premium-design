@@ -474,7 +474,7 @@ Tipos:
 - **Card de projeto** (`.proj-card`): topo com status pill, título 16/700, cliente com ícone, barra de progresso, rodapé com responsável.
 - **Kcard (kanban)** (`.kcard`): tag de departamento no topo, título 14/500, cliente, stagebar (mini barra de etapas), rodapé com avatar stack + meta (data, msgs, prioridade). Variante **locked** = listrada + opacity .62 + ícone cadeado.
 - **Deliv** (`.deliv` — Entregas por colaborador): cabeçalho com avatar 44px + nome + depto + 4 KPIs em grid 2×2 + barra de ocupação. Cor da barra ≥90% vira gradient para danger.
-- **Cfg card** (`.cfg`): ícone em quadrado bone, título, descrição, CTA "Gerenciar →".
+- **Card de seção de configurações** (`CardSecao` + `GradeCardsSecao`, `card-secao.tsx`; premium-design v0.24.0, no lugar do antigo cfg card com o CTA "Gerenciar →"): o card inteiro é o link; ícone em quadrado de 40px `--premium-bone`, título 17/700 com selo "Nova" opcional e chevron à direita, texto auxiliar 14px `--premium-steel` e selo de estado opcional; grade de 1, 2 ou 3 colunas (768px e 1280px), mesma altura na linha. Anatomia, props e tokens em `componentes.md` §"Copiar pelo catálogo".
 - **Meta-card** (`.meta-card`): cabeçalho com ícone amarelo + título; corpo com linhas chave/valor (`.meta-row`).
 
 ### 4.5 Tabelas

@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "textarea",
+  "title": "textarea",
+  "description": "Peça do Tasks copiada byte a byte: src/components/ui/textarea.tsx.",
+  "registryDependencies": [
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json",
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/utils.json"
+  ],
+  "files": [
+    {
+      "path": "registry/src/components/ui/textarea.tsx",
+      "content": "import { cn } from \"@/lib/utils\";\nimport type { Ref, TextareaHTMLAttributes } from \"react\";\n\ninterface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {\n  label?: string;\n  error?: string;\n  /** Como no `Input`: quem monta o campo às vezes precisa levar o foco até ele. */\n  ref?: Ref<HTMLTextAreaElement>;\n}\n\nexport function Textarea({ label, error, className, id, ...props }: TextareaProps) {\n  return (\n    <div className=\"flex flex-col gap-[7px]\">\n      {label && (\n        <label\n          htmlFor={id}\n          className=\"text-[11px] font-bold uppercase tracking-wider text-[var(--premium-gray)]\"\n        >\n          {label}\n        </label>\n      )}\n      <textarea\n        id={id}\n        className={cn(\n          \"w-full border border-[var(--premium-mist)] rounded-[var(--r-md)] px-[14px] py-[11px] text-[13px] font-[family-name:var(--font-ubuntu),system-ui,sans-serif] text-[var(--premium-ink)] outline-none resize-vertical min-h-[76px] transition-all duration-150\",\n          \"focus:border-[var(--premium-ink)] focus:shadow-[0_0_0_2px_var(--yellow-50)]\",\n          error && \"border-[var(--danger)]\",\n          className\n        )}\n        {...props}\n      />\n      {error && <span className=\"text-[11px] text-[var(--danger)]\">{error}</span>}\n    </div>\n  );\n}\n",
+      "type": "registry:file",
+      "target": "src/components/ui/textarea.tsx"
+    }
+  ],
+  "type": "registry:ui"
+}

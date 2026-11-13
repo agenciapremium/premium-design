@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "botao-lido",
+  "title": "botao-lido",
+  "description": "Peça do Tasks copiada byte a byte: src/components/ui/botao-lido.tsx.",
+  "dependencies": [
+    "lucide-react@^1.17.0"
+  ],
+  "registryDependencies": [
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json",
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/tooltip.json",
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/utils.json"
+  ],
+  "files": [
+    {
+      "path": "registry/src/components/ui/botao-lido.tsx",
+      "content": "\"use client\";\n\nimport { useEffect, useRef, useState } from \"react\";\nimport { CheckCheck } from \"lucide-react\";\nimport type { LucideIcon } from \"lucide-react\";\nimport { cn } from \"@/lib/utils\";\nimport { Tooltip } from \"@/components/ui/tooltip\";\n\n/**\n * Botão de lido (padrão \"Botão de lido\" do premium-design v0.10.0; capability\n * notificacao-card). Só ícone, dois estados:\n *\n * - **não lido**: `<button>` AMARELO (a marca, igual nos dois temas) com ícone\n *   preto; a dica diz a ação. É convite: sólido e chamativo.\n * - **lido**: indicador VERDE tonal (`--success-bg`/`--success`), sem foco e\n *   sem clique. É estado resolvido: pesa menos na lista.\n *\n * A troca pulsa, solta uma onda verde e desenha o ícone (keyframes `lido-*` em\n * globals.css, desligados sob movimento reduzido). Quando o botão focado vira\n * indicador, `onVirou` deixa o hospedeiro devolver o foco a um vizinho.\n */\nexport function BotaoLido({\n  lido,\n  onMarcar,\n  rotulo,\n  dica = \"Marcar como lida\",\n  rotuloLido = \"Lida\",\n  icone: Icone = CheckCheck,\n  onVirou,\n}: {\n  lido: boolean;\n  onMarcar: () => void;\n  /** Nome acessível do botão, com o assunto (ex.: `Marcar \"Título\" como lida`). */\n  rotulo: string;\n  dica?: string;\n  rotuloLido?: string;\n  icone?: LucideIcon;\n  /** Chamado quando o botão que tinha o foco vira indicador. */\n  onVirou?: () => void;\n}) {\n  const botaoRef = useRef<HTMLButtonElement>(null);\n  const tinhaFoco = useRef(false);\n  // `vira` só quando a troca acontece diante da pessoa, nunca num card que já\n  // chega lido. O estado anterior é guardado no render (padrão do React para\n  // \"valor anterior\"), sem efeito que dispare render em cascata.\n  const [anterior, setAnterior] = useState(lido);\n  const [vira, setVira] = useState(false);\n  if (anterior !== lido) {\n    setAnterior(lido);\n    setVira(lido);\n  }\n\n  useEffect(() => {\n    if (lido && tinhaFoco.current) {\n      tinhaFoco.current = false;\n      onVirou?.();\n    }\n  }, [lido, onVirou]);\n\n  const base =\n    \"relative z-[1] grid size-9 shrink-0 place-items-center rounded-full transition-[background-color,color,box-shadow,transform] duration-200\";\n\n  if (lido) {\n    return (\n      <span\n        role=\"img\"\n        aria-label={rotuloLido}\n        // A onda é a animação mais longa; as outras (e a do ícone, que sobe\n        // por bolha) terminam antes e não podem cortá-la.\n        onAnimationEnd={(e) => {\n          if (e.animationName === \"lidoOnda\") setVira(false);\n        }}\n        className={cn(base, \"bg-[var(--success-bg)] text-[var(--success)]\", vira && \"lido-vira\")}\n      >\n        <Icone size={17} aria-hidden />\n      </span>\n    );\n  }\n\n  return (\n    <Tooltip label={dica} side=\"left\">\n      <button\n        ref={botaoRef}\n        type=\"button\"\n        onClick={(e) => {\n          // O card inteiro é link: o botão não pode disparar a navegação.\n          e.preventDefault();\n          e.stopPropagation();\n          tinhaFoco.current = document.activeElement === botaoRef.current;\n          onMarcar();\n        }}\n        aria-label={rotulo}\n        className={cn(\n          base,\n          // Alvo de 40px sobre o círculo de 36px.\n          \"cursor-pointer before:absolute before:-inset-0.5 before:rounded-full before:content-['']\",\n          \"bg-brand text-on-brand hover:bg-[var(--brand-amber)] hover:shadow-[var(--sh-gold)] active:scale-[.94]\",\n          // Anel duplo: um anel amarelo sumiria sobre o botão amarelo.\n          \"focus-visible:outline-none focus-visible:shadow-[0_0_0_3px_var(--c-surface),0_0_0_5px_var(--premium-ink)]\"\n        )}\n      >\n        <Icone size={17} aria-hidden />\n      </button>\n    </Tooltip>\n  );\n}\n",
+      "type": "registry:file",
+      "target": "src/components/ui/botao-lido.tsx"
+    }
+  ],
+  "type": "registry:ui"
+}

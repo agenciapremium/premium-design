@@ -14,6 +14,71 @@ Convenções comuns a todos:
 
 ---
 
+## Copiar pelo catálogo
+
+Desde a premium-design **v0.24.0**, as peças desta página que não dependem do domínio do Tasks são copiáveis por um comando, no formato de registry do shadcn. **Sistema novo nunca reescreve componente do catálogo: copia pelo comando.** A peça chega byte a byte igual ao arquivo do Tasks, com as peças e funções de apoio de que depende, a peça base (tokens, tema, base, motion e os padrões de CSS que as peças usam) e os pacotes npm declarados.
+
+```bash
+npx shadcn@latest add https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/filter-bar.json
+# ou, com "@premium" em "registries" no components.json do sistema:
+npx shadcn@latest add @premium/filter-bar
+```
+
+Pré-requisitos (Next.js App Router com `src/`, Tailwind v4, alias `@/*` → `src/*`), o `components.json` recomendado e os imports de CSS estão no [README](../README.md#catálogo-de-componentes). A origem é o manifesto [`src/components/ui/catalogo.json`](https://github.com/agenciapremium/tasks/blob/main/src/components/ui/catalogo.json) do Tasks: ajuste numa peça copiada nasce no Tasks e chega ao catálogo pela sincronização (`npm run catalogo:sincronizar` no premium-design), nunca por edição local divergente.
+
+**Peças do catálogo** (a lista com arquivos e dependências está no [`registry.json`](../registry.json)):
+
+- **Ações e formulários:** `button`, `context-icon-button`, `input`, `textarea`, `select`, `multi-select`, `switch`, `date-picker`, `pessoas-picker`, `campo-busca`, `emoji-picker`, `form-error-banner`, `autosave-bar`, `copiar-link`.
+- **Barra e navegação:** `filter-bar`, `filtros-persistencia`, `views-salvas-menu`, `pilula`, `segmented-tabs`, `sort-controls`, `pagination`, `breadcrumb`, `coluna-infinita`.
+- **Superfícies e overlays:** `card`, `card-secao`, `slide-over`, `confirm-dialog`, `painel-cards`, `tooltip`, `toast`, `fab`, `accordion`, `expansivel`, `texto-expansivel`.
+- **Estado e conteúdo:** `badge`, `avatar`, `empty-state`, `skeleton`, `code-block`, `digitando-indicador`, `botao-lido`, `grupo-prazo`, `contador`, `barra-progresso`.
+- **Gráficos e motion:** `bar-chart`, `line-chart`, `pie-chart`, `motion-provider`.
+- **Hooks:** `use-dialogo-foco`, `use-toast`, `use-count-up`, `use-infinite-window`, `use-set-params`, `use-filtros-persistidos`.
+- **Funções de apoio:** `utils`, `format`, `motion`, `constants`, `popover-pos`, `overlay-pilha`, `foco`, `view-transition`, `painel-cards-pos`, `kbd`, `debounce`, `link-markdown`, `view-sort`, `filtros-ativos`, `busca-filtro-url`, `views-salvas`.
+- **Base:** `premium-base`, de que toda peça visual depende.
+
+Ficam fora, por dependerem do domínio ou do shell do Tasks: `PageHeader`, `PresencaAvatares`, `Lightbox`, `DriveMediaViewer`, `CartaoDocumento`, `ErroRota`, o editor rico (`RichEditor`, `MarkdownView`, `editor/`), o Drive (`DriveLinkActions`, `DrivePrefsProvider`) e os padrões de `components/layout/`.
+
+**FilterBar fora do Tasks.** Sem `FiltrosPersistenciaProvider`, a barra filtra pela URL normalmente, mas não grava os filtros da tela nem mostra o menu de views salvas, mesmo com `telaKey`. Quem quer os dois declara o provedor num layout, com um objeto estável que implementa o contrato `FiltrosPersistencia` (ver [FilterBar](#filterbar--filter-bartsx)).
+
+### Card de seção de configurações: `CardSecao` e `GradeCardsSecao` (`card-secao.tsx`)
+
+Card de navegação para uma seção (landing de Configurações). A anatomia vem do card de configurações do Diagnóstico Premium, com os tokens do Tasks. No Tasks, é o card da landing `/configuracoes` (`configuracoes-busca.tsx`).
+
+**Anatomia**, de cima para baixo, dentro de um `<li>` com um `next/link` que é o próprio card:
+
+1. Linha do título: o ícone num quadrado de 40px, o título ocupando a linha, o selo "Nova" (opcional) e o chevron (`ChevronRight` 18px) à direita.
+2. O texto auxiliar.
+3. O selo de estado (opcional), por último.
+
+| Prop | Tipo | Descrição |
+|---|---|---|
+| `href` | `string` | Destino do card inteiro (`next/link`) |
+| `icone` | `ReactNode` | Ícone já renderizado (ex.: `<Users size={20} />`). É nó, e não componente, para a página de servidor renderizar o ícone e passá-lo a um componente cliente |
+| `titulo` | `string` | Título da seção |
+| `texto` | `string` | Texto auxiliar |
+| `selo?` | `ReactNode` | Situação da seção (ex.: um `Badge` "Ligado"), abaixo do texto |
+| `nova?` | `boolean` | Mostra o selo "Nova" entre o título e o chevron. Padrão `false` |
+
+`GradeCardsSecao({ children, className? })` é o `<ul>` da grade: `grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3`, ou seja, **1 coluna** em telas estreitas, **2 a partir de 768px** e **3 a partir de 1280px**. O `<li>` estica na célula e o link tem `h-full`, então os cards de uma linha têm a mesma altura.
+
+**Tokens** (nenhum token novo):
+
+| Elemento | Tokens |
+|---|---|
+| Superfície, borda, raio, sombra | `CLASSE_CARD` de `card.tsx`: `--premium-white`, borda `--premium-mist`, `--r-lg`, `--sh-sm` (a mesma do `Card`) |
+| Texto e chevron | `--premium-ink` |
+| Borda no hover | `--premium-gray`, transição de 150ms com `--ease` |
+| Foco (`:focus-visible`) | outline 2px `--premium-ink` com offset 2px e anel `0 0 0 2px var(--yellow-50)` |
+| Quadrado do ícone | 40px, `--r-md`, fundo `--premium-bone`, ícone em `--premium-ink` |
+| Título | 17px, bold, `--premium-ink` |
+| Selo "Nova" | `--brand-yellow` com texto `--brand-ink`, `--r-pill`, 10px bold uppercase; os dois tokens não mudam no tema escuro (contraste de cerca de 14:1) |
+| Texto auxiliar | 14px, `leading-relaxed`, `--premium-steel` (AA nos dois temas) |
+
+A superfície vem de `CLASSE_CARD`, e não do componente `Card`, porque o elemento com a superfície é o próprio link: um `Card` dentro do link deixaria o foco no link e a borda num `div`.
+
+---
+
 ## Button — `button.tsx`
 
 Botão de ação. Tipografia própria: **uppercase, 700, `tracking-wider`**, fonte Ubuntu, ícone lucide 16px **antes** do texto.
@@ -87,7 +152,7 @@ Superfície base: `bg-[--premium-white]` + borda `--premium-mist` + `--r-lg` + `
 
 `CardHeader`: flex space-between, `px-[18px] py-4`, borda inferior. `CardBody`: `p-2` (ajuste com `className`).
 
-**Tipos compostos** (padrões sobre o Card, ver showroom): stat card (ícone 34px com bg de status + número 30px + label 12px; variante **feat** com fundo `--brand-ink` e ícone amarelo), painel com header, card de projeto (status pill + progresso), card de favorito, cfg card, meta-card (linhas chave/valor).
+**Tipos compostos** (padrões sobre o Card, ver showroom): stat card (ícone 34px com bg de status + número 30px + label 12px; variante **feat** com fundo `--brand-ink` e ícone amarelo), painel com header, card de projeto (status pill + progresso), card de favorito, meta-card (linhas chave/valor). O card de seção de configurações é peça própria, `CardSecao` (ver [Copiar pelo catálogo](#copiar-pelo-catálogo)).
 
 ---
 
@@ -299,7 +364,7 @@ Barra de ações única da tela. **Ordem fixa**: FILTROS (esquerda) ► CONTEXTO
 | `viewTabs` | `TabConfig[]` | Tabs de visualização — `{ value, label, icon?, count? }` (`count` exibe a contagem ao lado do rótulo) |
 | `viewParam` / `defaultView` | `string` | Parâmetro de URL da view (default `view`) |
 | `favorito` | `ReactNode` | Estrela — sempre por último |
-| `telaKey` | `string` | Liga a **persistência por usuário** dos filtros da tela: restaura o último filtro salvo na abertura (se a URL não trouxer filtros) e salva alterações com debounce (`useFiltrosPersistidos`); "limpar tudo" também apaga o estado persistido |
+| `telaKey` | `string` | Liga a **persistência por usuário** dos filtros da tela: restaura o último filtro salvo na abertura (se a URL não trouxer filtros) e salva alterações com debounce (`useFiltrosPersistidos`); "limpar tudo" também apaga o estado persistido. A leitura e a gravação vêm do `FiltrosPersistenciaProvider` (`filtros-persistencia.tsx`; no Tasks, ligado às actions de preferências em `components/layout/filtros-persistencia-tasks.tsx`): sem provedor, `telaKey` não grava nada e o menu de views salvas não aparece (premium-design v0.24.0) |
 | `buscaSempreAberta` | `boolean` | Opt-out da busca colapsável — o campo do filtro `search` fica sempre aberto |
 | `permitirQuebra` | `boolean` | Opt-out da linha única — os filtros voltam a quebrar em várias linhas (`flex-wrap`) |
 | `recorteLocal` | `boolean` | A tela recorta no navegador o que já carregou, e o servidor não lê os filtros (ex.: calendário do time). A barra escreve a URL pela History API nativa (`history.replaceState`; `pushState` ao aplicar uma view), que o Next sincroniza com `useSearchParams` sem refazer a página. Vale para a mudança de filtro, a restauração do filtro salvo e a aplicação de view. Sem a prop: `router.replace` |

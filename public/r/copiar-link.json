@@ -1,0 +1,26 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "copiar-link",
+  "title": "copiar-link",
+  "description": "Peça do Tasks copiada byte a byte: src/components/ui/copiar-link.tsx.",
+  "dependencies": [
+    "lucide-react@^1.17.0",
+    "motion@^12.42.2"
+  ],
+  "registryDependencies": [
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json",
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/link-markdown.json",
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/motion.json",
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/tooltip.json",
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/use-toast.json"
+  ],
+  "files": [
+    {
+      "path": "registry/src/components/ui/copiar-link.tsx",
+      "content": "\"use client\";\n\nimport { useState } from \"react\";\nimport { Link2, Check } from \"lucide-react\";\nimport { AnimatePresence, m } from \"motion/react\";\nimport { EASE } from \"@/lib/motion\";\nimport { useToast } from \"@/lib/hooks/use-toast\";\nimport { linkMarkdown } from \"@/lib/helpers/link-markdown\";\nimport { Tooltip } from \"@/components/ui/tooltip\";\n\n/**\n * Atalho que copia o **link interno** de um registro para compartilhar com a\n * equipe — distinto do link de aprovação do cliente, que é público.\n *\n * Primitivo único: demanda e atividade consomem daqui. A lógica é a mesma nas\n * duas (montar a URL, copiar, confirmar, trocar o ícone por um instante); o que\n * muda é o caminho e os rótulos. Duas cópias significariam a próxima correção de\n * formato acontecendo em só uma delas.\n *\n * O formato Markdown e o porquê dos `<>` no destino estão documentados em\n * `lib/helpers/link-markdown.ts`, que é puro e testado à parte.\n *\n * Em linhas e cards clicáveis, `stopNavigation` impede que o clique dispare a\n * navegação da linha (mesmo padrão do `FavoritoStar`).\n */\nexport function CopiarLink({\n  caminho,\n  titulo,\n  fallback,\n  rotuloAcao,\n  mensagemSucesso,\n  stopNavigation = false,\n}: {\n  /** Caminho interno do registro, com a barra inicial (ex.: `/atividades/abc`). */\n  caminho: string;\n  titulo: string;\n  /** Rótulo usado quando o título é vazio (ex.: \"Atividade\"). */\n  fallback: string;\n  /** Vira `aria-label` e `title` (ex.: \"Copiar link da atividade\"). */\n  rotuloAcao: string;\n  mensagemSucesso: string;\n  stopNavigation?: boolean;\n}) {\n  const toast = useToast();\n  const [copiado, setCopiado] = useState(false);\n\n  async function copiar(e: React.MouseEvent) {\n    if (stopNavigation) {\n      e.preventDefault();\n      e.stopPropagation();\n    }\n    const markdown = linkMarkdown({\n      origem: window.location.origin,\n      caminho,\n      titulo,\n      fallback,\n    });\n    try {\n      await navigator.clipboard.writeText(markdown);\n      setCopiado(true);\n      toast.success(mensagemSucesso);\n      setTimeout(() => setCopiado(false), 1500);\n    } catch {\n      toast.warning(\"Não foi possível copiar o link.\");\n    }\n  }\n\n  return (\n    <Tooltip label={rotuloAcao} side=\"top\">\n      <button\n        type=\"button\"\n        onClick={copiar}\n        aria-label={rotuloAcao}\n        className=\"inline-flex h-6 w-6 items-center justify-center rounded-[var(--r-sm)] text-[var(--premium-gray)] transition-colors hover:bg-[var(--premium-bone)] hover:text-[var(--premium-ink)] cursor-pointer focus-visible:outline-none focus-visible:shadow-[0_0_0_2px_var(--yellow-50)]\"\n      >\n        <AnimatePresence mode=\"wait\" initial={false}>\n          <m.span\n            key={copiado ? \"ok\" : \"idle\"}\n            initial={{ scale: 0.6, opacity: 0 }}\n            animate={{ scale: 1, opacity: 1 }}\n            exit={{ scale: 0.6, opacity: 0 }}\n            transition={{ duration: 0.15, ease: EASE }}\n            className=\"flex items-center justify-center\"\n          >\n            {copiado ? <Check size={13} className=\"text-[var(--success)]\" /> : <Link2 size={13} />}\n          </m.span>\n        </AnimatePresence>\n      </button>\n    </Tooltip>\n  );\n}\n",
+      "type": "registry:file",
+      "target": "src/components/ui/copiar-link.tsx"
+    }
+  ],
+  "type": "registry:ui"
+}

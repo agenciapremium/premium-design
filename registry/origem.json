@@ -1,0 +1,120 @@
+{
+  "$comentario": "Gerado por scripts/sincronizar-catalogo.mjs. Não edite à mão: rode npm run catalogo:sincronizar. tasksCommit é o HEAD do Tasks na sincronização; arquivos guarda o sha256 de cada arquivo copiado.",
+  "tasksCommit": "6f73341e02fe27919ec8e6fac00ed427aab70336",
+  "arquivos": {
+    "src/lib/utils.ts": "83992dd448148e9b822345f7a402102a16737fb1d1d1557f9a35c46464b23732",
+    "src/lib/format.ts": "69dd6f3ac9493cc18f884a135f3bb272b0f23dc11fff267d1c9ed26494b7226f",
+    "src/lib/motion.ts": "8271f0d3ab9aa2a0925035dc6598b8996387dd3c00d24e51db6919cc254b62c9",
+    "src/lib/constants.ts": "1d6b3ac14ebc34749dbd105823bb01669d67ca078b62e93868a8ec896a0a9d1a",
+    "src/lib/popover-pos.ts": "7252d8546a869e0b1bbfc83f42e7d90881665d2dbd92123a552686eed9601860",
+    "src/lib/overlay-pilha.ts": "672a5de817923106b3eaa0a9d9b0506ff49c9874b27e6d55490a9c64d3d955df",
+    "src/lib/foco.ts": "262ba79710134761384ab8a6099c8db270eea74dce7d8715ca82b51135bf74c9",
+    "src/lib/view-transition.ts": "f22d6ab77eb4dc5c2167615fd35412e7041aecee7915beeb15682724e39b53d3",
+    "src/lib/painel-cards-pos.ts": "572441a43db6ed5316f332894bba7c807c6252377cf4933a0f70134250512b0a",
+    "src/lib/kbd.ts": "8e2bd15eda6197656e6b227523718f0a575752c364722a79f7d30dd2cad9f180",
+    "src/lib/debounce.ts": "8f67dd2dda5dc45bd49ad383d2d727e10999b89f051c72560ee9c3ef88f8dbd0",
+    "src/lib/helpers/link-markdown.ts": "2b4e306ac7f1668803d75d5c35a0e791074d3270e647819c9413558e5e8de94e",
+    "src/lib/helpers/view-sort.ts": "8b8efacee7ad25a7999e5e58b67b3fd2315800890c5214315215e593957ae57c",
+    "src/lib/helpers/filtros-ativos.ts": "058f1f88f9b90a5f3ad08fd3818d4f24c399095b7842a2c461cd2f8358ab5733",
+    "src/lib/helpers/busca-filtro-url.ts": "e031126f995c6ff1f0dbc626b7fb2b3374a1a3a17a33180b1fd9fc85d7a36da6",
+    "src/lib/helpers/views-salvas.ts": "1fa8eaf78a746ff9d625599455a0e0c0c3af0969f2065ea5cf57cd2a16bd923a",
+    "src/lib/hooks/use-dialogo-foco.ts": "07e2226008eded61b1e857e6d53c3a89d86855d4d9c445dffb6c4f72214b1784",
+    "src/lib/hooks/use-toast.ts": "e760efc21abdba8317bade4de2c7f2740a4c0fbab9ec2d534725e6dfed3068db",
+    "src/lib/hooks/use-count-up.ts": "656e685acfc275192b7dce2e7af61c7da79af27666d2bb7eb090e070e7bd33e5",
+    "src/lib/hooks/use-infinite-window.ts": "c2d9ecb1dd2351e89ee9029f68947baa683217b59dbed8f669527bc771751057",
+    "src/lib/hooks/use-set-params.ts": "bf4771ff2264f590e965115932d1fbaca2fc64b17f36cd947e02146ee4643af4",
+    "src/lib/hooks/use-filtros-persistidos.ts": "1f665e52a803b87975dfac278f01d81e0b4b50db4ba18992a866386c28d4fba0",
+    "src/components/ui/accordion.tsx": "5c4f90b15b810e69a739a5acd3124713f7ab38dce990bbe6dec1d6310d4d2c1a",
+    "src/components/ui/autosave-bar.tsx": "e43d0cc43656afc76bc3694e320ed62ad4172dc76546deaf144b091a996661c5",
+    "src/components/ui/avatar.tsx": "b1da86072bc9e9ea6daba60ba01718443d05578d6e3f12223fabe87221b3f90e",
+    "src/components/ui/badge.tsx": "2529c2ab55012f4f241317a798b44809b7af3a2cae82cf45c2c26f1d5eeb3ee9",
+    "src/components/ui/bar-chart.tsx": "3e0457a11c499d771398d0ce13659570df7875a2e7f1693b570b09b665651605",
+    "src/components/ui/barra-progresso.tsx": "0c921eb8c83452ed87be90d2097e7b99bf0661ccefed3feae679e4516e44457f",
+    "src/components/ui/botao-lido.tsx": "badf521fdc89f1f4e6237709edadf8b233de289ef12c548ac8d7a9cdf16f4731",
+    "src/components/ui/breadcrumb.tsx": "02c2fd5c5abd43011270fb5f93ebe0960fa9a929c67cf7f06c0da9bc506c5707",
+    "src/components/ui/button.tsx": "3f3a67e68d122e8d726068541dcd5f153cd8bcd8e5badd05e856195335faf88e",
+    "src/components/ui/campo-busca.tsx": "65668678b04ba319eab5cb45f39f48460f2401b8094bfe9eb612f7c65d48a600",
+    "src/components/ui/card.tsx": "fab55dea6f1a1326b1a8ba3252315449461da321d7f796806d14098c86cab277",
+    "src/components/ui/card-secao.tsx": "14f77fa657fa729d13321d9b4d17db626e2baf2aa487a23b3ff6b93bcf29f367",
+    "src/components/ui/code-block.tsx": "bb0db9fbce02033e02787ffaa1043db05811a79e5cdc0ae55121305f327926ae",
+    "src/components/ui/code-highlight.ts": "f9380df538623edd0380b872c5a9758e60b453f40559189465121a39c68beb19",
+    "src/components/ui/coluna-infinita.tsx": "c84922f0012f790a0d5dfaeaa8f64a9037d8ea7f42c9ddca352b2d4f391737a4",
+    "src/components/ui/confirm-dialog.tsx": "24f8accf7067d790aea83407b795b4abd0fb268668248c147788f52712bff619",
+    "src/components/ui/contador.tsx": "c02cad0a47f908be6948c51aa095f7a7c5106c325305dd24b7fe4dbfbfa5c7d4",
+    "src/components/ui/context-icon-button.tsx": "908bfc4eec40f40e9f89ff59ecbdd4acd3974d9605afccfc1f62e8a313cd44d8",
+    "src/components/ui/copiar-link.tsx": "e7f9f0598a529accfa2b1556bd4f97903fa98d8cde6803e464fe43f6c210fcd1",
+    "src/components/ui/date-picker.tsx": "468a2228656dd120992a162494d9c493e5c9a389b18a8b1e68e8b450869a8316",
+    "src/components/ui/digitando-indicador.tsx": "a6387bddc9b7a5c53e0ef2c869f328ac5c74591685b917d8326abdd3f474c033",
+    "src/components/ui/emoji-picker.tsx": "5cc977bfb86eafd4bbc546913afdb7a46f9ddb340056aae916223b058a8aa963",
+    "src/components/ui/emoji-picker-panel.tsx": "728cb193ce795a0ce9dbe5fe60c9b70c15a5672f8510ccd36907fe434a5e61c9",
+    "src/components/ui/empty-state.tsx": "c4624ce9ac56835723d506982acdf1830bb8a19d11675eeb04c8a8e238ee5ed9",
+    "src/components/ui/expansivel.tsx": "1c9ca9882ff03566b3a4b8f20f5497fb75486464bf4ba0ce48703cdf6c69c741",
+    "src/components/ui/fab.tsx": "d7242355ad3fd9f503ea36c9316878e1d9791d84c36e12b4a733c4e7e5526e6e",
+    "src/components/ui/filter-bar.tsx": "c719552bf64e7281f7ec61cfde723eb8e99fc8d0fcef72aa9c3a1721897cdda8",
+    "src/components/ui/filtros-persistencia.tsx": "70cd945bbb356666bb71b315c9f899a16643a696043c6f9ca252ec44fa8a4530",
+    "src/components/ui/form-error-banner.tsx": "134a1b90139717fabcd7528a0bb6ee6ca512d917171bc7b161f62bd8adc8ba1e",
+    "src/components/ui/grupo-prazo.tsx": "dee8535524c188cbdcb24c3fb76893c1d842528444f181fd21aa1f488370c7a1",
+    "src/components/ui/input.tsx": "b855d8909e1673f5f045eaa85215814e107450613829358fbec44c4205a859cc",
+    "src/components/ui/line-chart.tsx": "38a54b4124fcd4f224cc5255cf560d514f440a1a21d592405be84287830feb15",
+    "src/components/ui/motion-provider.tsx": "e5de436958f577d6c291f82262b5fd1897daf76a6b992c1952efd29580b957ef",
+    "src/components/ui/multi-select.tsx": "1cfca6b8a2b9052f0e32d1b508c33a3052c0fff1ba62829071ea6231c7f51ae8",
+    "src/components/ui/pagination.tsx": "56ceaffe2845dd66f1ba1052539ad7021ad8e9a04947ab605c28755892f387b5",
+    "src/components/ui/painel-cards.tsx": "4c6ab5c41b5f89926e2679f855c305c947651c0e33c070b20b9fe338fc2ab9ad",
+    "src/components/ui/pessoas-picker.tsx": "40ac3f2d79d001c52c5f996ece337d828a5fd2d2cd346b8b68fac149e544f2bd",
+    "src/components/ui/pie-chart.tsx": "f44c3e6238420f69b7b638673e66c3fbdb6bde1d6ec697cda67d891e08645cfb",
+    "src/components/ui/pilula.tsx": "6b6150126cb1c44d233e38b1dda4234d55dfb645c209274da7b5d70f62625290",
+    "src/components/ui/segmented-tabs.tsx": "9665dff86cb259f86c5a1606b8181f37956553401ec96d5f655d4096b38e31f7",
+    "src/components/ui/select.tsx": "1458be57b3bf315fb40588d47eef7d3adb3ed00afdb2a898e7ad3a633e1e8328",
+    "src/components/ui/skeleton.tsx": "5455d397495c257ef615f8cda75847df86c1e89cfc0e9561d473a38515a77802",
+    "src/components/ui/slide-over.tsx": "c16b4bde4c46efa9852eafb721f4251207d770805d7f36383f6a76a3339b174d",
+    "src/components/ui/sort-controls.tsx": "d2fa403fcbee317f8675a1c62b152e52c5ee47d0f7bc62f2e638aab1727c8878",
+    "src/components/ui/switch.tsx": "1fa180fc69088abeb0bf18ce5aebf19da39194dcb06441ed45338c155156ed36",
+    "src/components/ui/textarea.tsx": "00dd4c402c0738309cf4325bb9552424bf91512f0f8b16a1aabf2c13326bd0c5",
+    "src/components/ui/texto-expansivel.tsx": "8a3854d0b5978ea26980d6a9bc8ab5c4a7c98226cb05f48958c4e25f0ce98783",
+    "src/components/ui/toast.tsx": "6f55343f137cb5e0ed78ba58e9ebd665d8b0e087250d4817696fc726bb215737",
+    "src/components/ui/tooltip.tsx": "e3c320496103bf06f9bfb9c457024e41a6dcf9595d3d5206eb9725187ffd78c4",
+    "src/components/ui/views-salvas-menu.tsx": "bcafacd0a41c443e240653ff55fe026390924162c2900d8fc4f98ac818c14174"
+  },
+  "base": {
+    "src/styles/premium/tokens.css": {
+      "origem": "css/tokens.css",
+      "sha256": "8b0b12dda7102d661247be693b6f3055f18cd9b1014324730dc169b095703da4"
+    },
+    "src/styles/premium/theme.css": {
+      "origem": "css/theme.css",
+      "sha256": "12f90e84b5de338a89636fef06f485b30ceb8e58dba950b5000f58c0028fdfd9"
+    },
+    "src/styles/premium/base.css": {
+      "origem": "css/base.css",
+      "sha256": "78a0294f78964d3cb35221b7b4945a5e5036af09132ae27aa637243366d94d20"
+    },
+    "src/styles/premium/motion.css": {
+      "origem": "css/motion.css",
+      "sha256": "4628a41f55d530afa4e91aa46b93c13f83de0fac3f17758265890e91e32e94fa"
+    },
+    "src/styles/premium/patterns/autosave.css": {
+      "origem": "css/patterns/autosave.css",
+      "sha256": "2c20170e7cd00d47d8cb2f059947b0ecaa62c96226edc6de616107c20a9f7375"
+    },
+    "src/styles/premium/patterns/code-block.css": {
+      "origem": "css/patterns/code-block.css",
+      "sha256": "a634a7629f4dae88e48bb6a1fa45f734d3aacd86b62c1fde019acf77f94fd5ba"
+    },
+    "src/styles/premium/patterns/kanban.css": {
+      "origem": "css/patterns/kanban.css",
+      "sha256": "08f9b62c376f4044f7dbbee84be87c518ae0d3c251ac7aa03dc6fcd3d4910408"
+    },
+    "src/styles/premium/patterns/pilha-rolagem.css": {
+      "origem": "css/patterns/pilha-rolagem.css",
+      "sha256": "15dca57b0606e13e146a24ce9714416ecac55e8a248450118ba3ece4e75578f0"
+    },
+    "src/styles/premium/patterns/pilula.css": {
+      "origem": "css/patterns/pilula.css",
+      "sha256": "24fbf8ceb8ca85e17f308e7050c2a92d9290c81c39e7e2f8332eb64519b18cf7"
+    },
+    "src/styles/premium/patterns/tooltip.css": {
+      "origem": "css/patterns/tooltip.css",
+      "sha256": "0383e50cdfafcd5d5dcb3b4c66b8e6929b1c741b1d99f0753997fc6dfa07c703"
+    }
+  }
+}

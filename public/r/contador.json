@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "contador",
+  "title": "contador",
+  "description": "Peça do Tasks copiada byte a byte: src/components/ui/contador.tsx.",
+  "registryDependencies": [
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json",
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/use-count-up.json"
+  ],
+  "files": [
+    {
+      "path": "registry/src/components/ui/contador.tsx",
+      "content": "\"use client\";\n\nimport { useCountUp } from \"@/lib/hooks/use-count-up\";\n\n/**\n * Exibe um número com contagem crescente animada (change\n * animacoes-graficos-abas-transicoes). Passe `format` para preservar\n * moeda/%/compacto. Sob `prefers-reduced-motion` mostra o valor final direto\n * (guardado dentro do `useCountUp`).\n */\nexport function Contador({\n  valor,\n  format,\n  duracao,\n  className,\n}: {\n  valor: number;\n  format?: (n: number) => string;\n  duracao?: number;\n  className?: string;\n}) {\n  const texto = useCountUp(valor, { format, duration: duracao });\n  return <span className={className}>{texto}</span>;\n}\n",
+      "type": "registry:file",
+      "target": "src/components/ui/contador.tsx"
+    }
+  ],
+  "type": "registry:ui"
+}

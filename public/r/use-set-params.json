@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "use-set-params",
+  "title": "use-set-params",
+  "description": "Peça do Tasks copiada byte a byte: src/lib/hooks/use-set-params.ts.",
+  "files": [
+    {
+      "path": "registry/src/lib/hooks/use-set-params.ts",
+      "content": "\"use client\";\n\nimport { usePathname, useRouter, useSearchParams } from \"next/navigation\";\n\n/**\n * Escreve chaves na URL preservando as demais. Qualquer mudança de filtro/visão\n * reseta a paginação para a página 1 (remove `?pagina=`), evitando cair numa\n * página inexistente para o novo recorte (capability paginacao-tabelas, reset ao\n * filtrar). Usa `router.replace` (sem poluir o histórico) e `scroll: false`, ou,\n * com `local`, `history.replaceState` (change calendario-time-filtros, D5).\n *\n * Mora fora da `FilterBar` (change catalogo-componentes-premium-design, D7) para\n * quem renderiza `ViewTabsPill` fora da barra (ex.: as abas da visão Tabela de\n * demandas) e para as listas com abas por parâmetro: a regra do reset de página\n * existe em um só lugar em vez de ser reescrita no consumidor.\n */\nexport function useSetParams({ local = false }: { local?: boolean } = {}) {\n  const router = useRouter();\n  const pathname = usePathname();\n  const searchParams = useSearchParams();\n\n  return function setParams(updates: Record<string, string | null>) {\n    const params = new URLSearchParams(searchParams.toString());\n    if (!(\"pagina\" in updates)) params.delete(\"pagina\");\n    for (const [key, value] of Object.entries(updates)) {\n      if (value === null || value === \"\") params.delete(key);\n      else params.set(key, value);\n    }\n    const qs = params.toString();\n    const url = qs ? `${pathname}?${qs}` : pathname;\n    // `local` (prop `recorteLocal`): a tela recorta no navegador, então basta a\n    // URL; o Next sincroniza `useSearchParams` sem refazer a página.\n    if (local) window.history.replaceState(null, \"\", url);\n    else router.replace(url, { scroll: false });\n  };\n}\n",
+      "type": "registry:file",
+      "target": "src/lib/hooks/use-set-params.ts"
+    }
+  ],
+  "type": "registry:hook"
+}
