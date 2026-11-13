@@ -38,7 +38,7 @@ Tokens de marca com par escuro próprio — declarados em `:root` e sobrescritos
 | `--c-surface` | `#FFFFFF` | `#161616` | Superfície de card / painel |
 | `--c-sunken` | `#F2F2F2` | `#202020` | Chip, thead, tabs, segmented |
 | `--c-ink` | `#0A0A0A` | `#FAFAFA` | Texto principal |
-| `--c-muted` | `#8A8A8A` | `#B8B8B8` | Texto auxiliar |
+| `--c-muted` | `#6B6B6B` | `#B8B8B8` | Texto auxiliar (`var(--premium-gray)`) |
 | `--c-subtle` | `#BFBFBF` | `#8A8A8A` | Ícones / desabilitado |
 | `--c-border` | `#E5E5E5` | `#2E2E2E` | Borda padrão |
 | `--c-border-strong` | `#2A2A2A` | `#4A4A4A` | Borda forte |
@@ -61,7 +61,7 @@ No claro, valores literais originais; no escuro, **recalibrados** (texto e super
 | `--premium-coal` | `#1A1A1A` | `#F2F2F2` | Hover sobre superfícies escuras |
 | `--premium-graphite` | `#2A2A2A` | `#4A4A4A` | Borda em superfícies escuras |
 | `--premium-steel` | `#4A4A4A` | `#D0D0D0` | Texto secundário |
-| `--premium-gray` | `#8A8A8A` | `#B8B8B8` | Texto auxiliar / placeholder |
+| `--premium-gray` | `#6B6B6B` | `#B8B8B8` | Texto auxiliar / placeholder. Desde a v0.25.0 do premium-design, `#6B6B6B` no claro: 5,33:1 sobre `--premium-white`, 5,11:1 sobre `--premium-paper` e 4,76:1 sobre `--premium-bone` (o `#8A8A8A` anterior dava 3,45:1 sobre o branco). O escuro não mudou |
 | `--premium-silver` | `#BFBFBF` | `#5A5A5A` | Bordas / ícones desabilitados |
 | `--premium-mist` | `#E5E5E5` | `#2E2E2E` | Borda padrão de cards/inputs |
 | `--premium-bone` | `#F2F2F2` | `#202020` | Fundo de chip, thead, segmented |

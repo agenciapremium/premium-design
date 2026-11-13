@@ -21,7 +21,7 @@ const INK    = "#0A0A0A"; // --brand-ink / --premium-ink
 const BONE   = "#F2F2F2"; // --premium-bone
 const MIST   = "#E5E5E5"; // --premium-mist
 const STEEL  = "#4A4A4A"; // --premium-steel
-const GRAY   = "#8A8A8A"; // --premium-gray
+const GRAY   = "#6B6B6B"; // --premium-gray
 const SILVER = "#BFBFBF"; // --premium-silver
 const YELLOW = "#FBDA25"; // --brand-yellow
 ```

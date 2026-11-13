@@ -3,9 +3,6 @@
   "name": "empty-state",
   "title": "empty-state",
   "description": "Peça do Tasks copiada byte a byte: src/components/ui/empty-state.tsx.",
-  "registryDependencies": [
-    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json"
-  ],
   "files": [
     {
       "path": "registry/src/components/ui/empty-state.tsx",

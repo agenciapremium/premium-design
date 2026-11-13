@@ -7,9 +7,8 @@
     "motion@^12.42.2"
   ],
   "registryDependencies": [
-    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json",
-    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/format.json",
-    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/motion.json"
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/format.json",
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/motion.json"
   ],
   "files": [
     {

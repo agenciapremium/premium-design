@@ -8,16 +8,15 @@
     "motion@^12.42.2"
   ],
   "registryDependencies": [
-    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json",
-    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/confirm-dialog.json",
-    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/context-icon-button.json",
-    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/filtros-persistencia.json",
-    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/input.json",
-    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/motion.json",
-    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/use-dialogo-foco.json",
-    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/use-toast.json",
-    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/utils.json",
-    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/views-salvas.json"
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/confirm-dialog.json",
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/context-icon-button.json",
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/filtros-persistencia.json",
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/input.json",
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/motion.json",
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/use-dialogo-foco.json",
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/use-toast.json",
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/utils.json",
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/views-salvas.json"
   ],
   "files": [
     {

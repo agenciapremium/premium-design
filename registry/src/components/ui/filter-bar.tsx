@@ -1,17 +1,29 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState, useTransition, type ReactNode } from "react";
+import { useCallback, useEffect, useId, useMemo, useRef, useState, useTransition, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { useSearchParams } from "next/navigation";
 import { m } from "motion/react";
 import { Check, ChevronDown, FunnelX, Search, X } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { mostrarLimparFiltros } from "@/lib/helpers/filtros-ativos";
+import {
+  buscaLocal,
+  chavesDoFiltro,
+  chavesNaUrl,
+  escritaDaFaixa,
+  limpezaDosFiltros,
+  mostrarLimparFiltros,
+  normalizarFaixa,
+  rotuloFaixa,
+  type LimitesFaixa,
+} from "@/lib/helpers/filtros-ativos";
 import { campoAdotaUrl } from "@/lib/helpers/busca-filtro-url";
 import { motionPreset } from "@/lib/motion";
 import { navegarComTransicao } from "@/lib/view-transition";
 import { DatePicker } from "@/components/ui/date-picker";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Tooltip } from "@/components/ui/tooltip";
 import { popoverPos } from "@/lib/popover-pos";
 import { useSetParams } from "@/lib/hooks/use-set-params";
@@ -25,11 +37,12 @@ import {
   useDropdownPortal,
 } from "@/components/ui/pilula";
 import { useFiltrosPersistidos } from "@/lib/hooks/use-filtros-persistidos";
+import { useBuscaLocal } from "@/lib/hooks/use-busca-local";
 import { ViewsSalvasMenu } from "@/components/ui/views-salvas-menu";
 import { useFiltrosPersistencia } from "@/components/ui/filtros-persistencia";
 import type { FiltroConhecido } from "@/lib/helpers/views-salvas";
 
-export type FilterType = "select" | "multiselect" | "daterange" | "toggle" | "search";
+export type FilterType = "select" | "multiselect" | "daterange" | "toggle" | "search" | "faixa";
 
 export interface FilterOption {
   value: string;
@@ -51,7 +64,7 @@ const BUSCA_A_PARTIR_DE = 8;
 const LIMITE_VISIVEL_PADRAO = 6;
 
 export interface FilterConfig {
-  /** Chave usada na URL (para `daterange` vira `<key>De` e `<key>Ate`). */
+  /** Chave usada na URL (para `daterange` e `faixa` vira `<key>De` e `<key>Ate`). */
   key: string;
   label: string;
   type: FilterType;
@@ -76,6 +89,22 @@ export interface FilterConfig {
    * não sobre parâmetro órfão na URL nem no filtro persistido.
    */
   limpaJunto?: string[];
+  /**
+   * Limites da `faixa` (filtro de faixa numérica, "de" e "até"). Obrigatórios
+   * quando o tipo é `faixa`: o valor fora deles vai para o limite mais próximo.
+   */
+  min?: number;
+  max?: number;
+  /** Incremento dos campos da `faixa`. Padrão 1. */
+  passo?: number;
+  /**
+   * Busca fora da URL (`search`): com a função, o termo fica só no estado do
+   * componente e chega aqui com o mesmo atraso da busca pela URL, e `""` ao
+   * limpar. Não vai para a URL, para os filtros persistidos nem para as views
+   * salvas. Para buscas com dado pessoal (nome, e-mail). Pode mudar a cada
+   * render: a barra a guarda em ref.
+   */
+  aoBuscar?: (termo: string) => void;
 }
 
 /** Atualizações de URL de um filtro, somando as chaves dependentes quando ele é limpo. */
@@ -198,15 +227,22 @@ export function FilterBar({
 
   const activeView = searchParams.get(viewParam) ?? defaultView ?? viewTabs[0]?.value;
 
-  // Chaves de URL que contam como filtro (daterange expande em De/Ate). Base
-  // tanto da restauração quanto do salvamento persistido.
-  const filterKeys = useMemo(
-    () =>
-      filters.flatMap((f) =>
-        f.type === "daterange" ? [`${f.key}De`, `${f.key}Ate`] : [f.key]
-      ),
-    [filters]
-  );
+  // Chaves de URL que contam como filtro (daterange e faixa expandem em
+  // De/Ate; a busca com `aoBuscar` fica de fora). Base tanto da restauração
+  // quanto do salvamento persistido. Regra pura em `filtros-ativos.ts`.
+  const filterKeys = useMemo(() => chavesNaUrl(filters), [filters]);
+
+  // Limpadores das buscas fora da URL (`aoBuscar`), chamados pelo "Limpar
+  // filtros" junto com a limpeza da URL (change
+  // catalogo-filterbar-faixa-busca-correcoes, D2).
+  const limpadoresLocais = useRef(new Map<string, () => void>());
+  const registrarLimpador = useCallback((key: string, limpar: () => void) => {
+    const mapa = limpadoresLocais.current;
+    mapa.set(key, limpar);
+    return () => {
+      if (mapa.get(key) === limpar) mapa.delete(key);
+    };
+  }, []);
 
   const { limpar: limparPersistido } = useFiltrosPersistidos({ telaKey, filterKeys, local: recorteLocal });
 
@@ -240,16 +276,8 @@ export function FilterBar({
   const mostrarLimpar = mostrarLimparFiltros(filters, (k) => searchParams.get(k));
 
   function clearAll() {
-    const updates: Record<string, string | null> = {};
-    for (const f of filters) {
-      if (f.type === "daterange") {
-        updates[`${f.key}De`] = null;
-        updates[`${f.key}Ate`] = null;
-      } else {
-        updates[f.key] = null;
-      }
-    }
-    setParams(updates);
+    setParams(limpezaDosFiltros(filters));
+    for (const limpar of limpadoresLocais.current.values()) limpar();
     // Limpar filtros também apaga o estado persistido da tela, para que a
     // próxima abertura não restaure o filtro anterior.
     limparPersistido();
@@ -279,6 +307,7 @@ export function FilterBar({
             searchParams={searchParams}
             setParams={setParams}
             buscaColapsavel={!buscaSempreAberta}
+            registrarLimpador={registrarLimpador}
           />
         ))}
         {/* Ícone de funil com x, não `X`: o `X` fica reservado ao limpar de um
@@ -406,13 +435,26 @@ function FilterControl({
   searchParams,
   setParams,
   buscaColapsavel,
+  registrarLimpador,
 }: {
   filter: FilterConfig;
   searchParams: ReturnType<typeof useSearchParams>;
   setParams: (updates: Record<string, string | null>) => void;
   buscaColapsavel: boolean;
+  registrarLimpador: (key: string, limpar: () => void) => () => void;
 }) {
   const Icon = filter.icon;
+
+  if (buscaLocal(filter) && filter.aoBuscar) {
+    return (
+      <BuscaLocalControl
+        filter={filter}
+        aoBuscar={filter.aoBuscar}
+        colapsavel={buscaColapsavel}
+        registrarLimpador={registrarLimpador}
+      />
+    );
+  }
 
   if (filter.type === "search") {
     return (
@@ -440,8 +482,9 @@ function FilterControl({
   }
 
   if (filter.type === "daterange") {
-    const de = searchParams.get(`${filter.key}De`) ?? "";
-    const ate = searchParams.get(`${filter.key}Ate`) ?? "";
+    const [chaveDe, chaveAte] = chavesDoFiltro(filter);
+    const de = searchParams.get(chaveDe) ?? "";
+    const ate = searchParams.get(chaveAte) ?? "";
     const active = Boolean(de || ate);
     return (
       <div className={cn(chipBase, active ? chipActive : chipIdle, "cursor-default")}>
@@ -451,7 +494,7 @@ function FilterControl({
           variant="inline"
           value={de}
           max={ate || undefined}
-          onChange={(e) => setParams({ [`${filter.key}De`]: e.target.value || null })}
+          onChange={(e) => setParams({ [chaveDe]: e.target.value || null })}
           placeholder="Início"
           ariaLabel={`${filter.label}: data inicial`}
         />
@@ -460,12 +503,16 @@ function FilterControl({
           variant="inline"
           value={ate}
           min={de || undefined}
-          onChange={(e) => setParams({ [`${filter.key}Ate`]: e.target.value || null })}
+          onChange={(e) => setParams({ [chaveAte]: e.target.value || null })}
           placeholder="Fim"
           ariaLabel={`${filter.label}: data final`}
         />
       </div>
     );
+  }
+
+  if (filter.type === "faixa") {
+    return <FaixaFilterControl filter={filter} searchParams={searchParams} setParams={setParams} />;
   }
 
   if (filter.type === "multiselect") {
@@ -494,17 +541,14 @@ function SearchFilterControl({
   setParams: (updates: Record<string, string | null>) => void;
   colapsavel: boolean;
 }) {
-  const Icon = filter.icon ?? Search;
   const urlValue = searchParams.get(filter.key) ?? "";
   const [valor, setValor] = useState(urlValue);
   const [urlAnterior, setUrlAnterior] = useState(urlValue);
-  const [expandido, setExpandido] = useState(false);
   // Escrita do campo a caminho da URL: o debounce correndo (`digitando`) ou a
   // navegação disparada por ele ainda sem confirmar (`navegando`). Estado, não
   // ref, porque é lido durante o render.
   const [digitando, setDigitando] = useState(false);
   const [navegando, startNavegacao] = useTransition();
-  const inputRef = useRef<HTMLInputElement>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Reflete mudanças externas da URL (ex.: "Limpar filtros") no campo, sem
@@ -517,15 +561,6 @@ function SearchFilterControl({
     setUrlAnterior(urlValue);
     setValor(urlValue);
   }
-
-  const active = valor.trim().length > 0;
-  // Aberto quando: não-colapsável (opt-out), expandido manualmente, ou há termo.
-  const aberto = !colapsavel || expandido || active;
-
-  // Foca o input ao expandir (capability filter-bar-busca-layout-global).
-  useEffect(() => {
-    if (aberto && expandido) inputRef.current?.focus();
-  }, [aberto, expandido]);
 
   function onChange(v: string) {
     setValor(v);
@@ -543,6 +578,63 @@ function SearchFilterControl({
     setDigitando(false);
     if (timer.current) clearTimeout(timer.current);
     startNavegacao(() => setParams({ [filter.key]: null }));
+  }
+
+  return <ChipBusca filter={filter} valor={valor} onChange={onChange} onLimpar={limpar} colapsavel={colapsavel} />;
+}
+
+// Busca fora da URL (`aoBuscar`): o termo fica no estado do componente e chega
+// à tela pela função, com o mesmo atraso (change
+// catalogo-filterbar-faixa-busca-correcoes, D2). O limpador entra no registro
+// da barra para o "Limpar filtros" esvaziar o campo e chamar `aoBuscar("")`.
+function BuscaLocalControl({
+  filter,
+  aoBuscar,
+  colapsavel,
+  registrarLimpador,
+}: {
+  filter: FilterConfig;
+  aoBuscar: (termo: string) => void;
+  colapsavel: boolean;
+  registrarLimpador: (key: string, limpar: () => void) => () => void;
+}) {
+  const { valor, alterar, limpar } = useBuscaLocal({ aoBuscar });
+
+  useEffect(() => registrarLimpador(filter.key, limpar), [registrarLimpador, filter.key, limpar]);
+
+  return <ChipBusca filter={filter} valor={valor} onChange={alterar} onLimpar={limpar} colapsavel={colapsavel} />;
+}
+
+// Chip da busca, o mesmo para a busca pela URL e para a busca fora dela: a
+// lupa colapsável, o campo e o `X` de limpar.
+function ChipBusca({
+  filter,
+  valor,
+  onChange,
+  onLimpar,
+  colapsavel,
+}: {
+  filter: FilterConfig;
+  valor: string;
+  onChange: (v: string) => void;
+  onLimpar: () => void;
+  colapsavel: boolean;
+}) {
+  const Icon = filter.icon ?? Search;
+  const [expandido, setExpandido] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const active = valor.trim().length > 0;
+  // Aberto quando: não-colapsável (opt-out), expandido manualmente, ou há termo.
+  const aberto = !colapsavel || expandido || active;
+
+  // Foca o input ao expandir (capability filter-bar-busca-layout-global).
+  useEffect(() => {
+    if (aberto && expandido) inputRef.current?.focus();
+  }, [aberto, expandido]);
+
+  function limpar() {
+    onLimpar();
     setExpandido(false);
   }
 
@@ -609,6 +701,208 @@ function SearchFilterControl({
           <X size={14} />
         </button>
       )}
+    </div>
+  );
+}
+
+/** Limites da `faixa`, obrigatórios em tempo de execução (D1). */
+function limitesDaFaixa(filter: FilterConfig): LimitesFaixa {
+  const { min, max } = filter;
+  if (typeof min !== "number" || typeof max !== "number" || !Number.isFinite(min) || !Number.isFinite(max) || min > max) {
+    throw new Error(`FilterBar: o filtro "${filter.key}" é do tipo "faixa" e precisa de min e max numéricos, com min <= max.`);
+  }
+  return { min, max };
+}
+
+const textoDe = (n: number | null) => (n === null ? "" : String(n));
+
+// Filtro de faixa numérica, "de" e "até" (change
+// catalogo-filterbar-faixa-busca-correcoes, D1): pílula com o rótulo resumido
+// e o painel em portal dos selects, com dois campos numéricos. Grava
+// `<key>De`/`<key>Ate` ao confirmar (Enter ou Aplicar), ao sair dos campos ou
+// ao fechar o painel pelo clique fora, nunca a cada tecla; `Esc` descarta.
+function FaixaFilterControl({
+  filter,
+  searchParams,
+  setParams,
+}: {
+  filter: FilterConfig;
+  searchParams: ReturnType<typeof useSearchParams>;
+  setParams: (updates: Record<string, string | null>) => void;
+}) {
+  const { open, setOpen, rect, triggerRef, panelRef, abrir } = useDropdownPortal();
+  const id = useId();
+  const Icon = filter.icon;
+  const limites = limitesDaFaixa(filter);
+  const passo = filter.passo ?? 1;
+  const [chaveDe, chaveAte] = chavesDoFiltro(filter);
+  const urlDe = searchParams.get(chaveDe);
+  const urlAte = searchParams.get(chaveAte);
+  const atual = normalizarFaixa(urlDe, urlAte, limites);
+  const active = atual.de !== null || atual.ate !== null;
+  const rotulo = rotuloFaixa(filter.label, atual);
+  const [de, setDe] = useState("");
+  const [ate, setAte] = useState("");
+  // Edição ainda não gravada; `null` quando não há nada pendente.
+  const pendente = useRef<{ de: string; ate: string } | null>(null);
+
+  /** Grava na URL, só quando muda algo. */
+  function escrever(novoDe: string, novoAte: string) {
+    pendente.current = null;
+    const escrita = escritaDaFaixa(filter, novoDe, novoAte, limites);
+    if (escrita[chaveDe] !== (urlDe || null) || escrita[chaveAte] !== (urlAte || null)) setParams(escrita);
+  }
+
+  /** Grava e mostra nos campos o valor normalizado (limitado e ordenado). */
+  function aplicar(novoDe: string, novoAte: string) {
+    const v = normalizarFaixa(novoDe, novoAte, limites);
+    setDe(textoDe(v.de));
+    setAte(textoDe(v.ate));
+    escrever(novoDe, novoAte);
+  }
+
+  // Fechou pelo clique fora com edição pendente: grava, como ao sair do campo.
+  const escreverRef = useRef(escrever);
+  useEffect(() => {
+    escreverRef.current = escrever;
+  });
+  useEffect(() => {
+    if (!open && pendente.current) escreverRef.current(pendente.current.de, pendente.current.ate);
+  }, [open]);
+
+  function abrirPainel() {
+    setDe(textoDe(atual.de));
+    setAte(textoDe(atual.ate));
+    pendente.current = null;
+    abrir();
+  }
+
+  function fechar() {
+    setOpen(false);
+    triggerRef.current?.focus();
+  }
+
+  function onKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      aplicar(de, ate);
+      fechar();
+    } else if (e.key === "Escape") {
+      // O `useDropdownPortal` fecha o painel; a edição é descartada.
+      pendente.current = null;
+      triggerRef.current?.focus();
+    }
+  }
+
+  function onBlur(e: React.FocusEvent<HTMLInputElement>) {
+    // Ir de um campo ao outro, ou aos botões do painel, não grava.
+    if (panelRef.current?.contains(e.relatedTarget as Node | null)) return;
+    if (pendente.current) aplicar(de, ate);
+  }
+
+  function mudarDe(v: string) {
+    setDe(v);
+    pendente.current = { de: v, ate };
+  }
+
+  function mudarAte(v: string) {
+    setAte(v);
+    pendente.current = { de, ate: v };
+  }
+
+  // O que os dois campos têm em comum: número com os limites e o passo, e as
+  // mesmas teclas e a mesma saída.
+  const propsCampo = {
+    type: "number",
+    inputMode: Number.isInteger(passo) && Number.isInteger(limites.min) ? "numeric" : "decimal",
+    min: limites.min,
+    max: limites.max,
+    step: passo,
+    onKeyDown,
+    onBlur,
+    className: "min-h-10",
+  } as const;
+
+  return (
+    <div className="relative shrink-0">
+      <button
+        ref={triggerRef}
+        type="button"
+        onClick={() => (open ? setOpen(false) : abrirPainel())}
+        aria-haspopup="dialog"
+        aria-expanded={open}
+        className={cn(
+          chipBase,
+          active ? chipActive : chipIdle,
+          "focus-visible:outline-none focus-visible:shadow-[0_0_0_2px_var(--yellow-50),0_0_0_3px_var(--premium-ink)]"
+        )}
+      >
+        {Icon && <Icon size={14} className="text-[var(--premium-gray)]" />}
+        <span>{rotulo}</span>
+        <ChevronDown size={14} className="text-[var(--premium-gray)] -mr-1" />
+      </button>
+      {open &&
+        rect &&
+        typeof document !== "undefined" &&
+        createPortal(
+          <m.div
+            ref={panelRef}
+            {...motionPreset("menu")}
+            role="dialog"
+            aria-label={filter.label}
+            style={popoverPos(rect, Math.max(rect.width, 260), 200)}
+            className={cn(dropdownPanelClass, "p-3")}
+          >
+            <div className="grid grid-cols-2 gap-3">
+              <Input
+                {...propsCampo}
+                id={`${id}-de`}
+                label="De"
+                aria-label={`${filter.label}: de`}
+                value={de}
+                onChange={(e) => mudarDe(e.target.value)}
+                placeholder={String(limites.min)}
+                autoFocus
+              />
+              <Input
+                {...propsCampo}
+                id={`${id}-ate`}
+                label="Até"
+                aria-label={`${filter.label}: até`}
+                value={ate}
+                onChange={(e) => mudarAte(e.target.value)}
+                placeholder={String(limites.max)}
+              />
+            </div>
+            <div className="mt-3 flex justify-end gap-2">
+              {(active || de || ate) && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="min-h-10"
+                  onClick={() => {
+                    aplicar("", "");
+                    fechar();
+                  }}
+                >
+                  Limpar
+                </Button>
+              )}
+              <Button
+                variant="dark"
+                size="sm"
+                className="min-h-10"
+                onClick={() => {
+                  aplicar(de, ate);
+                  fechar();
+                }}
+              >
+                Aplicar
+              </Button>
+            </div>
+          </m.div>,
+          document.body
+        )}
     </div>
   );
 }

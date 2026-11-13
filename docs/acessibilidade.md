@@ -24,7 +24,7 @@ Verificações já calibradas nos tokens:
 > [!CAUTION]
 > **Amarelo `--yellow` (#FBDA25) não é acessível como texto pequeno sobre fundo claro.** Use-o somente: (a) como **fundo** com texto preto; (b) como **acento sobre superfícies escuras** (sidebar, toast, banner). `text-black` literal só é permitido sobre amarelo/cores fixas.
 >
-> `--premium-gray` (#8A8A8A) sobre branco fica no limite (~3.5:1) — reservado a texto **auxiliar** (subtítulos, timestamps, placeholders), nunca a conteúdo essencial.
+> `--premium-gray` (#6B6B6B no claro desde a v0.25.0) dá 5,33:1 sobre o branco e 4,76:1 sobre `--premium-bone`, e passa AA de texto. Continua reservado a texto **auxiliar** (subtítulos, timestamps, placeholders); conteúdo essencial usa `--premium-steel` ou `--premium-ink`.
 
 ## Foco visível
 

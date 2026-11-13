@@ -16,15 +16,15 @@ Convenções comuns a todos:
 
 ## Copiar pelo catálogo
 
-Desde a premium-design **v0.24.0**, as peças desta página que não dependem do domínio do Tasks são copiáveis por um comando, no formato de registry do shadcn. **Sistema novo nunca reescreve componente do catálogo: copia pelo comando.** A peça chega byte a byte igual ao arquivo do Tasks, com as peças e funções de apoio de que depende, a peça base (tokens, tema, base, motion e os padrões de CSS que as peças usam) e os pacotes npm declarados.
+Desde a premium-design **v0.24.0**, as peças desta página que não dependem do domínio do Tasks são copiáveis por um comando, no formato de registry do shadcn. **Sistema novo nunca reescreve componente do catálogo: copia pelo comando.** A peça chega byte a byte igual ao arquivo do Tasks, com as peças e funções de apoio de que depende e os pacotes npm declarados. Desde a v0.25.0, a peça base (tokens, tema, base, motion e os padrões de CSS que as peças usam) não vem junto: o sistema importa os tokens do pacote `@agenciapremium/premium-design` ou copia a `premium-base` uma vez, antes da primeira peça.
 
 ```bash
-npx shadcn@latest add https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/filter-bar.json
+npx shadcn@latest add https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/filter-bar.json
 # ou, com "@premium" em "registries" no components.json do sistema:
 npx shadcn@latest add @premium/filter-bar
 ```
 
-Pré-requisitos (Next.js App Router com `src/`, Tailwind v4, alias `@/*` → `src/*`), o `components.json` recomendado e os imports de CSS estão no [README](../README.md#catálogo-de-componentes). A origem é o manifesto [`src/components/ui/catalogo.json`](https://github.com/agenciapremium/tasks/blob/main/src/components/ui/catalogo.json) do Tasks: ajuste numa peça copiada nasce no Tasks e chega ao catálogo pela sincronização (`npm run catalogo:sincronizar` no premium-design), nunca por edição local divergente.
+Pré-requisitos (Next.js App Router com `src/`, Tailwind v4, alias `@/*` → `src/*`), os dois caminhos da base, o `@source` do Tailwind, o `components.json` recomendado e os imports de CSS estão no [README](../README.md#catálogo-de-componentes). A origem é o manifesto [`src/components/ui/catalogo.json`](https://github.com/agenciapremium/tasks/blob/main/src/components/ui/catalogo.json) do Tasks: ajuste numa peça copiada nasce no Tasks e chega ao catálogo pela sincronização (`npm run catalogo:sincronizar` no premium-design), nunca por edição local divergente.
 
 **Peças do catálogo** (a lista com arquivos e dependências está no [`registry.json`](../registry.json)):
 
@@ -33,9 +33,9 @@ Pré-requisitos (Next.js App Router com `src/`, Tailwind v4, alias `@/*` → `sr
 - **Superfícies e overlays:** `card`, `card-secao`, `slide-over`, `confirm-dialog`, `painel-cards`, `tooltip`, `toast`, `fab`, `accordion`, `expansivel`, `texto-expansivel`.
 - **Estado e conteúdo:** `badge`, `avatar`, `empty-state`, `skeleton`, `code-block`, `digitando-indicador`, `botao-lido`, `grupo-prazo`, `contador`, `barra-progresso`.
 - **Gráficos e motion:** `bar-chart`, `line-chart`, `pie-chart`, `motion-provider`.
-- **Hooks:** `use-dialogo-foco`, `use-toast`, `use-count-up`, `use-infinite-window`, `use-set-params`, `use-filtros-persistidos`.
-- **Funções de apoio:** `utils`, `format`, `motion`, `constants`, `popover-pos`, `overlay-pilha`, `foco`, `view-transition`, `painel-cards-pos`, `kbd`, `debounce`, `link-markdown`, `view-sort`, `filtros-ativos`, `busca-filtro-url`, `views-salvas`.
-- **Base:** `premium-base`, de que toda peça visual depende.
+- **Hooks:** `use-dialogo-foco`, `use-toast`, `use-count-up`, `use-infinite-window`, `use-set-params`, `use-filtros-persistidos`, `use-busca-local`.
+- **Funções de apoio:** `utils`, `format`, `motion`, `constants`, `popover-pos`, `overlay-pilha`, `foco`, `view-transition`, `painel-cards-pos`, `kbd`, `debounce`, `link-markdown`, `view-sort`, `filtros-ativos`, `tecla-confirmacao`, `busca-filtro-url`, `views-salvas`.
+- **Base:** `premium-base`, copiada uma vez por quem não usa o pacote (as peças não a declaram como dependência).
 
 Ficam fora, por dependerem do domínio ou do shell do Tasks: `PageHeader`, `PresencaAvatares`, `Lightbox`, `DriveMediaViewer`, `CartaoDocumento`, `ErroRota`, o editor rico (`RichEditor`, `MarkdownView`, `editor/`), o Drive (`DriveLinkActions`, `DrivePrefsProvider`) e os padrões de `components/layout/`.
 
@@ -100,7 +100,7 @@ Botão de ação. Tipografia própria: **uppercase, 700, `tracking-wider`**, fon
 | `primary` | Amarelo + `--sh-gold`; hover `--gold`; active `--amber` + `translate-y-px` | **Uma** por tela — a ação principal ("Criar demanda", "Confirmar") |
 | `dark` | `--c-emphasis`/`--c-on-emphasis` (preto no claro, **inverte para claro no escuro**), hover `--c-emphasis-hover` | Ação principal onde o amarelo não cabe |
 | `ghost` | Transparente, borda `--premium-mist` → hover borda ink | Ações secundárias, "Cancelar" |
-| `danger` | `--danger` + texto branco | Destrutivo — **nunca usar amarelo para destrutivo** |
+| `danger` | `--alert-solid` (hover `--alert-solid-hover`) + texto `--on-alert-solid`, iguais nos dois temas (5,63:1) | Destrutivo, **nunca amarelo**. `--danger` não é fundo de botão: no escuro dá 2,82:1 com texto branco |
 
 **Estados**: hover (tom), active (`translateY(1px)`), `disabled` (`opacity-50` + `cursor-not-allowed`), `loading` (spinner no lugar do rótulo — nunca full-page).
 
@@ -370,9 +370,9 @@ Barra de ações única da tela. **Ordem fixa**: FILTROS (esquerda) ► CONTEXTO
 | `recorteLocal` | `boolean` | A tela recorta no navegador o que já carregou, e o servidor não lê os filtros (ex.: calendário do time). A barra escreve a URL pela History API nativa (`history.replaceState`; `pushState` ao aplicar uma view), que o Next sincroniza com `useSearchParams` sem refazer a página. Vale para a mudança de filtro, a restauração do filtro salvo e a aplicação de view. Sem a prop: `router.replace` |
 | `paramsDeNavegacao` | `string[]` | Parâmetros que dizem onde a tela está, e não o recorte (ex.: `ano`, `mes` e `dia` do calendário do time). Ficam fora das views salvas e da detecção da view ativa, e seguem na URL ao aplicar uma view |
 
-`FilterConfig`: `{ key, label, type: "select" | "multiselect" | "daterange" | "toggle" | "search", options?, icon?, placeholder?, searchable?, limiteVisivel? }`. `daterange` serializa como `<key>De`/`<key>Ate`. `searchable` força/oculta a busca do dropdown (default: automático a partir de 8 opções); `limiteVisivel` corta a lista **sem termo de busca** (default global: 6 quando a busca está disponível — digitar busca na lista completa; nunca corta sem busca).
+`FilterConfig`: `{ key, label, type: "select" | "multiselect" | "daterange" | "toggle" | "search" | "faixa", options?, icon?, placeholder?, searchable?, limiteVisivel?, limpaJunto?, min?, max?, passo?, aoBuscar? }`. `daterange` e `faixa` serializam como `<key>De`/`<key>Ate`. A `faixa` exige `min` e `max` (`passo`, padrão 1). Com `aoBuscar(termo)`, a `search` não grava o termo na URL, nos filtros persistidos nem nas views salvas: o termo fica no estado do componente e chega à função com o mesmo atraso de 300ms, e `""` ao limpar (pelo `X`, ao apagar o campo ou pelo **Limpar filtros**). Serve para busca com dado pessoal (nome, e-mail); a função pode mudar a cada render, porque a barra a guarda em ref. `searchable` força/oculta a busca do dropdown (default: automático a partir de 8 opções); `limiteVisivel` corta a lista **sem termo de busca** (default global: 6 quando a busca está disponível — digitar busca na lista completa; nunca corta sem busca).
 
-Anatomia dos chips (pill 36px, 13px/500): **idle** (borda mist) → hover borda steel; **ativo** (borda ink); **toggle ligado** (fundo `--brand-ink` fixo + ícone amarelo — ex.: "Ordenar automático"); **select** com dropdown custom (item "Todos" que limpa + `check` no selecionado); **multiselect** com contador invertido e dropdown de checkboxes; **daterange** com dois `DatePicker variant="inline"` (Início – Fim, um limitando o outro via `min`/`max`); **search** = lupa colapsável que expande a um campo de 200px (foca ao abrir, debounce de 300ms para a URL, `Esc`/blur vazio recolhe; com termo, um `X` de limpar com alvo de 24×24px, o único do campo, que limpa e recolhe). Nenhum controle nativo do navegador, nem o "x" do `type="search"` (ver [Campo de busca](#campo-de-busca--campo-buscatsx)). Com algum filtro ativo além da busca, aparece o botão redondo amarelo **Limpar filtros**, com o ícone de funil (`FunnelX`); só com a busca ativa, o `X` dela basta.
+Anatomia dos chips (pill 36px, 13px/500): **idle** (borda mist) → hover borda steel; **ativo** (borda ink); **toggle ligado** (fundo `--brand-ink` fixo + ícone amarelo — ex.: "Ordenar automático"); **select** com dropdown custom (item "Todos" que limpa + `check` no selecionado); **multiselect** com contador invertido e dropdown de checkboxes; **daterange** com dois `DatePicker variant="inline"` (Início – Fim, um limitando o outro via `min`/`max`); **faixa** com a pílula e o painel em portal dos selects: rótulo resumido ("Nota: 40 a 80", "Nota: a partir de 40", "Nota: até 80"), dois `Input type="number"` "De" e "Até" (alvo de 40px, rótulo acessível) e os botões Limpar e Aplicar; grava ao confirmar (Enter ou Aplicar), ao sair dos campos ou ao fechar pelo clique fora, nunca a cada tecla, e `Esc` descarta; valor fora de `min`..`max` vai para o limite, "de" maior que "até" troca os dois e valor não numérico na URL é ignorado; **search** = lupa colapsável que expande a um campo de 200px (foca ao abrir, debounce de 300ms para a URL, `Esc`/blur vazio recolhe; com termo, um `X` de limpar com alvo de 24×24px, o único do campo, que limpa e recolhe). Nenhum controle nativo do navegador, nem o "x" do `type="search"` (ver [Campo de busca](#campo-de-busca--campo-buscatsx)). Com algum filtro ativo além da busca, aparece o botão redondo amarelo **Limpar filtros**, com o ícone de funil (`FunnelX`); só com a busca ativa, o `X` dela basta.
 
 Comportamento estrutural: os filtros vivem em **linha única com rolagem horizontal** (scrollbar oculta) e os dropdowns renderizam em **portal `position: fixed`** (`popoverPos` + `motionPreset("menu")`) — não são cortados pela rolagem da barra. Toda mudança de filtro/visão **reseta a paginação** (remove `?pagina=`) via `useSetParams` (exportado — `router.replace` + `scroll: false`, ou `history.replaceState` com `{ local: true }`, que é o que `recorteLocal` usa), e a troca de view passa por View Transitions quando disponíveis (`navegarComTransicao`).
 
@@ -505,7 +505,7 @@ Diálogo central de confirmação (`--r-xl` + `--sh-lg`, máx. 420px, preset `mo
 | `secondaryAction` | `{ label, onClick, icon? }` | — | Ação secundária **destrutiva** entre Cancelar e a primária (ex.: "Excluir definitivamente" no diálogo de arquivar) — para gestos com duas saídas; a confirmação da irreversível vive num segundo diálogo |
 | `children` | `ReactNode` | — | Conteúdo extra (ex.: campo de horas — padrão "entrada rápida") |
 
-Foco pelo [`useDialogoFoco`](#usedialogofoco--use-dialogo-focots) (foca a primária ao abrir, prende o `Tab` na caixa, devolve ao gatilho), `Esc` cancela, `Enter` confirma. Uso imperativo via hook **`useConfirm`** (`const ok = await confirm({ title, message })` — requer `ConfirmProvider`).
+Foco pelo [`useDialogoFoco`](#usedialogofoco--use-dialogo-focots) (foca a primária ao abrir, prende o `Tab` na caixa, devolve ao gatilho), `Esc` cancela, `Enter` confirma; num `Textarea` ou elemento editável do `children`, Enter quebra a linha e Ctrl+Enter (Cmd+Enter no macOS) confirma (regra pura em `src/lib/helpers/tecla-confirmacao.ts`). Uso imperativo via hook **`useConfirm`** (`const ok = await confirm({ title, message })` — requer `ConfirmProvider`).
 
 Renderiza em **portal no `document.body`**, montado só ao abrir: entra depois de qualquer overlay já aberto (slide-over, painel de cards) e por isso fica por cima dele na mesma camada `z-50`, fora do `inert` que o overlay aplicou ao resto da página (antes, dentro da árvore da app, herdava esse `inert` e ficava sob o scrim).
 

@@ -7,10 +7,9 @@
     "lucide-react@^1.17.0"
   ],
   "registryDependencies": [
-    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json",
-    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/kbd.json",
-    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/tooltip.json",
-    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/utils.json"
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/kbd.json",
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/tooltip.json",
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/utils.json"
   ],
   "files": [
     {

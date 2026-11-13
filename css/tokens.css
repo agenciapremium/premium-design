@@ -41,7 +41,7 @@
   --premium-coal: #1A1A1A;
   --premium-graphite: #2A2A2A;
   --premium-steel: #4A4A4A;
-  --premium-gray: #8A8A8A;
+  --premium-gray: #6B6B6B; /* AA de texto (5,33:1 sobre branco, ~4,8:1 sobre bone); v0.25.0 */
   --premium-silver: #BFBFBF;
   --premium-mist: #E5E5E5;
   --premium-bone: #F2F2F2;

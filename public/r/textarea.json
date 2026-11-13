@@ -4,8 +4,7 @@
   "title": "textarea",
   "description": "Peça do Tasks copiada byte a byte: src/components/ui/textarea.tsx.",
   "registryDependencies": [
-    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json",
-    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/utils.json"
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/utils.json"
   ],
   "files": [
     {

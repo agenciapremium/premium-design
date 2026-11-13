@@ -3,9 +3,6 @@
   "name": "autosave-bar",
   "title": "autosave-bar",
   "description": "Peça do Tasks copiada byte a byte: src/components/ui/autosave-bar.tsx.",
-  "registryDependencies": [
-    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/premium-base.json"
-  ],
   "files": [
     {
       "path": "registry/src/components/ui/autosave-bar.tsx",

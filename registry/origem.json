@@ -1,6 +1,6 @@
 {
   "$comentario": "Gerado por scripts/sincronizar-catalogo.mjs. Não edite à mão: rode npm run catalogo:sincronizar. tasksCommit é o HEAD do Tasks na sincronização; arquivos guarda o sha256 de cada arquivo copiado.",
-  "tasksCommit": "6f73341e02fe27919ec8e6fac00ed427aab70336",
+  "tasksCommit": "3967bdbf709f8945ec7c09dd7840102deb2a76d7",
   "arquivos": {
     "src/lib/utils.ts": "83992dd448148e9b822345f7a402102a16737fb1d1d1557f9a35c46464b23732",
     "src/lib/format.ts": "69dd6f3ac9493cc18f884a135f3bb272b0f23dc11fff267d1c9ed26494b7226f",
@@ -15,7 +15,8 @@
     "src/lib/debounce.ts": "8f67dd2dda5dc45bd49ad383d2d727e10999b89f051c72560ee9c3ef88f8dbd0",
     "src/lib/helpers/link-markdown.ts": "2b4e306ac7f1668803d75d5c35a0e791074d3270e647819c9413558e5e8de94e",
     "src/lib/helpers/view-sort.ts": "8b8efacee7ad25a7999e5e58b67b3fd2315800890c5214315215e593957ae57c",
-    "src/lib/helpers/filtros-ativos.ts": "058f1f88f9b90a5f3ad08fd3818d4f24c399095b7842a2c461cd2f8358ab5733",
+    "src/lib/helpers/filtros-ativos.ts": "07d5833ffc31829143701ff4d1563302cc65fb6f0cd4d6bf19da0c8437c422d8",
+    "src/lib/helpers/tecla-confirmacao.ts": "e580553bd8ac3143dc6bf606d5b44c12004f76ad09f0f9df3ae72d44e48de29a",
     "src/lib/helpers/busca-filtro-url.ts": "e031126f995c6ff1f0dbc626b7fb2b3374a1a3a17a33180b1fd9fc85d7a36da6",
     "src/lib/helpers/views-salvas.ts": "1fa8eaf78a746ff9d625599455a0e0c0c3af0969f2065ea5cf57cd2a16bd923a",
     "src/lib/hooks/use-dialogo-foco.ts": "07e2226008eded61b1e857e6d53c3a89d86855d4d9c445dffb6c4f72214b1784",
@@ -24,6 +25,7 @@
     "src/lib/hooks/use-infinite-window.ts": "c2d9ecb1dd2351e89ee9029f68947baa683217b59dbed8f669527bc771751057",
     "src/lib/hooks/use-set-params.ts": "bf4771ff2264f590e965115932d1fbaca2fc64b17f36cd947e02146ee4643af4",
     "src/lib/hooks/use-filtros-persistidos.ts": "1f665e52a803b87975dfac278f01d81e0b4b50db4ba18992a866386c28d4fba0",
+    "src/lib/hooks/use-busca-local.ts": "0b8987bccaae73434caa9ccda3acbef3abc85499a3b73939a120b2b077becab4",
     "src/components/ui/accordion.tsx": "5c4f90b15b810e69a739a5acd3124713f7ab38dce990bbe6dec1d6310d4d2c1a",
     "src/components/ui/autosave-bar.tsx": "e43d0cc43656afc76bc3694e320ed62ad4172dc76546deaf144b091a996661c5",
     "src/components/ui/avatar.tsx": "b1da86072bc9e9ea6daba60ba01718443d05578d6e3f12223fabe87221b3f90e",
@@ -32,14 +34,14 @@
     "src/components/ui/barra-progresso.tsx": "0c921eb8c83452ed87be90d2097e7b99bf0661ccefed3feae679e4516e44457f",
     "src/components/ui/botao-lido.tsx": "badf521fdc89f1f4e6237709edadf8b233de289ef12c548ac8d7a9cdf16f4731",
     "src/components/ui/breadcrumb.tsx": "02c2fd5c5abd43011270fb5f93ebe0960fa9a929c67cf7f06c0da9bc506c5707",
-    "src/components/ui/button.tsx": "3f3a67e68d122e8d726068541dcd5f153cd8bcd8e5badd05e856195335faf88e",
+    "src/components/ui/button.tsx": "2cbf7a5305170474fcbf0b67ac9f2712fedc2ad419e0952f4c7051eb55b37041",
     "src/components/ui/campo-busca.tsx": "65668678b04ba319eab5cb45f39f48460f2401b8094bfe9eb612f7c65d48a600",
     "src/components/ui/card.tsx": "fab55dea6f1a1326b1a8ba3252315449461da321d7f796806d14098c86cab277",
     "src/components/ui/card-secao.tsx": "14f77fa657fa729d13321d9b4d17db626e2baf2aa487a23b3ff6b93bcf29f367",
     "src/components/ui/code-block.tsx": "bb0db9fbce02033e02787ffaa1043db05811a79e5cdc0ae55121305f327926ae",
     "src/components/ui/code-highlight.ts": "f9380df538623edd0380b872c5a9758e60b453f40559189465121a39c68beb19",
     "src/components/ui/coluna-infinita.tsx": "c84922f0012f790a0d5dfaeaa8f64a9037d8ea7f42c9ddca352b2d4f391737a4",
-    "src/components/ui/confirm-dialog.tsx": "24f8accf7067d790aea83407b795b4abd0fb268668248c147788f52712bff619",
+    "src/components/ui/confirm-dialog.tsx": "40181453972eab225bd76b33b7013511d597748d0049e97417bb87e65b731b01",
     "src/components/ui/contador.tsx": "c02cad0a47f908be6948c51aa095f7a7c5106c325305dd24b7fe4dbfbfa5c7d4",
     "src/components/ui/context-icon-button.tsx": "908bfc4eec40f40e9f89ff59ecbdd4acd3974d9605afccfc1f62e8a313cd44d8",
     "src/components/ui/copiar-link.tsx": "e7f9f0598a529accfa2b1556bd4f97903fa98d8cde6803e464fe43f6c210fcd1",
@@ -50,7 +52,7 @@
     "src/components/ui/empty-state.tsx": "c4624ce9ac56835723d506982acdf1830bb8a19d11675eeb04c8a8e238ee5ed9",
     "src/components/ui/expansivel.tsx": "1c9ca9882ff03566b3a4b8f20f5497fb75486464bf4ba0ce48703cdf6c69c741",
     "src/components/ui/fab.tsx": "d7242355ad3fd9f503ea36c9316878e1d9791d84c36e12b4a733c4e7e5526e6e",
-    "src/components/ui/filter-bar.tsx": "c719552bf64e7281f7ec61cfde723eb8e99fc8d0fcef72aa9c3a1721897cdda8",
+    "src/components/ui/filter-bar.tsx": "709699b703a1c4a543ea28e8533b3f84d8e8ddcc71bfe39d61b5abfc591fc134",
     "src/components/ui/filtros-persistencia.tsx": "70cd945bbb356666bb71b315c9f899a16643a696043c6f9ca252ec44fa8a4530",
     "src/components/ui/form-error-banner.tsx": "134a1b90139717fabcd7528a0bb6ee6ca512d917171bc7b161f62bd8adc8ba1e",
     "src/components/ui/grupo-prazo.tsx": "dee8535524c188cbdcb24c3fb76893c1d842528444f181fd21aa1f488370c7a1",
@@ -78,7 +80,7 @@
   "base": {
     "src/styles/premium/tokens.css": {
       "origem": "css/tokens.css",
-      "sha256": "8b0b12dda7102d661247be693b6f3055f18cd9b1014324730dc169b095703da4"
+      "sha256": "10a64161a066c07eb9ed47ef5009f8818d02ff01a8cdd22acb364ae6644402ea"
     },
     "src/styles/premium/theme.css": {
       "origem": "css/theme.css",

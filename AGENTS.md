@@ -13,7 +13,7 @@ Este repo é a **fonte da verdade da identidade visual** da Agência Premium. Mu
 6. **Sistema novo nunca reescreve componente do catálogo: copia pelo comando.** Antes de escrever um botão, um diálogo, uma barra de filtros ou um card de seção num sistema da agência, procure a peça em `registry.json` e copie:
 
    ```bash
-   npx shadcn@latest add https://raw.githubusercontent.com/agenciapremium/premium-design/v0.24.0/public/r/filter-bar.json
+   npx shadcn@latest add https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/filter-bar.json
    # ou, com o namespace no components.json do sistema:
    npx shadcn@latest add @premium/filter-bar
    ```
