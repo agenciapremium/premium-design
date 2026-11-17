@@ -1,5 +1,23 @@
 # Changelog
 
+## v0.26.0 · 2026-11-17
+
+Um padrão novo: o menu de ações no cabeçalho do `SlideOver`, com a peça genérica `MenuAcoes`. Nenhum token mudou. Vem da change `almoxarifado-item-painel-layout` do Tasks, em que o painel do item do Almoxarifado ganhou o layout novo, aprovado pelo dono do produto.
+
+- **Menu de ações no cabeçalho do `SlideOver` (`docs/ui-guidelines.md` §4.9, `docs/componentes.md` §SlideOver).** A prop opcional `menu` (`GrupoMenuAcoes[]`) põe um botão "⋯" ("Mais ações") **imediatamente à esquerda do "×"**, com as mesmas classes dele, para os dois formarem um par. Esc com o menu aberto fecha só o menu; o segundo Esc fecha o painel. Sem a prop, ou com grupos vazios, o cabeçalho é o mesmo de antes, e o `headerActions` não muda.
+- **Peça nova `menu-acoes` (`MenuAcoes`, `docs/ui-guidelines.md` §4.37, nova; `docs/componentes.md` §MenuAcoes, nova).** Menu genérico, que serve também fora do `SlideOver` (por exemplo, o "⋯" de uma linha de lista):
+  - grupos com rótulo opcional e divisória entre eles;
+  - itens com ícone, item de perigo (`--danger`) e item desabilitado com o motivo na dica;
+  - posição pelo `popover-pos`, alinhada à direita do gatilho e presa à tela;
+  - teclado: setas, Home e End, *roving tabindex* que pula os desabilitados, Enter e Espaço;
+  - fechar: Esc e clique fora fecham só o menu, e o foco volta ao gatilho;
+  - itens de 40px e foco visível, só com tokens semânticos nos dois temas.
+- **Peça nova `menu-acoes-nav`.** A navegação pura do menu (próximo item habilitado, Home e End, âncora à direita), testada em `node --test` no Tasks.
+- **Pendência registrada:** os menus "⋯" próprios do Tasks (cartão de Quadros e Views salvas) ainda não usam o `MenuAcoes`, e a migração fica para depois. O gatilho do cabeçalho segue os 32px do "×". Levar os dois a 40px mudaria a altura de todos os cabeçalhos e fica para uma versão própria.
+- **Catálogo ressincronizado do Tasks**, com as URLs das dependências fixadas na `v0.26.0`: 75 peças (74 do Tasks e a `premium-base`), com as duas peças novas e o `slide-over` alterado.
+- **README:** os comandos e o `components.json` apontam para a `v0.26.0`.
+- **`package.json`**: `version` 0.26.0.
+
 ## v0.25.0 · 2026-11-13
 
 Dois recursos na `FilterBar`, quatro correções nas peças e nos tokens e a base fora das dependências do catálogo. Um valor de token mudou: `--premium-gray` no claro. Vem da change `catalogo-filterbar-faixa-busca-correcoes` do Tasks, com o retorno do Diagnóstico Premium, o primeiro sistema montado com o catálogo.

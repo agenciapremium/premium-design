@@ -7,6 +7,7 @@ import { AnimatePresence, m } from "motion/react";
 import { motionPreset } from "@/lib/motion";
 import { useDialogoFoco } from "@/lib/hooks/use-dialogo-foco";
 import { estaNoTopo, registrarOverlay } from "@/lib/overlay-pilha";
+import { MenuAcoes, type GrupoMenuAcoes } from "@/components/ui/menu-acoes";
 
 interface SlideOverProps {
   open: boolean;
@@ -27,7 +28,22 @@ interface SlideOverProps {
    * agora por `aria-labelledby` apontando para o `h2`.
    */
   headerActions?: ReactNode;
+  /**
+   * Menu de ações do cabeçalho (ui-guidelines §4.9, "Menu de ações no
+   * cabeçalho"): um botão "⋯" ("Mais ações") imediatamente à esquerda do "×",
+   * com o mesmo visual dele, que abre o `MenuAcoes` com estes grupos. Esc com o
+   * menu aberto fecha só o menu. Sem a prop (ou sem item), o cabeçalho fica
+   * como sempre foi. Opcional/retrocompatível.
+   */
+  menu?: GrupoMenuAcoes[];
 }
+
+/**
+ * Classes do botão de fechar do cabeçalho, reaproveitadas pelo gatilho do menu
+ * de ações para os dois formarem um par (mesmo tamanho, cor e hover).
+ */
+const CLASSE_BOTAO_CABECALHO =
+  "w-8 h-8 rounded-[var(--r-md)] flex items-center justify-center text-[var(--premium-gray)] hover:bg-[var(--premium-bone)] hover:text-[var(--premium-ink)] transition-colors cursor-pointer";
 
 // Pilha global de SlideOvers abertos (empilhamento/aninhado — §4.9, §5.3).
 // Só o topo da pilha responde a Esc; o scroll do body só é restaurado quando o
@@ -38,7 +54,7 @@ interface SlideOverProps {
 // `PainelCards`); os nomes seguem exportados daqui para os imports existentes.
 export { estaNoTopo, temOverlayAberto } from "@/lib/overlay-pilha";
 
-export function SlideOver({ open, onClose, title, children, loading = false, footer, headerActions }: SlideOverProps) {
+export function SlideOver({ open, onClose, title, children, loading = false, footer, headerActions, menu }: SlideOverProps) {
   const id = useId();
   const tituloId = useId();
   const painelRef = useRef<HTMLDivElement>(null);
@@ -81,6 +97,13 @@ export function SlideOver({ open, onClose, title, children, loading = false, foo
 
   if (!mounted) return null;
 
+  const gruposMenu = menu?.some((g) => g.itens.length > 0) ? menu : null;
+  const fechar = (
+    <button onClick={onClose} aria-label="Fechar" className={CLASSE_BOTAO_CABECALHO}>
+      <X size={18} />
+    </button>
+  );
+
   // Scrim e painel são irmãos diretos do AnimatePresence (cada um com seu preset),
   // para que ambos animem a saída antes do desmonte. A pilha, a trava de scroll e
   // a devolução de foco são geridas nos efeitos acima (keyed em `open`), disparando
@@ -121,13 +144,14 @@ export function SlideOver({ open, onClose, title, children, loading = false, foo
               </h2>
               {headerActions}
             </div>
-            <button
-              onClick={onClose}
-              aria-label="Fechar"
-              className="w-8 h-8 rounded-[var(--r-md)] flex items-center justify-center text-[var(--premium-gray)] hover:bg-[var(--premium-bone)] hover:text-[var(--premium-ink)] transition-colors cursor-pointer"
-            >
-              <X size={18} />
-            </button>
+            {gruposMenu ? (
+              <div className="flex shrink-0 items-center gap-1">
+                <MenuAcoes grupos={gruposMenu} classeGatilho={CLASSE_BOTAO_CABECALHO} />
+                {fechar}
+              </div>
+            ) : (
+              fechar
+            )}
           </div>
           <div
             className="h-[2px] w-full overflow-hidden bg-[var(--premium-bone)]"

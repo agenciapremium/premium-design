@@ -29,12 +29,12 @@ Pré-requisitos (Next.js App Router com `src/`, Tailwind v4, alias `@/*` → `sr
 **Peças do catálogo** (a lista com arquivos e dependências está no [`registry.json`](../registry.json)):
 
 - **Ações e formulários:** `button`, `context-icon-button`, `input`, `textarea`, `select`, `multi-select`, `switch`, `date-picker`, `pessoas-picker`, `campo-busca`, `emoji-picker`, `form-error-banner`, `autosave-bar`, `copiar-link`.
-- **Barra e navegação:** `filter-bar`, `filtros-persistencia`, `views-salvas-menu`, `pilula`, `segmented-tabs`, `sort-controls`, `pagination`, `breadcrumb`, `coluna-infinita`.
+- **Barra e navegação:** `filter-bar`, `filtros-persistencia`, `views-salvas-menu`, `menu-acoes`, `pilula`, `segmented-tabs`, `sort-controls`, `pagination`, `breadcrumb`, `coluna-infinita`.
 - **Superfícies e overlays:** `card`, `card-secao`, `slide-over`, `confirm-dialog`, `painel-cards`, `tooltip`, `toast`, `fab`, `accordion`, `expansivel`, `texto-expansivel`.
 - **Estado e conteúdo:** `badge`, `avatar`, `empty-state`, `skeleton`, `code-block`, `digitando-indicador`, `botao-lido`, `grupo-prazo`, `contador`, `barra-progresso`.
 - **Gráficos e motion:** `bar-chart`, `line-chart`, `pie-chart`, `motion-provider`.
 - **Hooks:** `use-dialogo-foco`, `use-toast`, `use-count-up`, `use-infinite-window`, `use-set-params`, `use-filtros-persistidos`, `use-busca-local`.
-- **Funções de apoio:** `utils`, `format`, `motion`, `constants`, `popover-pos`, `overlay-pilha`, `foco`, `view-transition`, `painel-cards-pos`, `kbd`, `debounce`, `link-markdown`, `view-sort`, `filtros-ativos`, `tecla-confirmacao`, `busca-filtro-url`, `views-salvas`.
+- **Funções de apoio:** `utils`, `format`, `motion`, `constants`, `popover-pos`, `overlay-pilha`, `foco`, `view-transition`, `painel-cards-pos`, `kbd`, `debounce`, `link-markdown`, `view-sort`, `filtros-ativos`, `tecla-confirmacao`, `busca-filtro-url`, `views-salvas`, `menu-acoes-nav`.
 - **Base:** `premium-base`, copiada uma vez por quem não usa o pacote (as peças não a declaram como dependência).
 
 Ficam fora, por dependerem do domínio ou do shell do Tasks: `PageHeader`, `PresencaAvatares`, `Lightbox`, `DriveMediaViewer`, `CartaoDocumento`, `ErroRota`, o editor rico (`RichEditor`, `MarkdownView`, `editor/`), o Drive (`DriveLinkActions`, `DrivePrefsProvider`) e os padrões de `components/layout/`.
@@ -480,12 +480,44 @@ Painel flutuante de criação/edição — o overlay padrão do sistema (modal c
 | `loading` | `boolean` | Barra indeterminada sob o cabeçalho (auto-save/submit) |
 | `footer` | `ReactNode` | Rodapé **fixo** de ações: Cancelar (ghost) à esquerda, primária à direita |
 | `headerActions` | `ReactNode` | Ações no cabeçalho, à direita do título (ex.: toggle de status) — o nome acessível continua vindo do `title` |
+| `menu` | `GrupoMenuAcoes[]` | Menu "Mais ações": botão "⋯" imediatamente à esquerda do "×", com as mesmas classes dele, que abre o [`MenuAcoes`](#menuacoes--menu-acoestsx). Esc com o menu aberto fecha só o menu. Sem a prop (ou sem itens), o cabeçalho fica como antes |
 
 Anatomia: portal em `document.body` (z-50, acima do FAB z-40); scrim `bg-black/40 backdrop-blur-sm`; painel `fixed right-4 top-4 bottom-4 w-[480px] max-w-[calc(100vw-2rem)]`, `--r-xl`, `--sh-lg`; entrada e saída animadas via `AnimatePresence` + presets `scrim`/`slideOver`. Corpo rolável; header e footer fixos.
 
 **Empilhamento (aninhado)**: renderize o segundo `<SlideOver>` como **descendente** do conteúdo do primeiro. Pilha global garante: `Esc` fecha só o painel do topo (o scrim fecha o próprio painel); scroll do body restaura quando o último fecha. Prefira aninhamento ao wizard quando o sub-fluxo é opcional/independente.
 
 **Foco**: gerenciado pelo [`useDialogoFoco`](#usedialogofoco--use-dialogo-focots) — entra no primeiro campo do conteúdo (ou no título, em painel de leitura e em viewport estreita), `Tab` cicla dentro do painel do topo e o foco volta ao gatilho ao fechar. Botão de fechar com `aria-label="Fechar"`.
+
+## MenuAcoes — `menu-acoes.tsx`
+
+Menu de ações genérico (ui-guidelines §4.37): um botão "⋯" que abre ações em grupos. Peça do catálogo `menu-acoes`; a navegação pura (próximo item habilitado, Home/End, altura estimada, âncora à direita) fica na peça `menu-acoes-nav` (`menu-acoes-nav.ts`), com teste em `node --test`.
+
+| Prop | Tipo | Padrão | Descrição |
+|---|---|---|---|
+| `grupos` | `GrupoMenuAcoes[]` | obrigatório | `{ rotulo?: string; itens: ItemMenuAcoes[] }[]`; grupo vazio some, menu sem item não renderiza |
+| `rotulo` | `string` | `"Mais ações"` | Nome acessível do gatilho e do menu (em linha de lista, inclua o registro: "Mais ações de Vitor Lima") |
+| `gatilho` | `ReactNode` | ícone `MoreHorizontal` | Conteúdo do botão |
+| `classeGatilho` | `string` | 40×40 com borda `--premium-mist` | Substitui as classes do botão (o `SlideOver` passa as do "×") |
+| `largura` | `number` | `240` | Largura do painel, em px |
+
+`ItemMenuAcoes`: `id`, `rotulo`, `icone?` (`LucideIcon`), `onSelect`, `perigo?` (texto em `--danger`), `desabilitado?: string | false` (o texto é o motivo, mostrado na dica e no rótulo acessível).
+
+Comportamento: portal no `body` posicionado pelo `popoverPos`, alinhado à direita do gatilho e preso à tela; *roving tabindex* nos itens habilitados (setas com volta nas pontas, Home, End); Enter/Espaço acionam (o menu fecha e o foco volta ao gatilho antes do `onSelect`); Esc e Tab fecham só o menu, com `stopPropagation` num listener nativo do painel (o `SlideOver` não fecha); uma camada transparente de clique fora fecha só o menu. ARIA: `aria-haspopup="menu"`, `aria-expanded`, `role="menu"`, `role="group"` rotulado, `role="menuitem"`, `aria-disabled`.
+
+```tsx
+<SlideOver open onClose={fechar} title={item.nome} footer={rodape}
+  menu={podeEscrever ? [
+    { rotulo: "Unidades", itens: [
+      { id: "baixa", rotulo: "Dar baixa", icone: PackageMinus, desabilitado: semUnidade && "Sem unidade disponível", onSelect: darBaixa },
+    ] },
+    { rotulo: "Item", itens: [
+      { id: "arquivar", rotulo: "Arquivar item", icone: Archive, perigo: true, onSelect: arquivar },
+    ] },
+  ] : undefined}
+>
+```
+
+Pendência: os menus "⋯" de Quadros (`card-menu-contexto.tsx`) e de Views salvas (`views-salvas-menu.tsx`) ainda são implementações próprias e devem migrar para o `MenuAcoes`.
 
 ## ConfirmDialog — `confirm-dialog.tsx`
 

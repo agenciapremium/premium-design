@@ -18,7 +18,7 @@ Identidade visual da **Agência Premium** (PREMIUM · MARKETING 360°): tokens d
 | [`brand/`](brand/) | **Logo oficial** (horizontal, vertical e ícone, em branco e preto) e favicons, os mesmos arquivos de `public/brand/` do Tasks. Regras de uso em [`docs/index.md`](docs/index.md#logo). |
 | [`css/patterns/`](css/patterns/) | **Padrões de projeto (opt-in)** — CSS de recursos que nem todo sistema tem. Se o seu sistema implementar o recurso, importe o padrão em vez de recriar o visual. |
 | [`docs/`](docs/) | Documentação completa do design system — comece por [`docs/index.md`](docs/index.md). O [`docs/showroom.html`](docs/showroom.html) demonstra tudo ao vivo nos dois temas (abra no navegador). |
-| [`registry.json`](registry.json), [`registry/`](registry/) e [`public/r/`](public/r/) | **Catálogo de componentes** no formato de registry do shadcn (v0.25.0): as peças copiadas do Tasks, a peça base e o JSON de cada peça, servido pela tag. Gerados por `npm run catalogo:sincronizar`; nunca edite à mão. Ver [Catálogo de componentes](#catálogo-de-componentes). |
+| [`registry.json`](registry.json), [`registry/`](registry/) e [`public/r/`](public/r/) | **Catálogo de componentes** no formato de registry do shadcn (v0.26.0): as peças copiadas do Tasks, a peça base e o JSON de cada peça, servido pela tag. Gerados por `npm run catalogo:sincronizar`; nunca edite à mão. Ver [Catálogo de componentes](#catálogo-de-componentes). |
 | [`scripts/sincronizar-catalogo.mjs`](scripts/sincronizar-catalogo.mjs) | Sincronização do catálogo a partir do Tasks e o modo `--verificar`. |
 
 ## Como consumir
@@ -114,7 +114,7 @@ O `shadcn add` lê o `components.json` da raiz do projeto. Crie o arquivo à mã
     "hooks": "@/hooks"
   },
   "registries": {
-    "@premium": "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/{name}.json"
+    "@premium": "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.26.0/public/r/{name}.json"
   }
 }
 ```
@@ -124,7 +124,7 @@ O `shadcn add` lê o `components.json` da raiz do projeto. Crie o arquivo à mã
 Por URL fixada na tag, sem configurar nada além do `components.json`:
 
 ```bash
-npx shadcn@latest add https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/filter-bar.json
+npx shadcn@latest add https://raw.githubusercontent.com/agenciapremium/premium-design/v0.26.0/public/r/filter-bar.json
 ```
 
 Ou pelo namespace `@premium` do `components.json` acima:
@@ -133,7 +133,7 @@ Ou pelo namespace `@premium` do `components.json` acima:
 npx shadcn@latest add @premium/filter-bar @premium/slide-over @premium/confirm-dialog @premium/card-secao
 ```
 
-O comando copia a peça e as peças de que ela depende (cada uma declara as outras em `registryDependencies`, por URL fixada na mesma tag) e instala os pacotes npm declarados (`motion`, `lucide-react` e, no `emoji-picker`, o `emoji-mart`). `react`, `react-dom` e `next` não são instalados: o projeto já os tem. Desde a v0.25.0, a peça base não vem junto: veja [abaixo](#tokens-tema-e-padrões-o-pacote-ou-a-peça-base). A tag fixa a versão: a peça copiada é a da v0.25.0, mesmo que a `main` avance. Atualizar é trocar a tag e copiar de novo.
+O comando copia a peça e as peças de que ela depende (cada uma declara as outras em `registryDependencies`, por URL fixada na mesma tag) e instala os pacotes npm declarados (`motion`, `lucide-react` e, no `emoji-picker`, o `emoji-mart`). `react`, `react-dom` e `next` não são instalados: o projeto já os tem. Desde a v0.25.0, a peça base não vem junto: veja [abaixo](#tokens-tema-e-padrões-o-pacote-ou-a-peça-base). A tag fixa a versão: a peça copiada é a da v0.26.0, mesmo que a `main` avance. Atualizar é trocar a tag e copiar de novo.
 
 ### Tokens, tema e padrões: o pacote ou a peça base
 
@@ -154,7 +154,7 @@ Desde a v0.25.0, nenhuma peça traz a `premium-base` junto. Antes da primeira pe
 2. **Sem o pacote**: copie a peça base uma vez, antes da primeira peça. Ela grava em `src/styles/premium/` o núcleo do `css/` deste repo (`tokens.css`, `theme.css`, `base.css`, `motion.css`) e os padrões de `css/patterns/` que as peças usam:
 
    ```bash
-   npx shadcn@latest add https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/premium-base.json
+   npx shadcn@latest add https://raw.githubusercontent.com/agenciapremium/premium-design/v0.26.0/public/r/premium-base.json
    ```
 
    ```css
