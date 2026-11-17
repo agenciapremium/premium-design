@@ -661,7 +661,8 @@ Tipos:
 - Width responsiva: `max-w-[calc(100vw-2rem)]`.
 - Entrada animada (transform + opacity) com `var(--ease)`, suprimida sob `prefers-reduced-motion: reduce`. Fecha com clique no scrim e `Esc`.
 - Header: título + botão fechar (icon-btn); a prop `headerActions` aceita ações
-  à direita do título (ex.: toggle de status). **Rodapé fixo** de ações (prop
+  à direita do título (ex.: toggle de status); a prop `menu` põe o "⋯" de
+  **Mais ações** à esquerda do fechar (ver "Menu de ações no cabeçalho", abaixo). **Rodapé fixo** de ações (prop
   `footer` do `SlideOver`): **Cancelar (ghost) à esquerda** e a **ação primária
   (primary/dark) à direita**, fixo na base (não rola com o `children`). Todos os
   formulários em slide-over usam esse rodapé — sem botões soltos no corpo. A
@@ -724,6 +725,38 @@ Tipos:
   de baixo para finalizar a operação. Prefira o aninhamento ao **Wizard** (§5.3)
   quando o sub-fluxo é opcional/independente (não um passo obrigatório do mesmo
   formulário).
+
+#### Menu de ações no cabeçalho
+
+Premium-design v0.26.0 (change `almoxarifado-item-painel-layout`).
+
+- **O que é**: a prop opcional `menu` do `SlideOver` recebe grupos de ações
+  (`GrupoMenuAcoes[]`) e põe, no canto direito do cabeçalho, um botão "⋯" com
+  nome acessível **"Mais ações"**, **imediatamente à esquerda do "×"**. O
+  título continua à esquerda. Ao acionar, abre o `MenuAcoes` (§4.37) logo
+  abaixo do botão, alinhado à direita dele.
+- **Visual**: o "⋯" usa exatamente as classes do "×" (32px, sem borda,
+  `--premium-gray`, hover `--premium-bone` com texto `--premium-ink`), com
+  `gap-1` entre os dois, para lerem como um par. Aberto, fica com o fundo
+  `--premium-bone`. O alvo de 32px acompanha o "×" existente; subir os dois
+  para 40px mudaria a altura de todos os cabeçalhos e fica como pendência.
+- **Quando usar**: ações sobre o registro aberto que não são a tarefa
+  principal do painel e que poluiriam o corpo ou o rodapé: estoque, foto,
+  arquivar, duplicar, exportar. No detalhe do item do Almoxarifado, o menu tem
+  os grupos **Unidades** (manutenção, entrada, baixa) e **Item** (foto e
+  arquivar, este como perigo).
+- **Quando não usar**: a ação principal do painel (fica no rodapé ou no corpo,
+  à vista); ação que o usuário faz quase sempre que abre o painel; formulário
+  em edição (o rodapé já tem Cancelar e Salvar). Com uma ação só, prefira um
+  botão com rótulo no corpo.
+- **Teclado e fechamento**: os do §4.37. O ponto específico do painel: **Esc
+  com o menu aberto fecha só o menu** e o foco volta ao "⋯"; um segundo Esc
+  fecha o painel. O clique fora (inclusive no scrim) também fecha só o menu.
+- **Permissão**: o menu é dica visual. Mostre-o só para quem pode agir (no
+  Almoxarifado, `ALMOXARIFADO:escrita`) e mantenha a validação nas actions.
+- **Retrocompatível**: sem `menu`, ou com grupos vazios, o cabeçalho fica
+  exatamente como antes. `headerActions` continua existindo, ao lado do
+  título, para controles de estado (toggle), não para menus.
 
 ### 4.10 Confirm dialog — [`confirm-dialog.tsx`](https://github.com/agenciapremium/tasks/blob/main/src/components/ui/confirm-dialog.tsx)
 
@@ -1379,6 +1412,68 @@ na primeira página, por cima da capa, e não imprime o fundo.
   (`--c-*`); o selo de mídia é o mesmo nos dois temas (fixo, sobre a foto); o
   selo de estado usa os pares de status, que têm tom escuro próprio. Nenhum
   token novo.
+
+### 4.37 Menu de ações — [`menu-acoes.tsx`](https://github.com/agenciapremium/tasks/blob/main/src/components/ui/menu-acoes.tsx)
+
+Premium-design v0.26.0 (change `almoxarifado-item-painel-layout`). Peça do
+catálogo `menu-acoes`, com a lógica pura de navegação na peça `menu-acoes-nav`
+([`menu-acoes-nav.ts`](https://github.com/agenciapremium/tasks/blob/main/src/lib/menu-acoes-nav.ts)).
+
+- **O que é**: um botão "⋯" que abre uma lista de ações em grupos. É o menu
+  genérico do design system: serve ao cabeçalho do `SlideOver` (prop `menu`,
+  §4.9) e a linhas de lista ("⋯" por linha, como "Marcar como perdido" em
+  "Com quem está" no item do Almoxarifado).
+- **Anatomia**:
+  - **Gatilho**: por padrão, 40×40, borda `--premium-mist`, fundo
+    `--premium-white`, ícone `MoreHorizontal` 18px em `--premium-steel`;
+    hover com borda e ícone `--premium-ink`. `classeGatilho` troca as classes
+    (o `SlideOver` passa as do "×"); `gatilho` troca o ícone. Foco visível com
+    halo `--yellow-50` (`0 0 0 2px`); aberto, fundo `--premium-bone`.
+  - **Painel**: portal no `body`, `position: fixed` pelo `popoverPos`,
+    alinhado à **direita** do gatilho e preso à tela (abre para cima quando
+    falta espaço embaixo; com altura limitada, rola por dentro). Largura
+    padrão 240px. Fundo `--premium-white`, borda `--premium-mist`, raio
+    `--r-lg`, sombra `--sh-md`, padding 6px, entrada `motionPreset("menu")`.
+  - **Grupos**: rótulo opcional em 10,5px, maiúsculas, `tracking-wider`,
+    `--premium-gray`; grupos vizinhos separados por divisória de 1px
+    `--premium-mist`. Grupo vazio não aparece; menu sem nenhum item não
+    renderiza nem o gatilho.
+  - **Item**: 40px de altura, ícone lucide de 16px opcional, rótulo 13px em
+    `--premium-ink`, hover e foco com fundo `--premium-bone`.
+    **Perigo** (`perigo: true`): texto e ícone em `--danger`.
+    **Desabilitado** (`desabilitado: "motivo"`): 50% de opacidade,
+    `cursor-not-allowed`, `aria-disabled`, o motivo no rótulo acessível
+    ("Dar baixa (Sem unidade disponível)") e numa dica (`Tooltip`, §4.34)
+    abaixo do item.
+- **API**: `MenuAcoes({ grupos, rotulo = "Mais ações", gatilho?, classeGatilho?, largura = 240 })`,
+  com `grupos: { rotulo?: string; itens: { id; rotulo; icone?: LucideIcon; onSelect; perigo?; desabilitado?: string | false }[] }[]`.
+- **Teclado**:
+  - no gatilho, Enter ou Espaço abrem com o foco no primeiro item
+    habilitado; seta para baixo abre no primeiro e seta para cima, no último;
+  - dentro do menu, *roving tabindex*: setas andam entre os itens
+    **habilitados** e dão a volta nas pontas; Home e End vão ao primeiro e ao
+    último; o item desabilitado é sempre pulado;
+  - Enter ou Espaço acionam o item: o menu fecha, o foco volta ao gatilho e
+    só então a ação roda (um painel aberto por ela devolve o foco ao "⋯");
+  - **Esc** fecha só o menu, com `stopPropagation` num listener nativo do
+    painel, antes de a tecla chegar ao `document` (onde o `SlideOver` escuta);
+    o foco volta ao gatilho. Tab também fecha e devolve o foco ao gatilho.
+- **Clique fora**: uma camada transparente sob o menu recebe o clique e fecha
+  só o menu; o clique não chega ao scrim do `SlideOver` nem a outro controle.
+- **ARIA**: gatilho com `aria-label`, `aria-haspopup="menu"`,
+  `aria-expanded` e `aria-controls`; painel `role="menu"` com o mesmo rótulo;
+  grupos `role="group"` rotulados pelo título do grupo; itens
+  `role="menuitem"`; divisória `role="separator"`.
+- **Quando usar**: três ou mais ações secundárias sobre o mesmo registro, ou
+  ações destrutivas que não devem ficar à vista o tempo todo.
+- **Quando não usar**: escolha de um valor (use `Select`, §4.8); a ação
+  principal da tela; uma ou duas ações (botões com rótulo); navegação (links).
+  Os menus "⋯" de Quadros (`card-menu-contexto.tsx`) e de Views salvas
+  (§4.32) ainda são implementações próprias e ficam de pendência para migrar.
+- **Tema escuro e acessibilidade**: só tokens semânticos, claro e escuro
+  automáticos (§9); itens de 40px; o gatilho do cabeçalho do `SlideOver` é a
+  exceção de 32px, explicada no §4.9. A cor do perigo nunca é o único sinal:
+  o rótulo diz a ação.
 
 ## 5. Padrões de interação
 
