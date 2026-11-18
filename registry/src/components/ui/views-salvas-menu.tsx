@@ -2,36 +2,20 @@
 
 import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { m } from "motion/react";
-import {
-  Bookmark,
-  BookmarkCheck,
-  Check,
-  Link2,
-  MoreHorizontal,
-  Pencil,
-  Star,
-  Trash2,
-} from "lucide-react";
-import type { LucideIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { motionPreset } from "@/lib/motion";
+import { Bookmark, BookmarkCheck } from "lucide-react";
 import { useDialogoFoco } from "@/lib/hooks/use-dialogo-foco";
 import { useToast } from "@/lib/hooks/use-toast";
 import { ContextIconButton } from "@/components/ui/context-icon-button";
-import { ConfirmDialog } from "@/components/ui/confirm-dialog";
-import { Input } from "@/components/ui/input";
 import {
   caminhoDaView,
-  filtrosIndisponiveis,
   montarQueryDeView,
   normalizaNomeView,
   queryAoAplicarView,
   viewEstaAtiva,
-  VIEW_NOME_MAX,
   type FiltroConhecido,
 } from "@/lib/helpers/views-salvas";
 import { useFiltrosPersistencia, type ViewSalva } from "@/components/ui/filtros-persistencia";
+import { DialogoNomeView, PainelViews } from "@/components/ui/views-salvas-painel";
 
 /**
  * Controle "Views" da zona de contexto da `FilterBar` (capability views-salvas,
@@ -117,7 +101,8 @@ export function ViewsSalvasMenu({
       if (e.key === "Escape") setAberto(false);
     }
     function onPointer(e: Event) {
-      if (containerRef.current && !containerRef.current.contains(e.target as Node)) setAberto(false);
+      if (containerRef.current && !containerRef.current.contains(e.target as Node))
+        setAberto(false);
     }
     document.addEventListener("keydown", onKey);
     document.addEventListener("mousedown", onPointer);
@@ -158,7 +143,10 @@ export function ViewsSalvasMenu({
     setErro(undefined);
     const resultado =
       dialogo.modo === "salvar"
-        ? await persistencia.salvarView(telaKey, { nome: nome.trim(), query: montarQueryDeView(params, paramsDeNavegacao) })
+        ? await persistencia.salvarView(telaKey, {
+            nome: nome.trim(),
+            query: montarQueryDeView(params, paramsDeNavegacao),
+          })
         : await persistencia.renomearView(telaKey, dialogo.id ?? "", nome.trim());
     setSalvando(false);
     if (!resultado.success) {
@@ -169,7 +157,7 @@ export function ViewsSalvasMenu({
     setViews((atuais) =>
       dialogo.modo === "salvar"
         ? [...atuais, salva]
-        : atuais.map((v) => (v.id === salva.id ? salva : v))
+        : atuais.map((v) => (v.id === salva.id ? salva : v)),
     );
     toast.success(dialogo.modo === "salvar" ? "View salva." : "View renomeada.");
     fecharDialogo();
@@ -200,7 +188,7 @@ export function ViewsSalvasMenu({
     const virandoPadrao = !view.padrao;
     const anterior = views;
     setViews((atuais) =>
-      atuais.map((v) => ({ ...v, padrao: virandoPadrao && v.id === view.id ? true : undefined }))
+      atuais.map((v) => ({ ...v, padrao: virandoPadrao && v.id === view.id ? true : undefined })),
     );
     const resultado = await persistencia.definirViewPadrao(telaKey, virandoPadrao ? view.id : null);
     if (!resultado.success) {
@@ -211,7 +199,7 @@ export function ViewsSalvasMenu({
     toast.success(
       virandoPadrao
         ? `"${view.nome}" passa a abrir esta tela.`
-        : "A tela volta a abrir como você deixou."
+        : "A tela volta a abrir como você deixou.",
     );
   }
 
@@ -264,7 +252,7 @@ export function ViewsSalvasMenu({
         {total > 0 && (
           <span
             aria-hidden
-            className="pointer-events-none absolute -right-[2px] -top-[2px] min-w-[16px] rounded-full bg-[var(--premium-ink)] px-[4px] text-center text-[10px] font-bold leading-[16px] text-[var(--premium-paper)]"
+            className="pointer-events-none absolute -top-[2px] -right-[2px] min-w-[16px] rounded-full bg-[var(--premium-ink)] px-[4px] text-center text-[10px] leading-[16px] font-bold text-[var(--premium-paper)]"
           >
             {total}
           </span>
@@ -272,220 +260,32 @@ export function ViewsSalvasMenu({
       </span>
 
       {aberto && (
-        <m.div
-          {...motionPreset("menu")}
-          ref={menuRef}
-          role="menu"
-          aria-label="Views salvas"
-          className="absolute right-0 top-full z-[60] mt-1 w-[300px] max-w-[calc(100vw-2rem)] rounded-[var(--r-md)] border border-[var(--premium-mist)] bg-[var(--premium-paper)] p-1 shadow-[var(--sh-md)]"
-        >
-          {total === 0 ? (
-            <p className="px-2 py-3 text-[12.5px] leading-[1.5] text-[var(--premium-steel)]">
-              Nenhuma view salva nesta tela. Guarde o recorte atual (filtros, visão e ordenação) com
-              um nome para voltar a ele com um clique.
-            </p>
-          ) : (
-            <ul className="max-h-[320px] overflow-y-auto">
-              {views.map((view) => (
-                <ItemView
-                  key={view.id}
-                  view={view}
-                  ativa={ativa?.id === view.id}
-                  expandida={expandida === view.id}
-                  indisponiveis={filtrosIndisponiveis(view.query, filtros)}
-                  onExpandir={() => setExpandida((atual) => (atual === view.id ? null : view.id))}
-                  onAplicar={() => aplicar(view)}
-                  onPadrao={() => void alternarPadrao(view)}
-                  onRenomear={() => abrirDialogo("renomear", view)}
-                  onCopiar={() => void copiarLink(view)}
-                  onExcluir={() => void excluir(view)}
-                />
-              ))}
-            </ul>
-          )}
-
-          <div className="mt-1 border-t border-[var(--premium-mist)] pt-1">
-            <button
-              type="button"
-              role="menuitem"
-              onClick={() => abrirDialogo("salvar")}
-              className="flex min-h-[40px] w-full cursor-pointer items-center gap-2 rounded-[var(--r-sm)] px-2 text-left text-[13px] font-medium text-[var(--premium-ink)] transition-colors hover:bg-[var(--premium-bone)] focus-visible:shadow-[0_0_0_2px_var(--yellow-50)] focus-visible:outline-none"
-            >
-              <Bookmark size={14} className="text-[var(--premium-gray)]" />
-              Salvar view atual…
-            </button>
-            <p className="px-2 pb-1 pt-[2px] text-[11px] leading-[1.5] text-[var(--premium-gray)]">
-              A view padrão abre a tela; sem ela, a tela abre como você deixou.
-            </p>
-          </div>
-        </m.div>
+        <PainelViews
+          menuRef={menuRef}
+          views={views}
+          ativaId={ativa?.id}
+          expandida={expandida}
+          filtros={filtros}
+          onExpandir={(id) => setExpandida((atual) => (atual === id ? null : id))}
+          onAplicar={aplicar}
+          onPadrao={(view) => void alternarPadrao(view)}
+          onRenomear={(view) => abrirDialogo("renomear", view)}
+          onCopiar={(view) => void copiarLink(view)}
+          onExcluir={(view) => void excluir(view)}
+          onSalvar={() => abrirDialogo("salvar")}
+        />
       )}
 
-      <ConfirmDialog
-        open={dialogo !== null}
+      <DialogoNomeView
+        modo={dialogo?.modo ?? null}
+        nome={nome}
+        onNome={setNome}
+        duplicado={duplicado}
+        salvando={salvando}
+        erro={erro}
         onClose={fecharDialogo}
         onConfirm={() => void confirmarDialogo()}
-        title={dialogo?.modo === "renomear" ? "Renomear view" : "Salvar view atual"}
-        message={
-          dialogo?.modo === "renomear"
-            ? "Escolha um novo nome para esta view."
-            : "Guarde o recorte atual (filtros, visão e ordenação) com um nome."
-        }
-        confirmLabel={dialogo?.modo === "renomear" ? "Renomear" : "Salvar"}
-        variant="primary"
-        tone="neutral"
-        loading={salvando}
-        error={erro}
-        autoFocusConfirm={false}
-        confirmDisabled={nome.trim().length === 0 || duplicado}
-      >
-        <Input
-          label="Nome da view"
-          value={nome}
-          onChange={(e) => setNome(e.target.value)}
-          maxLength={VIEW_NOME_MAX}
-          placeholder="Atrasadas do mês"
-          autoFocus
-          error={duplicado ? "Já existe uma view com esse nome nesta tela." : undefined}
-        />
-      </ConfirmDialog>
+      />
     </div>
-  );
-}
-
-/**
- * Uma view no menu: a linha aplica; o botão de reticências abre, ali mesmo, as
- * ações daquela view com o rótulo escrito.
- */
-function ItemView({
-  view,
-  ativa,
-  expandida,
-  indisponiveis,
-  onExpandir,
-  onAplicar,
-  onPadrao,
-  onRenomear,
-  onCopiar,
-  onExcluir,
-}: {
-  view: ViewSalva;
-  ativa: boolean;
-  expandida: boolean;
-  indisponiveis: string[];
-  onExpandir: () => void;
-  onAplicar: () => void;
-  onPadrao: () => void;
-  onRenomear: () => void;
-  onCopiar: () => void;
-  onExcluir: () => void;
-}) {
-  return (
-    <li>
-      <div
-        className={cn(
-          "flex items-center gap-1 rounded-[var(--r-sm)]",
-          // View ativa: assinatura amarelo sobre tinta da marca (ui-guidelines §4).
-          ativa && "bg-[var(--brand-ink)]"
-        )}
-      >
-        <button
-          type="button"
-          role="menuitem"
-          onClick={onAplicar}
-          aria-current={ativa ? "true" : undefined}
-          className={cn(
-            "flex min-h-[40px] min-w-0 flex-1 cursor-pointer items-center gap-2 rounded-[var(--r-sm)] px-2 text-left text-[13px] transition-colors focus-visible:shadow-[0_0_0_2px_var(--yellow-50)] focus-visible:outline-none",
-            ativa
-              ? "font-bold text-[var(--brand-on-ink)]"
-              : "text-[var(--premium-ink)] hover:bg-[var(--premium-bone)]"
-          )}
-        >
-          {ativa ? (
-            <Check size={14} className="shrink-0 text-[var(--yellow)]" />
-          ) : (
-            <span aria-hidden className="w-[14px] shrink-0" />
-          )}
-          <span className="min-w-0 flex-1">
-            <span className="block truncate">{view.nome}</span>
-            {indisponiveis.length > 0 && (
-              <span
-                className={cn(
-                  "block truncate text-[11px] font-normal",
-                  ativa ? "text-[var(--yellow)]" : "text-[var(--premium-gray)]"
-                )}
-              >
-                Filtro indisponível: {indisponiveis.join(" · ")}
-              </span>
-            )}
-          </span>
-          {view.padrao && (
-            <Star
-              size={12}
-              aria-hidden
-              className={cn(
-                "shrink-0",
-                ativa ? "text-[var(--yellow)]" : "text-[var(--premium-gray)]"
-              )}
-            />
-          )}
-        </button>
-        <button
-          type="button"
-          role="menuitem"
-          onClick={onExpandir}
-          aria-label={`Ações da view "${view.nome}"`}
-          aria-expanded={expandida}
-          className={cn(
-            "flex min-h-[40px] min-w-[40px] shrink-0 cursor-pointer items-center justify-center rounded-[var(--r-sm)] transition-colors focus-visible:shadow-[0_0_0_2px_var(--yellow-50)] focus-visible:outline-none",
-            ativa
-              ? "text-[var(--brand-on-ink)] hover:text-[var(--yellow)]"
-              : "text-[var(--premium-gray)] hover:bg-[var(--premium-bone)] hover:text-[var(--premium-ink)]"
-          )}
-        >
-          <MoreHorizontal size={15} />
-        </button>
-      </div>
-
-      {expandida && (
-        <div role="group" aria-label={`Ações da view "${view.nome}"`} className="pb-1 pl-4">
-          <AcaoDaView
-            icon={Star}
-            label={view.padrao ? "Deixar de ser a padrão" : "Definir como padrão"}
-            onClick={onPadrao}
-          />
-          <AcaoDaView icon={Pencil} label="Renomear…" onClick={onRenomear} />
-          <AcaoDaView icon={Link2} label="Copiar link" onClick={onCopiar} />
-          <AcaoDaView icon={Trash2} label="Excluir" perigo onClick={onExcluir} />
-        </div>
-      )}
-    </li>
-  );
-}
-
-function AcaoDaView({
-  icon: Icon,
-  label,
-  perigo,
-  onClick,
-}: {
-  icon: LucideIcon;
-  label: string;
-  perigo?: boolean;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      role="menuitem"
-      onClick={onClick}
-      className={cn(
-        "flex min-h-[40px] w-full cursor-pointer items-center gap-2 rounded-[var(--r-sm)] px-2 text-left text-[13px] transition-colors hover:bg-[var(--premium-bone)] focus-visible:shadow-[0_0_0_2px_var(--yellow-50)] focus-visible:outline-none",
-        perigo ? "text-[var(--danger)]" : "text-[var(--premium-ink)]"
-      )}
-    >
-      <Icon size={14} className={perigo ? undefined : "text-[var(--premium-gray)]"} />
-      {label}
-    </button>
   );
 }

@@ -21,6 +21,10 @@ export interface SincroniaBuscaUrl {
 }
 
 /** O campo deve passar a mostrar o valor da URL? */
-export function campoAdotaUrl({ urlValue, urlAnterior, escritaPendente }: SincroniaBuscaUrl): boolean {
+export function campoAdotaUrl({
+  urlValue,
+  urlAnterior,
+  escritaPendente,
+}: SincroniaBuscaUrl): boolean {
   return urlValue !== urlAnterior && !escritaPendente;
 }

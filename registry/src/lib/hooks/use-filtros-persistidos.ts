@@ -28,7 +28,10 @@ interface UseFiltrosPersistidosOptions {
 }
 
 /** Recorta da query string apenas os pares de filtro com valor presente. */
-function recortarFiltros(searchParams: URLSearchParams, filterKeys: string[]): Record<string, string> {
+function recortarFiltros(
+  searchParams: URLSearchParams,
+  filterKeys: string[],
+): Record<string, string> {
   const out: Record<string, string> = {};
   for (const key of filterKeys) {
     const value = searchParams.get(key);
@@ -61,7 +64,12 @@ function serializar(filtros: Record<string, string>): string {
  * catalogo-componentes-premium-design, D6). Sem provedor, o hook não faz nada:
  * não restaura, não grava e `limpar()` não chama ninguém.
  */
-export function useFiltrosPersistidos({ telaKey, filterKeys, debounceMs = 600, local = false }: UseFiltrosPersistidosOptions) {
+export function useFiltrosPersistidos({
+  telaKey,
+  filterKeys,
+  debounceMs = 600,
+  local = false,
+}: UseFiltrosPersistidosOptions) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -72,7 +80,7 @@ export function useFiltrosPersistidos({ telaKey, filterKeys, debounceMs = 600, l
   // Estado de filtros atual, serializado para comparação estável.
   const filtrosAtuais = useMemo(
     () => recortarFiltros(new URLSearchParams(searchParams.toString()), filterKeys),
-    [searchParams, filterKeys]
+    [searchParams, filterKeys],
   );
   const serializado = serializar(filtrosAtuais);
 
@@ -86,7 +94,7 @@ export function useFiltrosPersistidos({ telaKey, filterKeys, debounceMs = 600, l
       debounce((tela: string, filtros: Record<string, string>) => {
         if (persistencia) void persistencia.salvarFiltros(tela, filtros);
       }, debounceMs),
-    [debounceMs, persistencia]
+    [debounceMs, persistencia],
   );
 
   // Restauração na abertura — roda uma vez por tela.

@@ -23,7 +23,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variantClasses: Record<Variant, string> = {
   primary:
-    "bg-[var(--yellow)] text-black hover:bg-[var(--gold)] active:bg-[var(--amber)] active:translate-y-px shadow-[var(--sh-gold)]",
+    "bg-[var(--yellow)] text-[var(--premium-black)] hover:bg-[var(--gold)] active:bg-[var(--amber)] active:translate-y-px shadow-[var(--sh-gold)]",
   dark: "bg-[var(--c-emphasis)] text-[var(--c-on-emphasis)] hover:bg-[var(--c-emphasis-hover)]",
   ghost:
     "bg-transparent text-[var(--premium-ink)] border border-[var(--premium-mist)] hover:border-[var(--premium-ink)]",
@@ -67,14 +67,17 @@ export function Button({
       <span
         className={cn(
           "inline-flex items-center gap-2 transition-opacity duration-150 motion-reduce:transition-none",
-          loading && "opacity-0"
+          loading && "opacity-0",
         )}
       >
         {children}
       </span>
       {loading && (
         <span aria-hidden className="absolute inset-0 flex items-center justify-center">
-          <Loader2 size={size === "sm" ? 14 : 16} className="animate-spin motion-reduce:animate-none" />
+          <Loader2
+            size={size === "sm" ? 14 : 16}
+            className="animate-spin motion-reduce:animate-none"
+          />
         </span>
       )}
     </button>

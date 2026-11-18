@@ -68,7 +68,7 @@ export function CampoBusca({
       {label && (
         <label
           htmlFor={id}
-          className="text-[11px] font-bold uppercase tracking-wider text-[var(--premium-gray)]"
+          className="text-[11px] font-bold tracking-wider text-[var(--premium-gray)] uppercase"
         >
           {label}
         </label>
@@ -79,7 +79,7 @@ export function CampoBusca({
           aria-hidden
           className={cn(
             "pointer-events-none absolute top-1/2 -translate-y-1/2 text-[var(--premium-gray)]",
-            t.lupaPos
+            t.lupaPos,
           )}
         />
         <input
@@ -92,10 +92,10 @@ export function CampoBusca({
           aria-label={label ? undefined : ariaLabel}
           autoFocus={autoFocus}
           className={cn(
-            "w-full rounded-[var(--r-md)] border border-[var(--premium-mist)] bg-[var(--premium-white)] text-[13px] font-[family-name:var(--font-ubuntu),system-ui,sans-serif] text-[var(--premium-ink)] outline-none transition-all duration-150",
+            "w-full rounded-[var(--r-md)] border border-[var(--premium-mist)] bg-[var(--premium-white)] font-[family-name:var(--font-ubuntu),system-ui,sans-serif] text-[13px] text-[var(--premium-ink)] transition-all duration-150 outline-none",
             "placeholder:text-[var(--premium-gray)]",
             "focus:border-[var(--premium-ink)] focus:shadow-[0_0_0_2px_var(--yellow-50)]",
-            t.campo
+            t.campo,
           )}
         />
         {value !== "" && (
@@ -105,8 +105,8 @@ export function CampoBusca({
             aria-label="Limpar busca"
             aria-controls={id}
             className={cn(
-              "absolute top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full text-[var(--premium-gray)] transition-colors hover:text-[var(--premium-ink)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--yellow-50)]",
-              t.limparPos
+              "absolute top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full text-[var(--premium-gray)] transition-colors hover:text-[var(--premium-ink)] focus-visible:ring-2 focus-visible:ring-[var(--yellow-50)] focus-visible:outline-none",
+              t.limparPos,
             )}
           >
             <X size={14} />

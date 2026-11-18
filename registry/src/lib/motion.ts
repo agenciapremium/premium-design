@@ -110,12 +110,17 @@ export const painelVariantes = {
     visible: { opacity: 1, transition: { duration: 0.16, ease: EASE } },
     exit: (c: PainelCustom) => ({
       opacity: 0,
-      transition: { duration: c.reduzido ? 0.12 : 0.16, ease: EASE_SAI, delay: c.reduzido ? 0 : 0.09 },
+      transition: {
+        duration: c.reduzido ? 0.12 : 0.16,
+        ease: EASE_SAI,
+        delay: c.reduzido ? 0 : 0.09,
+      },
     }),
   },
   // O X gira no lugar do gatilho (o sino "vira" o X).
   fechar: {
-    hidden: (c: PainelCustom) => (c.reduzido ? soOpacidade.hidden : { opacity: 0, rotate: -120, scale: 0.4 }),
+    hidden: (c: PainelCustom) =>
+      c.reduzido ? soOpacidade.hidden : { opacity: 0, rotate: -120, scale: 0.4 },
     visible: (c: PainelCustom) =>
       c.reduzido
         ? soOpacidade.visible
@@ -123,11 +128,17 @@ export const painelVariantes = {
     exit: (c: PainelCustom) =>
       c.reduzido
         ? soOpacidade.exit
-        : { opacity: 0, rotate: 90, scale: 0.5, transition: { duration: 0.16, ease: EASE_SAI, delay: 0.08 } },
+        : {
+            opacity: 0,
+            rotate: 90,
+            scale: 0.5,
+            transition: { duration: 0.16, ease: EASE_SAI, delay: 0.08 },
+          },
   },
   // Pílulas do topo: deslizam a partir do X (i = 0 é a mais próxima dele).
   pilula: {
-    hidden: (c: PainelCustom) => (c.reduzido ? soOpacidade.hidden : { opacity: 0, x: 28, scale: 0.9 }),
+    hidden: (c: PainelCustom) =>
+      c.reduzido ? soOpacidade.hidden : { opacity: 0, x: 28, scale: 0.9 },
     visible: (c: PainelCustom) =>
       c.reduzido
         ? soOpacidade.visible
@@ -180,7 +191,11 @@ export const painelVariantes = {
             opacity: 0,
             y: -12,
             scale: 0.96,
-            transition: { duration: 0.15, ease: EASE_SAI, delay: Math.min(c.j ?? 0, PAINEL_SAIDA_TETO) * 0.016 },
+            transition: {
+              duration: 0.15,
+              ease: EASE_SAI,
+              delay: Math.min(c.j ?? 0, PAINEL_SAIDA_TETO) * 0.016,
+            },
           },
   },
   // Base: sobe por último (i = quantos itens a cascata mostrou).

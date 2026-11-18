@@ -40,7 +40,7 @@ export function useBuscaLocal({ aoBuscar, atrasoMs = ATRASO_BUSCA_MS }: UseBusca
     () => () => {
       if (timer.current) clearTimeout(timer.current);
     },
-    []
+    [],
   );
 
   const alterar = useCallback((v: string) => {

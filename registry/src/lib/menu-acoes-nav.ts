@@ -35,7 +35,10 @@ export function primeiroHabilitado(itens: ItemNavegavel[]): number {
 
 /** Índice do último item habilitado, ou -1 se nenhum estiver. */
 export function ultimoHabilitado(itens: ItemNavegavel[]): number {
-  for (let i = itens.length - 1; i >= 0; i--) if (itemHabilitado(itens[i])) return i;
+  for (let i = itens.length - 1; i >= 0; i--) {
+    const item = itens[i];
+    if (item && itemHabilitado(item)) return i;
+  }
   return -1;
 }
 
@@ -47,7 +50,11 @@ export function ultimoHabilitado(itens: ItemNavegavel[]): number {
  * `atual` pode ser -1 (nada focado ainda): a seta para baixo vai ao primeiro e
  * a seta para cima, ao último.
  */
-export function proximoIndice(itens: ItemNavegavel[], atual: number, tecla: TeclaNavegacao): number {
+export function proximoIndice(
+  itens: ItemNavegavel[],
+  atual: number,
+  tecla: TeclaNavegacao,
+): number {
   if (tecla === "Home") return primeiroHabilitado(itens);
   if (tecla === "End") return ultimoHabilitado(itens);
   const n = itens.length;
@@ -56,7 +63,8 @@ export function proximoIndice(itens: ItemNavegavel[], atual: number, tecla: Tecl
   let i = atual < 0 || atual >= n ? (passo === 1 ? -1 : n) : atual;
   for (let k = 0; k < n; k++) {
     i = (i + passo + n) % n;
-    if (itemHabilitado(itens[i])) return i;
+    const item = itens[i];
+    if (item && itemHabilitado(item)) return i;
   }
   return -1;
 }

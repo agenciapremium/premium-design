@@ -85,7 +85,13 @@ const CLASSE_GATILHO_ESTADO =
  *   fora, Tab ou ao acionar um item), volta ao gatilho. A ação do item roda
  *   depois disso, então um painel aberto por ela devolve o foco ao "⋯".
  */
-export function MenuAcoes({ grupos, rotulo = "Mais ações", gatilho, classeGatilho, largura = 240 }: MenuAcoesProps) {
+export function MenuAcoes({
+  grupos,
+  rotulo = "Mais ações",
+  gatilho,
+  classeGatilho,
+  largura = 240,
+}: MenuAcoesProps) {
   const visiveis = grupos.filter((g) => g.itens.length > 0);
   const itens = achatarGrupos(visiveis);
   const baseId = useId();
@@ -95,8 +101,17 @@ export function MenuAcoes({ grupos, rotulo = "Mais ações", gatilho, classeGati
   const itemRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const [aberto, setAberto] = useState(false);
   const [ativo, setAtivo] = useState(-1);
-  const [rect, setRect] = useState<{ left: number; right: number; top: number; bottom: number } | null>(null);
-  const montado = useSyncExternalStore(semAssinatura, () => true, () => false);
+  const [rect, setRect] = useState<{
+    left: number;
+    right: number;
+    top: number;
+    bottom: number;
+  } | null>(null);
+  const montado = useSyncExternalStore(
+    semAssinatura,
+    () => true,
+    () => false,
+  );
 
   // As funções do listener nativo leem sempre o estado atual.
   const estadoRef = useRef({ itens, ativo });
@@ -179,9 +194,13 @@ export function MenuAcoes({ grupos, rotulo = "Mais ações", gatilho, classeGati
 
   if (itens.length === 0) return null;
 
-  const estilo = rect ? popoverPos(ancoraDireita(rect, largura), largura, alturaEstimadaMenu(visiveis)) : null;
+  const estilo = rect
+    ? popoverPos(ancoraDireita(rect, largura), largura, alturaEstimadaMenu(visiveis))
+    : null;
   // Índice de cada item na lista achatada (roving tabindex), por grupo.
-  const inicioGrupo = visiveis.map((_, gi) => visiveis.slice(0, gi).reduce((s, g) => s + g.itens.length, 0));
+  const inicioGrupo = visiveis.map((_, gi) =>
+    visiveis.slice(0, gi).reduce((s, g) => s + g.itens.length, 0),
+  );
 
   return (
     <>
@@ -210,7 +229,12 @@ export function MenuAcoes({ grupos, rotulo = "Mais ações", gatilho, classeGati
             {aberto && (
               // Camada do clique fora: fecha só o menu (o clique não chega ao
               // scrim do SlideOver nem a outro controle da página).
-              <div aria-hidden className="fixed inset-0 z-[60]" onClick={fechar} data-foco-livre="" />
+              <div
+                aria-hidden
+                className="fixed inset-0 z-[60]"
+                onClick={fechar}
+                data-foco-livre=""
+              />
             )}
             <AnimatePresence>
               {aberto && estilo && (
@@ -222,7 +246,10 @@ export function MenuAcoes({ grupos, rotulo = "Mais ações", gatilho, classeGati
                   role="menu"
                   aria-label={rotulo}
                   tabIndex={-1}
-                  style={{ ...estilo, transformOrigin: estilo.bottom !== undefined ? "bottom right" : "top right" }}
+                  style={{
+                    ...estilo,
+                    transformOrigin: estilo.bottom !== undefined ? "bottom right" : "top right",
+                  }}
                   className={cn(
                     "z-[61] rounded-[var(--r-lg)] border border-[var(--premium-mist)] bg-[var(--premium-white)] p-1.5 shadow-[var(--sh-md)] focus:outline-none",
                     // Rolagem só quando a altura foi limitada: sem ela, o balão
@@ -234,17 +261,22 @@ export function MenuAcoes({ grupos, rotulo = "Mais ações", gatilho, classeGati
                     const rotuloId = `${baseId}-g${gi}`;
                     return (
                       <div key={gi} role="group" aria-labelledby={g.rotulo ? rotuloId : undefined}>
-                        {gi > 0 && <div role="separator" className="mx-1.5 my-1 h-px bg-[var(--premium-mist)]" />}
+                        {gi > 0 && (
+                          <div
+                            role="separator"
+                            className="mx-1.5 my-1 h-px bg-[var(--premium-mist)]"
+                          />
+                        )}
                         {g.rotulo && (
                           <div
                             id={rotuloId}
-                            className="px-2.5 pb-1 pt-2 text-[10.5px] font-bold uppercase tracking-wider text-[var(--premium-gray)]"
+                            className="px-2.5 pt-2 pb-1 text-[10.5px] font-bold tracking-wider text-[var(--premium-gray)] uppercase"
                           >
                             {g.rotulo}
                           </div>
                         )}
                         {g.itens.map((item, ii) => {
-                          const i = inicioGrupo[gi] + ii;
+                          const i = (inicioGrupo[gi] ?? 0) + ii;
                           const Icone = item.icone;
                           const motivo = item.desabilitado || null;
                           const botao = (
@@ -262,7 +294,7 @@ export function MenuAcoes({ grupos, rotulo = "Mais ações", gatilho, classeGati
                               onMouseEnter={() => !motivo && setAtivo(i)}
                               className={cn(
                                 "flex min-h-10 w-full items-center gap-2.5 rounded-[var(--r-md)] px-2.5 text-left text-[13px] transition-colors",
-                                "focus-visible:outline-none focus-visible:shadow-[inset_0_0_0_2px_var(--yellow-50)]",
+                                "focus-visible:shadow-[inset_0_0_0_2px_var(--yellow-50)] focus-visible:outline-none",
                                 motivo
                                   ? "cursor-not-allowed opacity-50"
                                   : "cursor-pointer hover:bg-[var(--premium-bone)] focus-visible:bg-[var(--premium-bone)]",

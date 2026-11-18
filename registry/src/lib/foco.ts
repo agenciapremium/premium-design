@@ -31,15 +31,15 @@ export type DirecaoFoco = "frente" | "tras";
 export function proximoFocavel<T>(
   focaveis: readonly T[],
   atual: T | null,
-  direcao: DirecaoFoco
+  direcao: DirecaoFoco,
 ): T | null {
   if (focaveis.length === 0) return null;
-  const primeiro = focaveis[0];
-  const ultimo = focaveis[focaveis.length - 1];
+  const primeiro = focaveis[0] ?? null;
+  const ultimo = focaveis[focaveis.length - 1] ?? null;
   const i = atual === null ? -1 : focaveis.indexOf(atual);
   if (i === -1) return direcao === "frente" ? primeiro : ultimo;
-  if (direcao === "frente") return i === focaveis.length - 1 ? primeiro : focaveis[i + 1];
-  return i === 0 ? ultimo : focaveis[i - 1];
+  if (direcao === "frente") return i === focaveis.length - 1 ? primeiro : (focaveis[i + 1] ?? null);
+  return i === 0 ? ultimo : (focaveis[i - 1] ?? null);
 }
 
 /**

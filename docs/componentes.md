@@ -16,10 +16,10 @@ Convenções comuns a todos:
 
 ## Copiar pelo catálogo
 
-Desde a premium-design **v0.24.0**, as peças desta página que não dependem do domínio do Tasks são copiáveis por um comando, no formato de registry do shadcn. **Sistema novo nunca reescreve componente do catálogo: copia pelo comando.** A peça chega byte a byte igual ao arquivo do Tasks, com as peças e funções de apoio de que depende e os pacotes npm declarados. Desde a v0.25.0, a peça base (tokens, tema, base, motion e os padrões de CSS que as peças usam) não vem junto: o sistema importa os tokens do pacote `@agenciapremium/premium-design` ou copia a `premium-base` uma vez, antes da primeira peça.
+Desde a premium-design **v0.24.0**, as peças desta página que não dependem do domínio do Tasks são copiáveis por um comando, no formato de registry do shadcn. **Sistema novo nunca reescreve componente do catálogo: copia pelo comando.** A peça chega byte a byte igual ao arquivo do Tasks (ou, desde a v0.27.0, ao ajuste dela ao padrão estrito dos sistemas, em `ajustes/`), com as peças e funções de apoio de que depende e os pacotes npm declarados. Desde a v0.25.0, a peça base (tokens, tema, base, motion e os padrões de CSS que as peças usam) não vem junto: o sistema importa os tokens do pacote `@agenciapremium/premium-design` ou copia a `premium-base` uma vez, antes da primeira peça.
 
 ```bash
-npx shadcn@latest add https://raw.githubusercontent.com/agenciapremium/premium-design/v0.25.0/public/r/filter-bar.json
+npx shadcn@latest add https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/filter-bar.json
 # ou, com "@premium" em "registries" no components.json do sistema:
 npx shadcn@latest add @premium/filter-bar
 ```

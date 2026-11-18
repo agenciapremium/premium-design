@@ -28,7 +28,12 @@ const TIPOS_DE_FAIXA = new Set(["daterange", "faixa"]);
  * "Limpar filtros" e pelo filtro ativo.
  */
 export function chavesDoFiltro(filtro: FiltroMinimo): string[] {
-  return TIPOS_DE_FAIXA.has(filtro.type) ? [`${filtro.key}De`, `${filtro.key}Ate`] : [filtro.key];
+  return TIPOS_DE_FAIXA.has(filtro.type) ? chavesDaFaixa(filtro) : [filtro.key];
+}
+
+/** As duas chaves de URL de um `daterange` ou de uma `faixa`: `[keyDe, keyAte]`. */
+export function chavesDaFaixa(filtro: Pick<FiltroMinimo, "key">): [string, string] {
+  return [`${filtro.key}De`, `${filtro.key}Ate`];
 }
 
 /** A busca deste filtro fica só no estado do componente, fora da URL. */
@@ -129,7 +134,7 @@ export function escritaDaFaixa(
   limites: LimitesFaixa,
 ): Record<string, string | null> {
   const v = normalizarFaixa(de, ate, limites);
-  const [chaveDe, chaveAte] = chavesDoFiltro(filtro);
+  const [chaveDe, chaveAte] = chavesDaFaixa(filtro);
   return {
     [chaveDe]: v.de === null ? null : String(v.de),
     [chaveAte]: v.ate === null ? null : String(v.ate),
@@ -143,7 +148,8 @@ const formatarNumero = (n: number) => n.toLocaleString("pt-BR");
  * "Nota: até 80", ou só o rótulo quando não há valor.
  */
 export function rotuloFaixa(rotulo: string, { de, ate }: ValorFaixa): string {
-  if (de !== null && ate !== null) return `${rotulo}: ${formatarNumero(de)} a ${formatarNumero(ate)}`;
+  if (de !== null && ate !== null)
+    return `${rotulo}: ${formatarNumero(de)} a ${formatarNumero(ate)}`;
   if (de !== null) return `${rotulo}: a partir de ${formatarNumero(de)}`;
   if (ate !== null) return `${rotulo}: até ${formatarNumero(ate)}`;
   return rotulo;

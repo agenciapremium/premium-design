@@ -21,10 +21,24 @@
  * 5. gera o `registry.json`, roda `shadcn build` para `public/r/` e grava
  *    `registry/origem.json` (commit do Tasks e sha256 de cada arquivo).
  *
+ * Ajustes estritos (desde a v0.27.0): uma peça listada em
+ * `ajustes/catalogo-ajustes.json` sai dos arquivos de `ajustes/` em vez dos do
+ * Tasks. São as peças reescritas aqui para passar no padrão estrito dos sistemas
+ * criados pelo modelo Premium (TypeScript strict com `noUncheckedIndexedAccess`,
+ * Prettier, 350 linhas por arquivo e cor só por token), com a mesma API pública.
+ * O ajuste guarda o sha256 do arquivo do Tasks de que partiu: quando o Tasks
+ * muda esse arquivo, a sincronização e a verificação param até o ajuste ser
+ * refeito sobre o arquivo novo e o sha256 atualizado no manifesto dos ajustes.
+ *
+ * A peça `utils` não entra nas `registryDependencies` (desde a v0.27.0): as
+ * peças só usam o `cn` de `@/lib/utils`, que todo sistema já tem, e copiar a
+ * `utils` do Tasks por cima do `utils.ts` do sistema trocaria o `cn` dele. Peça
+ * que importe outro nome de `@/lib/utils` faz a sincronização falhar.
+ *
  * Com `--verificar`, nada é escrito no repositório: o script compara o Tasks
- * atual, os arquivos de `registry/` e o `registry/origem.json`, confere que o
- * `registry.json` e o `public/r/` são os que a sincronização geraria, lista os
- * divergentes e sai com código 1.
+ * atual, os ajustes, os arquivos de `registry/` e o `registry/origem.json`,
+ * confere que o `registry.json` e o `public/r/` são os que a sincronização
+ * geraria, lista os divergentes e sai com código 1.
  *
  * Uso:
  *   npm run catalogo:sincronizar            # TASKS_DIR=../tasks por padrão
@@ -40,7 +54,7 @@
  * mesmo quando a peça é `registry:ui`, `registry:lib` ou `registry:hook`: o
  * `shadcn add` grava o `registry:file` sem passar pelos transformadores (que,
  * por exemplo, apagam o comentário de cabeçalho dos `.ts`). Assim o arquivo
- * copiado é idêntico ao do Tasks.
+ * copiado é idêntico ao da origem (o Tasks ou o ajuste).
  */
 import { createHash } from "node:crypto";
 import { execFileSync } from "node:child_process";
@@ -57,6 +71,8 @@ const PASTA_SAIDA = join(RAIZ, "public", "r");
 const ARQUIVO_REGISTRO = join(RAIZ, "registry.json");
 const ARQUIVO_ORIGEM = join(PASTA_REGISTRO, "origem.json");
 const SHADCN = join(RAIZ, "node_modules", ".bin", "shadcn");
+const PASTA_AJUSTES = join(RAIZ, "ajustes");
+const MANIFESTO_AJUSTES = join(PASTA_AJUSTES, "catalogo-ajustes.json");
 
 const PACOTE = JSON.parse(readFileSync(join(RAIZ, "package.json"), "utf8"));
 const URL_BASE =
@@ -65,6 +81,13 @@ const URL_BASE =
 
 /** Pacotes que todo sistema Next já tem: nunca entram como dependência a instalar. */
 const PACOTES_DO_PROJETO = new Set(["react", "react-dom", "next"]);
+
+/**
+ * Peças que o sistema já tem: nunca entram em `registryDependencies`. A `utils`
+ * só é usada pelo `cn`, que todo sistema mantém no próprio `src/lib/utils.ts`.
+ */
+const PECAS_DO_PROJETO = new Set(["utils"]);
+const NOMES_DO_UTILS = new Set(["cn"]);
 
 /** Peça base: núcleo de `css/` deste repo, copiado para `src/styles/premium/`. */
 const BASE_NOME = "premium-base";
@@ -93,16 +116,34 @@ function importsDe(fonte) {
   return out;
 }
 
-/** Caminho relativo à raiz do Tasks para um import local, testando as extensões do TypeScript. */
+/**
+ * Caminho relativo à raiz do projeto para um import local, testando as extensões
+ * do TypeScript: primeiro entre os arquivos das peças (do Tasks ou dos ajustes),
+ * depois no Tasks.
+ */
 function resolverLocal(arquivo, especificador) {
   const base = especificador.startsWith("@/")
     ? posix.join("src", especificador.slice(2))
     : posix.normalize(posix.join(posix.dirname(arquivo), especificador));
   for (const c of [base, `${base}.ts`, `${base}.tsx`, `${base}/index.ts`, `${base}/index.tsx`]) {
+    if (fonteDe.has(c)) return c;
     const abs = absDe(TASKS, c);
     if (existsSync(abs) && statSync(abs).isFile()) return c;
   }
   return null;
+}
+
+/** Nomes importados de um especificador (`import { a, type B } from "x"`), sem `type`. */
+function nomesImportados(fonte, especificador) {
+  const esc = especificador.replace(/[.*+?^${}()|[\]\\/]/g, "\\$&");
+  const re = new RegExp(`import\\s+(?:type\\s+)?\\{([^}]*)\\}\\s*from\\s*["']${esc}["']`, "g");
+  const nomes = [];
+  for (const m of fonte.matchAll(re))
+    for (const parte of m[1].split(",")) {
+      const nome = parte.trim().replace(/^type\s+/, "").split(/\s+as\s+/)[0].trim();
+      if (nome) nomes.push(nome);
+    }
+  return nomes;
 }
 
 /** Nome do pacote npm de um especificador (`@escopo/nome/sub` → `@escopo/nome`). */
@@ -132,9 +173,49 @@ const pacoteTasks = JSON.parse(readFileSync(join(TASKS, "package.json"), "utf8")
 const versoesTasks = { ...pacoteTasks.devDependencies, ...pacoteTasks.dependencies };
 const commitTasks = execFileSync("git", ["-C", TASKS, "rev-parse", "HEAD"], { encoding: "utf8" }).trim();
 
-/** Arquivo do manifesto → nome da peça. */
+// ─── ajustes estritos ───────────────────────────────────────────────────────
+
+const ajustes = existsSync(MANIFESTO_AJUSTES) ? JSON.parse(readFileSync(MANIFESTO_AJUSTES, "utf8")) : { pecas: [] };
+const ajusteDe = new Map(ajustes.pecas.map((a) => [a.nome, a]));
+const nomesDoTasks = new Set(manifesto.pecas.map((p) => p.nome));
+for (const a of ajustes.pecas) if (!nomesDoTasks.has(a.nome)) falhar(`ajustes: a peça "${a.nome}" não está no manifesto do Tasks`);
+
+/**
+ * Ajustes cujo arquivo de partida no Tasks mudou (ou a lista de arquivos da peça
+ * no Tasks mudou): o ajuste precisa ser refeito.
+ */
+function ajustesDesatualizados() {
+  const problemas = [];
+  for (const p of manifesto.pecas) {
+    const a = ajusteDe.get(p.nome);
+    if (!a) continue;
+    const registrados = Object.keys(a.tasks ?? {}).sort();
+    const atuais = [...p.arquivos].sort();
+    if (registrados.join("\n") !== atuais.join("\n"))
+      problemas.push(`ajustes/${p.nome}: os arquivos da peça no Tasks (${atuais.join(", ")}) não são os registrados no ajuste`);
+    for (const arquivo of atuais) {
+      const hash = existsSync(absDe(TASKS, arquivo)) ? sha256(ler(absDe(TASKS, arquivo))) : null;
+      if (a.tasks?.[arquivo] && hash !== a.tasks[arquivo])
+        problemas.push(`${arquivo}: mudou no Tasks depois do ajuste da peça "${p.nome}"; refaça o ajuste em ajustes/ e atualize o sha256 em ajustes/catalogo-ajustes.json`);
+    }
+  }
+  return problemas;
+}
+
+/** Peças publicadas: as do manifesto do Tasks, com os arquivos do ajuste quando há um. */
+const pecas = manifesto.pecas.map((p) => {
+  const a = ajusteDe.get(p.nome);
+  return a ? { ...p, arquivos: a.arquivos, ajustada: true } : p;
+});
+
+/** Arquivo publicado → caminho absoluto da origem (o Tasks ou `ajustes/`). */
+const fonteDe = new Map();
+for (const p of pecas) for (const a of p.arquivos) fonteDe.set(a, absDe(p.ajustada ? PASTA_AJUSTES : TASKS, a));
+for (const [a, abs] of fonteDe) if (!existsSync(abs)) falhar(`${a}: listado na peça, mas não existe em ${abs}`);
+
+/** Arquivo publicado → nome da peça. */
 const donoDe = new Map();
-for (const p of manifesto.pecas) for (const a of p.arquivos) donoDe.set(a, p.nome);
+for (const p of pecas) for (const a of p.arquivos) donoDe.set(a, p.nome);
 
 /** Código sem comentários, para um comentário que cita uma classe não contar como uso. */
 const semComentarios = (fonte) => fonte.replace(/\/\*[\s\S]*?\*\//g, "").replace(/(^|[^:"'`])\/\/.*$/gm, "$1");
@@ -155,10 +236,10 @@ function padroesUsados() {
         ...[...css.matchAll(/@property\s+(--[\w-]+)/g)].map((m) => m[1]),
       ]),
     ].map((m) => new RegExp(`(^|[^\\w-])${m.replace(/[-]/g, "\\-")}(?![\\w-])`));
-    const pecas = manifesto.pecas
-      .filter((p) => p.arquivos.some((a) => marcas.some((re) => re.test(semComentarios(readFileSync(absDe(TASKS, a), "utf8"))))))
+    const usam = pecas
+      .filter((p) => p.arquivos.some((a) => marcas.some((re) => re.test(semComentarios(readFileSync(fonteDe.get(a), "utf8"))))))
       .map((p) => p.nome);
-    if (pecas.length) usados[nome] = pecas;
+    if (usam.length) usados[nome] = usam;
   }
   return usados;
 }
@@ -177,12 +258,18 @@ function derivar(peca) {
   const registro = new Set();
   const npm = new Map();
   for (const arquivo of peca.arquivos) {
-    const fonte = readFileSync(absDe(TASKS, arquivo), "utf8");
+    const fonte = readFileSync(fonteDe.get(arquivo), "utf8");
     for (const imp of importsDe(fonte)) {
       if (imp.startsWith("@/") || imp.startsWith(".")) {
         const alvo = resolverLocal(arquivo, imp);
         const dono = alvo && donoDe.get(alvo);
         if (!dono) falhar(`${arquivo}: import "${imp}" fora do manifesto (rode a guarda do Tasks: catalogo-guarda.test.ts)`);
+        if (PECAS_DO_PROJETO.has(dono) && dono !== peca.nome) {
+          const fora = nomesImportados(fonte, imp).filter((n) => !NOMES_DO_UTILS.has(n));
+          if (fora.length)
+            falhar(`${arquivo}: importa ${fora.join(", ")} de "${imp}"; das peças do projeto, as peças só podem usar ${[...NOMES_DO_UTILS].join(", ")}`);
+          continue;
+        }
         if (dono !== peca.nome) registro.add(dono);
         continue;
       }
@@ -195,7 +282,8 @@ function derivar(peca) {
   }
   // A `premium-base` não entra: copiá-la junto com cada peça duplicava os
   // tokens de quem já importa o pacote (change
-  // catalogo-filterbar-faixa-busca-correcoes do Tasks, D7).
+  // catalogo-filterbar-faixa-busca-correcoes do Tasks, D7). A `utils` também
+  // não: o sistema já tem o `cn` (PECAS_DO_PROJETO).
   const deps = [...registro].sort();
   return { registryDependencies: deps.map((n) => `${URL_BASE}${n}.json`), dependencies: [...npm.values()].sort() };
 }
@@ -212,13 +300,15 @@ function montarRegistro() {
       meta: { padroes },
       files: arquivosBase.map((f) => ({ path: `registry/${f.destino}`, type: "registry:file", target: f.destino })),
     },
-    ...manifesto.pecas.map((p) => {
+    ...pecas.map((p) => {
       const { registryDependencies, dependencies } = derivar(p);
       return {
         name: p.nome,
         type: p.tipo,
         title: p.nome,
-        description: `Peça do Tasks copiada byte a byte: ${p.arquivos.join(", ")}.`,
+        description: p.ajustada
+          ? `Peça do Tasks ajustada no premium-design para o padrão estrito dos sistemas (TypeScript strict, Prettier, 350 linhas por arquivo, cor só por token), com a mesma API: ${p.arquivos.join(", ")}.`
+          : `Peça do Tasks copiada byte a byte: ${p.arquivos.join(", ")}.`,
         ...(dependencies.length ? { dependencies } : {}),
         ...(registryDependencies.length ? { registryDependencies } : {}),
         files: p.arquivos.map((a) => ({ path: `registry/${a}`, type: "registry:file", target: a })),
@@ -236,23 +326,27 @@ function montarRegistro() {
 /** Conteúdo esperado de cada arquivo de `registry/` (exceto origem.json): caminho → bytes. */
 function arquivosEsperados() {
   const mapa = new Map();
-  for (const p of manifesto.pecas) for (const a of p.arquivos) mapa.set(a, { bytes: ler(absDe(TASKS, a)), origem: "tasks" });
+  for (const p of pecas)
+    for (const a of p.arquivos) mapa.set(a, { bytes: ler(fonteDe.get(a)), origem: p.ajustada ? "ajuste" : "tasks" });
   for (const f of arquivosBase) mapa.set(f.destino, { bytes: ler(absDe(RAIZ, f.origem)), origem: f.origem });
   return mapa;
 }
 
 function montarOrigem(esperados) {
   const tasks = {};
+  const ajustados = {};
   const base = {};
   for (const [caminho, { bytes, origem }] of esperados) {
     if (origem === "tasks") tasks[caminho] = sha256(bytes);
+    else if (origem === "ajuste") ajustados[caminho] = sha256(bytes);
     else base[caminho] = { origem, sha256: sha256(bytes) };
   }
   return {
     $comentario:
-      "Gerado por scripts/sincronizar-catalogo.mjs. Não edite à mão: rode npm run catalogo:sincronizar. tasksCommit é o HEAD do Tasks na sincronização; arquivos guarda o sha256 de cada arquivo copiado.",
+      "Gerado por scripts/sincronizar-catalogo.mjs. Não edite à mão: rode npm run catalogo:sincronizar. tasksCommit é o HEAD do Tasks na sincronização; arquivos guarda o sha256 de cada arquivo copiado do Tasks, e ajustes, o de cada arquivo que sai de ajustes/.",
     tasksCommit: commitTasks,
     arquivos: tasks,
+    ajustes: ajustados,
     base,
   };
 }
@@ -266,6 +360,8 @@ function build(registroAbs, saidaAbs) {
 // ─── sincronizar ────────────────────────────────────────────────────────────
 
 function sincronizar() {
+  const desatualizados = ajustesDesatualizados();
+  if (desatualizados.length) falhar(`ajuste desatualizado em relação ao Tasks:\n  - ${desatualizados.join("\n  - ")}`);
   const esperados = arquivosEsperados();
   rmSync(join(PASTA_REGISTRO, "src"), { recursive: true, force: true });
   for (const [caminho, { bytes }] of esperados) {
@@ -279,14 +375,14 @@ function sincronizar() {
   build(ARQUIVO_REGISTRO, PASTA_SAIDA);
   writeFileSync(ARQUIVO_ORIGEM, json(montarOrigem(esperados)));
   console.log(
-    `catalogo: ${registro.items.length} peças (${manifesto.pecas.length} do Tasks + ${BASE_NOME}), ${esperados.size} arquivos, Tasks em ${commitTasks.slice(0, 8)}.`,
+    `catalogo: ${registro.items.length} peças (${manifesto.pecas.length} do Tasks, ${ajusteDe.size} delas ajustadas, + ${BASE_NOME}), ${esperados.size} arquivos, Tasks em ${commitTasks.slice(0, 8)}.`,
   );
 }
 
 // ─── verificar ──────────────────────────────────────────────────────────────
 
 function verificarCatalogo() {
-  const problemas = [];
+  const problemas = [...ajustesDesatualizados()];
   const esperados = arquivosEsperados();
   const origem = existsSync(ARQUIVO_ORIGEM) ? JSON.parse(readFileSync(ARQUIVO_ORIGEM, "utf8")) : null;
   if (!origem) problemas.push("registry/origem.json: não existe (rode npm run catalogo:sincronizar)");
@@ -294,18 +390,24 @@ function verificarCatalogo() {
   for (const [caminho, { bytes, origem: de }] of esperados) {
     const hashAtual = sha256(bytes);
     const abs = join(PASTA_REGISTRO, ...caminho.split("/"));
-    const fonte = de === "tasks" ? `Tasks:${caminho}` : de;
+    const fonte = de === "tasks" ? `Tasks:${caminho}` : de === "ajuste" ? `ajustes/${caminho}` : de;
     if (!existsSync(abs)) {
       problemas.push(`${caminho}: está em ${fonte}, mas falta em registry/`);
       continue;
     }
     if (sha256(ler(abs)) !== hashAtual) problemas.push(`${caminho}: registry/ difere de ${fonte}`);
-    const hashOrigem = de === "tasks" ? origem?.arquivos?.[caminho] : origem?.base?.[caminho]?.sha256;
+    const hashOrigem =
+      de === "tasks" ? origem?.arquivos?.[caminho] : de === "ajuste" ? origem?.ajustes?.[caminho] : origem?.base?.[caminho]?.sha256;
     if (origem && hashOrigem !== hashAtual) problemas.push(`${caminho}: origem.json difere de ${fonte}`);
   }
   for (const caminho of listar(PASTA_REGISTRO)) {
     if (caminho === "origem.json") continue;
     if (!esperados.has(caminho)) problemas.push(`${caminho}: está em registry/, mas não no manifesto do Tasks nem na peça base`);
+  }
+  for (const caminho of listar(join(PASTA_AJUSTES, "src"))) {
+    const rel = `src/${caminho}`;
+    if (!esperados.has(rel) || esperados.get(rel).origem !== "ajuste")
+      problemas.push(`ajustes/${rel}: está em ajustes/, mas em nenhuma peça de ajustes/catalogo-ajustes.json`);
   }
 
   const registroEsperado = json(montarRegistro());

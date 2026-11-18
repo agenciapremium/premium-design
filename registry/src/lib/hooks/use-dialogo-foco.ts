@@ -96,7 +96,7 @@ function primeiroFocavel(escopo: HTMLElement): HTMLElement | null {
 function resolverAlvo(
   alvo: AlvoFoco | undefined,
   container: HTMLElement,
-  escopo: HTMLElement
+  escopo: HTMLElement,
 ): HTMLElement | null {
   if (!alvo || alvo === "nenhum") return null;
   if (alvo === "primeiro") return primeiroFocavel(escopo);

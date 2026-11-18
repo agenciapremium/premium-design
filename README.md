@@ -18,8 +18,9 @@ Identidade visual da **Agência Premium** (PREMIUM · MARKETING 360°): tokens d
 | [`brand/`](brand/) | **Logo oficial** (horizontal, vertical e ícone, em branco e preto) e favicons, os mesmos arquivos de `public/brand/` do Tasks. Regras de uso em [`docs/index.md`](docs/index.md#logo). |
 | [`css/patterns/`](css/patterns/) | **Padrões de projeto (opt-in)** — CSS de recursos que nem todo sistema tem. Se o seu sistema implementar o recurso, importe o padrão em vez de recriar o visual. |
 | [`docs/`](docs/) | Documentação completa do design system — comece por [`docs/index.md`](docs/index.md). O [`docs/showroom.html`](docs/showroom.html) demonstra tudo ao vivo nos dois temas (abra no navegador). |
-| [`registry.json`](registry.json), [`registry/`](registry/) e [`public/r/`](public/r/) | **Catálogo de componentes** no formato de registry do shadcn (v0.26.0): as peças copiadas do Tasks, a peça base e o JSON de cada peça, servido pela tag. Gerados por `npm run catalogo:sincronizar`; nunca edite à mão. Ver [Catálogo de componentes](#catálogo-de-componentes). |
-| [`scripts/sincronizar-catalogo.mjs`](scripts/sincronizar-catalogo.mjs) | Sincronização do catálogo a partir do Tasks e o modo `--verificar`. |
+| [`registry.json`](registry.json), [`registry/`](registry/) e [`public/r/`](public/r/) | **Catálogo de componentes** no formato de registry do shadcn (v0.27.0): as peças copiadas do Tasks (as ajustadas ao padrão estrito saem de [`ajustes/`](ajustes/)), a peça base e o JSON de cada peça, servido pela tag. Gerados por `npm run catalogo:sincronizar`; nunca edite à mão. Ver [Catálogo de componentes](#catálogo-de-componentes). |
+| [`ajustes/`](ajustes/) | **Ajustes estritos** (v0.27.0): as peças do Tasks reescritas para passar no padrão estrito dos sistemas criados pelo modelo Premium, com o manifesto [`ajustes/catalogo-ajustes.json`](ajustes/catalogo-ajustes.json). Ver [Padrão estrito](#padrão-estrito-dos-sistemas). |
+| [`scripts/sincronizar-catalogo.mjs`](scripts/sincronizar-catalogo.mjs) | Sincronização do catálogo a partir do Tasks e dos ajustes, e o modo `--verificar`. |
 
 ## Como consumir
 
@@ -83,6 +84,7 @@ Desde a v0.24.0, os componentes do Tasks que não dependem do domínio dele (os 
 - Next.js com App Router e o código em `src/`.
 - Tailwind CSS v4.
 - Alias `@/*` apontando para `src/*` no `tsconfig.json` (o padrão do `create-next-app` com `src/`).
+- Um `src/lib/utils.ts` com a função `cn(...classes)`, o do próprio sistema. É o único nome que as peças importam de `@/lib/utils`, e desde a v0.27.0 a peça `utils` do Tasks não vem junto ([abaixo](#padrão-estrito-dos-sistemas)). O `cn` do shadcn (`clsx` com `tailwind-merge`) serve.
 - Os tokens, o tema e os padrões de CSS, pelo pacote ou pela peça base, antes da primeira peça ([abaixo](#tokens-tema-e-padrões-o-pacote-ou-a-peça-base)).
 - O `@source` do Tailwind apontando para as peças quando o CSS de entrada não está numa pasta que as contém ([abaixo](#source-do-tailwind)).
 
@@ -114,7 +116,7 @@ O `shadcn add` lê o `components.json` da raiz do projeto. Crie o arquivo à mã
     "hooks": "@/hooks"
   },
   "registries": {
-    "@premium": "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.26.0/public/r/{name}.json"
+    "@premium": "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/{name}.json"
   }
 }
 ```
@@ -124,7 +126,7 @@ O `shadcn add` lê o `components.json` da raiz do projeto. Crie o arquivo à mã
 Por URL fixada na tag, sem configurar nada além do `components.json`:
 
 ```bash
-npx shadcn@latest add https://raw.githubusercontent.com/agenciapremium/premium-design/v0.26.0/public/r/filter-bar.json
+npx shadcn@latest add https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/filter-bar.json
 ```
 
 Ou pelo namespace `@premium` do `components.json` acima:
@@ -133,7 +135,7 @@ Ou pelo namespace `@premium` do `components.json` acima:
 npx shadcn@latest add @premium/filter-bar @premium/slide-over @premium/confirm-dialog @premium/card-secao
 ```
 
-O comando copia a peça e as peças de que ela depende (cada uma declara as outras em `registryDependencies`, por URL fixada na mesma tag) e instala os pacotes npm declarados (`motion`, `lucide-react` e, no `emoji-picker`, o `emoji-mart`). `react`, `react-dom` e `next` não são instalados: o projeto já os tem. Desde a v0.25.0, a peça base não vem junto: veja [abaixo](#tokens-tema-e-padrões-o-pacote-ou-a-peça-base). A tag fixa a versão: a peça copiada é a da v0.26.0, mesmo que a `main` avance. Atualizar é trocar a tag e copiar de novo.
+O comando copia a peça e as peças de que ela depende (cada uma declara as outras em `registryDependencies`, por URL fixada na mesma tag, menos a `utils`, que o sistema já tem) e instala os pacotes npm declarados (`motion`, `lucide-react` e, no `emoji-picker`, o `emoji-mart`). `react`, `react-dom` e `next` não são instalados: o projeto já os tem. Desde a v0.25.0, a peça base não vem junto: veja [abaixo](#tokens-tema-e-padrões-o-pacote-ou-a-peça-base). A tag fixa a versão: a peça copiada é a da v0.27.0, mesmo que a `main` avance. Atualizar é trocar a tag e copiar de novo.
 
 ### Tokens, tema e padrões: o pacote ou a peça base
 
@@ -154,7 +156,7 @@ Desde a v0.25.0, nenhuma peça traz a `premium-base` junto. Antes da primeira pe
 2. **Sem o pacote**: copie a peça base uma vez, antes da primeira peça. Ela grava em `src/styles/premium/` o núcleo do `css/` deste repo (`tokens.css`, `theme.css`, `base.css`, `motion.css`) e os padrões de `css/patterns/` que as peças usam:
 
    ```bash
-   npx shadcn@latest add https://raw.githubusercontent.com/agenciapremium/premium-design/v0.26.0/public/r/premium-base.json
+   npx shadcn@latest add https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/premium-base.json
    ```
 
    ```css
@@ -245,6 +247,16 @@ const filtros: FilterConfig[] = [
 ];
 ```
 
+### Padrão estrito dos sistemas
+
+Desde a v0.27.0, as peças copiadas por um sistema criado pelo modelo Premium (o `premium-stack`) passam, sem nenhuma edição depois de copiadas, nas verificações dele: `pnpm lint` (com `max-lines` de 350 linhas, contando brancos e comentários), `pnpm lint:typed`, `pnpm format:check` (Prettier com `printWidth` 100 e `prettier-plugin-tailwindcss`) e `pnpm typecheck` (TypeScript `strict` com `noUncheckedIndexedAccess`). A prova foi feita no premium-leads, copiando `button`, `input`, `select`, `switch`, `confirm-dialog`, `slide-over`, `menu-acoes`, `campo-busca`, `filter-bar`, `empty-state`, `skeleton`, `badge`, `avatar`, `form-error-banner` e `toast`, com as dependências.
+
+- **Onde mora o ajuste.** O Tasks continua sendo a origem. As peças que precisaram de ajuste ficam em [`ajustes/`](ajustes/), no caminho que têm no projeto, e o manifesto [`ajustes/catalogo-ajustes.json`](ajustes/catalogo-ajustes.json) diz quais são, com os arquivos de cada uma e o sha256 do arquivo do Tasks de que o ajuste partiu. A sincronização publica os arquivos do ajuste no lugar dos do Tasks.
+- **Mesma API.** Os arquivos grandes foram divididos por responsabilidade, e o arquivo principal de cada peça continua exportando tudo o que exportava: `filter-bar.tsx` reexporta `FilterConfig`, `FilterOption`, `FilterType`, `TabConfig` e `ViewTabsPill`, e `pilula.tsx` reexporta `useDropdownPortal` e `SingleSelectItem`. Os arquivos novos vêm junto com a peça (`filter-bar-*.tsx`, `select-painel.tsx`, `pilula-dropdown.tsx`, `date-picker-*.tsx`, `views-salvas-painel.tsx` e `views-salvas-item.tsx`).
+- **Cor só por token.** As cores fixas do Tailwind (`text-black`, `bg-white`, `bg-black/40`, `border-white/10`) viraram os tokens de mesmo valor nos dois temas (`--premium-black`, `--brand-on-ink`). Num sistema que zera a paleta padrão do Tailwind, essas classes não geravam CSS nenhum: o fundo dos diálogos e do `SlideOver` sumia, o botão do `Switch` ficava sem cor e o texto sobre o amarelo herdava a cor do pai.
+- **`utils` fora das dependências.** As peças importam de `@/lib/utils` só o `cn`. O `Avatar`, que usava o `getInitials` da `utils` do Tasks, calcula as iniciais dentro dele. Assim nenhuma peça depende de um utilitário que o sistema não tem, e copiar uma peça nunca grava a `utils` do Tasks por cima do `utils.ts` do sistema (o `cn` do Tasks não usa `tailwind-merge`). A sincronização falha se uma peça importar de `@/lib/utils` outro nome que não o `cn`.
+- **Fora do ajuste.** As outras peças do catálogo (as que não estão no manifesto dos ajustes) continuam byte a byte iguais ao Tasks e podem não passar nessas verificações. O `pnpm dry` (código clonado) do premium-leads ainda acusa trechos repetidos entre `select` e `date-picker`, dentro da `FilterBar` e no `motion.ts`.
+
 ### Peças
 
 A lista completa, com dependências e arquivos, está em [`registry.json`](registry.json).
@@ -263,16 +275,17 @@ Ficam fora, porque dependem do domínio do Tasks: o shell (sidebar, topbar, menu
 
 ### Copiar sem reescrever
 
-- A peça copiada é o arquivo do Tasks, byte a byte. Não reescreva, não "simplifique" e não troque imports: o arquivo igual é o que permite atualizar pela tag sem perder nada.
-- **Ajuste nasce no Tasks.** Se um sistema precisa de uma prop ou de uma correção numa peça, a mudança é feita no Tasks (a origem), chega ao catálogo pela sincronização e sai numa versão nova deste repo. Edição local divergente numa peça copiada é defeito de revisão.
+- A peça copiada é o arquivo do Tasks, byte a byte, ou o arquivo de `ajustes/`, nas peças ajustadas ao padrão estrito. Não reescreva, não "simplifique" e não troque imports: o arquivo igual é o que permite atualizar pela tag sem perder nada.
+- **Comportamento nasce no Tasks.** Se um sistema precisa de uma prop ou de uma correção de comportamento numa peça, a mudança é feita no Tasks (a origem), chega ao catálogo pela sincronização e sai numa versão nova deste repo; numa peça ajustada, o ajuste é refeito sobre o arquivo novo. Só o ajuste ao padrão estrito (tipos, formatação, tamanho de arquivo, cor por token) é feito aqui. Edição local divergente numa peça copiada é defeito de revisão.
 - Composição é livre: o sistema monta as próprias telas com as peças, e o que é do domínio dele (as actions da persistência, por exemplo) fica fora delas, como no Tasks.
 
 ### Manutenção do catálogo
 
 - A origem é o Tasks: o manifesto `src/components/ui/catalogo.json` lista as peças, e a guarda `catalogo-guarda.test.ts` de lá impede que uma peça importe domínio.
-- `npm run catalogo:sincronizar` (com o Tasks em `../tasks`, ou `TASKS_DIR=<caminho>`) copia as peças para `registry/`, deriva as dependências pelos imports, gera o `registry.json`, roda `shadcn build` para `public/r/` e grava a origem (commit do Tasks e sha256 por arquivo) em `registry/origem.json`.
-- `npm run catalogo:verificar` não escreve nada: compara o Tasks atual com `registry/`, `registry/origem.json`, `registry.json` e `public/r/`, lista os divergentes e sai com código 1. Rode antes de toda release.
-- `registry/`, `registry.json` e `public/r/` nunca são editados à mão.
+- `npm run catalogo:sincronizar` (com o Tasks em `../tasks`, ou `TASKS_DIR=<caminho>`) copia as peças para `registry/` (do Tasks ou, nas ajustadas, de `ajustes/`), deriva as dependências pelos imports, gera o `registry.json`, roda `shadcn build` para `public/r/` e grava a origem (commit do Tasks e sha256 por arquivo, do Tasks e dos ajustes) em `registry/origem.json`.
+- `npm run catalogo:verificar` não escreve nada: compara o Tasks atual e os ajustes com `registry/`, `registry/origem.json`, `registry.json` e `public/r/`, lista os divergentes e sai com código 1. Rode antes de toda release.
+- **Quando o Tasks muda uma peça ajustada**, a sincronização e a verificação param e dizem qual arquivo mudou. Refaça a mudança do Tasks no arquivo de `ajustes/`, confira o ajuste no padrão estrito (copiando a peça num sistema do `premium-stack` e rodando lá `pnpm lint`, `pnpm lint:typed`, `pnpm format:check` e `pnpm typecheck`) e atualize o sha256 do arquivo do Tasks em `ajustes/catalogo-ajustes.json`.
+- `registry/`, `registry.json` e `public/r/` nunca são editados à mão. `ajustes/` é editado à mão, e só para o padrão estrito.
 
 ## Regras de uso (resumo)
 

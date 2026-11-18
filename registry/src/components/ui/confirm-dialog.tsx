@@ -115,7 +115,11 @@ export function ConfirmDialog({
   // mesma camada (`z-50`) e fora do `inert` que ele aplicou ao resto da página;
   // dentro da árvore da app ela herdaria esse `inert` e o scrim do overlay a
   // cobriria (change central-notificacoes-cards).
-  const noCliente = useSyncExternalStore(semAssinatura, () => true, () => false);
+  const noCliente = useSyncExternalStore(
+    semAssinatura,
+    () => true,
+    () => false,
+  );
   if (!noCliente) return null;
 
   // O container externo faz o fade (scrim) e centraliza; a caixa herda o estado de
@@ -133,7 +137,11 @@ export function ConfirmDialog({
         >
           {/* `data-foco-livre`: fora do reforço `inert`, para o clique fora
               continuar fechando (capability overlays-gestao-de-foco). */}
-          <div className="absolute inset-0 bg-black/30" onClick={onClose} data-foco-livre="" />
+          <div
+            className="absolute inset-0 bg-[var(--premium-black)]/30"
+            onClick={onClose}
+            data-foco-livre=""
+          />
           <m.div
             ref={caixaRef}
             variants={presets.modal}
@@ -141,64 +149,64 @@ export function ConfirmDialog({
             aria-modal="true"
             aria-labelledby={titleId}
             aria-describedby={descId}
-            className="relative bg-[var(--c-surface)] rounded-[var(--r-xl)] shadow-[var(--sh-lg)] p-6 max-w-[420px] w-full mx-4"
+            className="relative mx-4 w-full max-w-[420px] rounded-[var(--r-xl)] bg-[var(--c-surface)] p-6 shadow-[var(--sh-lg)]"
           >
-        <div className="flex items-start gap-3 mb-4">
-          <div
-            className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${
-              isNeutral ? "bg-[var(--premium-bone)]" : "bg-[var(--danger-bg)]"
-            }`}
-          >
-            {isNeutral ? (
-              <Clock size={20} className="text-[var(--premium-steel)]" />
-            ) : (
-              <AlertTriangle size={20} className="text-[var(--danger)]" />
-            )}
-          </div>
-          <div>
-            <h3 id={titleId} className="text-[18px] font-bold text-[var(--c-ink)]">
-              {title}
-            </h3>
-            <p id={descId} className="text-[13.5px] text-[var(--premium-steel)] mt-1">
-              {message}
-            </p>
-          </div>
-        </div>
+            <div className="mb-4 flex items-start gap-3">
+              <div
+                className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${
+                  isNeutral ? "bg-[var(--premium-bone)]" : "bg-[var(--danger-bg)]"
+                }`}
+              >
+                {isNeutral ? (
+                  <Clock size={20} className="text-[var(--premium-steel)]" />
+                ) : (
+                  <AlertTriangle size={20} className="text-[var(--danger)]" />
+                )}
+              </div>
+              <div>
+                <h3 id={titleId} className="text-[18px] font-bold text-[var(--c-ink)]">
+                  {title}
+                </h3>
+                <p id={descId} className="mt-1 text-[13.5px] text-[var(--premium-steel)]">
+                  {message}
+                </p>
+              </div>
+            </div>
 
-        {children && <div className="mb-4">{children}</div>}
+            {children && <div className="mb-4">{children}</div>}
 
-        <FormErrorBanner message={error} className="mb-4" />
+            <FormErrorBanner message={error} className="mb-4" />
 
-        <div className="flex flex-wrap justify-end gap-2 mt-5">
-          <Button variant="ghost" size="sm" onClick={onClose} disabled={loading}>
-            {cancelLabel}
-          </Button>
-          {secondaryAction && (
-            <Button
-              variant="danger"
-              size="sm"
-              onClick={secondaryAction.onClick}
-              disabled={loading}
-            >
-              {secondaryAction.icon}
-              {secondaryAction.label}
-            </Button>
-          )}
-          <Button
-            ref={confirmRef}
-            variant={variant}
-            size="sm"
-            onClick={onConfirm}
-            disabled={loading || confirmDisabled}
-          >
-            {loading ? "Processando..." : confirmLabel}
-          </Button>
+            <div className="mt-5 flex flex-wrap justify-end gap-2">
+              <Button variant="ghost" size="sm" onClick={onClose} disabled={loading}>
+                {cancelLabel}
+              </Button>
+              {secondaryAction && (
+                <Button
+                  variant="danger"
+                  size="sm"
+                  onClick={secondaryAction.onClick}
+                  disabled={loading}
+                >
+                  {secondaryAction.icon}
+                  {secondaryAction.label}
+                </Button>
+              )}
+              <Button
+                ref={confirmRef}
+                variant={variant}
+                size="sm"
+                onClick={onConfirm}
+                disabled={loading || confirmDisabled}
+              >
+                {loading ? "Processando..." : confirmLabel}
+              </Button>
             </div>
           </m.div>
         </m.div>
       )}
     </AnimatePresence>,
-    document.body
+    document.body,
   );
 }
 

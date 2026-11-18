@@ -45,7 +45,10 @@ export function normalizaNomeView(nome: string): string {
  * `paramsDeNavegacao` da `FilterBar`, e eles também ficam fora (change
  * calendario-time-filtros, D7).
  */
-export function montarQueryDeView(params: URLSearchParams, navegacao: readonly string[] = []): Record<string, string> {
+export function montarQueryDeView(
+  params: URLSearchParams,
+  navegacao: readonly string[] = [],
+): Record<string, string> {
   const out: Record<string, string> = {};
   for (const [k, v] of params.entries()) {
     if (k === CHAVE_PAGINA || v === "" || navegacao.includes(k)) continue;
@@ -128,7 +131,7 @@ export interface FiltroConhecido {
  */
 export function filtrosIndisponiveis(
   query: Record<string, string>,
-  filtros: FiltroConhecido[]
+  filtros: FiltroConhecido[],
 ): string[] {
   const fora: string[] = [];
   for (const f of filtros) {

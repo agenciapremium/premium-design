@@ -19,7 +19,7 @@ export function FormErrorBanner({
       role="alert"
       className={cn(
         "flex items-start gap-2 rounded-[var(--r-md)] border border-[var(--danger)] bg-[var(--danger-bg)] px-3 py-2 text-[12.5px] text-[var(--c-ink)]",
-        className
+        className,
       )}
     >
       <AlertCircle size={15} className="mt-[1px] shrink-0 text-[var(--danger)]" />
