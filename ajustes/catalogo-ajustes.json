@@ -1,0 +1,306 @@
+{
+  "$comentario": "Peças do Tasks ajustadas no premium-design para o padrão estrito dos sistemas criados pelo modelo Premium (TypeScript strict com noUncheckedIndexedAccess, Prettier com printWidth 100 e prettier-plugin-tailwindcss, no máximo 350 linhas por arquivo e cor só por token). Os arquivos ajustados ficam em ajustes/, no caminho que têm no projeto, e substituem os do Tasks na sincronização. `tasks` guarda o sha256 do arquivo do Tasks de que o ajuste partiu: quando o Tasks muda um deles, catalogo:sincronizar e catalogo:verificar param até o ajuste ser refeito sobre o arquivo novo e o sha256 atualizado aqui. Camada provisória: o destino é levar os ajustes ao Tasks e esvaziar esta pasta. Peça com `nova: true` ainda não existe no Tasks (sem `tasks`) e entra no catálogo com o `tipo` daqui.",
+  "pecas": [
+    {
+      "nome": "motion",
+      "arquivos": [
+        "src/lib/motion.ts"
+      ],
+      "tasks": {
+        "src/lib/motion.ts": "8271f0d3ab9aa2a0925035dc6598b8996387dd3c00d24e51db6919cc254b62c9"
+      }
+    },
+    {
+      "nome": "menu-acoes-nav",
+      "arquivos": [
+        "src/lib/menu-acoes-nav.ts"
+      ],
+      "tasks": {
+        "src/lib/menu-acoes-nav.ts": "2136a111e736fccdc746b0e929b7ce996290c35c924d16f76d1e0cf46b6afb1f"
+      }
+    },
+    {
+      "nome": "foco",
+      "arquivos": [
+        "src/lib/foco.ts"
+      ],
+      "tasks": {
+        "src/lib/foco.ts": "262ba79710134761384ab8a6099c8db270eea74dce7d8715ca82b51135bf74c9"
+      }
+    },
+    {
+      "nome": "debounce",
+      "arquivos": [
+        "src/lib/debounce.ts"
+      ],
+      "tasks": {
+        "src/lib/debounce.ts": "8f67dd2dda5dc45bd49ad383d2d727e10999b89f051c72560ee9c3ef88f8dbd0"
+      }
+    },
+    {
+      "nome": "filtros-ativos",
+      "arquivos": [
+        "src/lib/helpers/filtros-ativos.ts"
+      ],
+      "tasks": {
+        "src/lib/helpers/filtros-ativos.ts": "07d5833ffc31829143701ff4d1563302cc65fb6f0cd4d6bf19da0c8437c422d8"
+      }
+    },
+    {
+      "nome": "busca-filtro-url",
+      "arquivos": [
+        "src/lib/helpers/busca-filtro-url.ts"
+      ],
+      "tasks": {
+        "src/lib/helpers/busca-filtro-url.ts": "e031126f995c6ff1f0dbc626b7fb2b3374a1a3a17a33180b1fd9fc85d7a36da6"
+      }
+    },
+    {
+      "nome": "views-salvas",
+      "arquivos": [
+        "src/lib/helpers/views-salvas.ts"
+      ],
+      "tasks": {
+        "src/lib/helpers/views-salvas.ts": "1fa8eaf78a746ff9d625599455a0e0c0c3af0969f2065ea5cf57cd2a16bd923a"
+      }
+    },
+    {
+      "nome": "use-dialogo-foco",
+      "arquivos": [
+        "src/lib/hooks/use-dialogo-foco.ts"
+      ],
+      "tasks": {
+        "src/lib/hooks/use-dialogo-foco.ts": "07e2226008eded61b1e857e6d53c3a89d86855d4d9c445dffb6c4f72214b1784"
+      }
+    },
+    {
+      "nome": "use-filtros-persistidos",
+      "arquivos": [
+        "src/lib/hooks/use-filtros-persistidos.ts"
+      ],
+      "tasks": {
+        "src/lib/hooks/use-filtros-persistidos.ts": "1f665e52a803b87975dfac278f01d81e0b4b50db4ba18992a866386c28d4fba0"
+      }
+    },
+    {
+      "nome": "use-busca-local",
+      "arquivos": [
+        "src/lib/hooks/use-busca-local.ts"
+      ],
+      "tasks": {
+        "src/lib/hooks/use-busca-local.ts": "0b8987bccaae73434caa9ccda3acbef3abc85499a3b73939a120b2b077becab4"
+      }
+    },
+    {
+      "nome": "avatar",
+      "arquivos": [
+        "src/components/ui/avatar.tsx"
+      ],
+      "tasks": {
+        "src/components/ui/avatar.tsx": "b1da86072bc9e9ea6daba60ba01718443d05578d6e3f12223fabe87221b3f90e"
+      }
+    },
+    {
+      "nome": "badge",
+      "arquivos": [
+        "src/components/ui/badge.tsx"
+      ],
+      "tasks": {
+        "src/components/ui/badge.tsx": "2529c2ab55012f4f241317a798b44809b7af3a2cae82cf45c2c26f1d5eeb3ee9"
+      }
+    },
+    {
+      "nome": "button",
+      "arquivos": [
+        "src/components/ui/button.tsx"
+      ],
+      "tasks": {
+        "src/components/ui/button.tsx": "2cbf7a5305170474fcbf0b67ac9f2712fedc2ad419e0952f4c7051eb55b37041"
+      }
+    },
+    {
+      "nome": "campo-busca",
+      "arquivos": [
+        "src/components/ui/campo-busca.tsx"
+      ],
+      "tasks": {
+        "src/components/ui/campo-busca.tsx": "65668678b04ba319eab5cb45f39f48460f2401b8094bfe9eb612f7c65d48a600"
+      }
+    },
+    {
+      "nome": "confirm-dialog",
+      "arquivos": [
+        "src/components/ui/confirm-dialog.tsx"
+      ],
+      "tasks": {
+        "src/components/ui/confirm-dialog.tsx": "40181453972eab225bd76b33b7013511d597748d0049e97417bb87e65b731b01"
+      }
+    },
+    {
+      "nome": "context-icon-button",
+      "arquivos": [
+        "src/components/ui/context-icon-button.tsx"
+      ],
+      "tasks": {
+        "src/components/ui/context-icon-button.tsx": "908bfc4eec40f40e9f89ff59ecbdd4acd3974d9605afccfc1f62e8a313cd44d8"
+      }
+    },
+    {
+      "nome": "date-picker",
+      "arquivos": [
+        "src/components/ui/date-picker.tsx",
+        "src/components/ui/date-picker-datas.ts",
+        "src/components/ui/date-picker-calendario.tsx",
+        "src/components/ui/date-picker-segmentos.tsx"
+      ],
+      "tasks": {
+        "src/components/ui/date-picker.tsx": "468a2228656dd120992a162494d9c493e5c9a389b18a8b1e68e8b450869a8316"
+      }
+    },
+    {
+      "nome": "empty-state",
+      "arquivos": [
+        "src/components/ui/empty-state.tsx"
+      ],
+      "tasks": {
+        "src/components/ui/empty-state.tsx": "c4624ce9ac56835723d506982acdf1830bb8a19d11675eeb04c8a8e238ee5ed9"
+      }
+    },
+    {
+      "nome": "filter-bar",
+      "arquivos": [
+        "src/components/ui/filter-bar.tsx",
+        "src/components/ui/filter-bar-config.ts",
+        "src/components/ui/filter-bar-abas.tsx",
+        "src/components/ui/filter-bar-controle.tsx",
+        "src/components/ui/filter-bar-busca.tsx",
+        "src/components/ui/filter-bar-faixa.tsx",
+        "src/components/ui/filter-bar-selecao.tsx",
+        "src/components/ui/filter-bar-painel.tsx"
+      ],
+      "tasks": {
+        "src/components/ui/filter-bar.tsx": "709699b703a1c4a543ea28e8533b3f84d8e8ddcc71bfe39d61b5abfc591fc134"
+      }
+    },
+    {
+      "nome": "filtros-persistencia",
+      "arquivos": [
+        "src/components/ui/filtros-persistencia.tsx"
+      ],
+      "tasks": {
+        "src/components/ui/filtros-persistencia.tsx": "70cd945bbb356666bb71b315c9f899a16643a696043c6f9ca252ec44fa8a4530"
+      }
+    },
+    {
+      "nome": "form-error-banner",
+      "arquivos": [
+        "src/components/ui/form-error-banner.tsx"
+      ],
+      "tasks": {
+        "src/components/ui/form-error-banner.tsx": "134a1b90139717fabcd7528a0bb6ee6ca512d917171bc7b161f62bd8adc8ba1e"
+      }
+    },
+    {
+      "nome": "input",
+      "arquivos": [
+        "src/components/ui/input.tsx"
+      ],
+      "tasks": {
+        "src/components/ui/input.tsx": "b855d8909e1673f5f045eaa85215814e107450613829358fbec44c4205a859cc"
+      }
+    },
+    {
+      "nome": "menu-acoes",
+      "arquivos": [
+        "src/components/ui/menu-acoes.tsx"
+      ],
+      "tasks": {
+        "src/components/ui/menu-acoes.tsx": "b0defa6d3ae73f7d6d8309a1d13e763e421d0a4cd68a9197b744019ca95dd62e"
+      }
+    },
+    {
+      "nome": "pilula",
+      "arquivos": [
+        "src/components/ui/pilula.tsx",
+        "src/components/ui/pilula-dropdown.tsx"
+      ],
+      "tasks": {
+        "src/components/ui/pilula.tsx": "6b6150126cb1c44d233e38b1dda4234d55dfb645c209274da7b5d70f62625290"
+      }
+    },
+    {
+      "nome": "select",
+      "arquivos": [
+        "src/components/ui/select.tsx",
+        "src/components/ui/select-painel.tsx"
+      ],
+      "tasks": {
+        "src/components/ui/select.tsx": "1458be57b3bf315fb40588d47eef7d3adb3ed00afdb2a898e7ad3a633e1e8328"
+      }
+    },
+    {
+      "nome": "skeleton",
+      "arquivos": [
+        "src/components/ui/skeleton.tsx"
+      ],
+      "tasks": {
+        "src/components/ui/skeleton.tsx": "5455d397495c257ef615f8cda75847df86c1e89cfc0e9561d473a38515a77802"
+      }
+    },
+    {
+      "nome": "slide-over",
+      "arquivos": [
+        "src/components/ui/slide-over.tsx"
+      ],
+      "tasks": {
+        "src/components/ui/slide-over.tsx": "7ce284fa64397bad00c7964258f08212dcd703919eaa1888e532866727730204"
+      }
+    },
+    {
+      "nome": "switch",
+      "arquivos": [
+        "src/components/ui/switch.tsx"
+      ],
+      "tasks": {
+        "src/components/ui/switch.tsx": "1fa180fc69088abeb0bf18ce5aebf19da39194dcb06441ed45338c155156ed36"
+      }
+    },
+    {
+      "nome": "toast",
+      "arquivos": [
+        "src/components/ui/toast.tsx"
+      ],
+      "tasks": {
+        "src/components/ui/toast.tsx": "6f55343f137cb5e0ed78ba58e9ebd665d8b0e087250d4817696fc726bb215737"
+      }
+    },
+    {
+      "nome": "tooltip",
+      "arquivos": [
+        "src/components/ui/tooltip.tsx"
+      ],
+      "tasks": {
+        "src/components/ui/tooltip.tsx": "e3c320496103bf06f9bfb9c457024e41a6dcf9595d3d5206eb9725187ffd78c4"
+      }
+    },
+    {
+      "nome": "views-salvas-menu",
+      "arquivos": [
+        "src/components/ui/views-salvas-menu.tsx",
+        "src/components/ui/views-salvas-painel.tsx",
+        "src/components/ui/views-salvas-item.tsx"
+      ],
+      "tasks": {
+        "src/components/ui/views-salvas-menu.tsx": "bcafacd0a41c443e240653ff55fe026390924162c2900d8fc4f98ac818c14174"
+      }
+    },
+    {
+      "nome": "use-painel-ancorado",
+      "nova": true,
+      "tipo": "registry:hook",
+      "arquivos": [
+        "src/lib/hooks/use-painel-ancorado.ts"
+      ]
+    }
+  ]
+}

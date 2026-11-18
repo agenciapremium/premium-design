@@ -1,14 +1,17 @@
 "use client";
 
-import { Fragment, useEffect, useRef, useState, type ButtonHTMLAttributes, type ReactNode } from "react";
+import { Fragment, useEffect, useState, type ButtonHTMLAttributes, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
 import { m } from "motion/react";
-import { Check, ChevronDown } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motionPreset } from "@/lib/motion";
 import { popoverPos } from "@/lib/popover-pos";
+import { SingleSelectItem, useDropdownPortal } from "@/components/ui/pilula-dropdown";
+
+export { SingleSelectItem, useDropdownPortal } from "@/components/ui/pilula-dropdown";
 
 /*
  * Pílula: fonte única do desenho de chip (ui-guidelines §3.4, padrão "Pílula de
@@ -28,7 +31,8 @@ export const chipActive =
 // Pílula "ligada" (toggle ativo): espelha `.chip-auto` (fundo escuro, ícone amarelo).
 // Fundo escuro fixo (--brand-ink) nos dois temas para o ícone amarelo ler;
 // a borda --premium-ink vira contorno claro no escuro, destacando o chip.
-export const chipOn = "bg-[var(--brand-ink)] border-[var(--premium-ink)] text-white";
+export const chipOn =
+  "bg-[var(--brand-ink)] border-[var(--premium-ink)] text-[var(--brand-on-ink)]";
 
 /** Superfície dos menus de filtro (dropdown da `FilterBar` e da `PilulaSelect`). */
 export const dropdownPanelClass =
@@ -48,7 +52,10 @@ interface VarianteProps {
   oculta?: boolean;
 }
 
-export function classesPilula({ ativa, ligada, flutuante, oculta }: VarianteProps, className?: string) {
+export function classesPilula(
+  { ativa, ligada, flutuante, oculta }: VarianteProps,
+  className?: string,
+) {
   return cn(
     chipBase,
     ligada ? chipOn : ativa ? chipActive : chipIdle,
@@ -56,13 +63,21 @@ export function classesPilula({ ativa, ligada, flutuante, oculta }: VarianteProp
     flutuante && "pilula-flutuante h-auto min-h-10 shadow-[var(--sh-md)]",
     // `pilula-oculta` (globals.css) atrasa o `visibility` até o fade acabar.
     oculta && "pilula-oculta",
-    className
+    className,
   );
 }
 
 type PilulaProps = VarianteProps & ButtonHTMLAttributes<HTMLButtonElement>;
 
-export function Pilula({ ativa, ligada, flutuante, oculta, className, type = "button", ...props }: PilulaProps) {
+export function Pilula({
+  ativa,
+  ligada,
+  flutuante,
+  oculta,
+  className,
+  type = "button",
+  ...props
+}: PilulaProps) {
   return (
     <button
       {...props}
@@ -81,90 +96,16 @@ export function PilulaLink({
   className,
   children,
   onClick,
-}: VarianteProps & { href: string; className?: string; children: ReactNode; onClick?: () => void }) {
+}: VarianteProps & {
+  href: string;
+  className?: string;
+  children: ReactNode;
+  onClick?: () => void;
+}) {
   return (
     <Link href={href} onClick={onClick} className={classesPilula({ ativa, flutuante }, className)}>
       {children}
     </Link>
-  );
-}
-
-/**
- * Estado de um dropdown renderizado em **portal** com `position: fixed`
- * (capability filter-bar-busca-layout-global), necessário para não ser cortado
- * pela rolagem horizontal da barra. Fecha por clique fora / `Esc`, e reposiciona
- * em scroll/resize. Espelha o padrão de `multi-select.tsx`.
- */
-export function useDropdownPortal() {
-  const [open, setOpen] = useState(false);
-  const [rect, setRect] = useState<DOMRect | null>(null);
-  const triggerRef = useRef<HTMLButtonElement>(null);
-  const panelRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!open) return;
-    function onDown(ev: MouseEvent) {
-      const t = ev.target as Node | null;
-      if (panelRef.current?.contains(t)) return;
-      if (triggerRef.current?.contains(t)) return;
-      setOpen(false);
-    }
-    function onKey(ev: KeyboardEvent) {
-      if (ev.key === "Escape") setOpen(false);
-    }
-    function reposition() {
-      setRect(triggerRef.current?.getBoundingClientRect() ?? null);
-    }
-    document.addEventListener("mousedown", onDown);
-    document.addEventListener("keydown", onKey);
-    window.addEventListener("scroll", reposition, true);
-    window.addEventListener("resize", reposition);
-    return () => {
-      document.removeEventListener("mousedown", onDown);
-      document.removeEventListener("keydown", onKey);
-      window.removeEventListener("scroll", reposition, true);
-      window.removeEventListener("resize", reposition);
-    };
-  }, [open]);
-
-  function abrir() {
-    setRect(triggerRef.current?.getBoundingClientRect() ?? null);
-    setOpen((o) => !o);
-  }
-
-  return { open, setOpen, rect, triggerRef, panelRef, abrir };
-}
-
-export function SingleSelectItem({
-  checked,
-  label,
-  onClick,
-  contagem,
-}: {
-  checked: boolean;
-  label: string;
-  onClick: () => void;
-  /** Número à direita (ex.: não lidas da categoria). Zero ou ausente não aparece. */
-  contagem?: number;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      role="option"
-      aria-selected={checked}
-      className={cn(
-        "w-full flex items-center gap-2 px-2 py-[7px] rounded-[var(--r-sm)] text-[13px] text-left text-[var(--premium-ink)] hover:bg-[var(--premium-bone)] cursor-pointer",
-        "focus-visible:outline-none focus-visible:bg-[var(--premium-bone)]",
-        checked && "font-medium"
-      )}
-    >
-      <span className="flex-1 min-w-0 truncate">{label}</span>
-      {contagem ? (
-        <span className="shrink-0 text-[11px] font-bold tabular-nums text-[var(--premium-gray)]">{contagem}</span>
-      ) : null}
-      {checked && <Check size={13} className="shrink-0" />}
-    </button>
   );
 }
 
@@ -225,7 +166,10 @@ export function PilulaSelect<V extends string>({
   // tem transform, então o `position: fixed` do menu segue relativo à janela.
   const [destino, setDestino] = useState<HTMLElement | null>(null);
   function alternar() {
-    setDestino(triggerRef.current?.closest<HTMLElement>('[role="dialog"][aria-modal="true"]') ?? document.body);
+    setDestino(
+      triggerRef.current?.closest<HTMLElement>('[role="dialog"][aria-modal="true"]') ??
+        document.body,
+    );
     abrir();
   }
 
@@ -262,7 +206,9 @@ export function PilulaSelect<V extends string>({
       setOpen(false);
       return;
     }
-    const itens = Array.from(panelRef.current?.querySelectorAll<HTMLElement>('[role="option"]') ?? []);
+    const itens = Array.from(
+      panelRef.current?.querySelectorAll<HTMLElement>('[role="option"]') ?? [],
+    );
     if (!itens.length) return;
     const i = itens.indexOf(document.activeElement as HTMLElement);
     let proximo: number | null = null;
@@ -272,7 +218,7 @@ export function PilulaSelect<V extends string>({
     else if (e.key === "End") proximo = itens.length - 1;
     if (proximo === null) return;
     e.preventDefault();
-    itens[proximo].focus();
+    itens[proximo]?.focus();
   }
 
   const nomeGatilho = `${rotulo}: ${atual?.rotulo ?? ""}${contagem ? `, ${contagem} não lidas` : ""}`;
@@ -296,7 +242,10 @@ export function PilulaSelect<V extends string>({
         aria-expanded={open}
         aria-label={nomeGatilho}
         style={largura ? { width: largura } : undefined}
-        className={classesPilula({ ativa, flutuante }, cn(largura ? "max-w-full" : "max-w-[190px]", className))}
+        className={classesPilula(
+          { ativa, flutuante },
+          cn(largura ? "max-w-full" : "max-w-[190px]", className),
+        )}
       >
         {Icone && <Icone size={14} aria-hidden className="shrink-0 text-[var(--premium-gray)]" />}
         <span className={cn("min-w-0 truncate", largura ? "flex-1 text-left" : undefined)}>
@@ -305,7 +254,7 @@ export function PilulaSelect<V extends string>({
         {contagem ? (
           <span
             aria-hidden
-            className="shrink-0 text-[11px] font-bold bg-[var(--premium-ink)] text-[var(--premium-paper)] rounded-full px-[6px] min-w-[18px] text-center tabular-nums"
+            className="min-w-[18px] shrink-0 rounded-full bg-[var(--premium-ink)] px-[6px] text-center text-[11px] font-bold text-[var(--premium-paper)] tabular-nums"
           >
             {contagem > 99 ? "99+" : contagem}
           </span>
@@ -315,7 +264,7 @@ export function PilulaSelect<V extends string>({
           aria-hidden
           className={cn(
             "-mr-1 shrink-0 text-[var(--premium-gray)] transition-transform duration-150",
-            open && "rotate-180"
+            open && "rotate-180",
           )}
         />
       </button>
@@ -338,8 +287,13 @@ export function PilulaSelect<V extends string>({
               <Fragment key={o.valor}>
                 {o.secao && (
                   <>
-                    {i > 0 && <div aria-hidden className="mx-[2px] my-1 border-t border-[var(--premium-mist)]" />}
-                    <div aria-hidden className="eyebrow px-2 pb-[2px] pt-[6px]">
+                    {i > 0 && (
+                      <div
+                        aria-hidden
+                        className="mx-[2px] my-1 border-t border-[var(--premium-mist)]"
+                      />
+                    )}
+                    <div aria-hidden className="eyebrow px-2 pt-[6px] pb-[2px]">
                       {o.secao}
                     </div>
                   </>
@@ -353,7 +307,7 @@ export function PilulaSelect<V extends string>({
               </Fragment>
             ))}
           </m.div>,
-          destino
+          destino,
         )}
     </>
   );

@@ -45,18 +45,18 @@ export function Switch({
         onClick={() => !disabled && onCheckedChange(!checked)}
         disabled={disabled}
         className={cn(
-          "relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full outline-none transition-colors",
+          "relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full transition-colors outline-none",
           "disabled:cursor-not-allowed disabled:opacity-50",
           "focus-visible:shadow-[0_0_0_2px_var(--yellow-50)]",
           checked ? "bg-[var(--success)]" : "bg-[var(--premium-mist)]",
-          className
+          className,
         )}
       >
         <span
           aria-hidden
           className={cn(
-            "absolute left-0.5 top-1/2 h-4 w-4 -translate-y-1/2 rounded-full bg-white shadow-sm transition-transform motion-reduce:transition-none",
-            checked ? "translate-x-4" : "translate-x-0"
+            "absolute top-1/2 left-0.5 h-4 w-4 -translate-y-1/2 rounded-full bg-[var(--brand-on-ink)] shadow-sm transition-transform motion-reduce:transition-none",
+            checked ? "translate-x-4" : "translate-x-0",
           )}
         />
       </button>

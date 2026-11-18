@@ -38,8 +38,7 @@ export type ResultadoView = { success: true; view: ViewSalva } | { success: fals
 
 /** Resultado de excluir: a view removida e a posição, para o "Desfazer". */
 export type ResultadoExclusaoView =
-  | { success: true; view: ViewSalva; posicao: number }
-  | { success: false; error: string };
+  { success: true; view: ViewSalva; posicao: number } | { success: false; error: string };
 
 /** Resultado de definir (ou tirar) a view padrão da tela. */
 export type ResultadoViewPadrao = { success: true } | { success: false; error: string };
@@ -61,7 +60,10 @@ export interface FiltrosPersistencia {
   limparFiltros(telaKey: string): Promise<unknown>;
 
   listarViews(telaKey: string): Promise<ViewSalva[]>;
-  salvarView(telaKey: string, dados: { nome: string; query: Record<string, string> }): Promise<ResultadoView>;
+  salvarView(
+    telaKey: string,
+    dados: { nome: string; query: Record<string, string> },
+  ): Promise<ResultadoView>;
   renomearView(telaKey: string, id: string, nome: string): Promise<ResultadoView>;
   excluirView(telaKey: string, id: string): Promise<ResultadoExclusaoView>;
   /** Marca a view padrão da tela; `null` desmarca. */
@@ -83,7 +85,11 @@ export function FiltrosPersistenciaProvider({
   persistencia: FiltrosPersistencia;
   children: ReactNode;
 }) {
-  return <FiltrosPersistenciaContext.Provider value={persistencia}>{children}</FiltrosPersistenciaContext.Provider>;
+  return (
+    <FiltrosPersistenciaContext.Provider value={persistencia}>
+      {children}
+    </FiltrosPersistenciaContext.Provider>
+  );
 }
 
 /** A persistência declarada acima, ou `null` quando não há provedor. */

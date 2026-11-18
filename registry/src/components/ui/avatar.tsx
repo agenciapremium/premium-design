@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { getInitials, cn } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 
 interface AvatarProps {
   name: string;
@@ -10,6 +10,21 @@ interface AvatarProps {
   className?: string;
   /** Foto do colaborador (Colaborador.avatarUrl); com ela, as iniciais não aparecem. */
   src?: string | null;
+}
+
+/**
+ * Até duas iniciais, em maiúsculas, das primeiras palavras do nome
+ * ("Maria da Silva" → "MD"). Fica na peça para ela depender só do `cn` do
+ * `@/lib/utils`, que todo sistema tem.
+ */
+function iniciais(nome: string): string {
+  return nome
+    .split(" ")
+    .map((parte) => parte.charAt(0))
+    .filter(Boolean)
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
 }
 
 const sizeMap = {
@@ -26,7 +41,13 @@ const sizeMap = {
  * chamador, que sairia duplicado. Quem precisa da dica a põe no gatilho ao
  * redor (ver presenca-avatares.tsx e o editor de workflow).
  */
-export function Avatar({ name, color = "var(--yellow)", size = "md", className, src }: AvatarProps) {
+export function Avatar({
+  name,
+  color = "var(--yellow)",
+  size = "md",
+  className,
+  src,
+}: AvatarProps) {
   // URL que falhou ao carregar (ex.: blob de store excluída/removida): cai para
   // as iniciais em vez do ícone de imagem quebrada. Guardar a URL — e não um
   // booleano — permite tentar de novo quando `src` muda (nova foto enviada).
@@ -39,22 +60,22 @@ export function Avatar({ name, color = "var(--yellow)", size = "md", className, 
         src={src}
         alt={name}
         onError={() => setSrcComErro(src)}
-        className={cn("rounded-full object-cover shrink-0", sizeMap[size], className)}
+        className={cn("shrink-0 rounded-full object-cover", sizeMap[size], className)}
       />
     );
   }
   return (
     <div
       className={cn(
-        "rounded-full flex items-center justify-center font-bold text-black shrink-0",
+        "flex shrink-0 items-center justify-center rounded-full font-bold text-[var(--premium-black)]",
         sizeMap[size],
-        className
+        className,
       )}
       style={{ background: color }}
       role="img"
       aria-label={name}
     >
-      {getInitials(name)}
+      {iniciais(name)}
     </div>
   );
 }

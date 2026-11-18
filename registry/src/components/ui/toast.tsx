@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  createContext,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-  type ReactNode,
-} from "react";
+import { createContext, useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { CheckCircle2, Info, AlertTriangle, X } from "lucide-react";
 import { AnimatePresence, m } from "motion/react";
 import { motionPreset } from "@/lib/motion";
@@ -59,10 +52,7 @@ function nextId() {
 
 // Visual de marca (ui-guidelines §4.19): fundo escuro fixo + acento amarelo.
 // A variante muda apenas o ícone — o fundo e o acento são os mesmos.
-const VARIANT_STYLE: Record<
-  ToastVariant,
-  { icon: typeof CheckCircle2; label: string }
-> = {
+const VARIANT_STYLE: Record<ToastVariant, { icon: typeof CheckCircle2; label: string }> = {
   success: { icon: CheckCircle2, label: "Sucesso" },
   info: { icon: Info, label: "Informação" },
   warning: { icon: AlertTriangle, label: "Aviso" },
@@ -101,7 +91,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
       <div
         aria-live="polite"
         role="status"
-        className="pointer-events-none fixed left-1/2 top-[76px] z-[100] flex w-[min(420px,calc(100vw-2rem))] -translate-x-1/2 flex-col items-center gap-2"
+        className="pointer-events-none fixed top-[76px] left-1/2 z-[100] flex w-[min(420px,calc(100vw-2rem))] -translate-x-1/2 flex-col items-center gap-2"
       >
         <AnimatePresence>
           {toasts.map((t) => (
@@ -113,13 +103,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   );
 }
 
-function ToastCard({
-  toast,
-  onDismiss,
-}: {
-  toast: ToastItem;
-  onDismiss: () => void;
-}) {
+function ToastCard({ toast, onDismiss }: { toast: ToastItem; onDismiss: () => void }) {
   const style = VARIANT_STYLE[toast.variant];
   const Icon = style.icon;
   const pausedRef = useRef(false);
@@ -167,7 +151,7 @@ function ToastCard({
       onFocusCapture={pause}
       onBlurCapture={resume}
       className={cn(
-        "pointer-events-auto flex w-full items-center gap-3 rounded-[var(--r-lg)] border border-white/10 bg-[var(--brand-ink)] p-3 shadow-[var(--sh-lg)]"
+        "pointer-events-auto flex w-full items-center gap-3 rounded-[var(--r-lg)] border border-[var(--brand-on-ink)]/10 bg-[var(--brand-ink)] p-3 shadow-[var(--sh-lg)]",
       )}
     >
       <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[var(--yellow)]">
@@ -183,7 +167,7 @@ function ToastCard({
             toast.action!.onClick();
             onDismiss();
           }}
-          className="flex min-h-[40px] shrink-0 items-center self-center rounded-[var(--r-sm)] px-3 text-[12px] font-bold uppercase tracking-wider text-[var(--yellow)] transition-colors hover:bg-white/10 cursor-pointer focus-visible:outline-none focus-visible:shadow-[0_0_0_2px_var(--yellow-50)]"
+          className="flex min-h-[40px] shrink-0 cursor-pointer items-center self-center rounded-[var(--r-sm)] px-3 text-[12px] font-bold tracking-wider text-[var(--yellow)] uppercase transition-colors hover:bg-[var(--brand-on-ink)]/10 focus-visible:shadow-[0_0_0_2px_var(--yellow-50)] focus-visible:outline-none"
         >
           {toast.action.label}
         </button>
@@ -192,7 +176,7 @@ function ToastCard({
         type="button"
         onClick={onDismiss}
         aria-label="Dispensar aviso"
-        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[var(--r-sm)] text-[var(--premium-silver)] transition-colors hover:bg-white/10 hover:text-[var(--brand-on-ink)] cursor-pointer focus-visible:outline-none focus-visible:shadow-[0_0_0_2px_var(--yellow-50)]"
+        className="flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-[var(--r-sm)] text-[var(--premium-silver)] transition-colors hover:bg-[var(--brand-on-ink)]/10 hover:text-[var(--brand-on-ink)] focus-visible:shadow-[0_0_0_2px_var(--yellow-50)] focus-visible:outline-none"
       >
         <X size={15} />
       </button>

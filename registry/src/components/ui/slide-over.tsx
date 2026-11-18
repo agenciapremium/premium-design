@@ -54,7 +54,16 @@ const CLASSE_BOTAO_CABECALHO =
 // `PainelCards`); os nomes seguem exportados daqui para os imports existentes.
 export { estaNoTopo, temOverlayAberto } from "@/lib/overlay-pilha";
 
-export function SlideOver({ open, onClose, title, children, loading = false, footer, headerActions, menu }: SlideOverProps) {
+export function SlideOver({
+  open,
+  onClose,
+  title,
+  children,
+  loading = false,
+  footer,
+  headerActions,
+  menu,
+}: SlideOverProps) {
   const id = useId();
   const tituloId = useId();
   const painelRef = useRef<HTMLDivElement>(null);
@@ -65,7 +74,11 @@ export function SlideOver({ open, onClose, title, children, loading = false, foo
   // contexto de empilhamento raiz — assim seu `z-50` fica garantidamente acima
   // do FAB global (z-40) mesmo quando a tela que o abre está sob um ancestral
   // que cria contexto de empilhamento próprio (transform/z-index/etc.).
-  const mounted = useSyncExternalStore(semAssinatura, () => true, () => false);
+  const mounted = useSyncExternalStore(
+    semAssinatura,
+    () => true,
+    () => false,
+  );
 
   // Registro na pilha + trava de scroll do body (restaura no último a fechar).
   useEffect(() => {
@@ -114,7 +127,7 @@ export function SlideOver({ open, onClose, title, children, loading = false, foo
         <m.div
           key="scrim"
           {...motionPreset("scrim")}
-          className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm"
+          className="fixed inset-0 z-50 bg-[var(--premium-black)]/40 backdrop-blur-sm"
           onClick={onClose}
           // Fora do reforço `inert`: o scrim precisa continuar clicável para
           // fechar o painel (capability overlays-gestao-de-foco).
@@ -128,9 +141,9 @@ export function SlideOver({ open, onClose, title, children, loading = false, foo
           aria-modal="true"
           aria-labelledby={tituloId}
           tabIndex={-1}
-          className="focus:outline-none fixed right-4 top-4 bottom-4 z-50 w-[480px] max-w-[calc(100vw-2rem)] bg-[var(--premium-white)] rounded-[var(--r-xl)] shadow-[var(--sh-lg)] flex flex-col overflow-hidden"
+          className="fixed top-4 right-4 bottom-4 z-50 flex w-[480px] max-w-[calc(100vw-2rem)] flex-col overflow-hidden rounded-[var(--r-xl)] bg-[var(--premium-white)] shadow-[var(--sh-lg)] focus:outline-none"
         >
-          <div className="flex items-center justify-between gap-3 px-6 py-4 border-b border-[var(--premium-mist)]">
+          <div className="flex items-center justify-between gap-3 border-b border-[var(--premium-mist)] px-6 py-4">
             <div className="flex min-w-0 items-center gap-3">
               {/* tabIndex -1: alvo do foco de leitura (painel sem campo) e do
                   foco inicial em viewport estreita, sem entrar na ordem do Tab. */}
@@ -138,7 +151,7 @@ export function SlideOver({ open, onClose, title, children, loading = false, foo
                 id={tituloId}
                 ref={tituloRef}
                 tabIndex={-1}
-                className="text-[18px] font-bold truncate focus:outline-none"
+                className="truncate text-[18px] font-bold focus:outline-none"
               >
                 {title}
               </h2>
@@ -162,7 +175,7 @@ export function SlideOver({ open, onClose, title, children, loading = false, foo
           >
             <div className="autosave-bar h-full bg-[var(--premium-ink)]" />
           </div>
-          <div ref={conteudoRef} className="flex-1 overflow-y-auto overflow-x-hidden px-6 py-5">
+          <div ref={conteudoRef} className="flex-1 overflow-x-hidden overflow-y-auto px-6 py-5">
             {children}
           </div>
           {footer && (
@@ -173,7 +186,7 @@ export function SlideOver({ open, onClose, title, children, loading = false, foo
         </m.div>,
       ]}
     </AnimatePresence>,
-    document.body
+    document.body,
   );
 }
 

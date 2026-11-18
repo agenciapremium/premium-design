@@ -83,7 +83,7 @@ export function SkeletonTabela({
       aria-hidden
       className={cn(
         "overflow-hidden rounded-[var(--r-lg)] border border-[var(--premium-mist)] bg-[var(--premium-white)]",
-        className
+        className,
       )}
     >
       <div
@@ -91,10 +91,7 @@ export function SkeletonTabela({
         style={grade}
       >
         {Array.from({ length: colunas }).map((_, c) => (
-          <div
-            key={c}
-            className="h-3 rounded bg-[var(--premium-mist)] motion-safe:animate-pulse"
-          />
+          <div key={c} className="h-3 rounded bg-[var(--premium-mist)] motion-safe:animate-pulse" />
         ))}
       </div>
       <div>

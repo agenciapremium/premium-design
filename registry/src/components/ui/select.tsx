@@ -1,11 +1,10 @@
 "use client";
 
 import { useEffect, useId, useMemo, useRef, useState } from "react";
-import { createPortal } from "react-dom";
-import { m } from "motion/react";
-import { Check, ChevronDown, Search } from "lucide-react";
-import { motionPreset } from "@/lib/motion";
+import { usePainelAncorado } from "@/lib/hooks/use-painel-ancorado";
+import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { SelectPainel, type ItemSelect } from "@/components/ui/select-painel";
 
 /** Evento sintético compatível com os call sites `onChange={(e) => ...e.target.value}`. */
 export interface SelectChangeEvent {
@@ -51,7 +50,10 @@ interface SelectProps {
 const BUSCA_A_PARTIR_DE = 8;
 
 function norm(s: string) {
-  return s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  return s
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
 }
 
 /**
@@ -93,7 +95,6 @@ export function Select({
 
   const [open, setOpen] = useState(false);
   const [busca, setBusca] = useState("");
-  const [rect, setRect] = useState<{ left: number; bottom: number; width: number } | null>(null);
   const [highlight, setHighlight] = useState(0);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const popRef = useRef<HTMLDivElement>(null);
@@ -104,7 +105,7 @@ export function Select({
 
   // Itens visíveis: placeholder (valor vazio) + opções filtradas pela busca.
   const itens = useMemo(() => {
-    const base: (SelectOption & { isPlaceholder?: boolean })[] = [];
+    const base: ItemSelect[] = [];
     const termo = norm(busca.trim());
     if (placeholder && !termo) base.push({ value: "", label: placeholder, isPlaceholder: true });
     for (const o of options) {
@@ -133,33 +134,14 @@ export function Select({
     fechar(true);
   }
 
-  // Posição ancorada ao gatilho; atualiza em scroll/resize (SlideOver rola).
-  useEffect(() => {
-    if (!open) return;
-    const update = () => {
-      const r = triggerRef.current?.getBoundingClientRect();
-      if (r) setRect({ left: r.left, bottom: r.bottom, width: r.width });
-    };
-    update();
-    window.addEventListener("scroll", update, true);
-    window.addEventListener("resize", update);
-    return () => {
-      window.removeEventListener("scroll", update, true);
-      window.removeEventListener("resize", update);
-    };
-  }, [open]);
-
-  // Fecha por clique fora; Esc é tratado no onKeyDown do painel/gatilho.
-  useEffect(() => {
-    if (!open) return;
-    function onDocClick(e: MouseEvent) {
-      const t = e.target as Node;
-      if (popRef.current?.contains(t) || triggerRef.current?.contains(t)) return;
-      fechar();
-    }
-    document.addEventListener("mousedown", onDocClick);
-    return () => document.removeEventListener("mousedown", onDocClick);
-  }, [open]);
+  // Posição ancorada ao gatilho, atualizada em scroll/resize (SlideOver rola),
+  // e fechamento por clique fora; Esc é tratado no onKeyDown do painel/gatilho.
+  const rect = usePainelAncorado({
+    aberto: open,
+    gatilhoRef: triggerRef,
+    painelRef: popRef,
+    aoClicarFora: () => fechar(),
+  });
 
   // Foco inicial: busca (quando existe) ou item destacado.
   useEffect(() => {
@@ -222,10 +204,6 @@ export function Select({
     }
   }
 
-  const maxAltura = 320;
-  const vw = typeof window !== "undefined" ? window.innerWidth : 1200;
-  const vh = typeof window !== "undefined" ? window.innerHeight : 800;
-
   const inline = variant === "inline";
 
   return (
@@ -233,7 +211,7 @@ export function Select({
       {!inline && label && (
         <label
           htmlFor={fieldId}
-          className="text-[11px] font-bold uppercase tracking-wider text-[var(--premium-gray)]"
+          className="text-[11px] font-bold tracking-wider text-[var(--premium-gray)] uppercase"
         >
           {label}
         </label>
@@ -254,15 +232,15 @@ export function Select({
         onKeyDown={onTriggerKeyDown}
         className={cn(
           inline
-            ? "inline-flex items-center gap-1 text-left font-[family-name:var(--font-ubuntu),system-ui,sans-serif] outline-none cursor-pointer focus-visible:shadow-[0_0_0_2px_var(--yellow-50)]"
+            ? "inline-flex cursor-pointer items-center gap-1 text-left font-[family-name:var(--font-ubuntu),system-ui,sans-serif] outline-none focus-visible:shadow-[0_0_0_2px_var(--yellow-50)]"
             : cn(
-                "w-full flex items-center justify-between gap-2 border border-[var(--premium-mist)] rounded-[var(--r-md)] px-[14px] py-[11px] text-[13px] text-left font-[family-name:var(--font-ubuntu),system-ui,sans-serif] outline-none transition-all duration-150 bg-[var(--c-surface)] cursor-pointer",
+                "flex w-full cursor-pointer items-center justify-between gap-2 rounded-[var(--r-md)] border border-[var(--premium-mist)] bg-[var(--c-surface)] px-[14px] py-[11px] text-left font-[family-name:var(--font-ubuntu),system-ui,sans-serif] text-[13px] transition-all duration-150 outline-none",
                 "focus:border-[var(--premium-ink)] focus:shadow-[0_0_0_2px_var(--yellow-50)]",
                 open && "border-[var(--premium-ink)] shadow-[0_0_0_2px_var(--yellow-50)]",
-                error && "border-[var(--danger)]"
+                error && "border-[var(--danger)]",
               ),
-          disabled && "opacity-60 cursor-not-allowed",
-          className
+          disabled && "cursor-not-allowed opacity-60",
+          className,
         )}
       >
         <span
@@ -274,7 +252,7 @@ export function Select({
               ? inline
                 ? "text-current"
                 : "text-[var(--premium-ink)]"
-              : "text-[var(--premium-gray)]"
+              : "text-[var(--premium-gray)]",
           )}
         >
           {selectedLabel ?? placeholder ?? "Selecione..."}
@@ -284,95 +262,37 @@ export function Select({
           className={cn(
             "shrink-0 transition-transform duration-150 motion-reduce:transition-none",
             inline ? "text-current opacity-70" : "text-[var(--premium-gray)]",
-            open && "rotate-180"
+            open && "rotate-180",
           )}
         />
       </button>
       {name && <input type="hidden" name={name} value={selected} />}
       {!inline && error && <span className="text-[11px] text-[var(--danger)]">{error}</span>}
 
-      {open && rect && typeof document !== "undefined" &&
-        createPortal(
-          <m.div
-            ref={popRef}
-            {...motionPreset("menu")}
-            // Marcador para popovers hospedeiros ignorarem cliques aqui dentro
-            // (o painel vive em portal, fora da árvore DOM do hospedeiro).
-            data-select-pop=""
-            onKeyDown={onPainelKeyDown}
-            style={{
-              position: "fixed",
-              left: Math.max(8, Math.min(rect.left, vw - Math.max(rect.width, inline ? 200 : 0) - 8)),
-              top: Math.min(rect.bottom + 6, vh - maxAltura),
-              width: Math.max(rect.width, inline ? 200 : 0),
-            }}
-            className="z-[60] rounded-[var(--r-lg)] border border-[var(--premium-mist)] bg-[var(--c-surface)] p-2 shadow-[var(--sh-lg)]"
-          >
-            {comBusca && (
-              <div className="relative mb-2">
-                <Search
-                  size={14}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--premium-gray)]"
-                />
-                <input
-                  ref={buscaRef}
-                  type="text"
-                  value={busca}
-                  onChange={(e) => {
-                    setBusca(e.target.value);
-                    // Lista muda — destaque volta ao primeiro resultado.
-                    setHighlight(0);
-                  }}
-                  placeholder="Buscar..."
-                  aria-label={label ? `Buscar em ${label}` : "Buscar opção"}
-                  className="w-full rounded-[var(--r-md)] border border-[var(--premium-mist)] bg-[var(--c-surface)] py-2 pl-8 pr-3 text-[13px] focus:border-[var(--premium-ink)] focus:outline-none focus:shadow-[0_0_0_2px_var(--yellow-50)]"
-                />
-              </div>
-            )}
-            <div
-              id={listboxId}
-              role="listbox"
-              aria-label={label}
-              className="max-h-[256px] overflow-y-auto kanban-col-scroll flex flex-col"
-            >
-              {itens.map((o, i) => {
-                const ativo = o.value === selected && !o.isPlaceholder;
-                return (
-                  <button
-                    key={`${o.value}-${i}`}
-                    ref={(el) => { itemRefs.current[i] = el; }}
-                    type="button"
-                    role="option"
-                    aria-selected={ativo}
-                    aria-disabled={o.disabled || undefined}
-                    disabled={o.disabled}
-                    tabIndex={comBusca ? -1 : undefined}
-                    onClick={() => {
-                      if (!o.disabled) selecionar(o.value);
-                    }}
-                    onMouseEnter={() => setHighlight(i)}
-                    className={cn(
-                      "flex min-h-[40px] w-full items-center gap-2 rounded-[var(--r-md)] px-3 text-left text-[13px] transition-colors cursor-pointer focus-visible:outline-none focus-visible:shadow-[0_0_0_2px_var(--yellow-50)]",
-                      o.isPlaceholder ? "text-[var(--premium-gray)]" : "text-[var(--c-ink)]",
-                      o.disabled && "cursor-not-allowed text-[var(--premium-gray)]",
-                      i === highlight && "bg-[var(--premium-bone)]",
-                      ativo && "font-medium"
-                    )}
-                  >
-                    <span className="flex-1 min-w-0 truncate">{o.label}</span>
-                    {ativo && <Check size={15} className="shrink-0 text-[var(--premium-ink)]" />}
-                  </button>
-                );
-              })}
-              {itens.length === 0 && (
-                <div className="py-6 text-center text-[12.5px] text-[var(--premium-gray)]">
-                  Nenhuma opção encontrada.
-                </div>
-              )}
-            </div>
-          </m.div>,
-          document.body
-        )}
+      {open && rect && typeof document !== "undefined" && (
+        <SelectPainel
+          popRef={popRef}
+          buscaRef={buscaRef}
+          itemRefs={itemRefs}
+          rect={rect}
+          inline={inline}
+          comBusca={comBusca}
+          busca={busca}
+          onBusca={(termo) => {
+            setBusca(termo);
+            // Lista muda — destaque volta ao primeiro resultado.
+            setHighlight(0);
+          }}
+          label={label}
+          listboxId={listboxId}
+          itens={itens}
+          selected={selected}
+          highlight={highlight}
+          onHighlight={setHighlight}
+          onSelecionar={selecionar}
+          onPainelKeyDown={onPainelKeyDown}
+        />
+      )}
     </div>
   );
 }

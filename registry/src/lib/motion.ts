@@ -76,6 +76,10 @@ export const EASE_SAI: [number, number, number, number] = [0.4, 0, 1, 1];
 
 /** Teto da cascata: do 7º item em diante, todos entram com o atraso do 7º. */
 export const PAINEL_CASCATA_TETO = 6;
+
+/** Atraso da cascata do painel: `inicio` mais 32ms por item, até o teto. */
+const atrasoCascata = (inicio: number, i: number | undefined) =>
+  inicio + Math.min(i ?? 0, PAINEL_CASCATA_TETO) * 0.032;
 /** Teto da cascata de saída (de baixo para cima). */
 const PAINEL_SAIDA_TETO = 7;
 
@@ -110,12 +114,17 @@ export const painelVariantes = {
     visible: { opacity: 1, transition: { duration: 0.16, ease: EASE } },
     exit: (c: PainelCustom) => ({
       opacity: 0,
-      transition: { duration: c.reduzido ? 0.12 : 0.16, ease: EASE_SAI, delay: c.reduzido ? 0 : 0.09 },
+      transition: {
+        duration: c.reduzido ? 0.12 : 0.16,
+        ease: EASE_SAI,
+        delay: c.reduzido ? 0 : 0.09,
+      },
     }),
   },
   // O X gira no lugar do gatilho (o sino "vira" o X).
   fechar: {
-    hidden: (c: PainelCustom) => (c.reduzido ? soOpacidade.hidden : { opacity: 0, rotate: -120, scale: 0.4 }),
+    hidden: (c: PainelCustom) =>
+      c.reduzido ? soOpacidade.hidden : { opacity: 0, rotate: -120, scale: 0.4 },
     visible: (c: PainelCustom) =>
       c.reduzido
         ? soOpacidade.visible
@@ -123,11 +132,17 @@ export const painelVariantes = {
     exit: (c: PainelCustom) =>
       c.reduzido
         ? soOpacidade.exit
-        : { opacity: 0, rotate: 90, scale: 0.5, transition: { duration: 0.16, ease: EASE_SAI, delay: 0.08 } },
+        : {
+            opacity: 0,
+            rotate: 90,
+            scale: 0.5,
+            transition: { duration: 0.16, ease: EASE_SAI, delay: 0.08 },
+          },
   },
   // Pílulas do topo: deslizam a partir do X (i = 0 é a mais próxima dele).
   pilula: {
-    hidden: (c: PainelCustom) => (c.reduzido ? soOpacidade.hidden : { opacity: 0, x: 28, scale: 0.9 }),
+    hidden: (c: PainelCustom) =>
+      c.reduzido ? soOpacidade.hidden : { opacity: 0, x: 28, scale: 0.9 },
     visible: (c: PainelCustom) =>
       c.reduzido
         ? soOpacidade.visible
@@ -170,7 +185,7 @@ export const painelVariantes = {
               : {
                   duration: 0.32,
                   ease: EASE_MOLA,
-                  delay: (c.base ?? 0.07) + Math.min(c.i ?? 0, PAINEL_CASCATA_TETO) * 0.032,
+                  delay: atrasoCascata(c.base ?? 0.07, c.i),
                 },
           },
     exit: (c: PainelCustom) =>
@@ -180,7 +195,11 @@ export const painelVariantes = {
             opacity: 0,
             y: -12,
             scale: 0.96,
-            transition: { duration: 0.15, ease: EASE_SAI, delay: Math.min(c.j ?? 0, PAINEL_SAIDA_TETO) * 0.016 },
+            transition: {
+              duration: 0.15,
+              ease: EASE_SAI,
+              delay: Math.min(c.j ?? 0, PAINEL_SAIDA_TETO) * 0.016,
+            },
           },
   },
   // Base: sobe por último (i = quantos itens a cascata mostrou).
@@ -195,7 +214,7 @@ export const painelVariantes = {
             transition: {
               duration: 0.26,
               ease: EASE,
-              delay: 0.15 + Math.min(c.i ?? 0, PAINEL_CASCATA_TETO) * 0.032,
+              delay: atrasoCascata(0.15, c.i),
             },
           },
     exit: (c: PainelCustom) =>

@@ -1,7 +1,8 @@
 import { cn } from "@/lib/utils";
 import type { ReactNode } from "react";
 
-type BadgeVariant = "default" | "success" | "warning" | "danger" | "info" | "violet" | "teal" | "slate" | "gold";
+type BadgeVariant =
+  "default" | "success" | "warning" | "danger" | "info" | "violet" | "teal" | "slate" | "gold";
 
 interface BadgeProps {
   variant?: BadgeVariant;
@@ -25,9 +26,9 @@ export function Badge({ variant = "default", children, className }: BadgeProps) 
   return (
     <span
       className={cn(
-        "inline-block text-[10px] font-bold uppercase tracking-wider px-[10px] py-[3px] rounded-full",
+        "inline-block rounded-full px-[10px] py-[3px] text-[10px] font-bold tracking-wider uppercase",
         variantClasses[variant],
-        className
+        className,
       )}
     >
       {children}

@@ -6,7 +6,10 @@ import type { ButtonHTMLAttributes, Ref } from "react";
 import { Tooltip } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 
-interface ContextIconButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, "children" | "aria-label" | "title"> {
+interface ContextIconButtonProps extends Omit<
+  ButtonHTMLAttributes<HTMLButtonElement>,
+  "children" | "aria-label" | "title"
+> {
   icon: LucideIcon;
   /** Rótulo da ação — vira a dica (`Tooltip`) e o `aria-label`. */
   label: string;
@@ -55,13 +58,13 @@ export function ContextIconButton({
         aria-busy={loading || undefined}
         disabled={disabled || loading}
         className={cn(
-          "flex min-h-[40px] min-w-[40px] shrink-0 items-center justify-center rounded-[var(--r-md)] transition-colors cursor-pointer",
-          "focus-visible:outline-none focus-visible:shadow-[0_0_0_2px_var(--yellow-50)]",
-          "disabled:opacity-50 disabled:cursor-default",
+          "flex min-h-[40px] min-w-[40px] shrink-0 cursor-pointer items-center justify-center rounded-[var(--r-md)] transition-colors",
+          "focus-visible:shadow-[0_0_0_2px_var(--yellow-50)] focus-visible:outline-none",
+          "disabled:cursor-default disabled:opacity-50",
           variant === "destaque"
             ? "bg-[var(--c-emphasis)] text-[var(--c-on-emphasis)] hover:bg-[var(--c-emphasis-hover)] hover:text-[var(--brand-yellow)] dark:hover:bg-[var(--brand-ink)]"
             : "text-[var(--premium-gray)] hover:bg-[var(--premium-bone)] hover:text-[var(--premium-ink)]",
-          className
+          className,
         )}
         {...props}
       >

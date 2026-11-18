@@ -86,7 +86,9 @@ export function Tooltip({
   // (um botão flutuante `absolute`, por exemplo), esse wrapper JÁ é o ancestral
   // posicionado e o `relative` sobra: `cn` não resolve conflito e, no CSS
   // gerado, `relative` venceria o `absolute` do chamador.
-  const posicionadoPeloChamador = /(^|\s)(absolute|fixed|sticky|static)(\s|$)/.test(className ?? "");
+  const posicionadoPeloChamador = /(^|\s)(absolute|fixed|sticky|static)(\s|$)/.test(
+    className ?? "",
+  );
 
   const envoltorio = {
     // `focus-within:[--tt-delay:0ms]`: quem chega pelo teclado nunca espera, mesmo
@@ -109,12 +111,12 @@ export function Tooltip({
           id={id}
           role="tooltip"
           className={cn(
-            "pointer-events-none absolute z-50 whitespace-nowrap rounded-[var(--r-sm)] border border-white/10 bg-[var(--brand-ink)] px-2 py-1 text-[12px] font-medium text-[var(--brand-on-ink)] shadow-[var(--sh-md)]",
-            "opacity-0 transition-opacity duration-100 [transition-delay:0ms]",
+            "pointer-events-none absolute z-50 rounded-[var(--r-sm)] border border-[var(--brand-on-ink)]/10 bg-[var(--brand-ink)] px-2 py-1 text-[12px] font-medium whitespace-nowrap text-[var(--brand-on-ink)] shadow-[var(--sh-md)]",
+            "opacity-0 transition-opacity [transition-delay:0ms] duration-100",
             "group-hover/tooltip:opacity-100 group-hover/tooltip:[transition-delay:var(--tt-delay,300ms)]",
             "group-focus-within/tooltip:opacity-100 group-focus-within/tooltip:[transition-delay:0ms]",
-            side === "right" && "left-full top-1/2 ml-2 -translate-y-1/2",
-            side === "left" && "right-full top-1/2 mr-2 -translate-y-1/2",
+            side === "right" && "top-1/2 left-full ml-2 -translate-y-1/2",
+            side === "left" && "top-1/2 right-full mr-2 -translate-y-1/2",
             side === "top" && "bottom-full left-1/2 mb-2 -translate-x-1/2",
             side === "bottom" && "top-full left-1/2 mt-2 -translate-x-1/2",
             bubbleClassName,

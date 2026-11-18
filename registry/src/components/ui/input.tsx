@@ -47,33 +47,37 @@ export function Input({ label, error, className, id, prefixo, ...props }: InputP
         {label && (
           <label
             htmlFor={id}
-            className="text-[11px] font-bold uppercase tracking-wider text-[var(--premium-gray)]"
+            className="text-[11px] font-bold tracking-wider text-[var(--premium-gray)] uppercase"
           >
             {label}
           </label>
         )}
         <div
           className={cn(
-            "flex w-full items-center border border-[var(--premium-mist)] rounded-[var(--r-md)] px-[14px] transition-all duration-150",
+            "flex w-full items-center rounded-[var(--r-md)] border border-[var(--premium-mist)] px-[14px] transition-all duration-150",
             "focus-within:border-[var(--premium-ink)] focus-within:shadow-[0_0_0_2px_var(--yellow-50)]",
-            error && "border-[var(--danger)]"
+            error && "border-[var(--danger)]",
           )}
         >
-          <span className="select-none pr-1.5 text-[13px] font-[family-name:var(--font-ubuntu),system-ui,sans-serif] text-[var(--premium-gray)]">
+          <span className="pr-1.5 font-[family-name:var(--font-ubuntu),system-ui,sans-serif] text-[13px] text-[var(--premium-gray)] select-none">
             {prefixo}
           </span>
           <input
             id={id}
             className={cn(
-              "w-full bg-transparent py-[11px] text-[13px] font-[family-name:var(--font-ubuntu),system-ui,sans-serif] text-[var(--premium-ink)] outline-none",
+              "w-full bg-transparent py-[11px] font-[family-name:var(--font-ubuntu),system-ui,sans-serif] text-[13px] text-[var(--premium-ink)] outline-none",
               "placeholder:text-[var(--premium-gray)]",
-              className
+              className,
             )}
             {...props}
             {...aria}
           />
         </div>
-        {error && <span id={erroId} className="text-[11px] text-[var(--danger)]">{error}</span>}
+        {error && (
+          <span id={erroId} className="text-[11px] text-[var(--danger)]">
+            {error}
+          </span>
+        )}
       </div>
     );
   }
@@ -82,7 +86,7 @@ export function Input({ label, error, className, id, prefixo, ...props }: InputP
       {label && (
         <label
           htmlFor={id}
-          className="text-[11px] font-bold uppercase tracking-wider text-[var(--premium-gray)]"
+          className="text-[11px] font-bold tracking-wider text-[var(--premium-gray)] uppercase"
         >
           {label}
         </label>
@@ -90,17 +94,19 @@ export function Input({ label, error, className, id, prefixo, ...props }: InputP
       <input
         id={id}
         className={cn(
-          "w-full border border-[var(--premium-mist)] rounded-[var(--r-md)] px-[14px] py-[11px] text-[13px] font-[family-name:var(--font-ubuntu),system-ui,sans-serif] text-[var(--premium-ink)] outline-none transition-all duration-150",
+          "w-full rounded-[var(--r-md)] border border-[var(--premium-mist)] px-[14px] py-[11px] font-[family-name:var(--font-ubuntu),system-ui,sans-serif] text-[13px] text-[var(--premium-ink)] transition-all duration-150 outline-none",
           "focus:border-[var(--premium-ink)] focus:shadow-[0_0_0_2px_var(--yellow-50)]",
           "placeholder:text-[var(--premium-gray)]",
           error && "border-[var(--danger)]",
-          className
+          className,
         )}
         {...props}
         {...aria}
       />
       {error && (
-        <span id={erroId} className="text-[11px] text-[var(--danger)]">{error}</span>
+        <span id={erroId} className="text-[11px] text-[var(--danger)]">
+          {error}
+        </span>
       )}
     </div>
   );
