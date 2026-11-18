@@ -123,3 +123,10 @@ export type ParamsDaUrl = ReturnType<typeof useSearchParams>;
 
 /** Escrita na URL: `null` remove a chave. */
 export type EscreverParams = (updates: Record<string, string | null>) => void;
+
+/** Props dos controles de um filtro com menu (seleção e faixa). */
+export interface PropsControleFiltro {
+  filter: FilterConfig;
+  searchParams: ParamsDaUrl;
+  setParams: EscreverParams;
+}

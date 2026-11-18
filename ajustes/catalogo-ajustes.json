@@ -1,5 +1,5 @@
 {
-  "$comentario": "Peças do Tasks ajustadas no premium-design para o padrão estrito dos sistemas criados pelo modelo Premium (TypeScript strict com noUncheckedIndexedAccess, Prettier com printWidth 100 e prettier-plugin-tailwindcss, no máximo 350 linhas por arquivo e cor só por token). Os arquivos ajustados ficam em ajustes/, no caminho que têm no projeto, e substituem os do Tasks na sincronização. `tasks` guarda o sha256 do arquivo do Tasks de que o ajuste partiu: quando o Tasks muda um deles, catalogo:sincronizar e catalogo:verificar param até o ajuste ser refeito sobre o arquivo novo e o sha256 atualizado aqui.",
+  "$comentario": "Peças do Tasks ajustadas no premium-design para o padrão estrito dos sistemas criados pelo modelo Premium (TypeScript strict com noUncheckedIndexedAccess, Prettier com printWidth 100 e prettier-plugin-tailwindcss, no máximo 350 linhas por arquivo e cor só por token). Os arquivos ajustados ficam em ajustes/, no caminho que têm no projeto, e substituem os do Tasks na sincronização. `tasks` guarda o sha256 do arquivo do Tasks de que o ajuste partiu: quando o Tasks muda um deles, catalogo:sincronizar e catalogo:verificar param até o ajuste ser refeito sobre o arquivo novo e o sha256 atualizado aqui. Camada provisória: o destino é levar os ajustes ao Tasks e esvaziar esta pasta. Peça com `nova: true` ainda não existe no Tasks (sem `tasks`) e entra no catálogo com o `tipo` daqui.",
   "pecas": [
     {
       "nome": "motion",
@@ -175,7 +175,8 @@
         "src/components/ui/filter-bar-controle.tsx",
         "src/components/ui/filter-bar-busca.tsx",
         "src/components/ui/filter-bar-faixa.tsx",
-        "src/components/ui/filter-bar-selecao.tsx"
+        "src/components/ui/filter-bar-selecao.tsx",
+        "src/components/ui/filter-bar-painel.tsx"
       ],
       "tasks": {
         "src/components/ui/filter-bar.tsx": "709699b703a1c4a543ea28e8533b3f84d8e8ddcc71bfe39d61b5abfc591fc134"
@@ -292,6 +293,14 @@
       "tasks": {
         "src/components/ui/views-salvas-menu.tsx": "bcafacd0a41c443e240653ff55fe026390924162c2900d8fc4f98ac818c14174"
       }
+    },
+    {
+      "nome": "use-painel-ancorado",
+      "nova": true,
+      "tipo": "registry:hook",
+      "arquivos": [
+        "src/lib/hooks/use-painel-ancorado.ts"
+      ]
     }
   ]
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useId, useMemo, useRef, useState } from "react";
+import { usePainelAncorado } from "@/lib/hooks/use-painel-ancorado";
 import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { SelectPainel, type ItemSelect } from "@/components/ui/select-painel";
@@ -94,7 +95,6 @@ export function Select({
 
   const [open, setOpen] = useState(false);
   const [busca, setBusca] = useState("");
-  const [rect, setRect] = useState<{ left: number; bottom: number; width: number } | null>(null);
   const [highlight, setHighlight] = useState(0);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const popRef = useRef<HTMLDivElement>(null);
@@ -134,33 +134,14 @@ export function Select({
     fechar(true);
   }
 
-  // Posição ancorada ao gatilho; atualiza em scroll/resize (SlideOver rola).
-  useEffect(() => {
-    if (!open) return;
-    const update = () => {
-      const r = triggerRef.current?.getBoundingClientRect();
-      if (r) setRect({ left: r.left, bottom: r.bottom, width: r.width });
-    };
-    update();
-    window.addEventListener("scroll", update, true);
-    window.addEventListener("resize", update);
-    return () => {
-      window.removeEventListener("scroll", update, true);
-      window.removeEventListener("resize", update);
-    };
-  }, [open]);
-
-  // Fecha por clique fora; Esc é tratado no onKeyDown do painel/gatilho.
-  useEffect(() => {
-    if (!open) return;
-    function onDocClick(e: MouseEvent) {
-      const t = e.target as Node;
-      if (popRef.current?.contains(t) || triggerRef.current?.contains(t)) return;
-      fechar();
-    }
-    document.addEventListener("mousedown", onDocClick);
-    return () => document.removeEventListener("mousedown", onDocClick);
-  }, [open]);
+  // Posição ancorada ao gatilho, atualizada em scroll/resize (SlideOver rola),
+  // e fechamento por clique fora; Esc é tratado no onKeyDown do painel/gatilho.
+  const rect = usePainelAncorado({
+    aberto: open,
+    gatilhoRef: triggerRef,
+    painelRef: popRef,
+    aoClicarFora: () => fechar(),
+  });
 
   // Foco inicial: busca (quando existe) ou item destacado.
   useEffect(() => {

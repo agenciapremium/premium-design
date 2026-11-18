@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useId, useRef, useState } from "react";
+import { useId, useRef, useState } from "react";
+import { usePainelAncorado } from "@/lib/hooks/use-painel-ancorado";
 import { cn } from "@/lib/utils";
 import { formatBR, segParaISO, splitISO, type Segmentos } from "@/components/ui/date-picker-datas";
 import { CalendarioPainel } from "@/components/ui/date-picker-calendario";
@@ -67,12 +68,6 @@ export function DatePicker({
   const [seg, setSeg] = useState<Segmentos>(() => splitISO(value ?? defaultValue ?? ""));
 
   const [open, setOpen] = useState(false);
-  const [rect, setRect] = useState<{
-    left: number;
-    top: number;
-    bottom: number;
-    width: number;
-  } | null>(null);
   const triggerRef = useRef<HTMLElement | null>(null);
   const diaRef = useRef<HTMLInputElement>(null);
   const mesRef = useRef<HTMLInputElement>(null);
@@ -87,9 +82,11 @@ export function DatePicker({
     return { year: d.getFullYear(), month: d.getMonth() };
   });
 
+  // Um dos três segmentos deste campo está em foco. Lido no render, então pela
+  // marca `data-segmento-de` dos campos, e não pelos refs.
   const segFocado = () => {
     const a = typeof document !== "undefined" ? document.activeElement : null;
-    return a === diaRef.current || a === mesRef.current || a === anoRef.current;
+    return a instanceof HTMLElement && a.dataset.segmentoDe === fieldId;
   };
 
   // Reconcilia os segmentos quando o valor comitado muda por fora e NENHUM segmento
@@ -111,32 +108,12 @@ export function DatePicker({
     setOpen(true);
   }
 
-  useEffect(() => {
-    if (!open) return;
-    const update = () => {
-      const r = triggerRef.current?.getBoundingClientRect();
-      if (r) setRect({ left: r.left, top: r.top, bottom: r.bottom, width: r.width });
-    };
-    update();
-    window.addEventListener("scroll", update, true);
-    window.addEventListener("resize", update);
-    return () => {
-      window.removeEventListener("scroll", update, true);
-      window.removeEventListener("resize", update);
-    };
-  }, [open]);
-
-  useEffect(() => {
-    if (!open) return;
-    function onDocClick(e: MouseEvent) {
-      const t = e.target as Node;
-      if (popRef.current?.contains(t) || triggerRef.current?.contains(t)) return;
-      fechar();
-    }
-    document.addEventListener("mousedown", onDocClick);
-    return () => document.removeEventListener("mousedown", onDocClick);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open]);
+  const rect = usePainelAncorado({
+    aberto: open,
+    gatilhoRef: triggerRef,
+    painelRef: popRef,
+    aoClicarFora: fechar,
+  });
 
   function fechar() {
     setOpen(false);

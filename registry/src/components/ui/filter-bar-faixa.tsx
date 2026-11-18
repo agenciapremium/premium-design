@@ -1,10 +1,6 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
-import { createPortal } from "react-dom";
-import { m } from "motion/react";
-import { ChevronDown } from "lucide-react";
-import { cn } from "@/lib/utils";
 import {
   chavesDaFaixa,
   escritaDaFaixa,
@@ -12,18 +8,11 @@ import {
   rotuloFaixa,
   type LimitesFaixa,
 } from "@/lib/helpers/filtros-ativos";
-import { motionPreset } from "@/lib/motion";
-import { popoverPos } from "@/lib/popover-pos";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  chipActive,
-  chipBase,
-  chipIdle,
-  dropdownPanelClass,
-  useDropdownPortal,
-} from "@/components/ui/pilula";
-import type { EscreverParams, FilterConfig, ParamsDaUrl } from "@/components/ui/filter-bar-config";
+import { useDropdownPortal } from "@/components/ui/pilula";
+import type { FilterConfig, PropsControleFiltro } from "@/components/ui/filter-bar-config";
+import { GatilhoFiltro, PainelFiltro } from "@/components/ui/filter-bar-painel";
 
 /** Limites da `faixa`, obrigatórios em tempo de execução (D1). */
 function limitesDaFaixa(filter: FilterConfig): LimitesFaixa {
@@ -49,18 +38,9 @@ const textoDe = (n: number | null) => (n === null ? "" : String(n));
 // e o painel em portal dos selects, com dois campos numéricos. Grava
 // `<key>De`/`<key>Ate` ao confirmar (Enter ou Aplicar), ao sair dos campos ou
 // ao fechar o painel pelo clique fora, nunca a cada tecla; `Esc` descarta.
-export function FaixaFilterControl({
-  filter,
-  searchParams,
-  setParams,
-}: {
-  filter: FilterConfig;
-  searchParams: ParamsDaUrl;
-  setParams: EscreverParams;
-}) {
+export function FaixaFilterControl({ filter, searchParams, setParams }: PropsControleFiltro) {
   const { open, setOpen, rect, triggerRef, panelRef, abrir } = useDropdownPortal();
   const id = useId();
-  const Icon = filter.icon;
   const limites = limitesDaFaixa(filter);
   const passo = filter.passo ?? 1;
   const [chaveDe, chaveAte] = chavesDaFaixa(filter);
@@ -154,84 +134,75 @@ export function FaixaFilterControl({
 
   return (
     <div className="relative shrink-0">
-      <button
-        ref={triggerRef}
+      <GatilhoFiltro
+        triggerRef={triggerRef}
+        icone={filter.icon}
+        rotulo={rotulo}
+        ativo={active}
+        aberto={open}
+        popup="dialog"
         type="button"
         onClick={() => (open ? setOpen(false) : abrirPainel())}
-        aria-haspopup="dialog"
-        aria-expanded={open}
-        className={cn(
-          chipBase,
-          active ? chipActive : chipIdle,
-          "focus-visible:shadow-[0_0_0_2px_var(--yellow-50),0_0_0_3px_var(--premium-ink)] focus-visible:outline-none",
-        )}
+        className="focus-visible:shadow-[0_0_0_2px_var(--yellow-50),0_0_0_3px_var(--premium-ink)] focus-visible:outline-none"
+      />
+      <PainelFiltro
+        aberto={open}
+        rect={rect}
+        panelRef={panelRef}
+        role="dialog"
+        rotulo={filter.label}
+        largura={260}
+        altura={200}
+        className="p-3"
       >
-        {Icon && <Icon size={14} className="text-[var(--premium-gray)]" />}
-        <span>{rotulo}</span>
-        <ChevronDown size={14} className="-mr-1 text-[var(--premium-gray)]" />
-      </button>
-      {open &&
-        rect &&
-        typeof document !== "undefined" &&
-        createPortal(
-          <m.div
-            ref={panelRef}
-            {...motionPreset("menu")}
-            role="dialog"
-            aria-label={filter.label}
-            style={popoverPos(rect, Math.max(rect.width, 260), 200)}
-            className={cn(dropdownPanelClass, "p-3")}
+        <div className="grid grid-cols-2 gap-3">
+          <Input
+            {...propsCampo}
+            id={`${id}-de`}
+            label="De"
+            aria-label={`${filter.label}: de`}
+            value={de}
+            onChange={(e) => mudarDe(e.target.value)}
+            placeholder={String(limites.min)}
+            autoFocus
+          />
+          <Input
+            {...propsCampo}
+            id={`${id}-ate`}
+            label="Até"
+            aria-label={`${filter.label}: até`}
+            value={ate}
+            onChange={(e) => mudarAte(e.target.value)}
+            placeholder={String(limites.max)}
+          />
+        </div>
+        <div className="mt-3 flex justify-end gap-2">
+          {(active || de || ate) && (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="min-h-10"
+              onClick={() => {
+                aplicar("", "");
+                fechar();
+              }}
+            >
+              Limpar
+            </Button>
+          )}
+          <Button
+            variant="dark"
+            size="sm"
+            className="min-h-10"
+            onClick={() => {
+              aplicar(de, ate);
+              fechar();
+            }}
           >
-            <div className="grid grid-cols-2 gap-3">
-              <Input
-                {...propsCampo}
-                id={`${id}-de`}
-                label="De"
-                aria-label={`${filter.label}: de`}
-                value={de}
-                onChange={(e) => mudarDe(e.target.value)}
-                placeholder={String(limites.min)}
-                autoFocus
-              />
-              <Input
-                {...propsCampo}
-                id={`${id}-ate`}
-                label="Até"
-                aria-label={`${filter.label}: até`}
-                value={ate}
-                onChange={(e) => mudarAte(e.target.value)}
-                placeholder={String(limites.max)}
-              />
-            </div>
-            <div className="mt-3 flex justify-end gap-2">
-              {(active || de || ate) && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="min-h-10"
-                  onClick={() => {
-                    aplicar("", "");
-                    fechar();
-                  }}
-                >
-                  Limpar
-                </Button>
-              )}
-              <Button
-                variant="dark"
-                size="sm"
-                className="min-h-10"
-                onClick={() => {
-                  aplicar(de, ate);
-                  fechar();
-                }}
-              >
-                Aplicar
-              </Button>
-            </div>
-          </m.div>,
-          document.body,
-        )}
+            Aplicar
+          </Button>
+        </div>
+      </PainelFiltro>
     </div>
   );
 }

@@ -1,28 +1,17 @@
 "use client";
 
-import { useState } from "react";
-import { createPortal } from "react-dom";
-import { m } from "motion/react";
-import { Check, ChevronDown, Search } from "lucide-react";
+import { useState, type ReactNode, type RefObject } from "react";
+import { Check, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { motionPreset } from "@/lib/motion";
-import { popoverPos } from "@/lib/popover-pos";
-import {
-  chipActive,
-  chipBase,
-  chipIdle,
-  dropdownPanelClass,
-  SingleSelectItem,
-  useDropdownPortal,
-} from "@/components/ui/pilula";
+import { SingleSelectItem, useDropdownPortal } from "@/components/ui/pilula";
 import {
   comDependentes,
   filtrarOpcoes,
   mostrarBuscaPara,
-  type EscreverParams,
   type FilterConfig,
-  type ParamsDaUrl,
+  type PropsControleFiltro,
 } from "@/components/ui/filter-bar-config";
+import { GatilhoFiltro, PainelFiltro } from "@/components/ui/filter-bar-painel";
 
 // Campo de busca reusado pelos dropdowns de select/multiselect (foco visível,
 // teclado e tokens semânticos claro/escuro).
@@ -55,103 +44,135 @@ function OpcoesBusca({
   );
 }
 
-export function SingleSelectControl({
+/**
+ * Painel dos filtros de seleção: a busca (listas longas), as opções e o
+ * "Nenhum resultado." quando a busca não acha nada.
+ */
+function PainelOpcoes({
   filter,
-  searchParams,
-  setParams,
+  aberto,
+  rect,
+  panelRef,
+  busca,
+  onBusca,
+  vazio,
+  multiselecionavel,
+  children,
 }: {
   filter: FilterConfig;
-  searchParams: ParamsDaUrl;
-  setParams: EscreverParams;
+  aberto: boolean;
+  rect: DOMRect | null;
+  panelRef: RefObject<HTMLDivElement | null>;
+  busca: string;
+  onBusca: (termo: string) => void;
+  vazio: boolean;
+  multiselecionavel?: boolean;
+  children: ReactNode;
 }) {
+  return (
+    <PainelFiltro
+      aberto={aberto}
+      rect={rect}
+      panelRef={panelRef}
+      role="listbox"
+      rotulo={filter.label}
+      largura={220}
+      altura={320}
+      multiselecionavel={multiselecionavel}
+    >
+      {mostrarBuscaPara(filter) && (
+        <OpcoesBusca value={busca} onChange={onBusca} label={filter.label} />
+      )}
+      {children}
+      {vazio && (
+        <div className="py-4 text-center text-[13px] text-[var(--premium-gray)]">
+          Nenhum resultado.
+        </div>
+      )}
+    </PainelFiltro>
+  );
+}
+
+/**
+ * Estado comum dos filtros de seleção: o menu em portal, a busca e as opções
+ * visíveis, e as props do gatilho e do painel. Abrir limpa a busca.
+ */
+function useMenuOpcoes(filter: FilterConfig) {
   const [busca, setBusca] = useState("");
   const { open, setOpen, rect, triggerRef, panelRef, abrir } = useDropdownPortal();
-  const Icon = filter.icon;
+  const visiveis = filtrarOpcoes(filter, busca);
+  return {
+    busca,
+    setBusca,
+    setOpen,
+    visiveis,
+    gatilho: {
+      triggerRef,
+      icone: filter.icon,
+      aberto: open,
+      popup: "listbox" as const,
+      onClick: () => {
+        setBusca("");
+        abrir();
+      },
+    },
+    painel: {
+      filter,
+      aberto: open,
+      rect,
+      panelRef,
+      busca,
+      onBusca: setBusca,
+      vazio: visiveis.length === 0,
+    },
+  };
+}
+
+export function SingleSelectControl({ filter, searchParams, setParams }: PropsControleFiltro) {
+  const menu = useMenuOpcoes(filter);
   const value = searchParams.get(filter.key) ?? "";
   const selectedLabel = filter.options?.find((o) => o.value === value)?.label;
-  const mostrarBusca = mostrarBuscaPara(filter);
-  const visiveis = filtrarOpcoes(filter, busca);
 
   function escolher(v: string | null) {
     setParams(comDependentes(filter, v));
-    setBusca("");
-    setOpen(false);
+    menu.setBusca("");
+    menu.setOpen(false);
   }
 
   return (
     <div className="relative shrink-0">
-      <button
-        ref={triggerRef}
-        onClick={() => {
-          setBusca("");
-          abrir();
-        }}
-        aria-label={filter.label}
-        aria-haspopup="listbox"
-        aria-expanded={open}
-        className={cn(chipBase, value ? chipActive : chipIdle)}
-      >
-        {Icon && <Icon size={14} className="text-[var(--premium-gray)]" />}
-        <span>{value && selectedLabel ? `${filter.label}: ${selectedLabel}` : filter.label}</span>
-        <ChevronDown size={14} className="-mr-1 text-[var(--premium-gray)]" />
-      </button>
-      {open &&
-        rect &&
-        typeof document !== "undefined" &&
-        createPortal(
-          <m.div
-            ref={panelRef}
-            {...motionPreset("menu")}
-            role="listbox"
-            aria-label={filter.label}
-            style={popoverPos(rect, Math.max(rect.width, 220), 320)}
-            className={dropdownPanelClass}
-          >
-            {mostrarBusca && <OpcoesBusca value={busca} onChange={setBusca} label={filter.label} />}
-            {!busca && (
-              <SingleSelectItem
-                checked={!value}
-                label={filter.placeholder ?? "Todos"}
-                onClick={() => escolher(null)}
-              />
-            )}
-            {visiveis.map((o) => (
-              <SingleSelectItem
-                key={o.value}
-                checked={o.value === value}
-                label={o.label}
-                onClick={() => escolher(o.value)}
-              />
-            ))}
-            {visiveis.length === 0 && (
-              <div className="py-4 text-center text-[13px] text-[var(--premium-gray)]">
-                Nenhum resultado.
-              </div>
-            )}
-          </m.div>,
-          document.body,
+      <GatilhoFiltro
+        {...menu.gatilho}
+        rotulo={value && selectedLabel ? `${filter.label}: ${selectedLabel}` : filter.label}
+        ativo={Boolean(value)}
+        ariaLabel={filter.label}
+      />
+      <PainelOpcoes {...menu.painel}>
+        {!menu.busca && (
+          <SingleSelectItem
+            checked={!value}
+            label={filter.placeholder ?? "Todos"}
+            onClick={() => escolher(null)}
+          />
         )}
+        {menu.visiveis.map((o) => (
+          <SingleSelectItem
+            key={o.value}
+            checked={o.value === value}
+            label={o.label}
+            onClick={() => escolher(o.value)}
+          />
+        ))}
+      </PainelOpcoes>
     </div>
   );
 }
 
-export function MultiSelectControl({
-  filter,
-  searchParams,
-  setParams,
-}: {
-  filter: FilterConfig;
-  searchParams: ParamsDaUrl;
-  setParams: EscreverParams;
-}) {
-  const [busca, setBusca] = useState("");
-  const { open, rect, triggerRef, panelRef, abrir } = useDropdownPortal();
-  const Icon = filter.icon;
+export function MultiSelectControl({ filter, searchParams, setParams }: PropsControleFiltro) {
+  const menu = useMenuOpcoes(filter);
   const raw = searchParams.get(filter.key);
   const selected = raw ? raw.split(",").filter(Boolean) : [];
   const active = selected.length > 0;
-  const mostrarBusca = mostrarBuscaPara(filter);
-  const visiveis = filtrarOpcoes(filter, busca);
 
   function toggle(optValue: string) {
     const next = selected.includes(optValue)
@@ -162,72 +183,45 @@ export function MultiSelectControl({
 
   return (
     <div className="relative shrink-0">
-      <button
-        ref={triggerRef}
-        onClick={() => {
-          setBusca("");
-          abrir();
-        }}
-        aria-haspopup="listbox"
-        aria-expanded={open}
-        className={cn(chipBase, active ? chipActive : chipIdle)}
-      >
-        {Icon && <Icon size={14} className="text-[var(--premium-gray)]" />}
-        <span>{filter.label}</span>
-        {active && (
-          <span className="min-w-[16px] rounded-full bg-[var(--premium-ink)] px-[6px] text-center text-[11px] font-bold text-[var(--premium-paper)]">
-            {selected.length}
-          </span>
-        )}
-        <ChevronDown size={14} className="-mr-1 text-[var(--premium-gray)]" />
-      </button>
-      {open &&
-        rect &&
-        typeof document !== "undefined" &&
-        createPortal(
-          <m.div
-            ref={panelRef}
-            {...motionPreset("menu")}
-            role="listbox"
-            aria-label={filter.label}
-            aria-multiselectable
-            style={popoverPos(rect, Math.max(rect.width, 220), 320)}
-            className={dropdownPanelClass}
-          >
-            {mostrarBusca && <OpcoesBusca value={busca} onChange={setBusca} label={filter.label} />}
-            {visiveis.map((o) => {
-              const checked = selected.includes(o.value);
-              return (
-                <button
-                  key={o.value}
-                  type="button"
-                  onClick={() => toggle(o.value)}
-                  role="option"
-                  aria-selected={checked}
-                  className="flex w-full cursor-pointer items-center gap-2 rounded-[var(--r-sm)] px-2 py-[7px] text-left text-[13px] text-[var(--premium-ink)] hover:bg-[var(--premium-bone)] focus-visible:bg-[var(--premium-bone)] focus-visible:outline-none"
-                >
-                  <span
-                    className={cn(
-                      "flex h-4 w-4 shrink-0 items-center justify-center rounded-[4px] border",
-                      checked
-                        ? "border-[var(--premium-ink)] bg-[var(--premium-ink)] text-[var(--premium-paper)]"
-                        : "border-[var(--premium-mist)]",
-                    )}
-                  >
-                    {checked && <Check size={12} />}
-                  </span>
-                  {o.label}
-                </button>
-              );
-            })}
-            {visiveis.length === 0 && (
-              <div className="py-4 text-center text-[13px] text-[var(--premium-gray)]">
-                Nenhum resultado.
-              </div>
-            )}
-          </m.div>,
-          document.body,
-        )}
+      <GatilhoFiltro
+        {...menu.gatilho}
+        rotulo={filter.label}
+        ativo={active}
+        extra={
+          active && (
+            <span className="min-w-[16px] rounded-full bg-[var(--premium-ink)] px-[6px] text-center text-[11px] font-bold text-[var(--premium-paper)]">
+              {selected.length}
+            </span>
+          )
+        }
+      />
+      <PainelOpcoes {...menu.painel} multiselecionavel>
+        {menu.visiveis.map((o) => {
+          const checked = selected.includes(o.value);
+          return (
+            <button
+              key={o.value}
+              type="button"
+              onClick={() => toggle(o.value)}
+              role="option"
+              aria-selected={checked}
+              className="flex w-full cursor-pointer items-center gap-2 rounded-[var(--r-sm)] px-2 py-[7px] text-left text-[13px] text-[var(--premium-ink)] hover:bg-[var(--premium-bone)] focus-visible:bg-[var(--premium-bone)] focus-visible:outline-none"
+            >
+              <span
+                className={cn(
+                  "flex h-4 w-4 shrink-0 items-center justify-center rounded-[4px] border",
+                  checked
+                    ? "border-[var(--premium-ink)] bg-[var(--premium-ink)] text-[var(--premium-paper)]"
+                    : "border-[var(--premium-mist)]",
+                )}
+              >
+                {checked && <Check size={12} />}
+              </span>
+              {o.label}
+            </button>
+          );
+        })}
+      </PainelOpcoes>
     </div>
   );
 }

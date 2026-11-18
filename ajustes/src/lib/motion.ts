@@ -76,6 +76,10 @@ export const EASE_SAI: [number, number, number, number] = [0.4, 0, 1, 1];
 
 /** Teto da cascata: do 7º item em diante, todos entram com o atraso do 7º. */
 export const PAINEL_CASCATA_TETO = 6;
+
+/** Atraso da cascata do painel: `inicio` mais 32ms por item, até o teto. */
+const atrasoCascata = (inicio: number, i: number | undefined) =>
+  inicio + Math.min(i ?? 0, PAINEL_CASCATA_TETO) * 0.032;
 /** Teto da cascata de saída (de baixo para cima). */
 const PAINEL_SAIDA_TETO = 7;
 
@@ -181,7 +185,7 @@ export const painelVariantes = {
               : {
                   duration: 0.32,
                   ease: EASE_MOLA,
-                  delay: (c.base ?? 0.07) + Math.min(c.i ?? 0, PAINEL_CASCATA_TETO) * 0.032,
+                  delay: atrasoCascata(c.base ?? 0.07, c.i),
                 },
           },
     exit: (c: PainelCustom) =>
@@ -210,7 +214,7 @@ export const painelVariantes = {
             transition: {
               duration: 0.26,
               ease: EASE,
-              delay: 0.15 + Math.min(c.i ?? 0, PAINEL_CASCATA_TETO) * 0.032,
+              delay: atrasoCascata(0.15, c.i),
             },
           },
     exit: (c: PainelCustom) =>

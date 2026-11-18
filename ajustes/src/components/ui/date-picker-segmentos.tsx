@@ -80,6 +80,7 @@ export function CampoSegmentos({
           id={fieldId}
           type="text"
           inputMode="numeric"
+          data-segmento-de={fieldId}
           aria-label="Dia"
           placeholder="dd"
           value={seg.dd}
@@ -97,6 +98,7 @@ export function CampoSegmentos({
           ref={mesRef}
           type="text"
           inputMode="numeric"
+          data-segmento-de={fieldId}
           aria-label="Mês"
           placeholder="mm"
           value={seg.mm}
@@ -114,6 +116,7 @@ export function CampoSegmentos({
           ref={anoRef}
           type="text"
           inputMode="numeric"
+          data-segmento-de={fieldId}
           aria-label="Ano"
           placeholder="aaaa"
           value={seg.yyyy}

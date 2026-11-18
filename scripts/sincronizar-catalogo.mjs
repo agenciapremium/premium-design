@@ -178,7 +178,12 @@ const commitTasks = execFileSync("git", ["-C", TASKS, "rev-parse", "HEAD"], { en
 const ajustes = existsSync(MANIFESTO_AJUSTES) ? JSON.parse(readFileSync(MANIFESTO_AJUSTES, "utf8")) : { pecas: [] };
 const ajusteDe = new Map(ajustes.pecas.map((a) => [a.nome, a]));
 const nomesDoTasks = new Set(manifesto.pecas.map((p) => p.nome));
-for (const a of ajustes.pecas) if (!nomesDoTasks.has(a.nome)) falhar(`ajustes: a peça "${a.nome}" não está no manifesto do Tasks`);
+for (const a of ajustes.pecas) {
+  if (a.nova && nomesDoTasks.has(a.nome))
+    falhar(`ajustes: a peça nova "${a.nome}" já existe no manifesto do Tasks; tire o "nova" e registre o sha256 de partida`);
+  if (a.nova && !a.tipo) falhar(`ajustes: a peça nova "${a.nome}" precisa de "tipo"`);
+  if (!a.nova && !nomesDoTasks.has(a.nome)) falhar(`ajustes: a peça "${a.nome}" não está no manifesto do Tasks`);
+}
 
 /**
  * Ajustes cujo arquivo de partida no Tasks mudou (ou a lista de arquivos da peça
@@ -202,11 +207,17 @@ function ajustesDesatualizados() {
   return problemas;
 }
 
-/** Peças publicadas: as do manifesto do Tasks, com os arquivos do ajuste quando há um. */
-const pecas = manifesto.pecas.map((p) => {
-  const a = ajusteDe.get(p.nome);
-  return a ? { ...p, arquivos: a.arquivos, ajustada: true } : p;
-});
+/**
+ * Peças publicadas: as do manifesto do Tasks, com os arquivos do ajuste quando há
+ * um, e as peças novas dos ajustes (auxiliares comuns que o Tasks ainda não tem).
+ */
+const pecas = [
+  ...manifesto.pecas.map((p) => {
+    const a = ajusteDe.get(p.nome);
+    return a ? { ...p, arquivos: a.arquivos, ajustada: true } : p;
+  }),
+  ...ajustes.pecas.filter((a) => a.nova).map((a) => ({ nome: a.nome, tipo: a.tipo, arquivos: a.arquivos, ajustada: true, nova: true })),
+];
 
 /** Arquivo publicado → caminho absoluto da origem (o Tasks ou `ajustes/`). */
 const fonteDe = new Map();
@@ -306,7 +317,9 @@ function montarRegistro() {
         name: p.nome,
         type: p.tipo,
         title: p.nome,
-        description: p.ajustada
+        description: p.nova
+          ? `Peça nova do premium-design, ainda fora do Tasks, no padrão estrito dos sistemas: ${p.arquivos.join(", ")}.`
+          : p.ajustada
           ? `Peça do Tasks ajustada no premium-design para o padrão estrito dos sistemas (TypeScript strict, Prettier, 350 linhas por arquivo, cor só por token), com a mesma API: ${p.arquivos.join(", ")}.`
           : `Peça do Tasks copiada byte a byte: ${p.arquivos.join(", ")}.`,
         ...(dependencies.length ? { dependencies } : {}),
@@ -375,7 +388,7 @@ function sincronizar() {
   build(ARQUIVO_REGISTRO, PASTA_SAIDA);
   writeFileSync(ARQUIVO_ORIGEM, json(montarOrigem(esperados)));
   console.log(
-    `catalogo: ${registro.items.length} peças (${manifesto.pecas.length} do Tasks, ${ajusteDe.size} delas ajustadas, + ${BASE_NOME}), ${esperados.size} arquivos, Tasks em ${commitTasks.slice(0, 8)}.`,
+    `catalogo: ${registro.items.length} peças (${manifesto.pecas.length} do Tasks, ${pecas.filter((p) => p.ajustada && !p.nova).length} delas ajustadas, ${pecas.filter((p) => p.nova).length} nova(s) dos ajustes, + ${BASE_NOME}), ${esperados.size} arquivos, Tasks em ${commitTasks.slice(0, 8)}.`,
   );
 }
 

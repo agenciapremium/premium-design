@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "use-painel-ancorado",
+  "title": "use-painel-ancorado",
+  "description": "Peça nova do premium-design, ainda fora do Tasks, no padrão estrito dos sistemas: src/lib/hooks/use-painel-ancorado.ts.",
+  "files": [
+    {
+      "path": "registry/src/lib/hooks/use-painel-ancorado.ts",
+      "content": "\"use client\";\n\nimport { useEffect, useRef, useState, type RefObject } from \"react\";\n\n/** Posição do gatilho na tela, onde o painel se ancora. */\nexport interface AncoraPainel {\n  left: number;\n  top: number;\n  bottom: number;\n  width: number;\n}\n\n/**\n * Painel em portal ancorado a um gatilho (o `Select` e o `DatePicker`): com o\n * painel aberto, mede o gatilho e mede de novo a cada rolagem (inclusive de um\n * `SlideOver`) e redimensionamento, e chama `aoClicarFora` no clique fora do\n * gatilho e do painel. Devolve a última medida, ou `null` antes da primeira.\n */\nexport function usePainelAncorado({\n  aberto,\n  gatilhoRef,\n  painelRef,\n  aoClicarFora,\n}: {\n  aberto: boolean;\n  gatilhoRef: RefObject<HTMLElement | null>;\n  painelRef: RefObject<HTMLElement | null>;\n  aoClicarFora: () => void;\n}): AncoraPainel | null {\n  const [rect, setRect] = useState<AncoraPainel | null>(null);\n  // O clique fora chama sempre a função do render mais recente.\n  const aoClicarForaRef = useRef(aoClicarFora);\n  useEffect(() => {\n    aoClicarForaRef.current = aoClicarFora;\n  });\n\n  useEffect(() => {\n    if (!aberto) return;\n    const update = () => {\n      const r = gatilhoRef.current?.getBoundingClientRect();\n      if (r) setRect({ left: r.left, top: r.top, bottom: r.bottom, width: r.width });\n    };\n    update();\n    window.addEventListener(\"scroll\", update, true);\n    window.addEventListener(\"resize\", update);\n    return () => {\n      window.removeEventListener(\"scroll\", update, true);\n      window.removeEventListener(\"resize\", update);\n    };\n  }, [aberto, gatilhoRef]);\n\n  useEffect(() => {\n    if (!aberto) return;\n    function onDocClick(e: MouseEvent) {\n      const t = e.target as Node;\n      if (painelRef.current?.contains(t) || gatilhoRef.current?.contains(t)) return;\n      aoClicarForaRef.current();\n    }\n    document.addEventListener(\"mousedown\", onDocClick);\n    return () => document.removeEventListener(\"mousedown\", onDocClick);\n  }, [aberto, gatilhoRef, painelRef]);\n\n  return rect;\n}\n",
+      "type": "registry:file",
+      "target": "src/lib/hooks/use-painel-ancorado.ts"
+    }
+  ],
+  "type": "registry:hook"
+}

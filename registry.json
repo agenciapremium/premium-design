@@ -762,7 +762,8 @@
       ],
       "registryDependencies": [
         "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/motion.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/popover-pos.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/popover-pos.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/use-painel-ancorado.json"
       ],
       "files": [
         {
@@ -884,7 +885,7 @@
       "name": "filter-bar",
       "type": "registry:ui",
       "title": "filter-bar",
-      "description": "Peça do Tasks ajustada no premium-design para o padrão estrito dos sistemas (TypeScript strict, Prettier, 350 linhas por arquivo, cor só por token), com a mesma API: src/components/ui/filter-bar.tsx, src/components/ui/filter-bar-config.ts, src/components/ui/filter-bar-abas.tsx, src/components/ui/filter-bar-controle.tsx, src/components/ui/filter-bar-busca.tsx, src/components/ui/filter-bar-faixa.tsx, src/components/ui/filter-bar-selecao.tsx.",
+      "description": "Peça do Tasks ajustada no premium-design para o padrão estrito dos sistemas (TypeScript strict, Prettier, 350 linhas por arquivo, cor só por token), com a mesma API: src/components/ui/filter-bar.tsx, src/components/ui/filter-bar-config.ts, src/components/ui/filter-bar-abas.tsx, src/components/ui/filter-bar-controle.tsx, src/components/ui/filter-bar-busca.tsx, src/components/ui/filter-bar-faixa.tsx, src/components/ui/filter-bar-selecao.tsx, src/components/ui/filter-bar-painel.tsx.",
       "dependencies": [
         "lucide-react@^1.17.0",
         "motion@^12.42.2"
@@ -942,6 +943,11 @@
           "path": "registry/src/components/ui/filter-bar-selecao.tsx",
           "type": "registry:file",
           "target": "src/components/ui/filter-bar-selecao.tsx"
+        },
+        {
+          "path": "registry/src/components/ui/filter-bar-painel.tsx",
+          "type": "registry:file",
+          "target": "src/components/ui/filter-bar-painel.tsx"
         }
       ]
     },
@@ -1218,7 +1224,8 @@
         "motion@^12.42.2"
       ],
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/motion.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/motion.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/use-painel-ancorado.json"
       ],
       "files": [
         {
@@ -1405,6 +1412,19 @@
           "path": "registry/src/components/ui/views-salvas-item.tsx",
           "type": "registry:file",
           "target": "src/components/ui/views-salvas-item.tsx"
+        }
+      ]
+    },
+    {
+      "name": "use-painel-ancorado",
+      "type": "registry:hook",
+      "title": "use-painel-ancorado",
+      "description": "Peça nova do premium-design, ainda fora do Tasks, no padrão estrito dos sistemas: src/lib/hooks/use-painel-ancorado.ts.",
+      "files": [
+        {
+          "path": "registry/src/lib/hooks/use-painel-ancorado.ts",
+          "type": "registry:file",
+          "target": "src/lib/hooks/use-painel-ancorado.ts"
         }
       ]
     }
