@@ -4,7 +4,7 @@
   "title": "input",
   "description": "Peça do Tasks ajustada no premium-design para o padrão estrito dos sistemas (TypeScript strict, Prettier, 350 linhas por arquivo, cor só por token), com a mesma API: src/components/ui/input.tsx.",
   "registryDependencies": [
-    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/date-picker.json"
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.1/public/r/date-picker.json"
   ],
   "files": [
     {

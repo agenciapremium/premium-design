@@ -109,6 +109,11 @@ export function BuscaLocalControl({
 // barra: fechado, é um botão de 44px com a lupa; aberto, ocupa a linha (menos o
 // botão de filtros) e sempre tem um `X`, que limpa e fecha. `data-busca-aberta`
 // avisa a linha para esconder o resumo enquanto a busca está aberta.
+//
+// `colapsavel={false}` (o `buscaSempreAberta` da barra) vale só no computador
+// (v0.28.1): ali o campo fica sempre aberto, com a lupa só de enfeite; no
+// celular, a busca continua a lupa da barra compacta. A troca é só por CSS
+// (`md:`), sem medir a tela, para a primeira pintura já sair certa.
 function ChipBusca({
   filter,
   valor,
@@ -129,8 +134,10 @@ function ChipBusca({
   const lupaRef = useRef<HTMLButtonElement>(null);
 
   const active = valor.trim().length > 0;
-  // Aberto quando: não-colapsável (opt-out), expandido manualmente, ou há termo.
-  const aberto = !colapsavel || expandido || active;
+  // Aberto (no celular, e no computador quando colapsável) quando expandido
+  // manualmente ou com termo. Sem `colapsavel`, o computador mostra o campo sempre.
+  const aberto = expandido || active;
+  const fixoNoComputador = !colapsavel && !aberto;
 
   // Foca o input ao expandir (capability filter-bar-busca-layout-global).
   useEffect(() => {
@@ -162,16 +169,17 @@ function ChipBusca({
         aberto
           ? "cursor-text gap-2 max-md:min-w-0 max-md:flex-1 max-md:pr-0.5 max-md:focus-within:border-[var(--premium-ink)] max-md:focus-within:shadow-[0_0_0_2px_var(--yellow-50)]"
           : "cursor-pointer gap-0 max-md:w-11 max-md:justify-center max-md:rounded-[var(--r-md)] max-md:px-0",
+        fixoNoComputador && "md:cursor-text md:gap-2",
       )}
       onClick={() => {
-        if (colapsavel && !aberto) setExpandido(true);
+        if (!aberto) setExpandido(true);
       }}
     >
       <button
         ref={lupaRef}
         type="button"
         onClick={(e) => {
-          if (colapsavel && !aberto) {
+          if (!aberto) {
             e.stopPropagation();
             setExpandido(true);
           }
@@ -179,10 +187,17 @@ function ChipBusca({
         aria-label={filter.label}
         aria-expanded={aberto}
         tabIndex={aberto ? -1 : 0}
-        className="flex shrink-0 items-center justify-center focus-visible:rounded-full focus-visible:ring-2 focus-visible:ring-[var(--yellow-50)] focus-visible:outline-none"
+        className={cn(
+          "flex shrink-0 items-center justify-center focus-visible:rounded-full focus-visible:ring-2 focus-visible:ring-[var(--yellow-50)] focus-visible:outline-none",
+          !colapsavel && "md:hidden",
+        )}
       >
         <Icon size={18} className="text-[var(--premium-gray)]" />
       </button>
+      {/* Sem `colapsavel`, no computador a lupa é só o ícone do campo aberto. */}
+      {!colapsavel && (
+        <Icon size={18} aria-hidden className="shrink-0 text-[var(--premium-gray)] max-md:hidden" />
+      )}
       <input
         ref={inputRef}
         type="search"
@@ -197,13 +212,15 @@ function ChipBusca({
         }}
         placeholder={filter.placeholder ?? filter.label}
         aria-label={filter.label}
-        aria-hidden={!aberto}
-        tabIndex={aberto ? 0 : -1}
+        aria-hidden={colapsavel ? !aberto : undefined}
+        tabIndex={aberto || !colapsavel ? 0 : -1}
         style={{ width: aberto ? 200 : 0, opacity: aberto ? 1 : 0 }}
         className={cn(
           "bg-transparent text-[13px] text-[var(--premium-ink)] transition-[width,opacity] duration-200 ease-out placeholder:text-[var(--premium-gray)] focus:outline-none",
           // No celular, o foco aparece no chip inteiro, não num retângulo dentro dele.
           aberto && "max-md:w-auto! max-md:min-w-0 max-md:flex-1 max-md:focus-visible:shadow-none",
+          // Fechado no celular, fora do Tab e do leitor de tela; aberto no computador.
+          fixoNoComputador && "max-md:invisible md:w-[200px]! md:opacity-100!",
         )}
       />
       {/* O único controle de limpar do campo: o "x" nativo do type="search" é
@@ -211,7 +228,7 @@ function ChipBusca({
           Alvo de 24×24px (antes o ícone de 14px era o próprio alvo); o -mr
           devolve o respiro direito do chip. Limpar recolhe o chip, então o foco
           não volta ao campo, que some. */}
-      {(active || (colapsavel && aberto)) && (
+      {aberto && (
         <button
           type="button"
           onClick={active ? limpar : fechar}

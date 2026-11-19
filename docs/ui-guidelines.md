@@ -406,7 +406,8 @@ da topbar. A linha pontilhada não é desenhada: a sidebar não tem divisória a
   `permitirQuebra` deixa quebrar.
 - **No celular (abaixo de 768px), barra compacta** (v0.28.0): uma linha com o resumo
   (aba escolhida e contagem da tela, `resumoCelular`), a busca em lupa (aberta,
-  ocupa a linha e tem um `X` que limpa e fecha) e o botão de filtros (`ListFilter`,
+  ocupa a linha e tem um `X` que limpa e fecha; também com `buscaSempreAberta`, que
+  só vale no computador, v0.28.1) e o botão de filtros (`ListFilter`,
   44px, com o número de filtros ativos, sem contar a busca). O botão desce um painel
   que **empurra** a lista (não sobrepõe), com as abas em cima ("Visão": segmentado
   até três, lista a partir de quatro) e os filtros embaixo, um por linha com o

@@ -24,8 +24,9 @@ const GATILHO_NO_PAINEL =
  *
  * No celular, o gatilho fica no painel da barra compacta, com o rótulo do filtro
  * acima dele: ocupa a largura toda e mostra só o valor (`valorCompacto`). Quem
- * passa `valorCompacto` passa também `ariaLabel`, para o nome acessível não
- * depender de qual dos dois textos está à vista.
+ * passa `valorCompacto` passa também `ariaLabel`, que contém os dois textos à
+ * vista, o do computador e o do celular (WCAG 2.5.3, "rótulo no nome"): por
+ * exemplo, "Situação: Todas". O nome não depende do tamanho da tela.
  */
 export function GatilhoFiltro({
   triggerRef,

@@ -50,6 +50,7 @@ export function FaixaFilterControl({ filter, searchParams, setParams }: PropsCon
   const atual = normalizarFaixa(urlDe, urlAte, limites);
   const active = atual.de !== null || atual.ate !== null;
   const rotulo = rotuloFaixa(filter.label, atual);
+  const valorCompacto = resumoFaixa(atual) ?? filter.placeholder ?? "Qualquer valor";
   const [de, setDe] = useState("");
   const [ate, setAte] = useState("");
   // Edição ainda não gravada; `null` quando não há nada pendente.
@@ -139,8 +140,8 @@ export function FaixaFilterControl({ filter, searchParams, setParams }: PropsCon
         triggerRef={triggerRef}
         icone={filter.icon}
         rotulo={rotulo}
-        valorCompacto={resumoFaixa(atual) ?? filter.placeholder ?? "Qualquer valor"}
-        ariaLabel={rotulo}
+        valorCompacto={valorCompacto}
+        ariaLabel={`${filter.label}: ${valorCompacto}`}
         ativo={active}
         aberto={open}
         popup="dialog"
