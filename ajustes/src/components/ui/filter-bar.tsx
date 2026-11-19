@@ -1,11 +1,9 @@
 "use client";
 
-import { useCallback, useMemo, useRef, type ReactNode } from "react";
+import { useCallback, useId, useMemo, useRef, useState, type ReactNode } from "react";
 import { useSearchParams } from "next/navigation";
-import { FunnelX } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { chavesNaUrl, limpezaDosFiltros, mostrarLimparFiltros } from "@/lib/helpers/filtros-ativos";
-import { Tooltip } from "@/components/ui/tooltip";
+import { chavesNaUrl, contarFiltrosAtivos, limpezaDosFiltros } from "@/lib/helpers/filtros-ativos";
 import { useSetParams } from "@/lib/hooks/use-set-params";
 import { useFiltrosPersistidos } from "@/lib/hooks/use-filtros-persistidos";
 import { ViewsSalvasMenu } from "@/components/ui/views-salvas-menu";
@@ -14,6 +12,15 @@ import type { FiltroConhecido } from "@/lib/helpers/views-salvas";
 import type { FilterConfig, TabConfig } from "@/components/ui/filter-bar-config";
 import { FilterControl } from "@/components/ui/filter-bar-controle";
 import { ViewTabsPill } from "@/components/ui/filter-bar-abas";
+import {
+  BotaoPainelCompacto,
+  LimparFiltros,
+  LINHA_COMPACTA,
+  PainelCompacto,
+  ResumoCompacto,
+  ROTULO_DO_PAINEL,
+  rotuloAcimaNoPainel,
+} from "@/components/ui/filter-bar-compacta";
 
 export type {
   FilterConfig,
@@ -71,7 +78,21 @@ interface FilterBarProps {
    * de aparecer como ativa e são mantidos ao aplicar uma view.
    */
   paramsDeNavegacao?: string[];
+  /**
+   * Barra compacta do celular: texto da linha, depois da aba escolhida (ex.:
+   * "4 contas" ou "2 de 4 contas"). A barra não conhece a lista; a tela conta.
+   */
+  resumoCelular?: string;
+  /**
+   * Botão que fecha o painel de filtros do celular (ex.: "Ver 2 contas").
+   * Padrão: "Fechar".
+   */
+  rotuloFecharPainel?: string;
 }
+
+/** Rolagem horizontal dos filtros no computador, com a barra de rolagem escondida. */
+const ROLAGEM_NO_COMPUTADOR =
+  "md:min-w-0 md:flex-1 md:overflow-x-auto md:[scrollbar-width:none] md:[-ms-overflow-style:none] md:[&::-webkit-scrollbar]:hidden";
 
 // Classes de chip, menu e item de seleção: fonte única em `pilula.tsx`
 // (padrão "Pílula de ação e de seleção", premium-design v0.10.0).
@@ -91,6 +112,8 @@ export function FilterBar({
   permitirQuebra = false,
   recorteLocal = false,
   paramsDeNavegacao,
+  resumoCelular,
+  rotuloFecharPainel = "Fechar",
 }: FilterBarProps) {
   // `actions` é alias legado de `contextActions` (zona de botões de contexto).
   const contexto = contextActions ?? actions;
@@ -147,8 +170,24 @@ export function FilterBar({
   const setParams = useSetParams({ local: recorteLocal });
 
   // "Limpar filtros" só quando limpa mais do que a busca, que já tem o próprio
-  // `X` (change busca-um-x-por-campo, D3). Regra pura em `filtros-ativos.ts`.
-  const mostrarLimpar = mostrarLimparFiltros(filters, (k) => searchParams.get(k));
+  // `X` (change busca-um-x-por-campo, D3); o mesmo número vai no botão de
+  // filtros do celular. Regra pura em `filtros-ativos.ts`.
+  const ativos = contarFiltrosAtivos(filters, (k) => searchParams.get(k));
+
+  // Barra compacta do celular: a busca fica na linha; os outros filtros e as
+  // abas, no painel que desce.
+  const [painelAberto, setPainelAberto] = useState(false);
+  const painelId = useId();
+  const painelRef = useRef<HTMLDivElement>(null);
+  const botaoPainelRef = useRef<HTMLButtonElement>(null);
+  const buscas = filters.filter((f) => f.type === "search");
+  const filtrosDoPainel = filters.filter((f) => f.type !== "search");
+  const temPainel = filtrosDoPainel.length > 0 || viewTabs.length > 0;
+
+  function fecharPainel() {
+    setPainelAberto(false);
+    botaoPainelRef.current?.focus();
+  }
 
   function clearAll() {
     setParams(limpezaDosFiltros(filters));
@@ -158,70 +197,121 @@ export function FilterBar({
     limparPersistido();
   }
 
+  const controle = (filter: FilterConfig) => (
+    <FilterControl
+      filter={filter}
+      searchParams={searchParams}
+      setParams={setParams}
+      buscaColapsavel={!buscaSempreAberta}
+      registrarLimpador={registrarLimpador}
+    />
+  );
+
+  // No computador, a ordem fixa é filtros ► contexto ► abas ► favorito, numa
+  // linha só (`order`, porque os invólucros do celular ficam `contents`). O
+  // menu de views salvas abre a zona de contexto (capability views-salvas).
   return (
     <div
-      className={cn("mb-5 flex items-center justify-between gap-3", permitirQuebra && "flex-wrap")}
+      className={cn(
+        "mb-5 flex flex-col md:flex-row md:items-center md:gap-3",
+        permitirQuebra && "md:flex-wrap",
+      )}
     >
-      {/* Filtros — esquerda. Padrão: linha única com rolagem horizontal (os dropdowns
-          são portados, então não são cortados). Opt-out `permitirQuebra` → flex-wrap. */}
-      <div
-        className={cn(
-          "flex items-center gap-[10px]",
-          permitirQuebra
-            ? "flex-wrap"
-            : "min-w-0 flex-1 [scrollbar-width:none] overflow-x-auto [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden",
+      <div className={LINHA_COMPACTA}>
+        <ResumoCompacto
+          aba={viewTabs.find((t) => t.value === activeView)?.label}
+          resumo={resumoCelular}
+        />
+        {(mostrarViews || contexto != null) && (
+          <div className="flex shrink-0 items-center gap-3 md:order-3">
+            {mostrarViews && telaKey && (
+              <ViewsSalvasMenu
+                telaKey={telaKey}
+                filtros={filtrosConhecidos}
+                paramsDeNavegacao={paramsDeNavegacao}
+                local={recorteLocal}
+              />
+            )}
+            {contexto}
+          </div>
         )}
-      >
-        {filters.map((filter) => (
-          <FilterControl
+        {favorito != null && (
+          <div className="flex shrink-0 items-center md:order-5">{favorito}</div>
+        )}
+        {buscas.map((filter) => (
+          <div
             key={filter.key}
-            filter={filter}
-            searchParams={searchParams}
-            setParams={setParams}
-            buscaColapsavel={!buscaSempreAberta}
-            registrarLimpador={registrarLimpador}
-          />
+            className="flex min-w-0 shrink-0 max-md:has-[[data-busca-aberta]]:flex-1 md:order-1"
+          >
+            {controle(filter)}
+          </div>
         ))}
-        {/* Ícone de funil com x, não `X`: o `X` fica reservado ao limpar de um
-            campo, e o funil diz "filtros" (change busca-um-x-por-campo, D3). */}
-        {mostrarLimpar && (
-          <Tooltip label="Limpar filtros" side="bottom">
-            <button
-              onClick={clearAll}
-              aria-label="Limpar filtros"
-              className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full bg-[var(--yellow)] text-[var(--premium-black)] shadow-[var(--sh-gold)] transition-colors hover:bg-[var(--gold)] active:bg-[var(--amber)]"
-            >
-              <FunnelX size={16} strokeWidth={2.5} />
-            </button>
-          </Tooltip>
+        {temPainel && (
+          <BotaoPainelCompacto
+            botaoRef={botaoPainelRef}
+            aberto={painelAberto}
+            painelId={painelId}
+            ativos={ativos}
+            comAbas={viewTabs.length > 0}
+            onClick={() => setPainelAberto((a) => !a)}
+            aoFechar={fecharPainel}
+          />
         )}
       </div>
 
-      {/* Cluster da direita — ordem fixa: contexto → views → favorito. O menu de
-          views salvas abre a zona de contexto (capability views-salvas): fica
-          antes dos botões da tela, que continuam encostados nas abas. */}
-      {(contexto != null || mostrarViews || viewTabs.length > 0 || favorito != null) && (
-        <div className={cn("flex shrink-0 items-center gap-3", permitirQuebra && "flex-wrap")}>
-          {mostrarViews && telaKey && (
-            <ViewsSalvasMenu
-              telaKey={telaKey}
-              filtros={filtrosConhecidos}
-              paramsDeNavegacao={paramsDeNavegacao}
-              local={recorteLocal}
-            />
+      <PainelCompacto
+        id={painelId}
+        painelRef={painelRef}
+        aberto={painelAberto}
+        aoFechar={fecharPainel}
+        rotuloFechar={rotuloFecharPainel}
+      >
+        {viewTabs.length > 0 && (
+          <div className="flex flex-col gap-3 px-4 py-3.5 md:contents">
+            <span className={cn(ROTULO_DO_PAINEL, "md:hidden")}>Visão</span>
+            <div className="md:order-4 md:shrink-0">
+              <ViewTabsPill
+                viewTabs={viewTabs}
+                activeView={activeView}
+                viewParam={viewParam}
+                setParams={setParams}
+                compacta
+              />
+            </div>
+          </div>
+        )}
+        {/* Filtros: no celular, um por linha, com o rótulo acima; no computador,
+            linha única com rolagem horizontal (os menus vêm em portal e não são
+            cortados). Opt-out `permitirQuebra` → flex-wrap. */}
+        <div
+          className={cn(
+            "relative flex flex-col gap-3 px-4 py-3.5 md:order-2 md:flex-1 md:flex-row md:items-center md:gap-[10px] md:p-0",
+            viewTabs.length > 0 && "max-md:border-t max-md:border-[var(--premium-mist)]",
+            filtrosDoPainel.length === 0 && "max-md:hidden",
+            permitirQuebra ? "md:flex-wrap" : ROLAGEM_NO_COMPUTADOR,
           )}
-          {contexto}
-          {viewTabs.length > 0 && (
-            <ViewTabsPill
-              viewTabs={viewTabs}
-              activeView={activeView}
-              viewParam={viewParam}
-              setParams={setParams}
-            />
-          )}
-          {favorito}
+        >
+          <span className={cn(ROTULO_DO_PAINEL, "flex min-h-6 items-center md:hidden")}>
+            Filtros
+          </span>
+          {filtrosDoPainel.map((filter) => (
+            <div
+              key={filter.key}
+              className="flex flex-col gap-1.5 max-md:*:w-full md:contents max-md:[&>:last-child]:min-h-11"
+            >
+              {rotuloAcimaNoPainel(filter) && (
+                <span aria-hidden className={cn(ROTULO_DO_PAINEL, "md:hidden")}>
+                  {filter.label}
+                </span>
+              )}
+              {controle(filter)}
+            </div>
+          ))}
+          {/* Funil com x, não `X`: o `X` fica reservado ao limpar de um campo,
+              e o funil diz "filtros" (change busca-um-x-por-campo, D3). */}
+          {ativos > 0 && <LimparFiltros onClick={clearAll} />}
         </div>
-      )}
+      </PainelCompacto>
     </div>
   );
 }

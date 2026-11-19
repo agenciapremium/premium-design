@@ -31,7 +31,8 @@ Comportamentos transversais do produto — como as telas se organizam, navegam e
 
 Ordem fixa, válida para **toda** tela: **FILTROS (esquerda) ► CONTEXTO · VIEWS · FAVORITO (direita)**. Zonas ausentes não renderizam, mas a ordem nunca muda. Nenhuma tela dispõe esses controles fora da barra. Estado dos filtros sempre em `searchParams` (URL compartilhável).
 
-- **Linha única** por padrão: os filtros rolam horizontalmente; os dropdowns abrem em portal (não são cortados pela rolagem). Opt-out `permitirQuebra` volta ao `flex-wrap`.
+- **Linha única** por padrão: os filtros rolam horizontalmente; os dropdowns abrem em portal (não são cortados pela rolagem). As abas ficam na mesma linha, à direita, e nunca descem. Opt-out `permitirQuebra` volta ao `flex-wrap`.
+- **Celular (abaixo de 768px): barra compacta** (v0.28.0). Uma linha com o resumo (aba e contagem), a lupa e o botão de filtros (`ListFilter`, com o número de filtros ativos, sem a busca). A lupa abre o campo na linha, com um `X` que limpa e fecha. O botão desce um painel que empurra a lista, com as abas em cima e os filtros embaixo, e fecha pelo mesmo botão, por `Esc` ou por "Ver N …" no rodapé, com o foco de volta ao botão.
 - **Busca por palavra-chave colapsável**: lupa que expande o campo ao clicar/focar (debounce de 300ms para a URL); permanece aberta enquanto há termo. Opt-out `buscaSempreAberta`.
 - Listas longas de opções (≥ 8) ganham **busca** automática no dropdown e mostram só as 6 primeiras sem termo — ao digitar, a busca cobre a lista inteira.
 - Com algum filtro ativo além da busca, aparece o botão amarelo **Limpar filtros** ao fim da zona de filtros, com o ícone de funil (`FunnelX`). Só com a busca ativa ele não aparece: o `X` da própria busca já limpa.

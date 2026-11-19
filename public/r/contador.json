@@ -4,7 +4,7 @@
   "title": "contador",
   "description": "Peça do Tasks copiada byte a byte: src/components/ui/contador.tsx.",
   "registryDependencies": [
-    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/use-count-up.json"
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/use-count-up.json"
   ],
   "files": [
     {

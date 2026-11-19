@@ -116,7 +116,7 @@ O `shadcn add` lê o `components.json` da raiz do projeto. Crie o arquivo à mã
     "hooks": "@/hooks"
   },
   "registries": {
-    "@premium": "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/{name}.json"
+    "@premium": "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/{name}.json"
   }
 }
 ```
@@ -126,7 +126,7 @@ O `shadcn add` lê o `components.json` da raiz do projeto. Crie o arquivo à mã
 Por URL fixada na tag, sem configurar nada além do `components.json`:
 
 ```bash
-npx shadcn@latest add https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/filter-bar.json
+npx shadcn@latest add https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/filter-bar.json
 ```
 
 Ou pelo namespace `@premium` do `components.json` acima:
@@ -135,7 +135,7 @@ Ou pelo namespace `@premium` do `components.json` acima:
 npx shadcn@latest add @premium/filter-bar @premium/slide-over @premium/confirm-dialog @premium/card-secao
 ```
 
-O comando copia a peça e as peças de que ela depende (cada uma declara as outras em `registryDependencies`, por URL fixada na mesma tag, menos a `utils`, que o sistema já tem) e instala os pacotes npm declarados (`motion`, `lucide-react` e, no `emoji-picker`, o `emoji-mart`). `react`, `react-dom` e `next` não são instalados: o projeto já os tem. Desde a v0.25.0, a peça base não vem junto: veja [abaixo](#tokens-tema-e-padrões-o-pacote-ou-a-peça-base). A tag fixa a versão: a peça copiada é a da v0.27.0, mesmo que a `main` avance. Atualizar é trocar a tag e copiar de novo.
+O comando copia a peça e as peças de que ela depende (cada uma declara as outras em `registryDependencies`, por URL fixada na mesma tag, menos a `utils`, que o sistema já tem) e instala os pacotes npm declarados (`motion`, `lucide-react` e, no `emoji-picker`, o `emoji-mart`). `react`, `react-dom` e `next` não são instalados: o projeto já os tem. Desde a v0.25.0, a peça base não vem junto: veja [abaixo](#tokens-tema-e-padrões-o-pacote-ou-a-peça-base). A tag fixa a versão: a peça copiada é a da v0.28.0, mesmo que a `main` avance. Atualizar é trocar a tag e copiar de novo.
 
 ### Tokens, tema e padrões: o pacote ou a peça base
 
@@ -156,7 +156,7 @@ Desde a v0.25.0, nenhuma peça traz a `premium-base` junto. Antes da primeira pe
 2. **Sem o pacote**: copie a peça base uma vez, antes da primeira peça. Ela grava em `src/styles/premium/` o núcleo do `css/` deste repo (`tokens.css`, `theme.css`, `base.css`, `motion.css`) e os padrões de `css/patterns/` que as peças usam:
 
    ```bash
-   npx shadcn@latest add https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/premium-base.json
+   npx shadcn@latest add https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/premium-base.json
    ```
 
    ```css

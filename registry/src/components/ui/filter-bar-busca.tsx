@@ -104,6 +104,11 @@ export function BuscaLocalControl({
 
 // Chip da busca, o mesmo para a busca pela URL e para a busca fora dela: a
 // lupa colapsável, o campo e o `X` de limpar.
+//
+// No celular (barra compacta, premium-design v0.28.0), o chip fica na linha da
+// barra: fechado, é um botão de 44px com a lupa; aberto, ocupa a linha (menos o
+// botão de filtros) e sempre tem um `X`, que limpa e fecha. `data-busca-aberta`
+// avisa a linha para esconder o resumo enquanto a busca está aberta.
 function ChipBusca({
   filter,
   valor,
@@ -120,6 +125,8 @@ function ChipBusca({
   const Icon = filter.icon ?? Search;
   const [expandido, setExpandido] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const chipRef = useRef<HTMLDivElement>(null);
+  const lupaRef = useRef<HTMLButtonElement>(null);
 
   const active = valor.trim().length > 0;
   // Aberto quando: não-colapsável (opt-out), expandido manualmente, ou há termo.
@@ -135,22 +142,33 @@ function ChipBusca({
     setExpandido(false);
   }
 
+  /** O `X` sem termo (só no celular) fecha e devolve o foco à lupa. */
+  function fechar() {
+    setExpandido(false);
+    lupaRef.current?.focus();
+  }
+
   // Um único elemento que cresce suavemente: a lupa fica sempre visível e o campo
   // anima a largura/opacidade de 0 → 200px ao abrir (capability
   // filter-bar-busca-layout-global). `overflow-hidden` esconde o campo recolhido.
   return (
     <div
+      ref={chipRef}
+      data-busca-aberta={aberto ? "" : undefined}
       className={cn(
         chipBase,
         active ? chipActive : chipIdle,
-        "shrink-0 overflow-hidden",
-        aberto ? "cursor-text gap-2" : "cursor-pointer gap-0",
+        "shrink-0 overflow-hidden max-md:h-11",
+        aberto
+          ? "cursor-text gap-2 max-md:min-w-0 max-md:flex-1 max-md:pr-0.5 max-md:focus-within:border-[var(--premium-ink)] max-md:focus-within:shadow-[0_0_0_2px_var(--yellow-50)]"
+          : "cursor-pointer gap-0 max-md:w-11 max-md:justify-center max-md:rounded-[var(--r-md)] max-md:px-0",
       )}
       onClick={() => {
         if (colapsavel && !aberto) setExpandido(true);
       }}
     >
       <button
+        ref={lupaRef}
         type="button"
         onClick={(e) => {
           if (colapsavel && !aberto) {
@@ -170,8 +188,9 @@ function ChipBusca({
         type="search"
         value={valor}
         onChange={(e) => onChange(e.target.value)}
-        onBlur={() => {
-          if (!valor.trim()) setExpandido(false);
+        onBlur={(e) => {
+          // O foco que vai para o `X` do próprio chip não recolhe o campo.
+          if (!valor.trim() && !chipRef.current?.contains(e.relatedTarget)) setExpandido(false);
         }}
         onKeyDown={(e) => {
           if (e.key === "Escape" && !valor.trim()) setExpandido(false);
@@ -181,19 +200,27 @@ function ChipBusca({
         aria-hidden={!aberto}
         tabIndex={aberto ? 0 : -1}
         style={{ width: aberto ? 200 : 0, opacity: aberto ? 1 : 0 }}
-        className="bg-transparent text-[13px] text-[var(--premium-ink)] transition-[width,opacity] duration-200 ease-out placeholder:text-[var(--premium-gray)] focus:outline-none"
+        className={cn(
+          "bg-transparent text-[13px] text-[var(--premium-ink)] transition-[width,opacity] duration-200 ease-out placeholder:text-[var(--premium-gray)] focus:outline-none",
+          // No celular, o foco aparece no chip inteiro, não num retângulo dentro dele.
+          aberto && "max-md:w-auto! max-md:min-w-0 max-md:flex-1 max-md:focus-visible:shadow-none",
+        )}
       />
       {/* O único controle de limpar do campo: o "x" nativo do type="search" é
           escondido pela regra base do globals.css (change busca-um-x-por-campo).
           Alvo de 24×24px (antes o ícone de 14px era o próprio alvo); o -mr
           devolve o respiro direito do chip. Limpar recolhe o chip, então o foco
           não volta ao campo, que some. */}
-      {active && (
+      {(active || (colapsavel && aberto)) && (
         <button
           type="button"
-          onClick={limpar}
-          aria-label="Limpar busca"
-          className="-mr-[5px] flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[var(--premium-gray)] hover:text-[var(--premium-ink)] focus-visible:ring-2 focus-visible:ring-[var(--yellow-50)] focus-visible:outline-none"
+          onClick={active ? limpar : fechar}
+          aria-label={active ? "Limpar busca" : "Fechar a busca"}
+          className={cn(
+            "-mr-[5px] flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[var(--premium-gray)] hover:text-[var(--premium-ink)] focus-visible:ring-2 focus-visible:ring-[var(--yellow-50)] focus-visible:outline-none max-md:mr-0 max-md:size-10",
+            // Sem termo, o `X` só fecha: existe só na barra compacta do celular.
+            !active && "md:hidden",
+          )}
         >
           <X size={14} />
         </button>

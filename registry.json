@@ -328,7 +328,7 @@
       "title": "use-dialogo-foco",
       "description": "Peça do Tasks ajustada no premium-design para o padrão estrito dos sistemas (TypeScript strict, Prettier, 350 linhas por arquivo, cor só por token), com a mesma API: src/lib/hooks/use-dialogo-foco.ts.",
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/foco.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/foco.json"
       ],
       "files": [
         {
@@ -344,7 +344,7 @@
       "title": "use-toast",
       "description": "Peça do Tasks copiada byte a byte: src/lib/hooks/use-toast.ts.",
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/toast.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/toast.json"
       ],
       "files": [
         {
@@ -402,8 +402,8 @@
       "title": "use-filtros-persistidos",
       "description": "Peça do Tasks ajustada no premium-design para o padrão estrito dos sistemas (TypeScript strict, Prettier, 350 linhas por arquivo, cor só por token), com a mesma API: src/lib/hooks/use-filtros-persistidos.ts.",
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/debounce.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/filtros-persistencia.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/debounce.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/filtros-persistencia.json"
       ],
       "files": [
         {
@@ -435,7 +435,7 @@
         "lucide-react@^1.17.0"
       ],
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/expansivel.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/expansivel.json"
       ],
       "files": [
         {
@@ -493,8 +493,8 @@
         "motion@^12.42.2"
       ],
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/format.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/motion.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/format.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/motion.json"
       ],
       "files": [
         {
@@ -513,7 +513,7 @@
         "motion@^12.42.2"
       ],
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/motion.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/motion.json"
       ],
       "files": [
         {
@@ -532,7 +532,7 @@
         "lucide-react@^1.17.0"
       ],
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/tooltip.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/tooltip.json"
       ],
       "files": [
         {
@@ -612,7 +612,7 @@
         "lucide-react@^1.17.0"
       ],
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/card.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/card.json"
       ],
       "files": [
         {
@@ -632,9 +632,9 @@
         "motion@^12.42.2"
       ],
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/motion.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/tooltip.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/use-toast.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/motion.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/tooltip.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/use-toast.json"
       ],
       "files": [
         {
@@ -658,8 +658,8 @@
         "lucide-react@^1.17.0"
       ],
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/constants.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/use-infinite-window.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/constants.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/use-infinite-window.json"
       ],
       "files": [
         {
@@ -679,11 +679,11 @@
         "motion@^12.42.2"
       ],
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/button.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/form-error-banner.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/motion.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/tecla-confirmacao.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/use-dialogo-foco.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/button.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/form-error-banner.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/motion.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/tecla-confirmacao.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/use-dialogo-foco.json"
       ],
       "files": [
         {
@@ -699,7 +699,7 @@
       "title": "contador",
       "description": "Peça do Tasks copiada byte a byte: src/components/ui/contador.tsx.",
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/use-count-up.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/use-count-up.json"
       ],
       "files": [
         {
@@ -718,7 +718,7 @@
         "lucide-react@^1.17.0"
       ],
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/tooltip.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/tooltip.json"
       ],
       "files": [
         {
@@ -738,10 +738,10 @@
         "motion@^12.42.2"
       ],
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/link-markdown.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/motion.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/tooltip.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/use-toast.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/link-markdown.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/motion.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/tooltip.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/use-toast.json"
       ],
       "files": [
         {
@@ -761,9 +761,9 @@
         "motion@^12.42.2"
       ],
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/motion.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/popover-pos.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/use-painel-ancorado.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/motion.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/popover-pos.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/use-painel-ancorado.json"
       ],
       "files": [
         {
@@ -813,8 +813,8 @@
         "motion@^12.42.2"
       ],
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/motion.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/popover-pos.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/motion.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/popover-pos.json"
       ],
       "files": [
         {
@@ -851,7 +851,7 @@
         "motion@^12.42.2"
       ],
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/motion.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/motion.json"
       ],
       "files": [
         {
@@ -870,8 +870,8 @@
         "lucide-react@^1.17.0"
       ],
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/kbd.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/tooltip.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/kbd.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/tooltip.json"
       ],
       "files": [
         {
@@ -885,28 +885,28 @@
       "name": "filter-bar",
       "type": "registry:ui",
       "title": "filter-bar",
-      "description": "Peça do Tasks ajustada no premium-design para o padrão estrito dos sistemas (TypeScript strict, Prettier, 350 linhas por arquivo, cor só por token), com a mesma API: src/components/ui/filter-bar.tsx, src/components/ui/filter-bar-config.ts, src/components/ui/filter-bar-abas.tsx, src/components/ui/filter-bar-controle.tsx, src/components/ui/filter-bar-busca.tsx, src/components/ui/filter-bar-faixa.tsx, src/components/ui/filter-bar-selecao.tsx, src/components/ui/filter-bar-painel.tsx.",
+      "description": "Peça do Tasks ajustada no premium-design para o padrão estrito dos sistemas (TypeScript strict, Prettier, 350 linhas por arquivo, cor só por token), com a mesma API: src/components/ui/filter-bar.tsx, src/components/ui/filter-bar-config.ts, src/components/ui/filter-bar-abas.tsx, src/components/ui/filter-bar-controle.tsx, src/components/ui/filter-bar-busca.tsx, src/components/ui/filter-bar-faixa.tsx, src/components/ui/filter-bar-selecao.tsx, src/components/ui/filter-bar-painel.tsx, src/components/ui/filter-bar-compacta.tsx.",
       "dependencies": [
         "lucide-react@^1.17.0",
         "motion@^12.42.2"
       ],
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/busca-filtro-url.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/button.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/date-picker.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/filtros-ativos.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/filtros-persistencia.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/input.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/motion.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/pilula.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/popover-pos.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/tooltip.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/use-busca-local.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/use-filtros-persistidos.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/use-set-params.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/view-transition.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/views-salvas.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/views-salvas-menu.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/busca-filtro-url.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/button.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/date-picker.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/filtros-ativos.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/filtros-persistencia.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/input.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/motion.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/pilula.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/popover-pos.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/tooltip.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/use-busca-local.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/use-filtros-persistidos.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/use-set-params.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/view-transition.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/views-salvas.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/views-salvas-menu.json"
       ],
       "files": [
         {
@@ -948,6 +948,11 @@
           "path": "registry/src/components/ui/filter-bar-painel.tsx",
           "type": "registry:file",
           "target": "src/components/ui/filter-bar-painel.tsx"
+        },
+        {
+          "path": "registry/src/components/ui/filter-bar-compacta.tsx",
+          "type": "registry:file",
+          "target": "src/components/ui/filter-bar-compacta.tsx"
         }
       ]
     },
@@ -999,7 +1004,7 @@
       "title": "input",
       "description": "Peça do Tasks ajustada no premium-design para o padrão estrito dos sistemas (TypeScript strict, Prettier, 350 linhas por arquivo, cor só por token), com a mesma API: src/components/ui/input.tsx.",
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/date-picker.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/date-picker.json"
       ],
       "files": [
         {
@@ -1018,7 +1023,7 @@
         "motion@^12.42.2"
       ],
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/motion.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/motion.json"
       ],
       "files": [
         {
@@ -1038,10 +1043,10 @@
         "motion@^12.42.2"
       ],
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/menu-acoes-nav.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/motion.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/popover-pos.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/tooltip.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/menu-acoes-nav.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/motion.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/popover-pos.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/tooltip.json"
       ],
       "files": [
         {
@@ -1060,7 +1065,7 @@
         "motion@^12.42.2"
       ],
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/motion.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/motion.json"
       ],
       "files": [
         {
@@ -1080,8 +1085,8 @@
         "motion@^12.42.2"
       ],
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/motion.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/popover-pos.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/motion.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/popover-pos.json"
       ],
       "files": [
         {
@@ -1117,10 +1122,10 @@
         "motion@^12.42.2"
       ],
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/motion.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/overlay-pilha.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/painel-cards-pos.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/use-dialogo-foco.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/motion.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/overlay-pilha.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/painel-cards-pos.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/use-dialogo-foco.json"
       ],
       "files": [
         {
@@ -1140,9 +1145,9 @@
         "motion@^12.42.2"
       ],
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/avatar.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/motion.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/popover-pos.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/avatar.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/motion.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/popover-pos.json"
       ],
       "files": [
         {
@@ -1161,8 +1166,8 @@
         "motion@^12.42.2"
       ],
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/format.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/motion.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/format.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/motion.json"
       ],
       "files": [
         {
@@ -1182,8 +1187,8 @@
         "motion@^12.42.2"
       ],
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/motion.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/popover-pos.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/motion.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/popover-pos.json"
       ],
       "files": [
         {
@@ -1204,7 +1209,7 @@
       "title": "segmented-tabs",
       "description": "Peça do Tasks copiada byte a byte: src/components/ui/segmented-tabs.tsx.",
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/view-transition.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/view-transition.json"
       ],
       "files": [
         {
@@ -1224,8 +1229,8 @@
         "motion@^12.42.2"
       ],
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/motion.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/use-painel-ancorado.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/motion.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/use-painel-ancorado.json"
       ],
       "files": [
         {
@@ -1263,10 +1268,10 @@
         "motion@^12.42.2"
       ],
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/menu-acoes.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/motion.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/overlay-pilha.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/use-dialogo-foco.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/menu-acoes.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/motion.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/overlay-pilha.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/use-dialogo-foco.json"
       ],
       "files": [
         {
@@ -1285,8 +1290,8 @@
         "lucide-react@^1.17.0"
       ],
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/tooltip.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/view-sort.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/tooltip.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/view-sort.json"
       ],
       "files": [
         {
@@ -1302,7 +1307,7 @@
       "title": "switch",
       "description": "Peça do Tasks ajustada no premium-design para o padrão estrito dos sistemas (TypeScript strict, Prettier, 350 linhas por arquivo, cor só por token), com a mesma API: src/components/ui/switch.tsx.",
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/tooltip.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/tooltip.json"
       ],
       "files": [
         {
@@ -1335,7 +1340,7 @@
         "motion@^12.42.2"
       ],
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/motion.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/motion.json"
       ],
       "files": [
         {
@@ -1355,7 +1360,7 @@
         "motion@^12.42.2"
       ],
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/motion.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/motion.json"
       ],
       "files": [
         {
@@ -1388,14 +1393,14 @@
         "motion@^12.42.2"
       ],
       "registryDependencies": [
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/confirm-dialog.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/context-icon-button.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/filtros-persistencia.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/input.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/motion.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/use-dialogo-foco.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/use-toast.json",
-        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/views-salvas.json"
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/confirm-dialog.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/context-icon-button.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/filtros-persistencia.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/input.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/motion.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/use-dialogo-foco.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/use-toast.json",
+        "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/views-salvas.json"
       ],
       "files": [
         {
@@ -1425,6 +1430,22 @@
           "path": "registry/src/lib/hooks/use-painel-ancorado.ts",
           "type": "registry:file",
           "target": "src/lib/hooks/use-painel-ancorado.ts"
+        }
+      ]
+    },
+    {
+      "name": "caixa-selecao",
+      "type": "registry:ui",
+      "title": "caixa-selecao",
+      "description": "Peça nova do premium-design, ainda fora do Tasks, no padrão estrito dos sistemas: src/components/ui/caixa-selecao.tsx.",
+      "dependencies": [
+        "lucide-react@^1.17.0"
+      ],
+      "files": [
+        {
+          "path": "registry/src/components/ui/caixa-selecao.tsx",
+          "type": "registry:file",
+          "target": "src/components/ui/caixa-selecao.tsx"
         }
       ]
     }

@@ -4,7 +4,7 @@
   "title": "segmented-tabs",
   "description": "Peça do Tasks copiada byte a byte: src/components/ui/segmented-tabs.tsx.",
   "registryDependencies": [
-    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/view-transition.json"
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/view-transition.json"
   ],
   "files": [
     {

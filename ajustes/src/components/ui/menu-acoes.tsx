@@ -55,15 +55,28 @@ interface MenuAcoesProps {
   classeGatilho?: string;
   /** Largura do painel, em px. Padrão: 240. */
   largura?: number;
+  /**
+   * Fundo em que o gatilho fica. `claro` (padrão): aberto, fundo `--premium-bone`.
+   * `escuro` (perfil no rodapé da barra lateral, escura nos dois temas): hover e
+   * aberto com `--c-sidebar-elevated` e texto `--brand-on-ink` (v0.28.0).
+   */
+  fundoGatilho?: "claro" | "escuro";
 }
 
 /** Gatilho padrão: 40×40, borda `--premium-mist`, como os botões de ícone do design system. */
 const CLASSE_GATILHO_PADRAO =
   "w-10 h-10 shrink-0 rounded-[var(--r-md)] border border-[var(--premium-mist)] bg-[var(--premium-white)] flex items-center justify-center text-[var(--premium-steel)] hover:border-[var(--premium-ink)] hover:text-[var(--premium-ink)] transition-colors cursor-pointer";
 
-/** Foco visível e estado aberto, somados a qualquer classe de gatilho. */
-const CLASSE_GATILHO_ESTADO =
-  "focus-visible:outline-none focus-visible:shadow-[0_0_0_2px_var(--yellow-50)] aria-expanded:bg-[var(--premium-bone)] aria-expanded:text-[var(--premium-ink)]";
+/** Foco visível, somado a qualquer classe de gatilho. */
+const CLASSE_GATILHO_FOCO =
+  "focus-visible:outline-none focus-visible:shadow-[0_0_0_2px_var(--yellow-50)]";
+
+/** Estado aberto do gatilho, pelo fundo em que ele fica (`fundoGatilho`). */
+const CLASSE_GATILHO_ABERTO = {
+  claro: "aria-expanded:bg-[var(--premium-bone)] aria-expanded:text-[var(--premium-ink)]",
+  escuro:
+    "hover:bg-[var(--c-sidebar-elevated)] aria-expanded:bg-[var(--c-sidebar-elevated)] aria-expanded:text-[var(--brand-on-ink)]",
+} as const;
 
 /**
  * Menu de ações do design system (change almoxarifado-item-painel-layout, D1):
@@ -91,6 +104,7 @@ export function MenuAcoes({
   gatilho,
   classeGatilho,
   largura = 240,
+  fundoGatilho = "claro",
 }: MenuAcoesProps) {
   const visiveis = grupos.filter((g) => g.itens.length > 0);
   const itens = achatarGrupos(visiveis);
@@ -219,7 +233,11 @@ export function MenuAcoes({
             abrir(e.key === "ArrowDown" ? "primeiro" : "ultimo");
           }
         }}
-        className={cn(classeGatilho ?? CLASSE_GATILHO_PADRAO, CLASSE_GATILHO_ESTADO)}
+        className={cn(
+          classeGatilho ?? CLASSE_GATILHO_PADRAO,
+          CLASSE_GATILHO_FOCO,
+          CLASSE_GATILHO_ABERTO[fundoGatilho],
+        )}
       >
         {gatilho ?? <MoreHorizontal size={18} aria-hidden />}
       </button>

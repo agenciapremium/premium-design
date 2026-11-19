@@ -144,6 +144,7 @@ export function SingleSelectControl({ filter, searchParams, setParams }: PropsCo
       <GatilhoFiltro
         {...menu.gatilho}
         rotulo={value && selectedLabel ? `${filter.label}: ${selectedLabel}` : filter.label}
+        valorCompacto={(value && selectedLabel) || (filter.placeholder ?? "Todos")}
         ativo={Boolean(value)}
         ariaLabel={filter.label}
       />
@@ -173,6 +174,9 @@ export function MultiSelectControl({ filter, searchParams, setParams }: PropsCon
   const raw = searchParams.get(filter.key);
   const selected = raw ? raw.split(",").filter(Boolean) : [];
   const active = selected.length > 0;
+  const rotulosEscolhidos = (filter.options ?? [])
+    .filter((o) => selected.includes(o.value))
+    .map((o) => o.label);
 
   function toggle(optValue: string) {
     const next = selected.includes(optValue)
@@ -186,6 +190,12 @@ export function MultiSelectControl({ filter, searchParams, setParams }: PropsCon
       <GatilhoFiltro
         {...menu.gatilho}
         rotulo={filter.label}
+        valorCompacto={rotulosEscolhidos.join(", ") || (filter.placeholder ?? "Todos")}
+        ariaLabel={
+          active
+            ? `${filter.label}: ${selected.length} ${selected.length === 1 ? "opção" : "opções"}`
+            : filter.label
+        }
         ativo={active}
         extra={
           active && (

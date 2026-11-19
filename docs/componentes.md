@@ -19,7 +19,7 @@ Convenções comuns a todos:
 Desde a premium-design **v0.24.0**, as peças desta página que não dependem do domínio do Tasks são copiáveis por um comando, no formato de registry do shadcn. **Sistema novo nunca reescreve componente do catálogo: copia pelo comando.** A peça chega byte a byte igual ao arquivo do Tasks (ou, desde a v0.27.0, ao ajuste dela ao padrão estrito dos sistemas, em `ajustes/`), com as peças e funções de apoio de que depende e os pacotes npm declarados. Desde a v0.25.0, a peça base (tokens, tema, base, motion e os padrões de CSS que as peças usam) não vem junto: o sistema importa os tokens do pacote `@agenciapremium/premium-design` ou copia a `premium-base` uma vez, antes da primeira peça.
 
 ```bash
-npx shadcn@latest add https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/filter-bar.json
+npx shadcn@latest add https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/filter-bar.json
 # ou, com "@premium" em "registries" no components.json do sistema:
 npx shadcn@latest add @premium/filter-bar
 ```
@@ -353,6 +353,34 @@ Para textos longos ou conteúdo rico, não usar tooltip — preferir slide-over/
 
 ---
 
+## CaixaSelecao — `caixa-selecao.tsx`
+
+Caixa de seleção do design system (premium-design **v0.28.0**, peça nova do catálogo `caixa-selecao`, em `ajustes/` até chegar ao Tasks). `<input type="checkbox">` de verdade (teclado, leitor de tela, `FormData`), invisível sobre o desenho do sistema. **Nunca** a caixa nativa com `accent-color` (a do Tasks hoje), que não estiliza igual entre navegadores.
+
+| Prop | Tipo | Descrição |
+|---|---|---|
+| `checked` | `boolean` | Marcada (controlada) |
+| `onCheckedChange` | `(marcada: boolean) => void` | Recebe o estado desejado |
+| `children` | `ReactNode` | Texto visível à direita da caixa. Sem ele, `aria-label` é obrigatório |
+| `disabled`, `aria-label`, `aria-describedby`, `id`, `name`, … | atributos do `input` | Repassados ao `input` (menos `type`, `checked`, `defaultChecked`, `onChange` e `className`) |
+| `className` | `string` | Classes do `label` que envolve a caixa |
+
+Anatomia: caixa de 18px com raio `--r-sm` no centro de um alvo de 44×44px. **Marcada:** fundo e borda `--yellow`, visto (`Check`, traço 3) em `--brand-ink`, **iguais nos dois temas** (decisão do dono, 19/11/2026: o amarelo da matriz do Tasks). **Desmarcada:** borda `--premium-gray` (3:1 ou mais sobre a superfície nos dois temas), fundo `--premium-white`; hover com borda `--premium-ink`. **Foco:** contorno 2px `--premium-ink` afastado 2px e halo `--yellow-50`. **Desabilitada:** `opacity-50` e `cursor-not-allowed`; marcada, continua amarela (lê "marcada e travada"). Transição de cor suprimida com `prefers-reduced-motion`.
+
+**Quando usar:** várias escolhas independentes num formulário com botão Salvar, sobretudo em grade (matriz de permissões). Estado binário aplicado na hora continua `Switch`; escolha única é `Select`.
+
+**Pendência registrada:** a caixa da lista de várias escolhas da `FilterBar` (`filter-bar-selecao.tsx`) e do `MultiSelect` é preta (`--premium-ink`), não amarela. Fica como está nesta versão; unificar com a `CaixaSelecao` é decisão futura.
+
+### Matriz de permissões (padrão)
+
+Bloco "Perfil e permissões" do cadastro de pessoa, como no Tasks (`permissoes-matriz.tsx`), com a `CaixaSelecao` no lugar da caixa nativa:
+
+- **Tabela** com borda `--premium-mist` e raio `--r-md`: coluna do módulo (`th scope="row"`, 13px/500) e as colunas **Leitura** e **Escrita** (cabeçalho em eyebrow, 88px, centradas), uma `CaixaSelecao` por célula com `aria-label` "Leitura em Usuários" / "Escrita em Usuários".
+- **Escrita inclui leitura:** marcar Escrita marca Leitura e a **trava** (`disabled`) enquanto a Escrita estiver marcada; desmarcar Escrita destrava a Leitura, que continua marcada. A regra é função pura do sistema; a ajuda acima da tabela diz isso por escrito e vai no `aria-describedby` das caixas de Leitura.
+- **Administrador** tem acesso total: no lugar da matriz, a frase "Administrador tem acesso total a todos os módulos."
+- Sem marcação de coluna inteira ("todos") enquanto houver poucos módulos. A `CaixaSelecao` ainda não tem o estado indeterminado que essa marcação pede.
+- A permissão na tela é só dica: quem decide é o servidor.
+
 ## FilterBar — `filter-bar.tsx`
 
 Barra de ações única da tela. **Ordem fixa**: FILTROS (esquerda) ► CONTEXTO · VIEWS · FAVORITO (direita). Estado 100% em `searchParams`.
@@ -369,6 +397,8 @@ Barra de ações única da tela. **Ordem fixa**: FILTROS (esquerda) ► CONTEXTO
 | `permitirQuebra` | `boolean` | Opt-out da linha única — os filtros voltam a quebrar em várias linhas (`flex-wrap`) |
 | `recorteLocal` | `boolean` | A tela recorta no navegador o que já carregou, e o servidor não lê os filtros (ex.: calendário do time). A barra escreve a URL pela History API nativa (`history.replaceState`; `pushState` ao aplicar uma view), que o Next sincroniza com `useSearchParams` sem refazer a página. Vale para a mudança de filtro, a restauração do filtro salvo e a aplicação de view. Sem a prop: `router.replace` |
 | `paramsDeNavegacao` | `string[]` | Parâmetros que dizem onde a tela está, e não o recorte (ex.: `ano`, `mes` e `dia` do calendário do time). Ficam fora das views salvas e da detecção da view ativa, e seguem na URL ao aplicar uma view |
+| `resumoCelular` | `string` | Barra compacta do celular (v0.28.0): texto da linha depois da aba escolhida (ex.: "4 contas", "2 de 4 contas"). A barra não conhece a lista: a tela conta |
+| `rotuloFecharPainel` | `string` | Botão do rodapé do painel de filtros do celular (ex.: "Ver 2 contas"). Padrão: "Fechar" |
 
 `FilterConfig`: `{ key, label, type: "select" | "multiselect" | "daterange" | "toggle" | "search" | "faixa", options?, icon?, placeholder?, searchable?, limiteVisivel?, limpaJunto?, min?, max?, passo?, aoBuscar? }`. `daterange` e `faixa` serializam como `<key>De`/`<key>Ate`. A `faixa` exige `min` e `max` (`passo`, padrão 1). Com `aoBuscar(termo)`, a `search` não grava o termo na URL, nos filtros persistidos nem nas views salvas: o termo fica no estado do componente e chega à função com o mesmo atraso de 300ms, e `""` ao limpar (pelo `X`, ao apagar o campo ou pelo **Limpar filtros**). Serve para busca com dado pessoal (nome, e-mail); a função pode mudar a cada render, porque a barra a guarda em ref. `searchable` força/oculta a busca do dropdown (default: automático a partir de 8 opções); `limiteVisivel` corta a lista **sem termo de busca** (default global: 6 quando a busca está disponível — digitar busca na lista completa; nunca corta sem busca).
 
@@ -376,7 +406,23 @@ Anatomia dos chips (pill 36px, 13px/500): **idle** (borda mist) → hover borda 
 
 Comportamento estrutural: os filtros vivem em **linha única com rolagem horizontal** (scrollbar oculta) e os dropdowns renderizam em **portal `position: fixed`** (`popoverPos` + `motionPreset("menu")`) — não são cortados pela rolagem da barra. Toda mudança de filtro/visão **reseta a paginação** (remove `?pagina=`) via `useSetParams` (exportado — `router.replace` + `scroll: false`, ou `history.replaceState` com `{ local: true }`, que é o que `recorteLocal` usa), e a troca de view passa por View Transitions quando disponíveis (`navegarComTransicao`).
 
-Subexport **`ViewTabsPill`**: o grupo de tabs de visão com pílula deslizante (indicador CSS medido por ref), para telas que precisam de um **segundo** grupo de abas fora da barra e em outro param (ex.: abas "Todas/Para hoje/Atrasadas" da visão Tabela) — reusar com `useSetParams` mantém visual e reset de página num só lugar.
+**No computador (768px ou mais), uma linha só, como no Tasks.** Busca, filtros e "Limpar filtros" à esquerda, com rolagem horizontal dos filtros (barra de rolagem escondida); contexto, abas e favorito à direita, **na mesma linha**. As abas nunca descem para a linha de baixo: falta espaço, os filtros rolam. Só o opt-out `permitirQuebra` deixa a barra quebrar. Regra do dono (19/11/2026), que a peça já cumpria; a barra compacta abaixo não muda nada no computador.
+
+**No celular (abaixo de 768px, `md`), barra compacta** (premium-design v0.28.0, decisão do dono de 19/11/2026; serve a lista com abas e filtros e a lista só com filtros):
+
+- **Linha (44px):** o resumo (a aba escolhida em negrito e o `resumoCelular`, em `--premium-gray`, `aria-live="polite"`), os botões de contexto, views salvas e favorito (use botões só-ícone, §4.27), a busca colapsada em lupa e o botão de filtros.
+- **Busca:** fechada, botão de 44px com a lupa; aberta, ocupa a linha (menos o botão de filtros), esconde o resumo e tem sempre um `X`: com termo, "Limpar busca" (limpa e fecha); sem termo, "Fechar a busca" (fecha e devolve o foco à lupa). O foco aparece no chip inteiro (borda `--premium-ink` e halo `--yellow-50`).
+- **Botão de filtros:** 44×44, ícone `ListFilter` (três riscos de tamanhos diferentes, para não repetir o ícone da gaveta), nome "Filtros" ou "Visão e filtros" (com abas), com ", N filtros ativos" quando há filtro. Com filtro ativo, borda e ícone `--premium-ink` e o número num selo `--yellow`/`--brand-ink` no canto; aberto, fundo `--c-emphasis`. `aria-expanded` e `aria-controls`. Só aparece se há abas ou filtros além da busca.
+- **O número conta só filtros**: a busca fica à vista e não entra (`contarFiltrosAtivos`, em `filtros-ativos.ts`).
+- **Painel que desce e empurra o conteúdo** (não sobrepõe): altura de 0 a auto em 200ms (`grid-template-rows`), sem animação com `prefers-reduced-motion`. Fechado, fica `invisible` (fora do Tab e do leitor de tela). Cartão com borda `--premium-mist`, raio `--r-lg`, `--sh-sm`:
+  - grupo **Visão** (as abas) em cima: controle segmentado em colunas iguais até três abas; lista, uma por linha (44px, visto e borda esquerda `--yellow` na escolhida), a partir de quatro;
+  - grupo **Filtros** embaixo, um por linha: seleção, várias escolhas e faixa com o rótulo acima (eyebrow 11px) e o gatilho na largura toda (44px) mostrando só o valor ("Todos", "Proposta", "40 a 80"); interruptor e período na largura toda, com o rótulo dentro. "Limpar filtros" é texto sublinhado com o funil no cabeçalho do grupo, só com filtro ativo;
+  - rodapé com o botão escuro `rotuloFecharPainel` ("Ver 2 contas"), que fecha o painel.
+- **Fechar:** o mesmo botão, o rodapé ou `Esc` dentro do painel ou no botão; o foco volta ao botão. O `Esc` de um menu de filtro aberto fecha só o menu.
+- **Um controle só por filtro:** a peça não duplica nada para o celular. No computador, os invólucros do painel ficam `display: contents` e a ordem da linha vem de `order`; por isso os testes em jsdom (sem CSS) veem um controle de cada, mais o resumo e o botão de filtros.
+- **Nomes acessíveis (v0.28.0):** o gatilho de várias escolhas passa a ter `aria-label` ("Origem", ou "Origem: 2 opções" com escolha), e o da faixa, o rótulo resumido; antes, o nome vinha do texto.
+
+Subexport **`ViewTabsPill`** (`compacta?: boolean`, que a `FilterBar` passa no painel do celular; fora dela, sem a prop, nada muda): o grupo de tabs de visão com pílula deslizante (indicador CSS medido por ref), para telas que precisam de um **segundo** grupo de abas fora da barra e em outro param (ex.: abas "Todas/Para hoje/Atrasadas" da visão Tabela) — reusar com `useSetParams` mantém visual e reset de página num só lugar.
 
 **Boas práticas**: nenhuma tela dispõe filtros/views/favorito fora da barra; criação **não** entra na barra (é do FAB); zonas ausentes não renderizam, mas a ordem das presentes nunca muda.
 
@@ -499,6 +545,7 @@ Menu de ações genérico (ui-guidelines §4.37): um botão "⋯" que abre açõ
 | `gatilho` | `ReactNode` | ícone `MoreHorizontal` | Conteúdo do botão |
 | `classeGatilho` | `string` | 40×40 com borda `--premium-mist` | Substitui as classes do botão (o `SlideOver` passa as do "×") |
 | `largura` | `number` | `240` | Largura do painel, em px |
+| `fundoGatilho` | `"claro" \| "escuro"` | `"claro"` | Fundo em que o gatilho fica (v0.28.0). `claro`: aberto, fundo `--premium-bone` e texto `--premium-ink`. `escuro`: gatilho na barra lateral (o perfil no rodapé), escura nos dois temas: hover e aberto com fundo `--c-sidebar-elevated` e texto `--brand-on-ink`, como no Tasks |
 
 `ItemMenuAcoes`: `id`, `rotulo`, `icone?` (`LucideIcon`), `onSelect`, `perigo?` (texto em `--danger`), `desabilitado?: string | false` (o texto é o motivo, mostrado na dica e no rótulo acessível).
 
@@ -515,6 +562,18 @@ Comportamento: portal no `body` posicionado pelo `popoverPos`, alinhado à direi
     ] },
   ] : undefined}
 >
+```
+
+**Perfil no rodapé da barra lateral** (v0.28.0, decisão do dono de 19/11/2026): o gatilho é o `MenuAcoes` com `fundoGatilho="escuro"` e `classeGatilho` com as classes do rodapé (`sidebar-user`, texto `--brand-on-ink`). Aberto, ele fica escuro nos dois temas, nunca branco: nome em `--brand-on-ink`, cargo e chevron em `--c-sidebar-muted` (o `--premium-gray` não chega a 4,5:1 sobre `--c-sidebar-elevated`). O sistema não sobrescreve as cores do estado aberto por fora.
+
+```tsx
+<MenuAcoes
+  rotulo={`Menu da conta: ${nome} ${perfil}`}
+  fundoGatilho="escuro"
+  classeGatilho="sidebar-user flex w-full items-center gap-[11px] rounded-[var(--r-sm)] px-1 py-3.5 text-left text-[color:var(--brand-on-ink)]"
+  gatilho={<>{avatar}{nomeECargo}</>}
+  grupos={grupos}
+/>
 ```
 
 Pendência: os menus "⋯" de Quadros (`card-menu-contexto.tsx`) e de Views salvas (`views-salvas-menu.tsx`) ainda são implementações próprias e devem migrar para o `MenuAcoes`.
