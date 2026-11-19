@@ -1402,7 +1402,12 @@ na primeira página, por cima da capa, e não imprime o fundo.
   Em cima, a miniatura em **4:3** sobre `--c-sunken`, `object-fit: cover`
   (o retrato fica centralizado); embaixo, a descrição em até **2 linhas**
   (13px/500, `--c-ink`) e uma linha de metadados em 12px `--c-muted`
-  (por exemplo, cliente · cenário · data).
+  (por exemplo, cliente · cenário · data). Quando o item veio pela busca do
+  nome do arquivo, uma linha com o nome do arquivo entra entre a descrição e os
+  metadados, no mesmo 12px `--c-muted`, numa linha só com reticências; o nome
+  inteiro vai para o `Tooltip` do título (nunca `title` nativo), e o
+  `aria-label` termina com ", arquivo {nome}". Sem descrição, o título já é o
+  nome e a linha não se repete.
 - **Miniatura**: `<img loading="lazy" decoding="async">` com `src`
   **versionado** pela data de modificação do arquivo (cacheável como
   imutável). Sem miniatura (erro do `<img>`), o ícone do tipo (lucide, 28px,

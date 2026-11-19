@@ -941,7 +941,7 @@ Item de mídia (foto, vídeo, arte) numa grade de miniaturas, com selos sobre a 
 | Miniatura | 4:3, `object-fit: cover` sobre `--c-sunken`; `loading="lazy"`, `decoding="async"`, `src` versionado; sem miniatura, ícone do tipo 28px `--c-subtle` + extensão 11px `--c-muted` |
 | Selo de mídia | `bg-black/75` fixo nos dois temas, branco 11px/700, `--r-sm`, 20px de altura: `Play` + `m:ss` (vídeo) ou `Image` (arte) no canto inferior esquerdo; `+N` com `Tooltip` "N fotos parecidas" no superior direito |
 | Selo de estado | Par de status opaco do `Badge` (`--danger-bg`/`--danger`: "Oculto", "Vetado"; `--success-bg`/`--success`: "Aprovado"), com ícone, no canto superior esquerdo; um só, com o motivo no `Tooltip`; só para quem pode ver a decisão |
-| Texto | Descrição em até 2 linhas (13px/500, `--c-ink`); metadados em 12px `--c-muted` |
+| Texto | Descrição em até 2 linhas (13px/500, `--c-ink`); metadados em 12px `--c-muted`. Item achado pelo nome do arquivo: uma linha com o nome (12px `--c-muted`, reticências) entre a descrição e os metadados, com o nome inteiro na dica do título |
 | Carregando | `Skeleton` 4:3 + duas linhas |
 | Grade | `role="list"`/`listitem`; `repeat(auto-fill, minmax(176px, 1fr))`, gap 12px; duas colunas abaixo de 640px; "Carregar mais" no fim |
 
