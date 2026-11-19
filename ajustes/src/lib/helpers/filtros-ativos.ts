@@ -77,7 +77,16 @@ export function filtroAtivo(filtro: FiltroMinimo, get: LerParametro): boolean {
  * `aoBuscar` segue a mesma regra: quando o botão aparece, ele a limpa também.
  */
 export function mostrarLimparFiltros(filtros: readonly FiltroMinimo[], get: LerParametro): boolean {
-  return filtros.some((f) => f.type !== "search" && filtroAtivo(f, get));
+  return contarFiltrosAtivos(filtros, get) > 0;
+}
+
+/**
+ * Quantos filtros estão ativos, sem contar a busca: o número do botão de
+ * filtros da barra compacta no celular (premium-design v0.28.0). A busca fica
+ * na linha, à vista, e não entra na conta.
+ */
+export function contarFiltrosAtivos(filtros: readonly FiltroMinimo[], get: LerParametro): number {
+  return filtros.filter((f) => f.type !== "search" && filtroAtivo(f, get)).length;
 }
 
 // ─── Faixa numérica (D1) ────────────────────────────────────────────────────
@@ -147,10 +156,19 @@ const formatarNumero = (n: number) => n.toLocaleString("pt-BR");
  * Rótulo resumido do gatilho da faixa: "Nota: 40 a 80", "Nota: a partir de 40",
  * "Nota: até 80", ou só o rótulo quando não há valor.
  */
-export function rotuloFaixa(rotulo: string, { de, ate }: ValorFaixa): string {
-  if (de !== null && ate !== null)
-    return `${rotulo}: ${formatarNumero(de)} a ${formatarNumero(ate)}`;
-  if (de !== null) return `${rotulo}: a partir de ${formatarNumero(de)}`;
-  if (ate !== null) return `${rotulo}: até ${formatarNumero(ate)}`;
-  return rotulo;
+export function rotuloFaixa(rotulo: string, valor: ValorFaixa): string {
+  const resumo = resumoFaixa(valor);
+  return resumo === null ? rotulo : `${rotulo}: ${resumo}`;
+}
+
+/**
+ * Só o valor da faixa, sem o rótulo: "40 a 80", "a partir de 40", "até 80", ou
+ * `null` sem valor. É o texto do gatilho no painel da barra compacta, onde o
+ * rótulo fica acima do campo.
+ */
+export function resumoFaixa({ de, ate }: ValorFaixa): string | null {
+  if (de !== null && ate !== null) return `${formatarNumero(de)} a ${formatarNumero(ate)}`;
+  if (de !== null) return `a partir de ${formatarNumero(de)}`;
+  if (ate !== null) return `até ${formatarNumero(ate)}`;
+  return null;
 }

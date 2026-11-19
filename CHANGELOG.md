@@ -1,5 +1,24 @@
 # Changelog
 
+## v0.28.0 · 2026-11-19
+
+Três padrões novos, pedidos pelo dono na revisão das capturas do premium-leads (change `fundacao`, tarefas 4.4.1 a 4.4.3), a partir do mockup aprovado em 19/11/2026: a barra de filtros compacta no celular, a caixa de seleção com a matriz de permissões e o perfil do rodapé escuro quando aberto. Nenhum token mudou. Por decisão do dono (18/11/2026), o código mora na camada `ajustes/`, que antes recebia só o ajuste estrito: é comportamento que o Tasks ainda não tem, e entra na mesma pendência de levar ao Tasks.
+
+- **Barra compacta no celular (`filter-bar`; `docs/componentes.md` §FilterBar, `docs/ui-guidelines.md` §3.4 e §10, `docs/padroes-de-interacao.md`).** Abaixo de 768px, a barra vira uma linha com o resumo (a aba escolhida e o texto da tela), a busca em lupa e o botão de filtros (`ListFilter`, 44px, com o número de filtros ativos, sem contar a busca). O botão desce um painel que empurra a lista, com as abas em cima ("Visão": segmentado até três, lista a partir de quatro) e os filtros embaixo, um por linha com o rótulo acima, "Limpar filtros" no cabeçalho do grupo e um botão no rodapé que fecha. `Esc` e o mesmo botão também fecham, com o foco de volta ao botão. Cada controle continua renderizado uma vez: no computador, os invólucros do painel ficam `display: contents`.
+  - **Props novas da `FilterBar`:** `resumoCelular?: string` (ex.: "4 contas") e `rotuloFecharPainel?: string` (ex.: "Ver 2 contas"; padrão "Fechar").
+  - **`ViewTabsPill`:** prop nova `compacta?: boolean`, que a `FilterBar` passa no painel; sem ela, nada muda.
+  - **Busca:** no celular, aberta, ocupa a linha e sempre tem um `X` ("Fechar a busca" sem termo, que devolve o foco à lupa); o foco aparece no chip inteiro.
+  - **Nomes acessíveis:** o gatilho de várias escolhas ganha `aria-label` ("Origem", ou "Origem: 2 opções") e o da faixa, o rótulo resumido; antes, o nome vinha do texto do botão.
+  - **Arquivo novo:** `filter-bar-compacta.tsx` (resumo, botão, painel e "Limpar filtros" responsivo). `filtros-ativos.ts` ganha `contarFiltrosAtivos` e `resumoFaixa` (o `mostrarLimparFiltros` passa a usar a primeira, com o mesmo resultado).
+  - **Computador:** a regra fica escrita: uma linha só, filtros com rolagem horizontal e abas na mesma linha, como no Tasks; a peça já fazia isso, e o layout não muda. A busca deixa de rolar junto com os filtros e fica fixa no começo da linha.
+- **Peça nova `caixa-selecao` (`CaixaSelecao`; `docs/componentes.md` §CaixaSelecao e "Matriz de permissões", `docs/formularios.md`, `docs/ui-guidelines.md` §4.8).** `input type="checkbox"` real sob o desenho do sistema, nunca a caixa nativa com `accent-color`: caixa de 18px num alvo de 44px, marcada com fundo `--yellow` e visto `--brand-ink`, iguais nos dois temas (decisão do dono), desmarcada com borda `--premium-gray`, foco com contorno `--premium-ink` e halo `--yellow-50`, desabilitada a 50%. API: `checked`, `onCheckedChange`, `children?` (texto visível) e os atributos do `input`. O padrão da matriz de permissões: módulo × Leitura × Escrita, e marcar Escrita marca Leitura e a trava.
+  - **Pendência registrada:** a caixa da lista de várias escolhas da `FilterBar` e do `MultiSelect` continua preta.
+- **Perfil do rodapé escuro (`menu-acoes`; `docs/componentes.md` §MenuAcoes, `docs/ui-guidelines.md` §3.1 e §4.37).** Prop nova `fundoGatilho?: "claro" | "escuro"` (padrão `claro`, sem mudança). `escuro`: hover e aberto com `--c-sidebar-elevated` e texto `--brand-on-ink`, para o gatilho na barra lateral, que é escura nos dois temas. Antes, o gatilho aberto ficava com `--premium-bone`, branco no tema claro.
+- **Prova:** num worktree do premium-leads, as peças alteradas e a nova passam em `eslint` (as duas configurações), `prettier --check`, `tsc --noEmit`, `vitest run` e `pnpm dry` do sistema, sem edição; a barra, a caixa e o gatilho foram conferidos no navegador a 375px e 1280px, nos dois temas.
+- **Catálogo ressincronizado**, com as URLs das dependências fixadas na `v0.28.0`: 77 peças (74 do Tasks, 31 delas ajustadas, as novas `use-painel-ancorado` e `caixa-selecao` e a `premium-base`), 103 arquivos.
+- **README e `docs/componentes.md`:** os comandos e o `components.json` apontam para a `v0.28.0`.
+- **`package.json`**: `version` 0.28.0.
+
 ## v0.27.0 · 2026-11-18
 
 As peças do catálogo passam, sem nenhuma edição depois de copiadas, nas verificações de um sistema criado pelo modelo Premium. Nenhum token mudou. Vem do premium-leads, o primeiro sistema do `premium-stack` a copiar as peças: `button`, `input`, `select`, `switch`, `confirm-dialog`, `slide-over`, `menu-acoes`, `campo-busca`, `filter-bar`, `empty-state`, `skeleton`, `badge`, `avatar`, `form-error-banner` e `toast`, com as dependências, reprovavam no `max-lines` (cinco arquivos), no `tsc` com `noUncheckedIndexedAccess` (24 erros) e no Prettier (31 arquivos). Decisão do dono: corrigir no catálogo, sem afrouxar regra no sistema.

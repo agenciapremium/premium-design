@@ -5,6 +5,7 @@ import {
   chavesDaFaixa,
   escritaDaFaixa,
   normalizarFaixa,
+  resumoFaixa,
   rotuloFaixa,
   type LimitesFaixa,
 } from "@/lib/helpers/filtros-ativos";
@@ -138,6 +139,8 @@ export function FaixaFilterControl({ filter, searchParams, setParams }: PropsCon
         triggerRef={triggerRef}
         icone={filter.icon}
         rotulo={rotulo}
+        valorCompacto={resumoFaixa(atual) ?? filter.placeholder ?? "Qualquer valor"}
+        ariaLabel={rotulo}
         ativo={active}
         aberto={open}
         popup="dialog"

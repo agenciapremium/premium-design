@@ -13,7 +13,8 @@ Como o sistema coleta dados: campos, validação, erro e — central no produto 
 | Escolha única | `Select` | Combobox custom do DS (popover em portal) — substitui o `<select>` nativo. Busca automática a partir de 8 opções, navegação por teclado, `name` espelhado em hidden input para FormData; variante `inline` para células/pílulas |
 | Escolha múltipla em formulário (departamentos, clientes de um grupo, membros do quadro) | `MultiSelect` | Badges removíveis no campo + popover com busca acento-insensível; `minSelecionados` garante um piso (ex.: 1). Para **pessoas**, use o `PessoasPicker` |
 | Escolha de pessoas | `PessoasPicker` | Busca + badges com avatar (ver Padrões de interação, §"Seletor de pessoas") |
-| Escolha múltipla em filtro | `FilterBar multiselect` | Dropdown de checkboxes |
+| Escolha múltipla em filtro | `FilterBar multiselect` | Dropdown de checkboxes (caixa preta `--premium-ink`; a unificação com a `CaixaSelecao` amarela é pendência) |
+| Várias escolhas independentes num formulário com Salvar (matriz de permissões) | `CaixaSelecao` | `input type="checkbox"` real sob o desenho do sistema, nunca o nativo com `accent-color`. Marcada em `--yellow` com visto `--brand-ink`, igual nos dois temas; alvo de 44px. Na matriz, marcar Escrita marca Leitura e a trava (ver `componentes.md` → "Matriz de permissões") |
 | Dado curto pontual (horas, motivo de uma linha) | **Entrada rápida** | Popover ancorado ou `ConfirmDialog` com `children` |
 | Comentário | `comentario-input` | Tratamento próprio (menções `@`) |
 | Estado binário aplicado na hora (ativo/inativo, ligado/desligado) | `Switch` | Trilho + polegar do DS, nunca checkbox nativo com `accent-color`. É auto-save: sem botão Salvar. Quando a mudança precisa ser entendida antes, o consumidor confirma e só então o switch vira |

@@ -313,6 +313,10 @@ da topbar. A linha pontilhada não é desenhada: a sidebar não tem divisória a
   alinhamento vem só da altura. Vale também recolhida (64px, logo em ícone).
 - Rodapé com avatar + nome + papel ("Diretor · Admin"), que abre o menu de conta
   (`account-menu.tsx`). O usuário **não** fica na topbar.
+- **Perfil do rodapé aberto é escuro nos dois temas** (v0.28.0): hover e aberto
+  com fundo `--c-sidebar-elevated`, nome em `--brand-on-ink`, cargo e chevron em
+  `--c-sidebar-muted`; nunca o `--premium-bone` dos gatilhos sobre fundo claro.
+  Com o `MenuAcoes` do catálogo, é a prop `fundoGatilho="escuro"` (§4.37).
 
 ### 3.2 Topbar
 - Fundo `bg-[var(--premium-white)]/80` (token — adapta ao escuro) com
@@ -396,6 +400,18 @@ da topbar. A linha pontilhada não é desenhada: a sidebar não tem divisória a
   Dentro de diálogo modal, o menu abre **dentro** do diálogo (fora, o
   `aria-modal` o tiraria da árvore de acessibilidade).
 - "Ordenar automático" usa variante **invertida** (fundo `--brand-ink` fixo, ícone amarelo).
+- **No computador, uma linha só** (regra do dono, 19/11/2026): filtros com rolagem
+  horizontal à esquerda e abas na **mesma linha**, à direita, como no Tasks. As abas
+  nunca descem para a linha de baixo; falta espaço, os filtros rolam. Só o opt-out
+  `permitirQuebra` deixa quebrar.
+- **No celular (abaixo de 768px), barra compacta** (v0.28.0): uma linha com o resumo
+  (aba escolhida e contagem da tela, `resumoCelular`), a busca em lupa (aberta,
+  ocupa a linha e tem um `X` que limpa e fecha) e o botão de filtros (`ListFilter`,
+  44px, com o número de filtros ativos, sem contar a busca). O botão desce um painel
+  que **empurra** a lista (não sobrepõe), com as abas em cima ("Visão": segmentado
+  até três, lista a partir de quatro) e os filtros embaixo, um por linha com o
+  rótulo acima, "Limpar filtros" no cabeçalho do grupo e o botão "Ver N …"
+  (`rotuloFecharPainel`) no rodapé. Detalhes em `componentes.md` → FilterBar.
 
 ### 3.5 Largura do conteúdo: 100% da área útil
 
@@ -653,6 +669,16 @@ Tipos:
   não couber; para valor único, `Select`. Aplicado nos departamentos da etapa do modelo
   e na "Equipe base" do projeto.
 - **Drive input** (link + botão "Adicionar"): pattern documentado em Spec 10b.
+- **Caixa de seleção** (v0.28.0, `CaixaSelecao`): `input type="checkbox"` real sob o
+  desenho do sistema, nunca a caixa nativa com `accent-color`. Caixa de 18px num alvo
+  de 44px; marcada com fundo `--yellow` e visto `--brand-ink`, iguais nos dois temas;
+  desmarcada com borda `--premium-gray`; foco com contorno `--premium-ink` e halo
+  `--yellow-50`; desabilitada a 50%. Para várias escolhas num formulário com Salvar;
+  estado aplicado na hora é `Switch`.
+- **Matriz de permissões** (v0.28.0): tabela módulo × Leitura × Escrita com
+  `CaixaSelecao`. Marcar Escrita marca Leitura e a trava enquanto a Escrita estiver
+  marcada; administrador tem acesso total e não vê a matriz. Ver `componentes.md` →
+  "Matriz de permissões".
 
 ### 4.9 Slide-over flutuante (Spec 8) — [`slide-over.tsx`](https://github.com/agenciapremium/tasks/blob/main/src/components/ui/slide-over.tsx)
 
@@ -1445,7 +1471,10 @@ catálogo `menu-acoes`, com a lógica pura de navegação na peça `menu-acoes-n
     `cursor-not-allowed`, `aria-disabled`, o motivo no rótulo acessível
     ("Dar baixa (Sem unidade disponível)") e numa dica (`Tooltip`, §4.34)
     abaixo do item.
-- **API**: `MenuAcoes({ grupos, rotulo = "Mais ações", gatilho?, classeGatilho?, largura = 240 })`,
+- **Gatilho sobre fundo escuro** (v0.28.0): `fundoGatilho="escuro"` troca o hover e o
+  estado aberto por `--c-sidebar-elevated` com texto `--brand-on-ink`. É o perfil no
+  rodapé da barra lateral (§3.1).
+- **API**: `MenuAcoes({ grupos, rotulo = "Mais ações", gatilho?, classeGatilho?, largura = 240, fundoGatilho = "claro" })`,
   com `grupos: { rotulo?: string; itens: { id; rotulo; icone?: LucideIcon; onSelect; perigo?; desabilitado?: string | false }[] }[]`.
 - **Teclado**:
   - no gatilho, Enter ou Espaço abrem com o foco no primeiro item
@@ -1769,6 +1798,8 @@ inversão):
   `data-sidebar-collapsed` em `<html>`, aplicado pré-hidratação — ver
   `globals.css`), em qualquer largura.
 - Topbar: busca encolhe para ícone abaixo de **768px** (`md`).
+- Barra de ações da tela: abaixo de **768px**, barra compacta com painel de abas e
+  filtros (§3.4); a partir de 768px, a linha única de sempre.
 - Tabelas são montadas por tela (não há primitivo `<MobileTable />`); em telas
   estreitas, mantenha a tabela rolável na horizontal dentro do próprio wrapper.
 - Kanban mantém scroll horizontal sempre (colunas em altura natural no mobile,

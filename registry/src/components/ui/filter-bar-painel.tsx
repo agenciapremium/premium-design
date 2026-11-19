@@ -15,11 +15,23 @@ import { chipActive, chipBase, chipIdle, dropdownPanelClass } from "@/components
  * ancorado nela pelo `useDropdownPortal`.
  */
 
-/** Pílula que abre o menu de um filtro. `extra` entra entre o rótulo e o chevron. */
+/** Classes do gatilho no painel da barra compacta (celular): campo de 44px na largura toda. */
+const GATILHO_NO_PAINEL =
+  "max-md:h-11 max-md:w-full max-md:rounded-[var(--r-md)] max-md:bg-[var(--premium-white)]";
+
+/**
+ * Pílula que abre o menu de um filtro. `extra` entra entre o rótulo e o chevron.
+ *
+ * No celular, o gatilho fica no painel da barra compacta, com o rótulo do filtro
+ * acima dele: ocupa a largura toda e mostra só o valor (`valorCompacto`). Quem
+ * passa `valorCompacto` passa também `ariaLabel`, para o nome acessível não
+ * depender de qual dos dois textos está à vista.
+ */
 export function GatilhoFiltro({
   triggerRef,
   icone: Icon,
   rotulo,
+  valorCompacto,
   ativo,
   aberto,
   popup,
@@ -32,6 +44,7 @@ export function GatilhoFiltro({
   triggerRef: RefObject<HTMLButtonElement | null>;
   icone?: LucideIcon;
   rotulo: string;
+  valorCompacto?: string;
   ativo: boolean;
   aberto: boolean;
   popup: "listbox" | "dialog";
@@ -49,12 +62,21 @@ export function GatilhoFiltro({
       aria-label={ariaLabel}
       aria-haspopup={popup}
       aria-expanded={aberto}
-      className={cn(chipBase, ativo ? chipActive : chipIdle, className)}
+      className={cn(chipBase, ativo ? chipActive : chipIdle, GATILHO_NO_PAINEL, className)}
     >
-      {Icon && <Icon size={14} className="text-[var(--premium-gray)]" />}
-      <span>{rotulo}</span>
+      {Icon && <Icon size={14} className="shrink-0 text-[var(--premium-gray)]" />}
+      {valorCompacto === undefined ? (
+        <span className="max-md:min-w-0 max-md:flex-1 max-md:truncate max-md:text-left">
+          {rotulo}
+        </span>
+      ) : (
+        <>
+          <span className="max-md:hidden">{rotulo}</span>
+          <span className="min-w-0 flex-1 truncate text-left md:hidden">{valorCompacto}</span>
+        </>
+      )}
       {extra}
-      <ChevronDown size={14} className="-mr-1 text-[var(--premium-gray)]" />
+      <ChevronDown size={14} className="-mr-1 shrink-0 text-[var(--premium-gray)]" />
     </button>
   );
 }

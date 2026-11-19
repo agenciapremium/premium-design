@@ -4,8 +4,8 @@
   "title": "use-filtros-persistidos",
   "description": "Peça do Tasks ajustada no premium-design para o padrão estrito dos sistemas (TypeScript strict, Prettier, 350 linhas por arquivo, cor só por token), com a mesma API: src/lib/hooks/use-filtros-persistidos.ts.",
   "registryDependencies": [
-    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/debounce.json",
-    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.27.0/public/r/filtros-persistencia.json"
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/debounce.json",
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/filtros-persistencia.json"
   ],
   "files": [
     {
