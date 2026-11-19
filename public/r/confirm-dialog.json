@@ -8,11 +8,11 @@
     "motion@^12.42.2"
   ],
   "registryDependencies": [
-    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/button.json",
-    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/form-error-banner.json",
-    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/motion.json",
-    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/tecla-confirmacao.json",
-    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/use-dialogo-foco.json"
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.1/public/r/button.json",
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.1/public/r/form-error-banner.json",
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.1/public/r/motion.json",
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.1/public/r/tecla-confirmacao.json",
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.1/public/r/use-dialogo-foco.json"
   ],
   "files": [
     {

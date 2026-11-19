@@ -8,8 +8,8 @@
     "motion@^12.42.2"
   ],
   "registryDependencies": [
-    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/motion.json",
-    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/use-painel-ancorado.json"
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.1/public/r/motion.json",
+    "https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.1/public/r/use-painel-ancorado.json"
   ],
   "files": [
     {

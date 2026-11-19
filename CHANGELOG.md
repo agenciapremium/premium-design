@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.28.1 · 2026-11-19
+
+Duas correções na barra compacta da `FilterBar`, achadas ao aplicar a v0.28.0 no premium-leads. Nenhum token mudou e nenhuma prop foi criada ou removida.
+
+- **Nome acessível dos gatilhos no painel do celular (`filter-bar-selecao.tsx`, `filter-bar-faixa.tsx`, `filter-bar-painel.tsx`; `docs/componentes.md` §FilterBar).** No painel, o gatilho mostra só o valor ("Todas", "Desativadas", "Qualquer valor"), mas o `aria-label` era só o rótulo do filtro ("Situação"), e o axe reprovava a regra `label-content-name-mismatch` (WCAG 2.5.3, "rótulo no nome") com o painel aberto. Agora o nome contém o texto à vista no computador e no celular: seleção única "Situação: Todas" ou "Situação: Desativadas"; várias escolhas "Origem: Todos" ou "Origem, 2 opções: Site, Evento"; faixa "Nota: Qualquer valor" ou "Nota: 10 a 80".
+  - **Várias escolhas:** o contador ao lado do rótulo fica só no computador; no celular, o gatilho já lista as opções escolhidas, e o número junto delas entrava no texto à vista.
+- **`buscaSempreAberta` só no computador (`filter-bar-busca.tsx`, `filter-bar.tsx`; `docs/componentes.md` §FilterBar, `docs/padroes-de-interacao.md`, `docs/ui-guidelines.md` §3.4).** Com a prop, a barra compacta perdia a lupa no celular: o campo ficava aberto na linha, sem resumo. Agora a prop vale a partir de 768px, onde o campo fica sempre aberto, com a lupa como ícone; no celular, a busca é sempre a lupa, que abre o campo na linha com um `X` que limpa e fecha, como sem a prop. A troca é só por CSS (`md:`), sem medir a tela. Sem a prop, nada muda.
+- **Prova:** num worktree do premium-leads, as peças passam em `pnpm lint`, `pnpm lint:typed`, `pnpm format:check`, `pnpm typecheck` e `pnpm dry`, sem edição. Numa página de teste com seleção única, várias escolhas, faixa, busca e abas, o axe (WCAG 2 A e AA e 2.1 A e AA) não acusa violação a 375px e a 1280px, nos dois temas, sem valor e com valor, com o painel fechado e aberto e com a lista de cada filtro aberta; com `buscaSempreAberta`, o campo fica aberto a 1280px e a lupa aparece a 375px.
+- **Catálogo ressincronizado**, com as URLs das dependências fixadas na `v0.28.1`: 77 peças, 103 arquivos.
+- **README, `AGENTS.md` (regra 6) e `docs/componentes.md`:** os comandos e o `components.json` apontam para a `v0.28.1`.
+- **`package.json`**: `version` 0.28.1.
+
 ## v0.28.0 · 2026-11-19
 
 Três padrões novos, pedidos pelo dono na revisão das capturas do premium-leads (change `fundacao`, tarefas 4.4.1 a 4.4.3), a partir do mockup aprovado em 19/11/2026: a barra de filtros compacta no celular, a caixa de seleção com a matriz de permissões e o perfil do rodapé escuro quando aberto. Nenhum token mudou. Por decisão do dono (18/11/2026), o código mora na camada `ajustes/`, que antes recebia só o ajuste estrito: é comportamento que o Tasks ainda não tem, e entra na mesma pendência de levar ao Tasks.

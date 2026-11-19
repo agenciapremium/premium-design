@@ -54,7 +54,9 @@ interface FilterBarProps {
   telaKey?: string;
   /**
    * Opt-out da busca colapsável (padrão global = lupa que expande). Quando `true`, o
-   * campo de busca fica sempre aberto (comportamento anterior).
+   * campo de busca fica sempre aberto no computador (768px ou mais). No celular, a
+   * busca é sempre a lupa da barra compacta, que abre o campo na linha com um `X`
+   * que limpa e fecha (v0.28.1).
    */
   buscaSempreAberta?: boolean;
   /**

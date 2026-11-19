@@ -19,7 +19,7 @@ Convenções comuns a todos:
 Desde a premium-design **v0.24.0**, as peças desta página que não dependem do domínio do Tasks são copiáveis por um comando, no formato de registry do shadcn. **Sistema novo nunca reescreve componente do catálogo: copia pelo comando.** A peça chega byte a byte igual ao arquivo do Tasks (ou, desde a v0.27.0, ao ajuste dela ao padrão estrito dos sistemas, em `ajustes/`), com as peças e funções de apoio de que depende e os pacotes npm declarados. Desde a v0.25.0, a peça base (tokens, tema, base, motion e os padrões de CSS que as peças usam) não vem junto: o sistema importa os tokens do pacote `@agenciapremium/premium-design` ou copia a `premium-base` uma vez, antes da primeira peça.
 
 ```bash
-npx shadcn@latest add https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.0/public/r/filter-bar.json
+npx shadcn@latest add https://raw.githubusercontent.com/agenciapremium/premium-design/v0.28.1/public/r/filter-bar.json
 # ou, com "@premium" em "registries" no components.json do sistema:
 npx shadcn@latest add @premium/filter-bar
 ```
@@ -393,7 +393,7 @@ Barra de ações única da tela. **Ordem fixa**: FILTROS (esquerda) ► CONTEXTO
 | `viewParam` / `defaultView` | `string` | Parâmetro de URL da view (default `view`) |
 | `favorito` | `ReactNode` | Estrela — sempre por último |
 | `telaKey` | `string` | Liga a **persistência por usuário** dos filtros da tela: restaura o último filtro salvo na abertura (se a URL não trouxer filtros) e salva alterações com debounce (`useFiltrosPersistidos`); "limpar tudo" também apaga o estado persistido. A leitura e a gravação vêm do `FiltrosPersistenciaProvider` (`filtros-persistencia.tsx`; no Tasks, ligado às actions de preferências em `components/layout/filtros-persistencia-tasks.tsx`): sem provedor, `telaKey` não grava nada e o menu de views salvas não aparece (premium-design v0.24.0) |
-| `buscaSempreAberta` | `boolean` | Opt-out da busca colapsável — o campo do filtro `search` fica sempre aberto |
+| `buscaSempreAberta` | `boolean` | Opt-out da busca colapsável, **só no computador** (768px ou mais): ali o campo do filtro `search` fica sempre aberto, com a lupa como ícone. No celular, a busca é sempre a lupa da barra compacta, que abre o campo na linha com um `X` que limpa e fecha (v0.28.1) |
 | `permitirQuebra` | `boolean` | Opt-out da linha única — os filtros voltam a quebrar em várias linhas (`flex-wrap`) |
 | `recorteLocal` | `boolean` | A tela recorta no navegador o que já carregou, e o servidor não lê os filtros (ex.: calendário do time). A barra escreve a URL pela History API nativa (`history.replaceState`; `pushState` ao aplicar uma view), que o Next sincroniza com `useSearchParams` sem refazer a página. Vale para a mudança de filtro, a restauração do filtro salvo e a aplicação de view. Sem a prop: `router.replace` |
 | `paramsDeNavegacao` | `string[]` | Parâmetros que dizem onde a tela está, e não o recorte (ex.: `ano`, `mes` e `dia` do calendário do time). Ficam fora das views salvas e da detecção da view ativa, e seguem na URL ao aplicar uma view |
@@ -411,7 +411,7 @@ Comportamento estrutural: os filtros vivem em **linha única com rolagem horizon
 **No celular (abaixo de 768px, `md`), barra compacta** (premium-design v0.28.0, decisão do dono de 19/11/2026; serve a lista com abas e filtros e a lista só com filtros):
 
 - **Linha (44px):** o resumo (a aba escolhida em negrito e o `resumoCelular`, em `--premium-gray`, `aria-live="polite"`), os botões de contexto, views salvas e favorito (use botões só-ícone, §4.27), a busca colapsada em lupa e o botão de filtros.
-- **Busca:** fechada, botão de 44px com a lupa; aberta, ocupa a linha (menos o botão de filtros), esconde o resumo e tem sempre um `X`: com termo, "Limpar busca" (limpa e fecha); sem termo, "Fechar a busca" (fecha e devolve o foco à lupa). O foco aparece no chip inteiro (borda `--premium-ink` e halo `--yellow-50`).
+- **Busca:** fechada, botão de 44px com a lupa; aberta, ocupa a linha (menos o botão de filtros), esconde o resumo e tem sempre um `X`: com termo, "Limpar busca" (limpa e fecha); sem termo, "Fechar a busca" (fecha e devolve o foco à lupa). O foco aparece no chip inteiro (borda `--premium-ink` e halo `--yellow-50`). Vale também com `buscaSempreAberta`, que só mantém o campo aberto no computador (v0.28.1); a troca é por CSS (`md:`), sem medir a tela.
 - **Botão de filtros:** 44×44, ícone `ListFilter` (três riscos de tamanhos diferentes, para não repetir o ícone da gaveta), nome "Filtros" ou "Visão e filtros" (com abas), com ", N filtros ativos" quando há filtro. Com filtro ativo, borda e ícone `--premium-ink` e o número num selo `--yellow`/`--brand-ink` no canto; aberto, fundo `--c-emphasis`. `aria-expanded` e `aria-controls`. Só aparece se há abas ou filtros além da busca.
 - **O número conta só filtros**: a busca fica à vista e não entra (`contarFiltrosAtivos`, em `filtros-ativos.ts`).
 - **Painel que desce e empurra o conteúdo** (não sobrepõe): altura de 0 a auto em 200ms (`grid-template-rows`), sem animação com `prefers-reduced-motion`. Fechado, fica `invisible` (fora do Tab e do leitor de tela). Cartão com borda `--premium-mist`, raio `--r-lg`, `--sh-sm`:
@@ -420,7 +420,7 @@ Comportamento estrutural: os filtros vivem em **linha única com rolagem horizon
   - rodapé com o botão escuro `rotuloFecharPainel` ("Ver 2 contas"), que fecha o painel.
 - **Fechar:** o mesmo botão, o rodapé ou `Esc` dentro do painel ou no botão; o foco volta ao botão. O `Esc` de um menu de filtro aberto fecha só o menu.
 - **Um controle só por filtro:** a peça não duplica nada para o celular. No computador, os invólucros do painel ficam `display: contents` e a ordem da linha vem de `order`; por isso os testes em jsdom (sem CSS) veem um controle de cada, mais o resumo e o botão de filtros.
-- **Nomes acessíveis (v0.28.0):** o gatilho de várias escolhas passa a ter `aria-label` ("Origem", ou "Origem: 2 opções" com escolha), e o da faixa, o rótulo resumido; antes, o nome vinha do texto.
+- **Nomes acessíveis (v0.28.1):** o gatilho que mostra só o valor no celular tem um `aria-label` que contém os dois textos à vista, o do computador e o do celular (WCAG 2.5.3, "rótulo no nome"; regra `label-content-name-mismatch` do axe), e não depende do tamanho da tela: seleção única "Situação: Todas" ou "Situação: Desativadas"; várias escolhas "Origem: Todos" ou "Origem, 2 opções: Site, Evento"; faixa "Nota: Qualquer valor" ou "Nota: 10 a 80". O contador da seleção múltipla aparece só no computador: no celular, o gatilho já lista as opções escolhidas. Na v0.28.0, o nome era só o rótulo ("Situação", "Origem: 2 opções"), e o axe reprovava o painel aberto no celular.
 
 Subexport **`ViewTabsPill`** (`compacta?: boolean`, que a `FilterBar` passa no painel do celular; fora dela, sem a prop, nada muda): o grupo de tabs de visão com pílula deslizante (indicador CSS medido por ref), para telas que precisam de um **segundo** grupo de abas fora da barra e em outro param (ex.: abas "Todas/Para hoje/Atrasadas" da visão Tabela) — reusar com `useSetParams` mantém visual e reset de página num só lugar.
 

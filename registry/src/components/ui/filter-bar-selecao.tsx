@@ -132,6 +132,7 @@ export function SingleSelectControl({ filter, searchParams, setParams }: PropsCo
   const menu = useMenuOpcoes(filter);
   const value = searchParams.get(filter.key) ?? "";
   const selectedLabel = filter.options?.find((o) => o.value === value)?.label;
+  const valorCompacto = (value && selectedLabel) || (filter.placeholder ?? "Todos");
 
   function escolher(v: string | null) {
     setParams(comDependentes(filter, v));
@@ -144,9 +145,9 @@ export function SingleSelectControl({ filter, searchParams, setParams }: PropsCo
       <GatilhoFiltro
         {...menu.gatilho}
         rotulo={value && selectedLabel ? `${filter.label}: ${selectedLabel}` : filter.label}
-        valorCompacto={(value && selectedLabel) || (filter.placeholder ?? "Todos")}
+        valorCompacto={valorCompacto}
         ativo={Boolean(value)}
-        ariaLabel={filter.label}
+        ariaLabel={`${filter.label}: ${valorCompacto}`}
       />
       <PainelOpcoes {...menu.painel}>
         {!menu.busca && (
@@ -177,6 +178,8 @@ export function MultiSelectControl({ filter, searchParams, setParams }: PropsCon
   const rotulosEscolhidos = (filter.options ?? [])
     .filter((o) => selected.includes(o.value))
     .map((o) => o.label);
+  const valorCompacto = rotulosEscolhidos.join(", ") || (filter.placeholder ?? "Todos");
+  const quantas = `${selected.length} ${selected.length === 1 ? "opção" : "opções"}`;
 
   function toggle(optValue: string) {
     const next = selected.includes(optValue)
@@ -190,16 +193,17 @@ export function MultiSelectControl({ filter, searchParams, setParams }: PropsCon
       <GatilhoFiltro
         {...menu.gatilho}
         rotulo={filter.label}
-        valorCompacto={rotulosEscolhidos.join(", ") || (filter.placeholder ?? "Todos")}
+        valorCompacto={valorCompacto}
         ariaLabel={
           active
-            ? `${filter.label}: ${selected.length} ${selected.length === 1 ? "opção" : "opções"}`
-            : filter.label
+            ? `${filter.label}, ${quantas}: ${valorCompacto}`
+            : `${filter.label}: ${valorCompacto}`
         }
         ativo={active}
         extra={
+          // No celular, o gatilho já mostra as opções escolhidas: o contador fica só no computador.
           active && (
-            <span className="min-w-[16px] rounded-full bg-[var(--premium-ink)] px-[6px] text-center text-[11px] font-bold text-[var(--premium-paper)]">
+            <span className="min-w-[16px] rounded-full bg-[var(--premium-ink)] px-[6px] text-center text-[11px] font-bold text-[var(--premium-paper)] max-md:hidden">
               {selected.length}
             </span>
           )
