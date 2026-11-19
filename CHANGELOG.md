@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.29.0 · 2026-11-19
+
+Um elemento novo no cartão de mídia. Nenhum token, CSS do pacote nem peça do catálogo mudou.
+
+- **Linha do nome do arquivo no cartão de mídia (`docs/ui-guidelines.md` §4.36; `docs/componentes.md` §"Cartão de mídia com selos").** Quando o item veio pela busca do nome do arquivo, o cartão mostra o nome numa linha entre a descrição e os metadados, em 12px `--c-muted`, uma linha só com reticências. O nome inteiro vai para o `Tooltip` do título (nunca `title` nativo), e o `aria-label` termina com ", arquivo {nome}". Sem descrição, o título já é o nome e a linha não se repete. Vem da change `acervo-busca-nome-arquivo` do Tasks (busca do Acervo por "C9035", "IMG_9965" ou "9965").
+- **`package.json`**: `version` 0.29.0.
+
 ## v0.28.1 · 2026-11-19
 
 Duas correções na barra compacta da `FilterBar`, achadas ao aplicar a v0.28.0 no premium-leads. Nenhum token mudou e nenhuma prop foi criada ou removida.
