@@ -68,7 +68,7 @@ Manter consistência ao adicionar telas — consultar antes de escolher ícone n
 | Concluído / sucesso | `check-circle` (`check-circle-2` no toast) |
 | Informação | `info` |
 | Ajuste | `wrench` |
-| Notificação | `bell` (`bell-ring` quando há não lidas) |
+| Notificação | `bell` (as não lidas vão no selo com o número; `bell-ring` só em "Ativar notificações do sistema") |
 | Busca | `search` |
 | Tema | `moon` / `sun` |
 | Admin restrito | `lock` |

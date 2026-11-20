@@ -330,8 +330,40 @@ da topbar. A linha pontilhada não é desenhada: a sidebar não tem divisória a
 - A criação **não** vive mais na topbar: o botão "Nova demanda" foi removido e a
   entrada única de criação passou a ser o **FAB** (§4.18). A busca fica adjacente
   ao alternador de tema.
-- Sino com `.dot` 8px vermelho quando há não-lidas.
+- Tema: icon button 40×40 que **alterna** claro ↔ escuro a cada clique, sem
+  menu de opções (`moon` no claro, `sun` no escuro; dica "Mudar para tema
+  escuro" ou "Mudar para tema claro"; ver [`dark-mode.md`](dark-mode.md)).
+- Trilha (`Breadcrumbs`): só aparece com **dois níveis ou mais** (uma trilha de
+  um item repetiria o título) e sai de cena **abaixo de 640px**.
+- Sino: icon button 40×40 (`bell`) com **selo do número de não lidas** no canto
+  superior direito, 18px de altura, fundo `--danger`, borda de 2px
+  `--premium-white`, 10px/700, "99+" acima de 99, `aria-label` "N não lidas";
+  o selo fica invisível com o painel aberto (o X ocupa o lugar do sino). Sem
+  não lidas, sem selo. O clique abre o **painel de cards flutuantes**
+  (`padroes-de-interacao.md`), nunca slide-over: no topo, a pílula de seleção
+  com **"Todas"**, **"Não lidas"** e as categorias com não lidas, cada uma com
+  a contagem, e "Marcar todas como lidas" (só com não lidas no recorte); a
+  lista com as 20 mais recentes do recorte, agrupadas por dia ("Hoje",
+  "Ontem", "Esta semana", "Antes"); na base, "Ativar notificações do sistema"
+  (só com a permissão do navegador ainda não decidida) e "Ver todas", que leva
+  à central `/notificacoes` (§3.2.1).
 - Borda inferior `--premium-mist`.
+
+#### 3.2.1 Central de notificações (`/notificacoes`)
+- Página com `PageHeader` ("Notificações") e a `FilterBar` com três filtros:
+  **Categoria** (várias escolhas, com o número de não lidas no rótulo de cada
+  opção), **"Apenas não lidas"** (liga e desliga) e **Período** (intervalo de
+  datas). O recorte é aplicado no servidor.
+- Acima da lista, à direita, **"Marcar N como lidas"** (`Button` ghost `sm`,
+  `CheckCheck`; "Marcar 1 como lida" no singular), sobre o recorte inteiro, não
+  só a página. Quando o recorte alcança mais de uma categoria com não lidas,
+  pede confirmação pelo `ConfirmDialog`. Sem não lidas, o botão não aparece.
+- Cards (`NotificacaoCard`, variante `pagina`) agrupados por dia com eyebrow
+  ("Hoje", "Ontem", "Esta semana", "Antes"); marcar um card é otimista.
+- Paginação de **25** por página (`Pagination`); mudar um filtro volta à
+  primeira página.
+- Vazio: "Nenhuma notificação" ou, com filtro, "Nada nesta categoria" com
+  "Limpar filtros".
 
 ### 3.3 Page-head
 - Não há mais H1 de 32px no corpo: a página registra

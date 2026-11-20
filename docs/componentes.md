@@ -952,10 +952,12 @@ Por que dois desenhos de selo: o de mídia é texto branco sobre a foto, e só o
 | Componente | Papel |
 |---|---|
 | `sidebar.tsx` | Sidebar 248px `--c-sidebar` (sempre escura) em três partes: faixa da logo com a altura da topbar (88px; 64px abaixo de 768px), lista que rola e rodapé com o menu de conta; item ativo = fundo elevado + texto amarelo + **borda esquerda 3px amarela**; seções 9px/`.22em`; cadeado em itens admin; colapsável a 64px via `data-sidebar-collapsed` em `<html>` (aplicado pré-hidratação); toggle aparece no hover/foco; tooltips só colapsada |
-| `topbar.tsx` | `min-h-[88px]` (64px abaixo de 768px, a mesma altura da faixa da logo) translúcida (`/80` + blur 12px + saturate 140%); conteúdo: [menu, só abaixo de 768px] [eyebrow + título + sub] ← → [busca pill ⌘K 280px] [tema] [ferramentas] [sino]. O usuário não fica aqui: mora no rodapé da sidebar (`account-menu.tsx`) |
+| `topbar.tsx` | `min-h-[88px]` (64px abaixo de 768px, a mesma altura da faixa da logo) translúcida (`/80` + blur 12px + saturate 140%); conteúdo: [menu, só abaixo de 768px] [eyebrow + título + sub + breadcrumb] ← → [busca pill ⌘K 280px] [tema] [ferramentas] [sino]. O usuário não fica aqui: mora no rodapé da sidebar (`account-menu.tsx`) |
 | `account-menu.tsx` | Rodapé fixo da sidebar: avatar + nome + papel; o clique abre, para cima, o menu de conta (Minha conta, Trocar de senha, Atalhos de teclado, Sair), escuro nos dois temas (`--c-sidebar`). Popover não modal: `Esc` e clique fora fecham e o foco volta ao gatilho |
-| `theme-toggle.tsx` | `moon`/`sun`; alterna `.dark` + grava `premium-theme` (ver [`dark-mode.md`](dark-mode.md)) |
-| `notificacoes-bell.tsx` | Icon-btn com `.dot` 8px vermelho quando há não-lidas; abre slide-over |
+| `theme-toggle.tsx` | `moon`/`sun`; alterna `.dark` a cada clique, sem menu de opções, e grava `premium-theme` (ver [`dark-mode.md`](dark-mode.md)) |
+| `breadcrumbs.tsx` | Trilha compacta logo abaixo do subtítulo da topbar (`Breadcrumb` com `compact`); só aparece com dois níveis ou mais e some abaixo de 640px |
+| `notificacoes-bell.tsx` | Icon-btn com selo do número de não lidas (`--danger`, "99+" acima de 99); abre o [`PainelCards`](#painelcards--painel-cardstsx) com a pílula de seleção ("Todas", "Não lidas" e as categorias com não lidas), "Marcar todas como lidas", as 20 recentes agrupadas por dia e "Ver todas" (ver [`ui-guidelines.md`](ui-guidelines.md) §3.2) |
+| `notificacao-list.tsx` | Central `/notificacoes`: cards por dia, "Marcar N como lidas" sobre o recorte da `FilterBar` (Categoria, "Apenas não lidas", Período) e paginação de 25 (ver [`ui-guidelines.md`](ui-guidelines.md) §3.2.1) |
 | `search-dialog.tsx` | Busca global `⌘K` |
 | `fab-shell.tsx` | Monta o FAB + slide-overs de criação autocontidos |
 | `page-header-context.tsx` | Contexto que leva título/eyebrow/sub/breadcrumb do `PageHeader` à topbar |
